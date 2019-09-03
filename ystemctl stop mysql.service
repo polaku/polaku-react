@@ -1,0 +1,11 @@
+● mysql.service - MySQL Community Server
+   Loaded: loaded (/lib/systemd/system/mysql.service; bad; vendor preset: enabled)
+   Active: inactive (dead) since Tue 2019-09-03 12:58:35 WIB; 5min ago
+  Process: 22312 ExecStart=/usr/sbin/mysqld --daemonize --pid-file=/run/mysqld/mysqld.pid (code=exited, status=0/SUCCESS)
+  Process: 22303 ExecStartPre=/usr/share/mysql/mysql-systemd-start pre (code=exited, status=0/SUCCESS)
+ Main PID: 22314 (code=exited, status=0/SUCCESS)
+
+Sep 03 12:57:30 LinuxPIP systemd[1]: Starting MySQL Community Server...
+Sep 03 12:57:32 LinuxPIP systemd[1]: Started MySQL Community Server.
+Sep 03 12:58:33 LinuxPIP systemd[1]: Stopping MySQL Community Server...
+Sep 03 12:58:35 LinuxPIP systemd[1]: Stopped MySQL Community Server.
