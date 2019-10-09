@@ -18,6 +18,8 @@ const defaultState = {
   dataEvents: [],
   dataEventNeedApproval: [],
   dataCreatorMasterAndAssistant: [],
+  dataNotification: [],
+  dataNewNotif: []
 }
 
 function reducer(state = defaultState, action) {
@@ -96,6 +98,13 @@ function reducer(state = defaultState, action) {
       return {
         ...state,
         dataDepartments: action.payload
+      }
+    }
+    case 'FETCH_DATA_NOTIFICATION_SUCCESS': {
+      return {
+        ...state,
+        dataNewNotif: action.payload.newNotif,
+        dataNotification: action.payload.notif
       }
     }
     case 'FETCH_DATA_ERROR': {

@@ -16,7 +16,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Collapse from '@material-ui/core/Collapse';
+import Badge from '@material-ui/core/Badge';
 
+import NotificationsIcon from '@material-ui/icons/Notifications';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import MeetingRoomOutlinedIcon from '@material-ui/icons/MeetingRoomOutlined';
@@ -24,9 +26,18 @@ import EventOutlinedIcon from '@material-ui/icons/EventOutlined';
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
+import SendIcon from '@material-ui/icons/Send';
+import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
+import EventIcon from '@material-ui/icons/Event';
 
-import { setUser } from '../store/action';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+
+import { setUser, fetchDataNotification } from '../store/action';
 import { API } from '../config/API';
+
+import TimeAgo from 'react-timeago'
 
 const drawerWidth = 250;
 
@@ -95,6 +106,12 @@ const useStyles = makeStyles(theme => ({
   nested: {
     paddingLeft: theme.spacing(7),
   },
+  grow: {
+    flexGrow: 1,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
 }));
 
 function MiniDrawer(props) {
@@ -103,6 +120,7 @@ function MiniDrawer(props) {
   const [openChildBookingRoom, setOpenChildBookingRoom] = React.useState(false);
   const [openChildEvent, setOpenChildEvent] = React.useState(false);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
   function handleDrawerOpen() {
     setOpen(true);
@@ -142,11 +160,43 @@ function MiniDrawer(props) {
           } else {
             newData.isAdmin = false
           }
-          console.log(newData)
           props.setUser(newData)
+          props.fetchDataNotification()
         })
     }
+    // eslint-disable-next-line
   }, [])
+
+  const handleClickNotif = event => {
+    let newData = [], token = localStorage.getItem('token')
+    setAnchorEl(event.currentTarget);
+    props.dataNewNotif.forEach(element => {
+      newData.push(element.notifications_id)
+    });
+
+    API.put('/notification', { notifications_id: newData }, { headers: { token } })
+      .then(async data => {
+        await props.fetchDataNotification()
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const updateStatus = id => {
+    let token = localStorage.getItem('token')
+
+    API.put(`/notification/${id}`, { read: 1 }, { headers: { token } })
+      .then(async data => {
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
 
   return (
     <div className={classes.root}>
@@ -158,20 +208,67 @@ function MiniDrawer(props) {
         })}
       >
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, {
-              [classes.hide]: open,
-            })}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            Polaku
+          <div className={classes.grow}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              className={clsx(classes.menuButton, {
+                [classes.hide]: open,
+              })}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap>
+              Polaku
           </Typography>
+          </div>
+          <IconButton color="inherit" onClick={handleClickNotif}>
+            {
+              props.dataNewNotif.length !== 0
+                ? <Badge badgeContent={props.dataNewNotif.length} color="primary">
+                  <NotificationsIcon />
+                </Badge>
+                : <NotificationsNoneIcon />
+            }
+          </IconButton>
+          <Menu
+            id="long-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+            PaperProps={{
+              style: {
+                maxHeight: 48 * 4.5,
+                width: 350,
+                marginTop: 50,
+                borderRadius: 5,
+              },
+            }}
+          >
+            {
+              props.dataNotification && props.dataNotification.map((notif, index) => {
+                return notif.link && <Link to={notif.link} key={index} style={{ textDecoration: 'none', color: 'black' }} onClick={() => updateStatus(notif.notifications_id)}>
+                  <MenuItem onClick={handleClose} style={{ backgroundColor: !notif.read ? '#e9e9e9' : 'white' }}>
+                    <ListItemIcon>
+                      {
+                        notif.value === "Meeting" ? <MeetingRoomIcon />
+                          : notif.value === "Event" ? <EventIcon />
+                            : <SendIcon />
+                      }
+                    </ListItemIcon>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <Typography variant="body1" >New {notif.value} - {notif.description}</Typography>
+                      <TimeAgo date={notif.created_at} style={{ fontSize: 12 }} />
+                    </div>
+                    <Divider />
+                  </MenuItem>
+                </Link>
+              })
+            }
+          </Menu>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -281,12 +378,12 @@ function MiniDrawer(props) {
               }
               {
                 props.isAdmin
-                  ? <Link to="/event/CreatorMasterAndAssistant" onClick={event => handleListItemClick(event, 1.3)} style={{ textDecoration: 'none', color: 'black' }}>
+                  ? <Link to="/event/creatorMasterAndAssistant" onClick={event => handleListItemClick(event, 1.3)} style={{ textDecoration: 'none', color: 'black' }}>
                     <ListItem button className={classes.nested} selected={selectedIndex === 1.3}>
                       <ListItemText primary="Creator Master" />
                     </ListItem>
                   </Link>
-                  : props.isCreatorMaster && <Link to="/event/CreatorMasterAndAssistant" onClick={event => handleListItemClick(event, 1.3)} style={{ textDecoration: 'none', color: 'black' }}>
+                  : props.isCreatorMaster && <Link to="/event/creatorMasterAndAssistant" onClick={event => handleListItemClick(event, 1.3)} style={{ textDecoration: 'none', color: 'black' }}>
                     <ListItem button className={classes.nested} selected={selectedIndex === 1.3}>
                       <ListItemText primary="Creator Assistant" />
                     </ListItem>
@@ -312,15 +409,19 @@ function MiniDrawer(props) {
 }
 
 const mapDispatchToProps = {
-  setUser
+  setUser,
+  fetchDataNotification
 }
 
-const mapStateToProps = ({ isAdmin, isRoomMaster, isCreatorMaster, isCreatorAssistant }) => {
+const mapStateToProps = ({ isAdmin, isRoomMaster, isCreatorMaster, isCreatorAssistant, dataNotification, userId, dataNewNotif }) => {
   return {
     isAdmin,
     isRoomMaster,
     isCreatorMaster,
-    isCreatorAssistant
+    isCreatorAssistant,
+    dataNotification,
+    userId,
+    dataNewNotif
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(MiniDrawer)

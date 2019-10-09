@@ -16,6 +16,7 @@ import Rooms from "./views/BookingRoom/Rooms";
 import Event from "./views/Event/Event";
 import ApprovalEvent from "./views/Event/ApprovalEvent";
 import CreatorMasterAndAssistant from "./views/Event/CreatorMasterAndAssistant";
+import DetailEvent from "./views/Event/DetailEvent";
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -54,7 +55,8 @@ function App() {
               <Route path="/bookingRoom/createbookingRoom" component={CreateBookingRoom} />
               <Route path="/bookingRoom/rooms" component={Rooms} />
               <Route path="/bookingRoom" component={BookingRoom} />
-              <Route path="/event/CreatorMasterAndAssistant" component={CreatorMasterAndAssistant} />
+              <Route path="/event/detailEvent/:id" component={DetailEvent} />
+              <Route path="/event/creatorMasterAndAssistant" component={CreatorMasterAndAssistant} />
               <Route path="/event/approvalEvent" component={ApprovalEvent} />
               <Route path="/event" component={Event} />
               <Redirect from="/" to="/bookingRoom" />

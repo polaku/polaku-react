@@ -67,7 +67,7 @@ class modalCreateEditRoom extends Component {
     this.setState({
       proses: true
     })
-    let token = localStorage.getItem('token')
+    let token = localStorage.getItem('token'), newArray = []
 
     var formData = new FormData();
 
@@ -79,11 +79,14 @@ class modalCreateEditRoom extends Component {
     formData.append("option", this.state.inviteOption)
 
     if (this.state.inviteOption === 'company') {
-      formData.append("invited", JSON.stringify(this.state.company))
+      this.state.company.forEach(company => { newArray.push(company.company_id) })
+      formData.append("invited", JSON.stringify(newArray))
     } else if (this.state.inviteOption === 'department') {
-      formData.append("invited", JSON.stringify(this.state.department))
+      this.state.department.forEach(department => { newArray.push(department.departments_id) })
+      formData.append("invited", JSON.stringify(newArray))
     } else if (this.state.inviteOption === 'user') {
-      formData.append("invited", JSON.stringify(this.state.user))
+      this.state.user.forEach(user => { newArray.push(user.user_id) })
+      formData.append("invited", JSON.stringify(newArray))
     }
 
     API.post('/events', formData, { headers: { token } })

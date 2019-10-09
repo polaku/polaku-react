@@ -30,6 +30,8 @@ export default class calendar extends Component {
         startAccessor="start_date"
         endAccessor="end_date"
         titleAccessor="event_name"
+        minAccessor="time_in"
+        maxAccessor="time_out"
       />
     )
   }

@@ -130,13 +130,14 @@ const mapDispatchToProps = {
   fetchDataRooms
 }
 
-const mapStateToProps = ({ loading, dataBookingRooms, dataMyBookingRooms, dataRooms, error }) => {
+const mapStateToProps = ({ loading, dataBookingRooms, dataMyBookingRooms, dataRooms, error, userId }) => {
   return {
     loading,
     dataBookingRooms,
     dataMyBookingRooms,
     dataRooms,
-    error
+    error,
+    userId
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(BookingRoom)

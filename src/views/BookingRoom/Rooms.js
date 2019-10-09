@@ -29,6 +29,7 @@ class Rooms extends Component {
       dataBuildings: tempBuildings,
       // dataCompanies: this.props.dataCompanies
     })
+    console.log(this.props.dataNotification);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -78,14 +79,15 @@ const mapDispatchToProps = {
   fetchDataCompanies
 }
 
-const mapStateToProps = ({ loading, dataBuildings, dataRooms, dataCompanies, userId, error }) => {
+const mapStateToProps = ({ loading, dataBuildings, dataRooms, dataCompanies, userId, error, dataNotification }) => {
   return {
     loading,
     dataBuildings,
     dataRooms,
     dataCompanies,
     userId,
-    error
+    error,
+    dataNotification
   }
 }
 

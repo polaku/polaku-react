@@ -199,7 +199,7 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get('/events', { headers: { token } })
+      getData = await API.get('/events/all', { headers: { token } })
 
       let newDataEvent = await getData.data.data.filter(event => event.status === 0)
 
@@ -253,6 +253,28 @@ const api = store => next => async action => {
       next({
         type: 'FETCH_DATA_DEPARTMENT_SUCCESS',
         payload: getData.data.data
+      })
+
+    } catch (err) {
+      next({
+        type: 'FETCH_DATA_ERROR',
+        payload: err
+      })
+    }
+  }
+  else if (action.type === 'FETCH_DATA_NOTIFICATION') {
+    next({
+      type: 'FETCH_DATA_LOADING'
+    })
+
+    let getData
+    try {
+      getData = await API.get('/notification', { headers: { token } })
+
+      let datas = getData.data.data.filter(el => el.read_inline === 0 && el.read !== 1)
+      next({
+        type: 'FETCH_DATA_NOTIFICATION_SUCCESS',
+        payload: { notif: getData.data.data, newNotif: datas }
       })
 
     } catch (err) {

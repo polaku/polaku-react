@@ -6,6 +6,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { fetchDataEvent, fetchDataEventNeedApproval } from '../store/action';
 import { API } from '../config/API';
 
+import ModalEvent from './modal/modalEvent'
+
 class cardEvent extends Component {
   constructor(props) {
     super(props);
@@ -17,6 +19,7 @@ class cardEvent extends Component {
       proses: false,
       creator: {},
       statusApproval: false,
+      openModal: false,
     }
   }
 
@@ -40,11 +43,9 @@ class cardEvent extends Component {
           })
         }
       });
-      console.log(temp);
       this.setState({
         joinEvent: temp,
       })
-
     }
   }
 
@@ -124,6 +125,7 @@ class cardEvent extends Component {
       } else {
         alert(err)
       }
+      console.log(err)
       this.setState({
         proses: false
       })
@@ -162,6 +164,18 @@ class cardEvent extends Component {
       })
   }
 
+  openModal = () => {
+    this.setState({
+      openModal: true
+    })
+  }
+
+  closeModal = () => {
+    this.setState({
+      openModal: false
+    })
+  }
+
   render() {
     function getMonth(args) {
       let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -170,107 +184,62 @@ class cardEvent extends Component {
     }
 
     return (
-      <div style={{ borderWidth: 1, marginBottom: 10, backgroundColor: '#F1F1F1', borderRadius: 15, padding: 15, paddingLeft: 20 }}>
+      <div style={{ borderWidth: 1, marginBottom: 10, backgroundColor: '#F1F1F1', borderRadius: 5, cursor: 'pointer', padding: 5 }} onClick={this.openModal}>
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <div style={{
             width: 70,
-            height: 70,
-            borderStyle: 'solid',
             borderWidth: 1,
-            borderRadius: 10,
-            marginBottom: 5,
-            marginRight: 10
+            borderRadius: 10
           }}>
-            <p style={{ fontSize: 30, margin: 0, textAlign: 'center' }}>{new Date(this.props.data.start_date).getDate()}</p>
+            <p style={{ fontSize: 35, margin: 0, textAlign: 'center' }}>{new Date(this.props.data.start_date).getDate()}</p>
             <p style={{ fontSize: 15, margin: 0, textAlign: 'center', marginBottom: 5 }}>{getMonth(this.props.data.start_date)}</p>
           </div>
 
-          <div style={{ marginLeft: 10 }}>
+          <div style={{ marginLeft: 10, marginBottom: 5, width: '100%' }}>
             <p style={{
-              fontSize: 18,
-              fontWeight: 'bold',
+              fontSize: 20,
+              fontWeight: 'bolder',
               margin: 0
             }}>{this.props.data.event_name}</p>
             <p style={{ margin: 0 }}>{this.props.data.location}</p>
             {
-              new Date(this.props.data.start_date).getDate() === new Date(this.props.data.end_date).getDate()
-                ? <p style={{ margin: 0 }}>{new Date(this.props.data.start_date).getDate()} {getMonth(this.props.data.start_date)}</p>
-                : <p style={{ margin: 0 }}>{new Date(this.props.data.start_date).getDate()} - {new Date(this.props.data.end_date).getDate()} {getMonth(this.props.data.start_date)}</p>
+              //LAYOUT FOR APROVAL EVENT
+              this.props.approval
+              && <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'flex-end'
+              }}>
+                <Button color="secondary"
+                  style={{
+                    width: 'auto',
+                    justifyContent: 'center',
+                  }} onClick={() => this.approve(2)}>
+                  {
+                    this.state.proses
+                      ? <CircularProgress />
+                      : <p style={{ margin: 0 }}> Tolak </p>
+                  }
+                </Button>
+                <Button color="primary"
+                  style={{
+                    width: 'auto',
+                    justifyContent: 'center',
+                  }} onClick={() => this.approve(1)}>
+                  {
+                    this.state.proses
+                      ? <CircularProgress />
+                      : <p style={{ margin: 0 }}> Setujui </p>
+                  }
+                </Button>
+              </div>
+
             }
-            {this.state.creator.tbl_account_detail && <p style={{ margin: 0 }}>{this.state.creator.tbl_account_detail.fullname}</p>}
           </div>
         </div>
         {
-          //LAYOUT FOR APROVAL EVENT
-          this.props.approval
-            ? (new Date(this.props.data.start_date).getDate() === new Date().getDate()) && <div style={{ alignSelf: 'end' }}>
-              <Button color="secondary"
-                style={{
-                  width: 'auto',
-                  justifyContent: 'center',
-                }} onClick={() => this.approve(2)}>
-                {
-                  this.state.proses
-                    ? <CircularProgress />
-                    : <p style={{ margin: 0 }}> Tolak </p>
-                }
-              </Button>
-              <Button color="primary"
-                style={{
-                  width: 'auto',
-                  justifyContent: 'center',
-                }} onClick={() => this.approve(1)}>
-                {
-                  this.state.proses
-                    ? <CircularProgress />
-                    : <p style={{ margin: 0 }}> Setujui </p>
-                }
-              </Button>
-            </div>
-            : <div style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}>
-              <p style={{ margin: 0 }}> {this.state.joinEvent.length} Mengikuti </p>
-              {
-                this.state.statusJoinUser !== 'Join'
-                  ? (new Date(this.props.data.start_date).getDate() === new Date().getDate()) && <Button style={{
-                    width: 'auto',
-                    backgroundColor: '#A2A2A2',
-                    justifyContent: 'center',
-                    paddingTop: 8,
-                    paddingBottom: 8,
-                    paddingLeft: 10,
-                    paddingRight: 10,
-                    borderRadius: 10
-                  }} onClick={this.join}>
-                    {
-                      this.state.proses
-                        ? <CircularProgress />
-                        : <p style={{ textAlign: 'center', margin: 0, fontSize: 12, color: 'white' }}> Ikuti </p>
-                    }
-                  </Button>
-                  : (new Date(this.props.data.start_date).getDate() === new Date().getDate()) && <Button style={{
-                    width: 'auto',
-                    backgroundColor: '#A2A2A2',
-                    justifyContent: 'center',
-                    paddingTop: 8,
-                    paddingBottom: 8,
-                    paddingLeft: 10,
-                    paddingRight: 10,
-                    borderRadius: 10
-                  }} onClick={this.cancelJoin}>
-                    {
-                      this.state.proses
-                        ? <CircularProgress />
-                        :
-                        <p style={{ textAlign: 'center', margin: 0, fontSize: 12, color: 'white' }}> Batal Ikuti </p>
-                    }
-                  </Button>
-              }
-            </div>
+          this.state.openModal &&
+          <ModalEvent status={this.state.openModal} closeModal={this.closeModal} data={this.props.data} />
         }
       </div>
     )
