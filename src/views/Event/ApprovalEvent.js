@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Grid from '@material-ui/core/Grid';
-import { fetchDataEventNeedApproval } from '../../store/action';
 
-import CardEvent from '../../components/cardEvent';
+import { Grid } from '@material-ui/core';
+
+import CardEvent from '../../components/event/cardEvent';
+
+import { fetchDataEventNeedApproval } from '../../store/action';
 
 class ApprovalEvent extends Component {
   async componentDidMount() {

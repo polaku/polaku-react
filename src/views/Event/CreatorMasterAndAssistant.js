@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import TablePagination from '@material-ui/core/TablePagination';
-import Button from '@material-ui/core/Button';
-import CardCreatorMasterAndAssistant from '../../components/cardCreatorMasterAndAssistant';
-import { fetchDataCreatorMasterAndAssistant, fetchDataUsers } from '../../store/action';
 
+import {
+  Table, TableBody, TableCell, TableHead, TableRow, Paper, Grid, TablePagination, Button
+} from '@material-ui/core';
+
+import CardCreatorMasterAndAssistant from '../../components/facility/cardCreatorMasterAndAssistant';
 import ModalCreatorMasterAndAssistant from '../../components/modal/modalCreatorMasterAndAssistant';
+
+import { fetchDataCreatorMasterAndAssistant, fetchDataUsers } from '../../store/action';
 
 class CreatorMasterAndAssistant extends Component {
   state = {
@@ -64,10 +60,10 @@ class CreatorMasterAndAssistant extends Component {
         {
           this.props.isAdmin
             ? <Button color="primary" onClick={this.openModal} >
-                Assign Creator Master
+              Assign Creator Master
               </Button>
             : <Button color="primary" onClick={this.openModal} >
-                Assign Creator Assistant
+              Assign Creator Assistant
               </Button>
         }
         <Paper style={{

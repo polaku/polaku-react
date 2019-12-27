@@ -284,6 +284,75 @@ const api = store => next => async action => {
       })
     }
   }
+  else if (action.type === 'FETCH_DATA_CONTACT_US') {
+    next({
+      type: 'FETCH_DATA_LOADING'
+    })
+
+    let getData
+    try {
+      getData = await API.get('/contactUs/allContactUs', { headers: { token } })
+
+      // let newData = await getData.data.data.filter(el => el.user_id === action.payload)
+      // let newDataStaff = await getData.data.data.filter(el => el.evaluator_1 === action.payload || el.evaluator_2 === action.payload)
+
+      let newData = [], newDataStaff = []
+
+      await getData.data.data.forEach(el => {
+
+
+        if (el.leave_date) {//cuti
+          if (
+            Number(el.leave_date.slice(el.leave_date.length - 5, el.leave_date.length - 3)) > new Date().getMonth()
+            && Number(el.leave_date.slice(el.leave_date.length - 10, el.leave_date.length - 6)) >= new Date().getFullYear()) {
+
+            if (el.user_id === action.payload) newData.push(el)
+            if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+
+          }
+        } else if (el.date_imp) {//imp
+          if (
+            Number(el.date_imp.slice(el.date_imp.length - 5, el.date_imp.length - 3)) > new Date().getMonth()
+            && Number(el.date_imp.slice(el.date_imp.length - 10, el.date_imp.length - 6)) >= new Date().getFullYear()) {
+              
+            if (el.user_id === action.payload) newData.push(el)
+            if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+
+          }
+        } else if (el.date_ijin_absen_end) {//ia
+          if (
+            Number(el.date_ijin_absen_end.slice(el.date_ijin_absen_end.length - 5, el.date_ijin_absen_end.length - 3)) > new Date().getMonth()
+            && Number(el.date_ijin_absen_end.slice(el.date_ijin_absen_end.length - 10, el.date_ijin_absen_end.length - 6)) >= new Date().getFullYear()) {
+              
+            if (el.user_id === action.payload) newData.push(el)
+            if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+
+          }
+        } else if (el.type === "contact_us") {//type === contact_us
+          if ((el.status !== 'done' && el.status !== 'cancel') ||
+            (el.status === 'done' && new Date(el.done_expired_date).getMonth() >= new Date().getMonth() - 1 &&
+              new Date(el.done_expired_date).getFullYear() >= new Date().getFullYear())) {
+                
+            if (el.user_id === action.payload) newData.push(el)
+            if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+
+          }
+        }
+      })
+
+      next({
+        type: 'FETCH_DATA_CONTACT_US_SUCCESS',
+        payload: { dataContactUs: newData, dataContactUsStaff: newDataStaff, dataAllContactUs: getData.data.data }
+      })
+
+    } catch (err) {
+      next({
+        type: 'FETCH_DATA_ERROR',
+        payload: err
+      })
+    }
+  }
+
   else {
     next(action)
   }

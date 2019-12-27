@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import TablePagination from '@material-ui/core/TablePagination';
 
-import CardRoomMaster from '../../components/cardRoomMaster';
+import {
+  Table, TableBody, TableCell, TableHead, TableRow, Paper, TablePagination
+} from '@material-ui/core';
+
+import CardRoomMaster from '../../components/facility/cardRoomMaster';
+
 import { fetchDataRoomMaster } from '../../store/action';
 
 class RoomMaster extends Component {
@@ -30,7 +28,7 @@ class RoomMaster extends Component {
 
   handleChangeRowsPerPage = event => {
     this.setState({
-      rowsPerPage: this.state.rowsPerPage+event.target.value,
+      rowsPerPage: this.state.rowsPerPage + event.target.value,
       page: 0
     })
   }
@@ -56,7 +54,7 @@ class RoomMaster extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-            {
+              {
                 this.props.dataRoomMaster.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((element, index) => (
                   <CardRoomMaster key={index} data={element} index={index} />
                 ))

@@ -48,6 +48,7 @@ class modalCreateEditRoom extends Component {
 
       API.post(`/bookingRoom/rooms`, newData, { headers: { token } })
         .then(() => {
+          this.props.fetchData()
           this.props.fetchDataRooms()
           this.props.closeModal()
           this.setState({
@@ -72,6 +73,8 @@ class modalCreateEditRoom extends Component {
 
       API.put(`/bookingRoom/rooms/${this.props.data.room_id}`, newData, { headers: { token } })
         .then(() => {
+          console.log("MASUK 1")
+          this.props.fetchData()
           this.props.fetchDataRooms()
           this.props.closeModal()
           this.setState({

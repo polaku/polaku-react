@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-import TablePagination from '@material-ui/core/TablePagination';
+
+import {
+  Table, TableBody, TableCell, TableHead, TableRow, Paper, Button, TablePagination
+} from '@material-ui/core';
 
 import ModalCreateEditRoomAssistant from '../../components/modal/modalCreateEditRoomAssistant';
-import CardRoomAssistant from '../../components/cardRoomAssistant';
+import CardRoomAssistant from '../../components/facility/cardRoomAssistant';
+
 import { fetchDataRoomMaster, fetchDataRooms } from '../../store/action';
 
 class AssignRoomAssistant extends Component {
@@ -31,7 +28,7 @@ class AssignRoomAssistant extends Component {
   fetchData = async () => {
     await this.props.fetchDataRoomMaster()
     await this.props.fetchDataRooms()
-    
+
     let dataRoomMaster = this.props.dataRoomMaster.filter(element => element.chief === this.props.userId);
 
     dataRoomMaster.forEach(element => {
@@ -75,7 +72,7 @@ class AssignRoomAssistant extends Component {
 
   handleChangeRowsPerPage = event => {
     this.setState({
-      rowsPerPage: this.state.rowsPerPage+event.target.value,
+      rowsPerPage: this.state.rowsPerPage + event.target.value,
       page: 0
     })
   }

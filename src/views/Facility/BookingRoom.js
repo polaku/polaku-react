@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import { fetchDataBookingRooms, fetchDataMyBookingRooms, fetchDataRooms } from '../../store/action';
 
-import CardRoomInBookingRoom from '../../components/cardRoomInBookingRoom';
+import { 
+  Grid, TextField, Button 
+} from '@material-ui/core';
+
+import CardRoomInBookingRoom from '../../components/facility/cardRoomInBookingRoom';
+
+import { fetchDataBookingRooms, fetchDataMyBookingRooms, fetchDataRooms } from '../../store/action';
 
 class BookingRoom extends Component {
   constructor(props) {

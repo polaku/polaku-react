@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
+
+import {Grid, Button } from '@material-ui/core';
+
 import Calendar from '../../components/calendar/calendar.js';
+
 import { fetchDataEvent } from '../../store/action';
-import CardEvent from '../../components/cardEvent';
+import CardEvent from '../../components/event/cardEvent';
 
 import ModalCreateEditEvent from '../../components/modal/modalCreateEditEvent';
 

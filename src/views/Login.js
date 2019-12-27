@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
+
+import {
+  TextField, InputAdornment, Typography, Button, CircularProgress
+} from '@material-ui/core';
 
 import MailIcon from '@material-ui/icons/Mail';
 import LockIcon from '@material-ui/icons/Lock';
@@ -33,7 +32,7 @@ export default class Login extends Component {
       proses: true,
       editableInput: false
     })
-    let user, data
+    let user, data, newData
     user = {
       username: this.state.username,
       password: this.state.password
@@ -48,9 +47,26 @@ export default class Login extends Component {
           username: '',
           password: ''
         })
+        newData = {
+          user_id: data.user_id,
+          isRoomMaster: data.isRoomMaster,
+          isCreatorMaster: data.isCreatorMaster,
+          isCreatorAssistant: data.isCreatorAssistant,
+          sisaCuti: data.sisaCuti,
+          evaluator1: data.evaluator1,
+          evaluator2: data.evaluator2,
+        }
+        if (data.role_id === 1) {
+          newData.isAdmin = true
+        } else {
+          newData.isAdmin = false
+        }
+
+        await this.props.setUser(newData)
+        await this.props.fetchDataNotification()
       }
       // this.props.setUserId(data.data.user_id)
-      // this.props.navigation.navigate("Home")
+      this.props.navigation.navigate("Home")
     } catch (err) {
       alert(err)
       this.setState({

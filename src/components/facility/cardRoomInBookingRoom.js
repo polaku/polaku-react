@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import Card from '@material-ui/core/Card';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import CardBookingRoom from './cardBookingRoom';
 
-import ModalCreateEditBookingRoom from './modal/modalCreateEditBookingRoom'
+import {
+  Card, Divider, Typography, CardContent, Button
+} from '@material-ui/core';
+
+import CardBookingRoom from './cardBookingRoom';
+import ModalCreateEditBookingRoom from '../modal/modalCreateEditBookingRoom'
 
 export default class cardRoomInBookingRoom extends Component {
   constructor(props) {

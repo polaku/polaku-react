@@ -1,21 +1,16 @@
 import 'date-fns';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import FormControl from '@material-ui/core/FormControl';
-import Grid from '@material-ui/core/Grid';
-import FormLabel from '@material-ui/core/FormLabel';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+
+import {
+  Typography, Button, CircularProgress, FormControl, Grid, FormControlLabel, Checkbox, FormLabel, FormGroup
+} from '@material-ui/core';
 
 import SeCreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
 
-import { API } from '../../config/API';
 import { fetchDataCompanies, fetchDataUsers } from '../../store/action';
+import { API } from '../../config/API';
 
 const animatedComponents = makeAnimated();
 
@@ -159,13 +154,13 @@ class AssignRoomMaster extends Component {
                 </Grid>
                 {
                   this.state.company.map((element, index) => (
-                      <Grid item md={3} xs={12} key={index}>
-                        <FormControlLabel
-                          control={<Checkbox checked={element.status} onChange={this.handleChangeChecked(index)} value={element.company_id} />}
-                          label={element.company_name}
-                        />
-                      </Grid>
-                    ))
+                    <Grid item md={3} xs={12} key={index}>
+                      <FormControlLabel
+                        control={<Checkbox checked={element.status} onChange={this.handleChangeChecked(index)} value={element.company_id} />}
+                        label={element.company_name}
+                      />
+                    </Grid>
+                  ))
                 }
               </FormGroup>
             </FormControl>

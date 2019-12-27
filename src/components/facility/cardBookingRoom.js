@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Grid from '@material-ui/core/Grid';
+
+import { Grid } from '@material-ui/core';
+
 import IconButton from '@material-ui/core/IconButton';
 import PeopleIcon from '@material-ui/icons/People';
 import PersonIcon from '@material-ui/icons/Person';
@@ -8,8 +10,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import ModalCreateEditBookingRoom from './modal/modalCreateEditBookingRoom';
-import { API } from '../config/API';
+import ModalCreateEditBookingRoom from '../modal/modalCreateEditBookingRoom';
+import { API } from '../../config/API';
 
 class cardBookingRoom extends Component {
   constructor(props) {

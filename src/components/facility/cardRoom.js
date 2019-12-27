@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import ListItem from '@material-ui/core/ListItem';
+
+import {
+  ListItem, IconButton, ListItemText, ListItemSecondaryAction
+} from '@material-ui/core';
+
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import IconButton from '@material-ui/core/IconButton';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 
-import ModalCreateEditRoom from './modal/modalCreateEditRoom';
+import ModalCreateEditRoom from '../modal/modalCreateEditRoom';
 
-import { fetchDataRooms } from '../store/action';
-import { API } from '../config/API';
+import { fetchDataRooms } from '../../store/action';
+import { API } from '../../config/API';
 
 class cardRoom extends Component {
   constructor(props) {
@@ -39,6 +40,12 @@ class cardRoom extends Component {
     this.setState({ openModal: false })
   }
 
+  fetchData = () => {
+    console.log("MASUK 2")
+    this.props.fetchData()
+
+  }
+
   render() {
     return (
       <>
@@ -60,7 +67,7 @@ class cardRoom extends Component {
           </ListItemSecondaryAction>
         </ListItem>
         {
-          this.state.openModal && <ModalCreateEditRoom status={this.state.openModal} closeModal={this.closeModal} data={this.props.data} statusCreate={false} />
+          this.state.openModal && <ModalCreateEditRoom status={this.state.openModal} closeModal={this.closeModal} data={this.props.data} statusCreate={false} fetchData={this.fetchData} />
         }
       </>
     )

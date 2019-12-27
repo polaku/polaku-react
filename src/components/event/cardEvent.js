@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import { fetchDataEvent, fetchDataEventNeedApproval } from '../store/action';
-import { API } from '../config/API';
+import { fetchDataEvent, fetchDataEventNeedApproval } from '../../store/action';
+import { API } from '../../config/API';
 
-import ModalEvent from './modal/modalEvent'
+import ModalEvent from '../modal/modalEvent'
 
 class cardEvent extends Component {
   constructor(props) {

@@ -1,15 +1,14 @@
 import 'date-fns';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
+
+import {
+  TextField, Typography, Button, CircularProgress, InputLabel, MenuItem, FormControl
+} from '@material-ui/core';
+
 import SelectOption from '@material-ui/core/Select';
 import DateFnsUtils from '@date-io/date-fns';
+
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
@@ -44,7 +43,7 @@ class CreateBookingRoom extends Component {
 
   async componentDidMount() {
     let temp = []
-    this.props.location.state.room_id && this.setState({room_id: this.props.location.state.room_id})
+    this.props.location.state.room_id && this.setState({ room_id: this.props.location.state.room_id })
 
     try {
       await this.props.fetchDataRooms()
@@ -154,7 +153,7 @@ class CreateBookingRoom extends Component {
           this.props.history.push('/bookingRoom');
         })
         .catch((err) => {
-          if (err === 'Error: Request failed with status code 400') {
+          if (err.message === 'Request failed with status code 400') {
             alert("Waktu yang dipesan sudah terpesan oleh orang lain, harap menentukan waktu yang lain")
           } else if (err.message === 'Request failed with status code 403') {
             alert('Waktu login telah habis, silahkan login kembali')

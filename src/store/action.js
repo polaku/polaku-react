@@ -1,3 +1,10 @@
+export function setUser(payload) {
+  return {
+    type: 'SET_USER',
+    payload
+  }
+}
+
 export function fetchDataUsers(payload) {
   return {
     type: 'FETCH_DATA_USERS'
@@ -25,13 +32,6 @@ export function fetchDataRoomMaster(payload) {
 export function fetchDataCompanies(payload) {
   return {
     type: 'FETCH_DATA_COMPANIES'
-  }
-}
-
-export function setUser(payload) {
-  return {
-    type: 'SET_USER',
-    payload
   }
 }
 
@@ -74,5 +74,12 @@ export function fetchDataDepartment(payload) {
 export function fetchDataNotification(payload) {
   return {
     type: 'FETCH_DATA_NOTIFICATION'
+  }
+}
+
+export function fetchDataContactUs(payload) {
+  return {
+    type: 'FETCH_DATA_CONTACT_US',
+    payload
   }
 }

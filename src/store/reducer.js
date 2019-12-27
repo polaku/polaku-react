@@ -1,9 +1,12 @@
 const defaultState = {
-  userId: null,
+  userId: 913,
   isAdmin: false,
   isRoomMaster: false,
   isCreatorMaster: false,
   isCreatorAssistant: false,
+  sisaCuti: 0,
+  evaluator1: null,
+  evaluator2: null,
   loading: false,
   error: {},
   isLogin: false,
@@ -19,7 +22,10 @@ const defaultState = {
   dataEventNeedApproval: [],
   dataCreatorMasterAndAssistant: [],
   dataNotification: [],
-  dataNewNotif: []
+  dataNewNotif: [],
+  dataContactUs: [],
+  dataContactUsStaff: [],
+  dataAllContactUs: [],
 }
 
 function reducer(state = defaultState, action) {
@@ -31,7 +37,10 @@ function reducer(state = defaultState, action) {
         isAdmin: action.payload.isAdmin,
         isRoomMaster: action.payload.isRoomMaster,
         isCreatorMaster: action.payload.isCreatorMaster,
-        isCreatorAssistant: action.payload.isCreatorAssistant
+        isCreatorAssistant: action.payload.isCreatorAssistant,
+        sisaCuti: action.payload.sisaCuti,
+        evaluator1: action.payload.evaluator1,
+        evaluator2: action.payload.evaluator2
       }
     }
     case 'FETCH_DATA_USERS_SUCCESS': {
@@ -105,6 +114,14 @@ function reducer(state = defaultState, action) {
         ...state,
         dataNewNotif: action.payload.newNotif,
         dataNotification: action.payload.notif
+      }
+    }
+    case 'FETCH_DATA_CONTACT_US_SUCCESS': {
+      return {
+        ...state,
+        dataContactUs: action.payload.dataContactUs,
+        dataContactUsStaff: action.payload.dataContactUsStaff,
+        dataAllContactUs: action.payload.dataAllContactUs
       }
     }
     case 'FETCH_DATA_ERROR': {

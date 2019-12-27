@@ -1,22 +1,19 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
-import Button from '@material-ui/core/Button';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
+import { connect } from 'react-redux';
+
+import {
+  Button, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, ExpansionPanelActions, Divider, Typography, List
+} from '@material-ui/core';
+
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import List from '@material-ui/core/List';
 
 import CardRooms from './cardRoom';
-import ModalCreateEditRoom from './modal/modalCreateEditRoom';
-import ModalCreateEditBuilding from './modal/modalCreateEditBuilding';
+import ModalCreateEditRoom from '../modal/modalCreateEditRoom';
+import ModalCreateEditBuilding from '../modal/modalCreateEditBuilding';
 
-import { fetchDataBuildings } from '../store/action';
+import { fetchDataBuildings } from '../../store/action';
 
-import { API } from '../config/API';
+import { API } from '../../config/API';
 
 class cardBuilding extends Component {
   constructor(props) {
@@ -26,6 +23,12 @@ class cardBuilding extends Component {
       openModalRoom: false,
       openModalBuilding: false,
     }
+  }
+
+  fetchData = () => {
+    console.log("MASUK 3")
+
+    this.props.fetchData()
   }
 
   handleChange = panel => (event, isExpanded) => {
@@ -52,9 +55,9 @@ class cardBuilding extends Component {
     let token = localStorage.getItem('token')
 
     API.delete(`/bookingRoom/building/${this.props.data.building_id}`, { headers: { token } })
-    .then(()=>{
-      this.props.fetchDataBuildings()
-    })
+      .then(() => {
+        this.props.fetchDataBuildings()
+      })
   }
 
   render() {
@@ -79,7 +82,7 @@ class cardBuilding extends Component {
             {
               this.props.data.tbl_rooms.length !== 0
                 ? this.props.data.tbl_rooms.map((el, index) => (
-                  <CardRooms data={el} index={index} key={index} />
+                  <CardRooms data={el} index={index} key={index} fetchData={this.fetchData} />
                 ))
                 : 'Belum ada ruangan'
             }
@@ -98,7 +101,7 @@ class cardBuilding extends Component {
             </Button>
         </ExpansionPanelActions>
         <ModalCreateEditBuilding status={this.state.openModalBuilding} closeModal={this.closeModalBuilding} data={this.props.data} companies={this.props.dataCompanies} statusCreate={false} />
-        <ModalCreateEditRoom status={this.state.openModalRoom} closeModal={this.closeModalRoom} data={this.props.data} statusCreate={true} />
+        <ModalCreateEditRoom status={this.state.openModalRoom} closeModal={this.closeModalRoom} data={this.props.data} statusCreate={true} fetchData={this.fetchData} />
       </ExpansionPanel>
     )
   }

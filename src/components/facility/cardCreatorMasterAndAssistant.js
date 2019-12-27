@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
-import IconButton from '@material-ui/core/IconButton';
+
+import {
+  TableRow, TableCell, IconButton,
+} from '@material-ui/core';
+
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import { fetchDataCreatorMasterAndAssistant } from '../store/action';
-import { API } from '../config/API';
+import { fetchDataCreatorMasterAndAssistant } from '../../store/action';
+import { API } from '../../config/API';
 
 class cardCreatorMasterAndAssistant extends Component {
   delete = () => {

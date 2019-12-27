@@ -171,11 +171,10 @@ class modalCreateEditBookingRoom extends Component {
             this.props.refresh()
           })
           .catch((err) => {
-            if (err === 'Error: Request failed with status code 400') {
+            if (err.message === 'Request failed with status code 400') {
               alert("Waktu yang dipesan sudah terpesan oleh orang lain, harap menentukan waktu yang lain")
             } else if (err.message === 'Request failed with status code 403') {
               alert('Waktu login telah habis, silahkan login kembali')
-              // this.props.navigation.navigate('Login')
               localStorage.clear()
             } else {
               alert(err)
@@ -186,7 +185,6 @@ class modalCreateEditBookingRoom extends Component {
             })
           })
       } else {
-        console.log("MASUK")
         API.put(`/bookingRoom/${this.props.data.room_booking_id}`, newData,
           {
             headers: {
@@ -203,7 +201,7 @@ class modalCreateEditBookingRoom extends Component {
             this.props.refresh()
           })
           .catch((err) => {
-            if (err === 'Error: Request failed with status code 400') {
+            if (err.message === 'Request failed with status code 400') {
               alert("Waktu yang dipesan sudah terpesan oleh orang lain, harap menentukan waktu yang lain")
             } else if (err.message === 'Request failed with status code 403') {
               alert('Waktu login telah habis, silahkan login kembali')

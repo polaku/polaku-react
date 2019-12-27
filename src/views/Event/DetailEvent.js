@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Paper from '@material-ui/core/Paper';
+
+import {
+  Grid, Button, Divider, Typography, CircularProgress, Paper
+} from '@material-ui/core';
 
 import { API } from '../../config/API';
 
@@ -122,7 +120,7 @@ class DetailEvent extends Component {
               }}>
                 <p style={{ margin: 10 }}> {this.state.joinEvent.length} Mengikuti </p>
                 {
-                     this.state.statusJoinUser !== 'Join'
+                  this.state.statusJoinUser !== 'Join'
                     ? new Date(this.state.data.end_date) > new Date() && <Button style={{
                       width: 'auto',
                       backgroundColor: '#A2A2A2',
