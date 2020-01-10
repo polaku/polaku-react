@@ -41,9 +41,7 @@ class cardRoom extends Component {
   }
 
   fetchData = () => {
-    console.log("MASUK 2")
     this.props.fetchData()
-
   }
 
   render() {

@@ -20,6 +20,7 @@ import {
 } from '@material-ui/pickers';
 
 // import MultipleDatePicker from 'react-multiple-datepicker'
+import swal from 'sweetalert';
 
 import { API } from '../../config/API';
 import { fetchDataUsers, fetchDataRooms } from '../../store/action';
@@ -33,13 +34,13 @@ class modalCreateEditPermintaanHRD extends Component {
       jenisIjin: '',
       textarea: '',
       IMP_date: '',
-      start_date: new Date(),
-      end_date: new Date(),
+      start_date: null,
+      end_date: null,
       limitDate: '',
       limitMonth: '',
       limitYear: '',
-      time_in: new Date(),
-      time_out: new Date().setHours(new Date().getHours() + 1, new Date().getMinutes()),
+      time_in: null,
+      time_out: null,
       lamaCuti: '',
       type: 'request',
       proses: false,
@@ -54,10 +55,10 @@ class modalCreateEditPermintaanHRD extends Component {
         isEdit: true
       })
       if (this.props.data.categori_id === 6) { //cuti
-        console.log(this.props.data)
         this.setState({
           jenisIjin: 6,
-          start_date: new Date(this.props.data.leave_date),
+          start_date: new Date(this.props.data.leave_date.slice(0, 10)),
+          end_date: new Date(this.props.data.leave_date_in),
           lamaCuti: this.props.data.leave_request,
           textarea: this.props.data.message
         })
@@ -77,23 +78,33 @@ class modalCreateEditPermintaanHRD extends Component {
           textarea: this.props.data.message
         })
       }
-    }
-  }
-
-componentDidUpdate(prevProps, prevState) {
-  if(prevState.jenisIjin !== this.state.jenisIjin){
-    if(this.state.jenisIjin===6){
+    } else {
       this.setState({
-        start_date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7),
-      })
-    }else{
-      this.setState({
-        start_date: new Date()
+        start_date: new Date(),
+        end_date: new Date(),
+        time_in: new Date(),
+        time_out: new Date().setHours(new Date().getHours() + 1, new Date().getMinutes()),
       })
     }
   }
-}
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.jenisIjin !== this.state.jenisIjin) {
+      if (this.state.jenisIjin === 6) {
+        if (!this.props.data) {
+          this.setState({
+            start_date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7),
+            end_date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 8),
+          })
+        }
+      } else {
+        this.setState({
+          start_date: new Date(),
+          end_date: new Date()
+        })
+      }
+    }
+  }
 
   componentWillUnmount() {
     this.setState({
@@ -141,7 +152,7 @@ componentDidUpdate(prevProps, prevState) {
             proses: false,
             editableInput: true
           })
-          return alert('waktu selesai harus lebih besar dari waktu mulai')
+          return swal("waktu selesai harus lebih besar dari waktu mulai", "", "error");
         }
 
         newData = {
@@ -157,6 +168,7 @@ componentDidUpdate(prevProps, prevState) {
           leave_date: this.state.start_date ||
             `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
           leave_request: this.state.lamaCuti,
+          leave_date_in: this.state.end_date,
           message: this.state.textarea,
           categoriId: 6
         }
@@ -180,7 +192,7 @@ componentDidUpdate(prevProps, prevState) {
         }
       })
         .then(data => {
-          alert('Terima kasih. Mohon menunggu untuk direspon')
+          swal("Terima kasih. Mohon menunggu untuk direspon", "", "success");
 
           this.props.handleCloseModal()
           this.props.fetchData()
@@ -196,7 +208,7 @@ componentDidUpdate(prevProps, prevState) {
             proses: false,
             editableInput: true
           })
-          alert('please try again')
+          swal('please try again')
           console.log(err);
         })
     }
@@ -215,7 +227,7 @@ componentDidUpdate(prevProps, prevState) {
           proses: false,
           editableInput: true
         })
-        return alert('waktu selesai harus lebih besar dari waktu mulai')
+        return swal("waktu selesai harus lebih besar dari waktu mulai", "", "error");
       }
 
       newData = {
@@ -254,8 +266,7 @@ componentDidUpdate(prevProps, prevState) {
       }
     })
       .then(data => {
-        alert('Terima kasih. Mohon menunggu untuk direspon')
-
+        swal("Terima kasih. Mohon menunggu untuk direspon", "", "success")
         this.props.handleCloseModal()
         this.props.fetchData()
         this.reset()
@@ -270,7 +281,7 @@ componentDidUpdate(prevProps, prevState) {
           proses: false,
           editableInput: true
         })
-        alert('please try again')
+        swal('please try again')
         console.log(err);
       })
   }
@@ -307,7 +318,7 @@ componentDidUpdate(prevProps, prevState) {
           justifyContent: 'center',
         }}
         open={this.props.status}
-        onClose={this.handleClose}
+        onClose={this.cancel}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
@@ -326,7 +337,7 @@ componentDidUpdate(prevProps, prevState) {
           }}>
             <Typography style={{ margin: 10, fontSize: 17 }}>Pengajuan ijin</Typography>
             {
-              this.state.jenisIjin === 6 && <p style={{fontWeight:'bold', marginTop:0, fontSize:24}}>Sisa cuti anda {this.props.sisaCuti} hari</p>
+              this.state.jenisIjin === 6 && <p style={{ fontWeight: 'bold', marginTop: 0, fontSize: 24 }}>Sisa cuti anda {this.props.sisaCuti} hari</p>
             }
             <img src={require('../../assets/ijin.jpeg')} alt="Logo" style={{ width: 200 }} />
             <p style={{ fontWeight: 'bold' }}>Ajukan ijin dengan mengisi beberapa detail dibawah ini</p>
@@ -369,7 +380,7 @@ componentDidUpdate(prevProps, prevState) {
                       <KeyboardDatePicker
                         margin="normal"
                         id="start_date"
-                        label="Tanggal"
+                        label="Tanggal Awal Cuti"
                         format="dd/MM/yyyy"
                         style={{ margin: 0 }}
                         value={this.state.start_date}
@@ -378,6 +389,24 @@ componentDidUpdate(prevProps, prevState) {
                           'aria-label': 'change date',
                         }}
                         minDate={new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7)}
+                        disabled={this.state.proses}
+                      />
+                    </MuiPickersUtilsProvider>
+                  </FormControl>
+                  <FormControl style={{ margin: '10px 0 10px 0' }}>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils} style={{ margin: 0 }}>
+                      <KeyboardDatePicker
+                        margin="normal"
+                        id="end_date"
+                        label="Tanggal Masuk"
+                        format="dd/MM/yyyy"
+                        style={{ margin: 0 }}
+                        value={this.state.end_date}
+                        onChange={date => this.setState({ end_date: date })}
+                        KeyboardButtonProps={{
+                          'aria-label': 'change date',
+                        }}
+                        minDate={this.state.start_date}
                         disabled={this.state.proses}
                       />
                     </MuiPickersUtilsProvider>

@@ -18,8 +18,8 @@ class HR extends Component {
     dataIjinSaya: [],
     dataIjinSayaPengajuan: [],
     dataIjinSayaDisetujui: [],
-    dataIjinSayaPengajuanStaff: [],
-    dataIjinSayaDisetujuiStaff: [],
+    dataIjinPengajuanStaff: [],
+    dataIjinStaffSedangIjin: [],
     ijinTabs: 0,
     ijinTab: 0,
     display: 0,
@@ -27,10 +27,17 @@ class HR extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if(prevProps.evaluator1 !== this.props.evaluator1){
-      this.fetchData()
+    if (prevProps.evaluator1 === null && this.props.evaluator1 === null) {
+      if (prevProps.evaluator1 !== this.props.evaluator1) {
+        this.fetchData()
+      }
     }
   }
+
+  componentDidMount() {
+    this.fetchData()
+  }
+
 
   fetchData = async () => {
     await this.props.fetchDataContactUs(this.props.userId)
@@ -45,33 +52,48 @@ class HR extends Component {
 
     let tempDataPengajuanStaff = await tempDataStaff.filter(el => el.status === 'new' || el.status === 'new2')
 
-    let tempDataDisetujuiStaff = []
+    let tempDataStaffSedangIjin = []
     await tempDataStaff.forEach(el => {
       if (el.status === 'approved') {
         if (el.date_imp && (
           Number(el.date_imp.slice(0, 4)) === new Date().getFullYear() &&
           Number(el.date_imp.slice(5, 7)) === new Date().getMonth() + 1 &&
           Number(el.date_imp.slice(8, 10)) === new Date().getDate())) { //imp
-          tempDataDisetujuiStaff.push(el)
+          tempDataStaffSedangIjin.push(el)
         } else if (el.date_ijin_absen_start && (
           new Date(el.date_ijin_absen_start.slice(0, 4), el.date_ijin_absen_start.slice(5, 7) - 1, el.date_ijin_absen_start.slice(8, 10), 5, 0, 0) <= new Date() &&
           new Date(el.date_ijin_absen_end.slice(0, 4), el.date_ijin_absen_end.slice(5, 7) - 1, el.date_ijin_absen_end.slice(8, 10), 23, 0, 0) >= new Date()
         )) { //ijin absen
-          tempDataDisetujuiStaff.push(el)
-        } else if (el.leave_request &&
-          (
-            (new Date(el.leave_date.slice(0, 4), el.leave_date.slice(5, 7) - 1, el.leave_date.slice(8, 10), 5, 0, 0) <= new Date()
-              && new Date(el.leave_date.slice(0, 4), el.leave_date.slice(5, 7) - 1, Number(el.leave_date.slice(8, 10)) + Number(el.leave_request)) >= new Date() //cuti from mobile
-            ) || (
-              new Date(el.leave_date.slice(0, 4), el.leave_date.slice(5, 7) - 1, el.leave_date.slice(8, 10), 5, 0, 0) <= new Date() &&
-              new Date(
-                el.leave_date.slice(el.leave_date.length - 10, el.leave_date.length - 6),
-                el.leave_date.slice(el.leave_date.length - 5, el.leave_date.length - 3) - 1,
-                el.leave_date.slice(el.leave_date.length - 2, el.leave_date.length), 5, 0, 0) >= new Date()
-            )
-          )
-        ) {
-          tempDataDisetujuiStaff.push(el)
+          tempDataStaffSedangIjin.push(el)
+        } else if (el.leave_request) {
+          let lastDate = el.leave_date.split(" ")
+
+          if (el.leave_date_in) { // pakai leave_date_in
+
+            if (
+              new Date(el.leave_date.slice(0, 4), el.leave_date.slice(5, 7) - 1, el.leave_date.slice(8, 10), 0, 0, 0) <= new Date() &&
+              new Date(el.leave_date_in.slice(0, 4), el.leave_date_in.slice(5, 7) - 1, el.leave_date_in.slice(8, 10), 0, 0, 0) > new Date()
+            ) {
+              tempDataStaffSedangIjin.push(el)
+            }
+          } else { // tdk pakai leave_date_in
+
+            if (lastDate.length > 1) { // input data dari mobile (yyyy-mm-dd hh:mm:ss)
+              if (
+                new Date(el.leave_date.slice(0, 4), el.leave_date.slice(5, 7) - 1, el.leave_date.slice(8, 10), 0, 0, 0) <= new Date() &&
+                new Date(el.leave_date.slice(0, 4), el.leave_date.slice(5, 7) - 1, Number(el.leave_date.slice(8, 10)) + (Number(el.leave_request) - 1), 23, 0, 0) >= new Date()
+              ) {
+                tempDataStaffSedangIjin.push(el)
+              }
+            } else { // input data dari web php (yyyy-mm-dd,yyy-mm-dd)
+              if (
+                new Date(el.leave_date.slice(0, 4), el.leave_date.slice(5, 7) - 1, el.leave_date.slice(8, 10), 0, 0, 0) <= new Date() &&
+                new Date(el.leave_date.slice(el.leave_date.length - 10, el.leave_date.length - 6), el.leave_date.slice(el.leave_date.length - 5, el.leave_date.length - 3) - 1, el.leave_date.slice(el.leave_date.length - 2, el.leave_date.length), 23, 0, 0) >= new Date()
+              ) {
+                tempDataStaffSedangIjin.push(el)
+              }
+            }
+          }
         }
       }
     })
@@ -79,8 +101,8 @@ class HR extends Component {
     this.setState({
       dataIjinSayaPengajuan: tempDataPengajuan,
       dataIjinSayaDisetujui: tempDataDisetujui,
-      dataIjinSayaPengajuanStaff: tempDataPengajuanStaff,
-      dataIjinSayaDisetujuiStaff: tempDataDisetujuiStaff,
+      dataIjinPengajuanStaff: tempDataPengajuanStaff,
+      dataIjinStaffSedangIjin: tempDataStaffSedangIjin,
     })
   }
 
@@ -136,10 +158,10 @@ class HR extends Component {
                       onChange={this.handleChangeTabs}
                     >
                       <Tab label="Ijin Staf" style={{ margin: '0px 10px 0px 20px' }} />
-                      <Tab label="Ijin Saya" style={{ marginRight: 10 }} />
+                      <Tab label="Ijin Saya" style={{ marginRight: 50 }} />
                     </Tabs>
                     {
-                      this.props.evaluator1 && <Button variant="contained" color="secondary" style={{ height: 40 }} onClick={this.handleOpenModal}>
+                      this.props.evaluator1 && <Button variant="contained" color="secondary" style={{ height: 40, width: 200 }} onClick={this.handleOpenModal}  >
                         Pengajuan baru
                       </Button>
                     }
@@ -152,14 +174,14 @@ class HR extends Component {
                             width: 300,
                             height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: '1px solid gray', backgroundColor: this.state.ijinTab === 0 ? '#ebebeb' : 'white', cursor: 'pointer'
                           }} onClick={() => this.changeIjinTab(0)}>
-                            <p style={{ margin: 0, marginRight: 5, fontSize: 25 }}>{this.state.dataIjinSayaPengajuanStaff.length}</p>
+                            <p style={{ margin: 0, marginRight: 5, fontSize: 25 }}>{this.state.dataIjinPengajuanStaff.length}</p>
                             <p style={{ margin: 0, marginRight: 5 }}>Ijin menunggu persetujuan</p>
                           </Grid>
                           <Grid style={{
                             width: 300,
                             height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: '1px solid gray', backgroundColor: this.state.ijinTab === 1 ? '#ebebeb' : 'white', cursor: 'pointer'
                           }} onClick={() => this.changeIjinTab(1)}>
-                            <p style={{ margin: 0, marginRight: 5, fontSize: 25 }}>{this.state.dataIjinSayaDisetujuiStaff.length}</p>
+                            <p style={{ margin: 0, marginRight: 5, fontSize: 25 }}>{this.state.dataIjinStaffSedangIjin.length}</p>
                             <p style={{ margin: 0, marginRight: 5 }}>Staff sedang ijin</p>
                           </Grid>
                         </>
@@ -182,7 +204,7 @@ class HR extends Component {
                     }
                   </Grid >
                 </>
-                : <Grid style={{ display: 'flex', backgroundColor: 'red', color: 'white', fontWeight: 'bold', padding: 10, margin: 20, borderRadius: 20 }}>
+                : <Grid style={{ display: 'flex', backgroundColor: 'red', color: 'white', fontWeight: 'bold', padding: 10, margin: 20, borderRadius: 20, width: 450 }}>
 
                   <p style={{ textAlign: 'center' }}>
                     Konfigurasi evaluator belum dilakukan harap hubungi HRD untuk menggunakan fitur ijin
@@ -199,14 +221,14 @@ class HR extends Component {
 
         <Grid container>
           {
-            this.state.ijinTab === 0 && this.state.dataIjinSayaPengajuanStaff.map((element, index) =>
+            this.state.ijinTab === 0 && this.state.dataIjinPengajuanStaff.map((element, index) =>
               <Grid item md={3} sm={6} key={index} style={{ padding: 10 }}>
                 <CardPermintaanHRD data={element} ijinTabs={0} ijinTab={0} fetchData={this.fetchData} />
               </Grid>
             )
           }
           {
-            this.state.ijinTab === 1 && this.state.dataIjinSayaDisetujuiStaff.map((element, index) =>
+            this.state.ijinTab === 1 && this.state.dataIjinStaffSedangIjin.map((element, index) =>
               <Grid item md={3} sm={6} key={index} style={{ padding: 10 }}>
                 <CardPermintaanHRD data={element} ijinTabs={0} ijinTab={1} fetchData={this.fetchData} />
               </Grid>

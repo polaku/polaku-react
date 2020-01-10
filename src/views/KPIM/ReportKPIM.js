@@ -82,20 +82,14 @@ class ReportIjin extends Component {
         label: "name",
         value: "name"
       }, {
-        label: "tanggal_mulai",
-        value: "tglMulai"
+        label: "total_nilai",
+        value: "totalNilai"
       }, {
-        label: "tanggal_selesai",
-        value: "tglSelesai"
+        label: "tal",
+        value: "tal"
       }, {
-        label: "lama_ijin",
-        value: "lamaIjin"
-      }, {
-        label: "status_ijin",
-        value: "statusIjin"
-      }, {
-        label: "sisa_cuti",
-        value: "sisaCuti"
+        label: "kpim",
+        value: "kpim"
       }
     ],
 
@@ -104,75 +98,21 @@ class ReportIjin extends Component {
   }
 
   async componentDidMount() {
-    await this.props.fetchDataContactUs()
     await this.fetchData()
   }
 
   fetchData = async () => {
-    let newData = []
-    let data = await this.props.dataAllContactUs.filter(el => el.status === "approved")
-    // console.log(this.props.dataAllContactUs)
-
-    data.forEach(element => {
-
-      if (element.date_imp) { //IMP
-        if (
-          (
-            new Date(element.date_imp).getMonth() >= new Date(this.state.monthStart).getMonth() &&
-            new Date(element.date_imp).getFullYear() >= new Date(this.state.monthStart).getFullYear()
-          ) && (
-            (
-              new Date(element.date_imp).getMonth() <= new Date(this.state.monthEnd).getMonth() &&
-              new Date(element.date_imp).getFullYear() <= new Date(this.state.monthEnd).getFullYear()
-            ) || new Date(element.date_imp).getFullYear() < new Date(this.state.monthEnd).getFullYear()
-          )
-        ) {
-
-          element.statusIjin = "IMP"
-          element.tglMulai = `${element.date_imp.slice(8, 10)}/${element.date_imp.slice(5, 7)}/${element.date_imp.slice(0, 4)} (${element.start_time_imp.slice(0, 5)})`
-          element.tglSelesai = `${element.date_imp.slice(8, 10)}/${element.date_imp.slice(5, 7)}/${element.date_imp.slice(0, 4)} (${element.end_time_imp.slice(0, 5)})`
-          element.lamaIjin = `${Number(element.end_time_imp.slice(0, 2)) - Number(element.start_time_imp.slice(0, 2))} jam`
-          element.sisaCuti = element.tbl_user.tbl_account_detail.leave
-
-          newData.push(element)
-        }
-      } else if (element.leave_request) { //CUTI
-        let startDate = element.leave_date.slice(0, 10)
-
-        if (
-          (new Date(startDate).getMonth() >= new Date(this.state.monthStart).getMonth() && new Date(startDate).getFullYear() >= new Date(this.state.monthStart).getFullYear()) &&
-          (
-            (new Date(startDate).getMonth() <= new Date(this.state.monthEnd).getMonth() && new Date(startDate).getFullYear() <= new Date(this.state.monthEnd).getFullYear()) ||
-            new Date(startDate).getFullYear() < new Date(this.state.monthEnd).getFullYear()
-          )
-        ) {
-
-          element.statusIjin = "Cuti"
-          element.tglMulai = `${element.leave_date.slice(8, 10)}/${element.leave_date.slice(5, 7)}/${element.leave_date.slice(0, 4)}`
-          element.lamaIjin = `${element.leave_request} hari`
-          element.sisaCuti = element.tbl_user.tbl_account_detail.leave
-
-          if (element.leave_date_in) element.tglSelesai = `${element.leave_date_in.slice(8, 10)}/${element.leave_date_in.slice(5, 7)}/${element.leave_date_in.slice(0, 4)}`
-          else element.tglSelesai = `${element.leave_date.slice(element.leave_date.length - 2, element.leave_date.length)}/${element.leave_date.slice(element.leave_date.length - 5, element.leave_date.length - 3)}/${element.leave_date.slice(element.leave_date.length - 10, element.leave_date.length - 6)}`
-
-          newData.push(element)
-        }
-      } else if (element.date_ijin_absen_start) { //IA
-        if (
-          (new Date(element.date_ijin_absen_start).getMonth() >= new Date(this.state.monthStart).getMonth() && new Date(element.date_ijin_absen_start).getFullYear() >= new Date(this.state.monthStart).getFullYear()) &&
-          ((new Date(element.date_ijin_absen_start).getMonth() <= new Date(this.state.monthEnd).getMonth() && new Date(element.date_ijin_absen_start).getFullYear() <= new Date(this.state.monthEnd).getFullYear()) || new Date(element.date_ijin_absen_start).getFullYear() < new Date(this.state.monthEnd).getFullYear())
-        ) {
-
-          element.statusIjin = "Ijin Absen"
-          element.tglMulai = `${element.date_ijin_absen_start.slice(8, 10)}/${element.date_ijin_absen_start.slice(5, 7)}/${element.date_ijin_absen_start.slice(0, 4)}`
-          element.tglSelesai = `${element.date_ijin_absen_end.slice(8, 10)}/${element.date_ijin_absen_end.slice(5, 7)}/${element.date_ijin_absen_end.slice(0, 4)}`
-          element.lamaIjin = `${Number(element.date_ijin_absen_end.slice(8, 10)) - Number(element.date_ijin_absen_start.slice(8, 10)) + 1} hari`
-          element.sisaCuti = element.tbl_user.tbl_account_detail.leave
-
-          newData.push(element)
-        }
-      }
-    });
+    let newData = [{
+      name: "Tio",
+      totalNilai: 80,
+      tal: 75,
+      kpim: 60
+    }, {
+      name: "Ardi",
+      totalNilai: 70,
+      tal: 85,
+      kpim: 70
+    }]
 
     this.setState({
       dataForDisplay: newData,
@@ -271,12 +211,12 @@ class ReportIjin extends Component {
 
     return (
       <div style={{ padding: '10px 40px' }}>
-        <p style={{ fontSize: 24, fontWeight: 'bold', margin: 0 }}>Report Ijin</p>
+        <p style={{ fontSize: 24, fontWeight: 'bold', margin: 0 }}>Report KPIM</p>
 
         {
           this.state.dataForDisplay.length !== 0 && <Grid style={{ display: 'flex', alignItems: 'center' }}>
             <ArchiveIcon />
-            <Download nameSheet="Pengajuan_Ijin" labelValue={this.state.labelValue} data={this.state.dataForDisplay} />
+            <Download nameSheet="Laporan_KPIM" labelValue={this.state.labelValue} data={this.state.dataForDisplay} />
           </Grid>
         }
 
@@ -376,7 +316,6 @@ class ReportIjin extends Component {
                   <em>Filter</em>
                 </MenuItem>
                 <MenuItem value="name">Name</MenuItem>
-                <MenuItem value="statusIjin">Status</MenuItem>
               </Select>
             </FormControl>
             <Button onClick={() => this.handleSort('created_at')} variant="contained" style={{ width: 150 }}>
@@ -405,43 +344,27 @@ class ReportIjin extends Component {
                         }
                       </Grid>
                     </TableCell>
-                    <TableCell style={{ width: '10%' }} align="center" onClick={() => this.handleSort('tglMulai')}>
+                    <TableCell style={{ width: '20%' }} align="center" onClick={() => this.handleSort('totalNilai')}>
                       <Grid style={{ display: 'flex', alignItems: 'center' }} >
-                        Tgl Mulai
+                        Total nilai
                         {
-                          this.state.columnToSort === 'tglMulai' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
+                          this.state.columnToSort === 'totalNilai' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
                         }
                       </Grid>
                     </TableCell>
-                    <TableCell style={{ width: '10%' }} align="center" onClick={() => this.handleSort('tglSelesai')}>
+                    <TableCell style={{ width: '20%' }} align="center" onClick={() => this.handleSort('tal')}>
                       <Grid style={{ display: 'flex', alignItems: 'center' }} >
-                        Tgl Selesai
+                        TAL
                         {
-                          this.state.columnToSort === 'tglSelesai' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
+                          this.state.columnToSort === 'tal' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
                         }
                       </Grid>
                     </TableCell>
-                    <TableCell style={{ width: '10%' }} align="center" onClick={() => this.handleSort('lamaIjin')}>
+                    <TableCell style={{ width: '20%' }} align="center" onClick={() => this.handleSort('kpim')}>
                       <Grid style={{ display: 'flex', alignItems: 'center' }} >
-                        Lama
+                        KPIM
                         {
-                          this.state.columnToSort === 'lamaIjin' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
-                        }
-                      </Grid>
-                    </TableCell>
-                    <TableCell style={{ width: '15%' }} align="center" onClick={() => this.handleSort('categori_id')}>
-                      <Grid style={{ display: 'flex', alignItems: 'center' }} >
-                        Status
-                        {
-                          this.state.columnToSort === 'categori_id' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
-                        }
-                      </Grid>
-                    </TableCell>
-                    <TableCell style={{ width: '10%' }} align="center" onClick={() => this.handleSort('sisaCuti')}>
-                      <Grid style={{ display: 'flex', alignItems: 'center' }} >
-                        Sisa Cuti
-                        {
-                          this.state.columnToSort === 'sisaCuti' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
+                          this.state.columnToSort === 'kpim' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
                         }
                       </Grid>
                     </TableCell>
@@ -472,16 +395,6 @@ class ReportIjin extends Component {
               />
 
             </Paper>
-          </TabPanel>
-
-          {/* Alamat */}
-          <TabPanel value={this.state.value} index={1}>
-            Alamat
-          </TabPanel>
-
-          {/* Struktur */}
-          <TabPanel value={this.state.value} index={2}>
-            Struktur
           </TabPanel>
         </SwipeableViews>
       </div>

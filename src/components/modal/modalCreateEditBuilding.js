@@ -25,9 +25,7 @@ class modalCreateEditBuilding extends Component {
   }
 
   componentDidMount() {
-
     if (!this.props.statusCreate) {
-      // console.log(this.props.data);
       this.setState({
         buildingName: this.props.data.building,
         company_id: this.props.data.company_id
@@ -107,7 +105,7 @@ class modalCreateEditBuilding extends Component {
           justifyContent: 'center',
         }}
         open={this.props.status}
-        onClose={this.handleClose}
+        onClose={this.cancel}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{

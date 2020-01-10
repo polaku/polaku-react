@@ -10,7 +10,6 @@ import { fetchDataEventNeedApproval } from '../../store/action';
 class ApprovalEvent extends Component {
   async componentDidMount() {
     await this.props.fetchDataEventNeedApproval()
-    console.log(this.props.dataEventNeedApproval)
   }
 
   render() {

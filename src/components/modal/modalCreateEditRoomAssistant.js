@@ -12,6 +12,7 @@ import makeAnimated from 'react-select/animated';
 import { fetchDataRooms, fetchDataUsers, fetchDataRoomMaster } from '../../store/action';
 
 import { API } from '../../config/API';
+import swal from 'sweetalert';
 
 const animatedComponents = makeAnimated();
 
@@ -68,7 +69,7 @@ class modalCreateEditRoomAssistant extends Component {
         })
         .catch(err => {
           if (err.message === 'Request failed with status code 400') {
-            console.log("error sudah ada")
+            swal("Sudah menjadi room master", "", "warning")
           }
         })
     } else {
@@ -86,7 +87,6 @@ class modalCreateEditRoomAssistant extends Component {
         })
         .catch(err => {
           console.log(err);
-
         })
     }
   }
@@ -118,7 +118,7 @@ class modalCreateEditRoomAssistant extends Component {
           justifyContent: 'center',
         }}
         open={this.props.status}
-        onClose={this.handleClose}
+        onClose={this.cancel}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{

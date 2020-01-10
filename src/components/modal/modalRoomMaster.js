@@ -88,7 +88,6 @@ class modalRoomMaster extends Component {
     newData = {
       company_id: companyId.join()
     }
-    console.log(newData);
 
     API.put(`/bookingRoom/roomMaster/${this.props.data.master_room_id}`, newData, { headers: { token } })
       .then(() => {
@@ -97,7 +96,6 @@ class modalRoomMaster extends Component {
       })
       .catch(err => {
         console.log(err);
-
       })
   }
 
@@ -116,7 +114,7 @@ class modalRoomMaster extends Component {
           justifyContent: 'center',
         }}
         open={this.props.status}
-        onClose={this.handleClose}
+        onClose={this.cancel}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{

@@ -73,7 +73,6 @@ class modalCreateEditRoom extends Component {
 
       API.put(`/bookingRoom/rooms/${this.props.data.room_id}`, newData, { headers: { token } })
         .then(() => {
-          console.log("MASUK 1")
           this.props.fetchData()
           this.props.fetchDataRooms()
           this.props.closeModal()
@@ -112,7 +111,7 @@ class modalCreateEditRoom extends Component {
           justifyContent: 'center',
         }}
         open={this.props.status}
-        onClose={this.handleClose}
+        onClose={this.cancel}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{

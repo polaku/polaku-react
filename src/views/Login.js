@@ -8,6 +8,8 @@ import {
 import MailIcon from '@material-ui/icons/Mail';
 import LockIcon from '@material-ui/icons/Lock';
 
+import swal from 'sweetalert';
+
 import { API } from '../config/API';
 
 export default class Login extends Component {
@@ -68,7 +70,7 @@ export default class Login extends Component {
       // this.props.setUserId(data.data.user_id)
       this.props.navigation.navigate("Home")
     } catch (err) {
-      alert(err)
+      swal('Error', `${err}`)
       this.setState({
         proses: false,
         editableInput: true

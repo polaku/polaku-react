@@ -22,6 +22,8 @@ import {
 import SeCreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
 
+import swal from 'sweetalert';
+
 import { API } from '../../config/API';
 import { fetchDataUsers, fetchDataRooms } from '../../store/action';
 
@@ -66,8 +68,7 @@ class modalCreateEditBookingRoom extends Component {
       })
 
     } catch (err) {
-      console.log(err);
-      alert(err)
+      swal("Error", `${err}`);
     }
 
     if (this.props.statusCreate === false) {
@@ -98,37 +99,37 @@ class modalCreateEditBookingRoom extends Component {
     let token = localStorage.getItem('token');
 
     if (!this.state.room_id || !this.state.date_in || !this.state.time_in || !this.state.time_out || !this.state.subject) {
-      alert('Data incomplete!')
+      swal("Data incomplete", "", "warning");
       this.setState({
         proses: false,
         editableInput: true
       })
     } else if (new Date(this.state.time_in).getHours() < 8) {
-      alert('Time in must higher than 8')
+      swal("Time in must higher than 8", "", "warning");
       this.setState({
         proses: false,
         editableInput: true
       })
     } else if (new Date(this.state.time_in).getHours() > 17) {
-      alert('Time in must smaller than 17')
+      swal("Time in must smaller than 17", "", "warning");
       this.setState({
         proses: false,
         editableInput: true
       })
     } else if (new Date(this.state.time_out).getHours() < 8) {
-      alert(`Time out must higher than ${new Date(this.state.time_in).getHours()}`)
+      swal(`Time out must higher than ${new Date(this.state.time_in).getHours()}`, "", "warning");
       this.setState({
         proses: false,
         editableInput: true
       })
     } else if (new Date(this.state.time_out).getHours() > 17) {
-      alert('Limit time out is 17')
+      swal('Limit time out is 17', "", "warning");
       this.setState({
         proses: false,
         editableInput: true
       })
     } else if (new Date(this.state.time_in).getHours() > new Date(this.state.time_out).getHours()) {
-      alert('Time out must be higher than time in')
+      swal('Time out must be higher than time in', "", "warning");
       this.setState({
         proses: false,
         editableInput: true
@@ -162,7 +163,8 @@ class modalCreateEditBookingRoom extends Component {
           }
         )
           .then(() => {
-            alert(`Create booking room success`)
+            swal('Create booking room success', "", "success");
+
             this.setState({
               proses: true,
               editableInput: true
@@ -172,12 +174,12 @@ class modalCreateEditBookingRoom extends Component {
           })
           .catch((err) => {
             if (err.message === 'Request failed with status code 400') {
-              alert("Waktu yang dipesan sudah terpesan oleh orang lain, harap menentukan waktu yang lain")
+              swal('Waktu yang dipesan sudah terpesan oleh orang lain, harap menentukan waktu yang lain', "", "error");
             } else if (err.message === 'Request failed with status code 403') {
-              alert('Waktu login telah habis, silahkan login kembali')
+              swal('Waktu login telah habis, silahkan login kembali', "", "error");
               localStorage.clear()
             } else {
-              alert(err)
+              swal('Error', `${err}`)
             }
             this.setState({
               proses: false,
@@ -193,7 +195,7 @@ class modalCreateEditBookingRoom extends Component {
           }
         )
           .then(() => {
-            alert(`Edit booking room success`)
+            swal('Edit booking room success', "", "success");
             this.setState({
               proses: true,
               editableInput: true
@@ -202,12 +204,12 @@ class modalCreateEditBookingRoom extends Component {
           })
           .catch((err) => {
             if (err.message === 'Request failed with status code 400') {
-              alert("Waktu yang dipesan sudah terpesan oleh orang lain, harap menentukan waktu yang lain")
+              swal('Waktu yang dipesan sudah terpesan oleh orang lain, harap menentukan waktu yang lain', "", "error");
             } else if (err.message === 'Request failed with status code 403') {
-              alert('Waktu login telah habis, silahkan login kembali')
+              swal('Waktu login telah habis, silahkan login kembali', "", "error");
               localStorage.clear()
             } else {
-              alert(err)
+              swal('Error', `${err}`)
             }
             this.setState({
               proses: false,
@@ -240,7 +242,7 @@ class modalCreateEditBookingRoom extends Component {
           justifyContent: 'center',
         }}
         open={this.props.status}
-        onClose={this.handleClose}
+        onClose={this.cancel}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{

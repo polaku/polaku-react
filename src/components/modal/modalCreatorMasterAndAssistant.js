@@ -14,6 +14,7 @@ import SeCreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
 
 import { API } from '../../config/API';
+import swal from 'sweetalert';
 
 const animatedComponents = makeAnimated();
 
@@ -66,7 +67,7 @@ class modalCreatorMasterAndAssistant extends Component {
           proses: false,
         })
         if (err.message === "Request failed with status code 400") {
-          alert("Creator master sudah ada")
+          swal("Creator master sudah ada","","warning")
         }
       })
   }
@@ -92,7 +93,7 @@ class modalCreatorMasterAndAssistant extends Component {
           justifyContent: 'center',
         }}
         open={this.props.status}
-        onClose={this.handleClose}
+        onClose={this.cancel}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{

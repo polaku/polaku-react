@@ -26,8 +26,6 @@ class cardBuilding extends Component {
   }
 
   fetchData = () => {
-    console.log("MASUK 3")
-
     this.props.fetchData()
   }
 

@@ -33,8 +33,8 @@ import SendIcon from '@material-ui/icons/Send';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import EventIcon from '@material-ui/icons/Event';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
-// import SupervisorAccountIcon from '@material-ui/icons/SupervisedUserCircleOutlined';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+import BarChartIcon from '@material-ui/icons/BarChart';
 
 import { setUser, fetchDataNotification } from '../store/action';
 import { API } from '../config/API';
@@ -53,7 +53,7 @@ const useStyles = makeStyles(theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    backgroundColor: '#A6250F'
+    backgroundColor: '#d71149'
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -73,7 +73,7 @@ const useStyles = makeStyles(theme => ({
     width: drawerWidth,
     flexShrink: 0,
     whiteSpace: 'nowrap',
-    backgroundColor: '#A6250F'
+    backgroundColor: '#d71149'
   },
   drawerOpen: {
     width: drawerWidth,
@@ -99,7 +99,7 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-end',
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
-    backgroundColor: '#A6250F',
+    backgroundColor: '#d71149',
   },
   content: {
     flexGrow: 1,
@@ -122,7 +122,9 @@ function Navsidebar(props) {
   const [openChildBookingRoom, setOpenChildBookingRoom] = React.useState(false);
   const [openChildEvent, setOpenChildEvent] = React.useState(false);
   const [openChildHR, setOpenChildHR] = React.useState(false);
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [openChildKPIM, setOpenChildKPIM] = React.useState(false);
+
+  const [selectedIndex, setSelectedIndex] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   function handleDrawerOpen() {
@@ -133,6 +135,8 @@ function Navsidebar(props) {
     setOpen(false);
     setOpenChildBookingRoom(false);
     setOpenChildEvent(false);
+    setOpenChildHR(false);
+    setOpenChildKPIM(false);
   }
 
   function handleClick(event, state) {
@@ -142,6 +146,8 @@ function Navsidebar(props) {
       setOpenChildEvent(!openChildEvent);
     } else if (state === 'openChildHR') {
       setOpenChildHR(!openChildHR);
+    } else if (state === 'openChildKPIM') {
+      setOpenChildKPIM(!openChildKPIM);
     }
   }
 
@@ -193,7 +199,17 @@ function Navsidebar(props) {
       setSelectedIndex(1.3)
     } else if (props.location.pathname === '/hr') {
       setSelectedIndex(3)
-    } else if (props.location.pathname === '/setting') {
+    } else if (props.location.pathname === '/hr/report') {
+      setSelectedIndex(3.1)
+    } else if (props.location.pathname === '/kpim') {
+      setSelectedIndex(4)
+    } else if (props.location.pathname === '/kpim/tal') {
+      setSelectedIndex(4.1)
+    } else if (props.location.pathname === '/kpim/report') {
+      setSelectedIndex(4.2)
+    } else if (props.location.pathname === '/kpim/setting') {
+      setSelectedIndex(4.3)
+    }else if (props.location.pathname === '/setting') {
       setSelectedIndex(99)
     } else if (props.location.pathname === '/setting/settingPerusahaan') {
       setSelectedIndex(99)
@@ -448,14 +464,6 @@ function Navsidebar(props) {
             {
               open
                 ?
-                // <Link to="/hr" onClick={event => handleListItemClick(event, 3)} style={{ textDecoration: 'none', color: 'black' }}>
-                //   <ListItem button key="HR" selected={selectedIndex === 3} >
-                //     <ListItemIcon>
-                //       <SupervisorAccountIcon />
-                //     </ListItemIcon>
-                //     <ListItemText primary="HR" />
-                //   </ListItem>
-                // </Link>
                 <ListItem button key="HR"
                   onClick={event => handleClick(event, 'openChildHR')} selected={selectedIndex === 3 || selectedIndex === 3.1}>
                   <ListItemIcon>
@@ -465,7 +473,7 @@ function Navsidebar(props) {
                   {openChildHR ? <ExpandLess /> : <ExpandMore />}
                 </ListItem>
                 : <Link to="/hr" onClick={event => handleListItemClick(event, 3)}>
-                  <ListItem button key="HR" selected={selectedIndex === 3} >
+                  <ListItem button key="HR" selected={selectedIndex === 3 || selectedIndex === 3.1} >
                     <ListItemIcon style={{ marginLeft: 8 }}>
                       <SupervisorAccountIcon />
                     </ListItemIcon>
@@ -481,9 +489,56 @@ function Navsidebar(props) {
                     <ListItemText primary="Pengajuan" />
                   </ListItem>
                 </Link>
-                <Link to="/hr/reportIjin" onClick={event => handleListItemClick(event, 3.1)} style={{ textDecoration: 'none', color: 'black' }}>
+                <Link to="/hr/report" onClick={event => handleListItemClick(event, 3.1)} style={{ textDecoration: 'none', color: 'black' }}>
                   <ListItem button className={classes.nested} selected={selectedIndex === 3.1}>
                     <ListItemText primary="Report" />
+                  </ListItem>
+                </Link>
+              </List>
+            </Collapse>
+          </>
+
+          {/* KPIM */}
+          <>
+            {
+              open
+                ? <ListItem button key="KPIM"
+                  onClick={event => handleClick(event, 'openChildKPIM')} selected={selectedIndex === 4 || selectedIndex === 4.1 || selectedIndex === 4.2 || selectedIndex === 4.3}>
+                  <ListItemIcon>
+                    <BarChartIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="KPIM" />
+                  {openChildKPIM ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                : <Link to="/kpim" onClick={event => handleListItemClick(event, 4)}>
+                  <ListItem button key="KPIM" selected={selectedIndex === 4 || selectedIndex === 4.1 || selectedIndex === 4.2 || selectedIndex === 4.3} >
+                    <ListItemIcon style={{ marginLeft: 8 }}>
+                      <BarChartIcon />
+                    </ListItemIcon>
+                  </ListItem>
+
+                </Link>
+            }
+            <Collapse in={openChildKPIM} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <Link to="/kpim" onClick={event => handleListItemClick(event, 4)} style={{ textDecoration: 'none', color: 'black' }}>
+                  <ListItem button className={classes.nested} selected={selectedIndex === 4}>
+                    <ListItemText primary="Dashboard" />
+                  </ListItem>
+                </Link>
+                <Link to="/kpim/tal" onClick={event => handleListItemClick(event, 4.1)} style={{ textDecoration: 'none', color: 'black' }}>
+                  <ListItem button className={classes.nested} selected={selectedIndex === 4.1}>
+                    <ListItemText primary="TAL" />
+                  </ListItem>
+                </Link>
+                <Link to="/kpim/report" onClick={event => handleListItemClick(event, 4.2)} style={{ textDecoration: 'none', color: 'black' }}>
+                  <ListItem button className={classes.nested} selected={selectedIndex === 4.2}>
+                    <ListItemText primary="Report" />
+                  </ListItem>
+                </Link>
+                <Link to="/kpim/setting" onClick={event => handleListItemClick(event, 4.3)} style={{ textDecoration: 'none', color: 'black' }}>
+                  <ListItem button className={classes.nested} selected={selectedIndex === 4.3}>
+                    <ListItemText primary="Setting" />
                   </ListItem>
                 </Link>
               </List>

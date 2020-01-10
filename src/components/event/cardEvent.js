@@ -8,6 +8,8 @@ import { API } from '../../config/API';
 
 import ModalEvent from '../modal/modalEvent'
 
+import swal from 'sweetalert';
+
 class cardEvent extends Component {
   constructor(props) {
     super(props);
@@ -113,7 +115,7 @@ class cardEvent extends Component {
         this.props.fetchDataEvent()
         // this.props.fetchDataMyEvent()
 
-        alert(`${args} Success`)
+        swal(`${args} Success`);
         this.setState({
           proses: false
         })
@@ -121,9 +123,9 @@ class cardEvent extends Component {
 
     } catch (err) {
       if (err.message === 'Request failed with status code 403') {
-        alert('Waktu login telah habis, silahkan login kembali')
+        swal('Waktu login telah habis, silahkan login kembali');
       } else {
-        alert(err)
+        swal(err);
       }
       console.log(err)
       this.setState({
@@ -133,13 +135,10 @@ class cardEvent extends Component {
   }
 
   join = () => {
-    console.log("join")
     this.joinEvent("Join")
   }
 
   cancelJoin = () => {
-    console.log("cancel join")
-
     this.joinEvent("Cancel Join")
   }
 

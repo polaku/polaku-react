@@ -300,46 +300,78 @@ const api = store => next => async action => {
 
       await getData.data.data.forEach(el => {
 
-
-        if (el.leave_date) {//cuti
+        if (el.leave_date) {  // cuti
+          let lastDate = el.leave_date.split(" ")[0].split(",")
+          let newLastDate = lastDate[lastDate.length - 1] 
           if (
-            Number(el.leave_date.slice(el.leave_date.length - 5, el.leave_date.length - 3)) > new Date().getMonth()
-            && Number(el.leave_date.slice(el.leave_date.length - 10, el.leave_date.length - 6)) >= new Date().getFullYear()) {
+            (
+              Number(newLastDate.slice(newLastDate.length - 5, newLastDate.length - 3)) >= new Date().getMonth()
+              && Number(newLastDate.slice(newLastDate.length - 10, newLastDate.length - 6)) >= new Date().getFullYear()
+            )
+          ) {
+
+            if (el.user_id === action.payload) newData.push(el)
+
+            // if (lastDate.length > 1) {   // for data from web php (yyyy-mm-dd,yyyy-mm-dd,yyyy-mm-dd) 
+            //   if (Number(newLastDate.slice(newLastDate.length - 2, newLastDate.length)) >= new Date().getDate()) {
+            //     if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+            //   }
+            // } else { // for data from mobile (yyyy-mm-dd hh:mm:ss)
+            //   if ((Number(newLastDate.slice(newLastDate.length - 2, newLastDate.length)) + (Number(el.leave_request) - 1)) >= new Date().getDate()) {                
+                if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+            //   }
+            // }
+
+          } else if (Number(newLastDate.slice(newLastDate.length - 10, newLastDate.length - 6)) > new Date().getFullYear()) {   // if next year
 
             if (el.user_id === action.payload) newData.push(el)
             if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
-
           }
-        } else if (el.date_imp) {//imp
+        } else if (el.date_imp) {  // imp
           if (
             Number(el.date_imp.slice(el.date_imp.length - 5, el.date_imp.length - 3)) > new Date().getMonth()
             && Number(el.date_imp.slice(el.date_imp.length - 10, el.date_imp.length - 6)) >= new Date().getFullYear()) {
-              
+
+            if (el.user_id === action.payload) newData.push(el)
+
+            if (Number(el.date_imp.slice(el.date_imp.length - 2, el.date_imp.length)) >= new Date().getDate()) {
+              if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+            }
+
+          } else if (Number(el.date_imp.slice(el.date_imp.length - 10, el.date_imp.length - 6)) > new Date().getFullYear()) {   // if next year
             if (el.user_id === action.payload) newData.push(el)
             if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
-
           }
-        } else if (el.date_ijin_absen_end) {//ia
+        } else if (el.date_ijin_absen_end) {  // ia
           if (
             Number(el.date_ijin_absen_end.slice(el.date_ijin_absen_end.length - 5, el.date_ijin_absen_end.length - 3)) > new Date().getMonth()
             && Number(el.date_ijin_absen_end.slice(el.date_ijin_absen_end.length - 10, el.date_ijin_absen_end.length - 6)) >= new Date().getFullYear()) {
-              
+
+            if (el.user_id === action.payload) newData.push(el)
+
+            if (Number(el.date_ijin_absen_end.slice(el.date_ijin_absen_end.length - 2, el.date_ijin_absen_end.length)) > new Date().getDate()) {
+              if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+            }
+
+          } else if (Number(el.date_ijin_absen_end.slice(el.date_ijin_absen_end.length - 10, el.date_ijin_absen_end.length - 6)) > new Date().getFullYear()) {  // if next year
             if (el.user_id === action.payload) newData.push(el)
             if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
-
           }
-        } else if (el.type === "contact_us") {//type === contact_us
+        } else if (el.type === "contact_us") {  // type === contact_us
           if ((el.status !== 'done' && el.status !== 'cancel') ||
             (el.status === 'done' && new Date(el.done_expired_date).getMonth() >= new Date().getMonth() - 1 &&
               new Date(el.done_expired_date).getFullYear() >= new Date().getFullYear())) {
-                
+
             if (el.user_id === action.payload) newData.push(el)
             if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
 
+          } else if (new Date(el.done_expired_date).getFullYear() > new Date().getFullYear()) { // if next year
+            if (el.user_id === action.payload) newData.push(el)
+            if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
           }
         }
       })
-
+      
       next({
         type: 'FETCH_DATA_CONTACT_US_SUCCESS',
         payload: { dataContactUs: newData, dataContactUsStaff: newDataStaff, dataAllContactUs: getData.data.data }

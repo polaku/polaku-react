@@ -115,8 +115,6 @@ class AssignRoomMaster extends Component {
       .catch(err => {
         console.log(err);
       })
-    console.log(newData);
-
   }
 
   handleChangePartisipan = (newValue, actionMeta) => {

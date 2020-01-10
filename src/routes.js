@@ -17,6 +17,10 @@ import Setting from './views/Setting/Setting';
 import SettingPerusahaan from './views/Setting/SettingPerusahaan';
 import HR from './views/HR/HR';
 import ReportIjin from './views/HR/ReportIjin';
+import KPIM from './views/KPIM/DashboardKPIM';
+import TAL from './views/KPIM/TAL';
+import ReportKPIM from './views/KPIM/ReportKPIM';
+import SettingKPIM from './views/KPIM/SettingKPIM';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -32,7 +36,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Routes(){
+function Routes() {
   const classes = useStyles();
 
   return (
@@ -52,8 +56,12 @@ function Routes(){
         <AuthenticatedRoute path="/event" component={Event} />
         <AuthenticatedRoute path="/setting/settingPerusahaan" component={SettingPerusahaan} />
         <AuthenticatedRoute path="/setting" component={Setting} />
-        <AuthenticatedRoute path="/hr/reportIjin" component={ReportIjin} />
+        <AuthenticatedRoute path="/hr/report" component={ReportIjin} />
         <AuthenticatedRoute path="/hr" component={HR} />
+        <AuthenticatedRoute path="/kpim/setting" component={SettingKPIM} />
+        <AuthenticatedRoute path="/kpim/report" component={ReportKPIM} />
+        <AuthenticatedRoute path="/kpim/tal" component={TAL} />
+        <AuthenticatedRoute path="/kpim" component={KPIM} />
         <Redirect from="/" to="/login" />
       </Switch>
     </main>

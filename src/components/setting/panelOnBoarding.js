@@ -97,8 +97,8 @@ class panelOnBoarding extends Component {
     return (
       <div style={{ width: '100%' }}>
         {
-          this.state.data.map(el =>
-            <ExpansionPanel square expanded={this.state.expanded === el.pt} onChange={this.handleChange(el.pt)}>
+          this.state.data.map((el, index) =>
+            <ExpansionPanel square expanded={this.state.expanded === el.pt} onChange={this.handleChange(el.pt)} key={index}>
               <ExpansionPanelSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-label="Expand"

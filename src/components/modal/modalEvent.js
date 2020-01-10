@@ -10,6 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import swal from 'sweetalert';
+
 import { API } from '../../config/API';
 
 class modalEvent extends Component {
@@ -28,7 +30,6 @@ class modalEvent extends Component {
   }
 
   async componentDidMount() {
-    console.log(this.props.data);
     let temp = []
     await this.props.data.tbl_users.forEach(element => {
       if (element.tbl_event_responses.response === 'join') {
@@ -59,7 +60,6 @@ class modalEvent extends Component {
     this.setState({
       proses: true
     })
-    console.log(this.props.data.event_id, args)
 
     let token = localStorage.getItem('token'), getData
 
@@ -89,8 +89,7 @@ class modalEvent extends Component {
         })
       }
       if (getData) {        // this.props.fetchDataMyEvent()
-
-        alert(`${args} Success`)
+        swal(`${args} Success`, "", "success")
         this.setState({
           proses: false
         })
@@ -100,7 +99,7 @@ class modalEvent extends Component {
       if (err.message === 'Request failed with status code 403') {
         alert('Waktu login telah habis, silahkan login kembali')
       } else {
-        alert(err)
+        swal('Error', `${err}`)
       }
       this.setState({
         proses: false
@@ -133,7 +132,7 @@ class modalEvent extends Component {
           justifyContent: 'center',
         }}
         open={this.props.status}
-        onClose={this.handleClose}
+        onClose={this.cancel}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{

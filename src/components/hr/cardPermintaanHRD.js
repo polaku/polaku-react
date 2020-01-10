@@ -4,6 +4,8 @@ import { Card, Grid, Avatar, Paper, Button } from '@material-ui/core';
 
 import ModalCreateEditPermintaanHRD from '../modal/modalCreateEditPermintaanHRD';
 
+import swal from 'sweetalert';
+
 import { API } from '../../config/API';
 
 export default class cardPermintaanHRD extends Component {
@@ -38,22 +40,23 @@ export default class cardPermintaanHRD extends Component {
           waktu2: `${tempWaktu[tempWaktu.length - 1]}`
         })
       } else {
-        let dateIn = this.props.data.leave_date.slice(0, 10)
-        let dateOut = new Date(new Date(dateIn).getFullYear(), new Date(dateIn).getMonth(), new Date(dateIn).getDate() + this.props.data.leave_request)
-        let monthOut = new Date(dateOut).getMonth() + 1
-        let datesOut = new Date(dateOut).getDate()
+        let dateOut
 
-        if (datesOut < 10) {
-          datesOut = `0${datesOut}`
-        }
-
-        if (monthOut < 10) {
-          monthOut = `0${monthOut}`
+        if (this.props.data.leave_date_in) {
+          dateOut = new Date
+            (this.props.data.leave_date_in.slice(0, 4),
+              this.props.data.leave_date_in.slice(5, 7) - 1,
+              Number(this.props.data.leave_date_in.slice(8, 10)) - 1)
+        } else {
+          dateOut = new Date
+            (this.props.data.leave_date.slice(this.props.data.leave_date.length - 10, this.props.data.leave_date.length - 6),
+              this.props.data.leave_date.slice(this.props.data.leave_date.length - 5, this.props.data.leave_date.length - 3) - 1,
+              this.props.data.leave_date.slice(this.props.data.leave_date.length - 2, this.props.data.leave_date.length))
         }
 
         this.setState({
-          waktu1: `${dateIn}`,
-          waktu2: `${new Date(dateOut).getFullYear()}-${monthOut}-${datesOut}`
+          waktu1: this.props.data.leave_date.slice(0, 10),
+          waktu2: dateOut
         })
 
       }
@@ -100,63 +103,97 @@ export default class cardPermintaanHRD extends Component {
     return day[args]
   }
 
-  cancelBooking = async () => {
-    this.setState({
-      proses: true
+  cancelPermintaan = async () => {
+    swal({
+      title: "Apa anda yakin ingin dibatalkan?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
     })
-    let token = localStorage.getItem('token')
+      .then((willDelete) => {
+        if (willDelete) {
+          this.setState({
+            proses: true
+          })
+          let token = localStorage.getItem('token')
 
-    API.put(`/contactUs/cancel/${this.props.data.contact_id}`, {}, { headers: { token } })
-      .then(data => {
-        alert("Success cancel", '');
-        this.props.fetchData()
-        this.setState({
-          proses: false
-        })
-      })
-      .catch(err => {
-        alert("Error", `${err}`);
+          API.put(`/contactUs/cancel/${this.props.data.contact_id}`, {}, { headers: { token } })
+            .then(data => {
+              swal("Cancel success", "", "success");
+              this.props.fetchData()
+              this.setState({
+                proses: false
+              })
+            })
+            .catch(err => {
+              swal("Error!", `${err}`);
 
-        this.setState({
-          proses: false
-        })
-      })
+
+              this.setState({
+                proses: false
+              })
+            })
+        }
+      });
   }
 
   rejected = async () => {
-    let token = localStorage.getItem('token')
-    API.get(`/contactUs/rejected/${this.props.data.contact_id}`, { headers: { token } })
-      .then(async () => {
-        alert("Success reject", '');
-        this.props.fetchData()
-        this.setState({
-          proses: false
-        })
-      })
-      .catch(err => {
-        alert('Error', `${err}`)
-      })
+    swal({
+      title: "Apa anda yakin ingin menolaknya?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+      .then((yesAnswer) => {
+        if (yesAnswer) {
+          let token = localStorage.getItem('token')
+          API.get(`/contactUs/rejected/${this.props.data.contact_id}`, { headers: { token } })
+            .then(async () => {
+              swal("Sukses ditolak", "", "success");
+              this.props.fetchData()
+              this.setState({
+                proses: false
+              })
+            })
+            .catch(err => {
+              swal('Error', `${err}`)
+            })
+        }
+      });
   }
 
   approved = async () => {
-    let newStatus, token = localStorage.getItem('token')
-    if (this.props.data.status === 'new') {
-      newStatus = 'new2'
-    } else if (this.props.data.status === 'new2') {
-      newStatus = 'approved'
-    }
+    swal({
+      title: "Apa anda yakin ingin menyetujuinya?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+      .then((yesAnswer) => {
+        if (yesAnswer) {
+          let newStatus, token = localStorage.getItem('token')
+          if (this.props.data.status === 'new') {
+            newStatus = 'new2'
+          } else if (this.props.data.status === 'new2') {
+            newStatus = 'approved'
+          }
 
-    API.put(`/contactUs/approved/${this.props.data.contact_id}`, { status: newStatus }, { headers: { token } })
-      .then(async () => {
-        alert("Success approve", '');
-        this.props.fetchData()
-        this.setState({
-          proses: false
-        })
-      })
-      .catch(err => {
-        alert('Error', `${err}`)
-      })
+          API.put(`/contactUs/approved/${this.props.data.contact_id}`, { status: newStatus }, { headers: { token } })
+            .then(async () => {
+              swal("Sukses disetujui", "", "success");
+              this.props.fetchData()
+              this.setState({
+                proses: false
+              })
+            })
+            .catch(err => {
+              swal('Error', `${err}`);
+            })
+        }
+      });
+
+
+
   }
 
   handleOpenModal = () => {
@@ -174,7 +211,7 @@ export default class cardPermintaanHRD extends Component {
   render() {
     return (
       <>
-        <Card style={{ marginBottom: '15px', backgroundColor: '#ececec' }}>
+        <Card style={{ marginBottom: '15px', backgroundColor: '#ececec', width: '100%' }}>
           <Card style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'white', borderRadius: 0 }}>
 
             {/* Header 1 */}
@@ -215,12 +252,12 @@ export default class cardPermintaanHRD extends Component {
                     </Grid>
 
                     <p style={{ margin: 0, fontSize: 15 }}>{this.state.category} {this.state.keterangan}</p>
-
                     <Grid style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                       <p style={{ margin: 0, fontSize: 20 }}>{this.getMonth(new Date(this.state.waktu2).getMonth())}</p>
                       <p style={{ fontWeight: 'bold', margin: 0, fontSize: 32 }}>{new Date(this.state.waktu2).getDate()}</p>
                       <p style={{ margin: 0, fontSize: 18, color: 'gray' }}>{this.getDay(new Date(this.state.waktu2).getDay())}</p>
                     </Grid>
+
                   </Grid>
               }
             </>
@@ -249,12 +286,12 @@ export default class cardPermintaanHRD extends Component {
                   <Button color="secondary" onClick={this.handleOpenModal}>
                     ubah
                 </Button>
-                  <Button variant="contained" color="secondary" onClick={this.cancelBooking}>
+                  <Button variant="contained" color="secondary" onClick={this.cancelPermintaan}>
                     batal
                 </Button>
                 </Grid>
                 : <Grid style={{ textAlign: 'right', margin: 10, marginBottom: 15 }}>
-                  <Button variant="contained" color="secondary" onClick={this.cancelBooking}>
+                  <Button variant="contained" color="secondary" onClick={this.cancelPermintaan}>
                     batal
                 </Button>
                 </Grid>

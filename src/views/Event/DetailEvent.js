@@ -53,7 +53,9 @@ class DetailEvent extends Component {
         });
 
       })
-      .catch(err => console.log(err))
+      .catch(err =>
+        console.log(err)
+      )
 
     this.setState({
       joinEvent: temp,
