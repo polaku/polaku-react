@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
 import {
-  Grid, Typography, Avatar, Button, Paper, TextField, MenuItem
+  Grid, Typography, Avatar, Button, Paper, TextField, MenuItem, FormControl, InputLabel
 } from '@material-ui/core';
 import SelectOption from '@material-ui/core/Select';
 
@@ -13,24 +13,27 @@ import CancelPresentationOutlinedIcon from '@material-ui/icons/CancelPresentatio
 import StarsIcon from '@material-ui/icons/Stars';
 import ErrorOutlineOutlinedIcon from '@material-ui/icons/ErrorOutlineOutlined';
 
+import swal from 'sweetalert';
+
 import CardSettingIndicator from './cardSettingIndicator';
 import ModalReward from '../modal/modalReward';
 import ModalSettingTargetKPIM from '../modal/modalSettingTargetKPIM';
 
+import { API } from '../../config/API';
+
 export default class cardSettingUserKPIMTAL extends Component {
   state = {
+    user_id: null,
     openKPIM: false,
     openTAL: false,
     statusCreateKPIM: false,
     statusCreateTAL: false,
 
     newIndicatorKPIM: '',
-    newUnitKPIM: '',
-    newTargetKPIM: '',
-    newBobotKPIM: '',
+    newDataKPIM: {},
 
-    newItemTAL: '',
-    isLoopingItemTAL: '',
+    newIndicatorTAL: '',
+    isLoopingIndicatorTAL: '',
     newOptionTimeTAL: '',
     newTimeTAL: '',
     newBobotTAL: '',
@@ -40,7 +43,50 @@ export default class cardSettingUserKPIMTAL extends Component {
     openModalReward: false,
     openModalTargetKPIM: false,
 
-    KPIM: ["", "", "", ""]
+    KPIM: [],
+    TAL: [],
+    bobotKPIM: 0,
+  }
+
+  componentDidMount() {
+    this.fetchData()
+  }
+
+  fetchData = () => {
+    let tempKPIM = [], user_id, tempBobot = 0
+    this.setState({
+      KPIM: []
+    })
+
+    this.props.data.kpim.forEach(kpim => {
+      kpim.score.forEach(element => {
+        let newScoreKPIM = {
+          kpim_id: kpim.kpim_id,
+          indicator_kpim: kpim.indicator_kpim,
+          target: kpim.target,
+          unit: kpim.unit,
+          pencapaian: kpim.pencapaian,
+          year: kpim.year,
+          month: element.month,
+          target_monthly: element.target_monthly,
+          pencapaian_monthly: element.pencapaian_monthly,
+          bobot: element.bobot,
+          score: element.score,
+          kpimScore: kpim.kpimScore,
+          user_id: kpim.user_id
+        }
+        tempKPIM.push(newScoreKPIM)
+        tempBobot += element.bobot
+      });
+      user_id = kpim.user_id
+    });
+
+    this.setState({
+      KPIM: tempKPIM,
+      TAL: this.props.data.tal,
+      user_id,
+      bobotKPIM: tempBobot
+    })
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -57,6 +103,9 @@ export default class cardSettingUserKPIMTAL extends Component {
           statusCreateTAL: false
         })
       }
+    }
+    if (prevProps.data !== this.props.data) {
+      this.fetchData()
     }
   }
 
@@ -84,12 +133,12 @@ export default class cardSettingUserKPIMTAL extends Component {
         date.push(i)
       }
 
-      if (event.target.value === 0) {
+      if (event.target.value === 1) {
         this.setState({
           optionTimeTAL: day,
           [name]: event.target.value
         })
-      } else if (event.target.value === 1) {
+      } else if (event.target.value === 0) {
         this.setState({
           optionTimeTAL: date,
           [name]: event.target.value
@@ -124,6 +173,67 @@ export default class cardSettingUserKPIMTAL extends Component {
     })
   }
 
+  setNewDataKPIM = data => {
+    this.setState({ newDataKPIM: data, openModalTargetKPIM: false })
+  }
+
+  createNewKPIM = () => {
+    let token = localStorage.getItem("token")
+    let newData = this.state.newDataKPIM
+    newData.user_id = this.state.user_id
+    newData.indicator_kpim = this.state.newIndicatorKPIM
+
+    API.post('/kpim', newData, { headers: { token } })
+      .then(async data => {
+        swal("Tambah indicator KPIM success", "", "success")
+        this.setState({
+          newIndicatorKPIM: '',
+          newDataKPIM: {}
+        })
+        this.props.refresh()
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  createNewTAL = () => {
+    let token = localStorage.getItem("token")
+    let newData = {
+      indicator_tal: this.state.newIndicatorTAL,
+      isRepeat: this.state.isLoopingIndicatorTAL,
+      forDay: this.state.newOptionTimeTAL,
+      time: this.state.newTimeTAL,
+      weight: this.state.newBobotTAL,
+      week: this.props.weekNow,
+      month: this.props.month,
+      year: new Date().getFullYear(),
+      user_id: this.state.user_id,
+      firstDateInWeek: this.props.firstDateInWeek
+    }
+
+    API.post('/tal', newData, { headers: { token } })
+      .then(async data => {
+        swal("Tambah indicator TAL success", "", "success")
+        this.setState({
+          statusCreateTAL: false,
+          newIndicatorTAL: '',
+          isLoopingIndicatorTAL: '',
+          newOptionTimeTAL: '',
+          newTimeTAL: '',
+          newBobotTAL: '',
+        })
+        this.props.refresh()
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  refresh = () => {
+    this.props.refresh()
+  }
+
   render() {
     return (
       <>
@@ -132,7 +242,7 @@ export default class cardSettingUserKPIMTAL extends Component {
           <Grid style={{ display: 'flex', alignItems: 'flex-end', marginBottom: 10 }}>
             <Avatar alt="Travis Howard" src="http://api.polagroup.co.id/uploads/icon_user.png" style={{ marginBottom: 5, marginLeft: 10, width: 50, height: 50 }} />
             <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 220, marginTop: 15 }}>
-              <p style={{ color: 'white', margin: '0px 0px 0px 10px', zIndex: 1 }}>User a</p>
+              <p style={{ color: 'white', margin: '0px 0px 0px 10px', zIndex: 1 }}>{this.props.data.fullname}</p>
               <Button onClick={this.openModalReward} style={{ padding: 0, minWidth: 24, borderRadius: 10 }}>
                 <StarsIcon style={{ color: 'white' }} />
               </Button>
@@ -152,24 +262,42 @@ export default class cardSettingUserKPIMTAL extends Component {
                       <AddIcon />
                     </Button>
                   }
-
-                  <ErrorOutlineOutlinedIcon style={{ color: 'white', backgroundColor: '#d71149', borderRadius: 15, margin: '0px 0px 0px 20px' }} />
-                  <p style={{ margin: '0px 0px 0px 10px', color: '#d71149' }}>KPIM KOSONG</p>
-                </Grid>
-                <Button onClick={this.handleOpenCloseKPIM}
-                  style={{ borderRadius: 15, minWidth: 24, padding: 0 }} >
                   {
-                    this.state.openKPIM
-                      ? <ExpandLessIcon />
-                      : <ExpandMoreIcon />
+                    this.state.KPIM.length === 0 && <>
+                      <ErrorOutlineOutlinedIcon style={{ color: 'white', backgroundColor: '#d71149', borderRadius: 15, margin: '0px 0px 0px 20px' }} />
+                      <p style={{ margin: '0px 0px 0px 10px', color: '#d71149' }}>KPIM KOSONG</p>
+                    </>
                   }
-                </Button>
+                  {
+                    this.state.bobotKPIM < 100 && <>
+                      <ErrorOutlineOutlinedIcon style={{ color: 'white', backgroundColor: '#d71149', borderRadius: 15, margin: '0px 0px 0px 20px' }} />
+                      <p style={{ margin: '0px 0px 0px 10px', color: '#d71149' }}>Bobot belum 100%</p>
+                    </>
+                  }
+
+                </Grid>
+                {
+                  this.state.KPIM.length !== 0 && <>
+                    <Button onClick={this.handleOpenCloseKPIM}
+                      style={{ borderRadius: 15, minWidth: 24, padding: 0 }} >
+                      {
+                        this.state.openKPIM
+                          ? <ExpandLessIcon />
+                          : <ExpandMoreIcon />
+                      }
+                    </Button>
+                  </>
+                }
               </Paper>
 
               {/* PANEL KPIM */}
               {
-                this.state.openKPIM && <CardSettingIndicator status="KPIM" />
+                this.state.openKPIM && this.state.KPIM.map((el, index) =>
+                  <CardSettingIndicator data={el} status="KPIM" key={index} refresh={this.refresh} />
+                  // <CardSettingIndicator data={el} status="KPIM" key={index} />
+                )
               }
+
 
               {/* FROM ADD NEW KPIM */}
               {
@@ -183,47 +311,19 @@ export default class cardSettingUserKPIMTAL extends Component {
                       InputProps={{
                         style: { height: 35, padding: 0 }
                       }}
-                      style={{ width: '50%' }}
+                      style={{ width: '70%' }}
                     />
-                    {/*<TextField
-                      placeholder="unit"
-                      value={this.state.newUnitKPIM}
-                      onChange={this.handleChange('newUnitKPIM')}
-                      variant="outlined"
-                      InputProps={{
-                        style: { height: 35, padding: 0, }
-                      }}
-                      style={{ width: '10%' }}
-                    />
-                     <TextField
-                      placeholder="target"
-                      value={this.state.newTargetKPIM}
-                      onChange={this.handleChange('newTargetKPIM')}
-                      variant="outlined"
-                      InputProps={{
-                        style: { height: 35, padding: 0 }
-                      }}
-                      style={{ width: '20%' }}
-                    />
-                    <TextField
-                      placeholder="bobot"
-                      value={this.state.newBobotKPIM}
-                      onChange={this.handleChange('newBobotKPIM')}
-                      variant="outlined"
-                      InputProps={{
-                        style: { height: 35, padding: 0 }
-                      }}
-                      style={{ width: '10%' }}
-                    /> */}
                     <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.openModalTargetKPIM}>
                       setting target
                     </Button>
-                    <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }}>
-                      <SaveOutlinedIcon />
-                    </Button>
-                    <Button style={{ borderRadius: 5, minWidth: 40, color: 'red' }} onClick={this.handleCreateKPIM}>
-                      <CancelPresentationOutlinedIcon />
-                    </Button>
+                    <Grid>
+                      <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.createNewKPIM}>
+                        <SaveOutlinedIcon />
+                      </Button>
+                      <Button style={{ borderRadius: 5, minWidth: 40, color: 'red' }} onClick={this.handleCreateKPIM}>
+                        <CancelPresentationOutlinedIcon />
+                      </Button>
+                    </Grid>
                   </Grid>
                 </Paper>
               }
@@ -256,55 +356,63 @@ export default class cardSettingUserKPIMTAL extends Component {
 
               {/* PANEL TAL */}
               {
-                this.state.openTAL && <CardSettingIndicator status="TAL" />
+                this.state.openTAL && this.state.TAL.map((el, index) =>
+                  <CardSettingIndicator status="TAL" data={el} refresh={this.refresh} key={index} weekNow={this.props.weekNow} />
+                )
               }
 
               {/* FROM ADD NEW TAL */}
               {
-                this.state.statusCreateTAL && <Paper style={{ marginBottom: 2, padding: '5px 10px 5px 20px', display: 'flex', alignItems: 'center', marginLeft: 34 }}>
+                this.state.statusCreateTAL && <Paper style={{ marginBottom: 2, padding: '5px 10px 5px 20px', display: 'flex', alignItems: 'center', marginLeft: 34, height: 70 }}>
                   <p style={{ margin: '0px 10px 0px 0px', fontSize: 13, color: '#d71149' }}>w10</p>
                   <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                     <TextField
                       placeholder="item TAL"
-                      value={this.state.newItemTAL}
-                      onChange={this.handleChange('newItemTAL')}
+                      value={this.state.newIndicatorTAL}
+                      onChange={this.handleChange('newIndicatorTAL')}
                       variant="outlined"
                       InputProps={{
                         style: { height: 35, padding: 0 }
                       }}
-                      style={{ width: '40%' }}
+                      style={{ width: '35%' }}
                     />
 
-                    <SelectOption
-                      value={this.state.isLoopingItemTAL}
-                      onChange={this.handleChange('isLoopingItemTAL')}
-                      style={{ width: '15%' }}
-                    >
-                      <MenuItem value={0}>1x</MenuItem>
-                      <MenuItem value={1}>Setiap</MenuItem>
-                    </SelectOption>
+                    <FormControl variant="outlined" style={{ width: '15%' }}>
+                      <InputLabel>Perulangan</InputLabel>
+                      <SelectOption
+                        value={this.state.isLoopingIndicatorTAL}
+                        onChange={this.handleChange('isLoopingIndicatorTAL')}
+                      >
+                        <MenuItem value={0}>1x</MenuItem>
+                        <MenuItem value={1}>Setiap</MenuItem>
+                      </SelectOption>
+                    </FormControl>
 
-                    <SelectOption
-                      value={this.state.newOptionTimeTAL}
-                      onChange={this.handleChange('newOptionTimeTAL')}
-                      style={{ width: '15%' }}
-                    >
-                      <MenuItem value={0}>Hari</MenuItem>
-                      <MenuItem value={1}>Tanggal</MenuItem>
-                    </SelectOption>
+                    <FormControl variant="outlined" style={{ width: '15%' }}>
+                      <InputLabel>Ket Waktu</InputLabel>
+                      <SelectOption
+                        value={this.state.newOptionTimeTAL}
+                        onChange={this.handleChange('newOptionTimeTAL')}
+                      >
+                        <MenuItem value={0}>Tanggal</MenuItem>
+                        <MenuItem value={1}>Hari</MenuItem>
+                      </SelectOption>
+                    </FormControl>
 
-                    <SelectOption
-                      value={this.state.newTimeTAL}
-                      onChange={this.handleChange('newTimeTAL')}
-                      style={{ width: '10%' }}
-                    >
-                      <MenuItem value={0}>Semua</MenuItem>
-                      {
-                        this.state.optionTimeTAL.map((el, index) =>
-                          <MenuItem value={el} key={index}>{el}</MenuItem>
-                        )
-                      }
-                    </SelectOption>
+                    <FormControl variant="outlined" style={{ width: '10%' }}>
+                      <InputLabel>Waktu</InputLabel>
+                      <SelectOption
+                        value={this.state.newTimeTAL}
+                        onChange={this.handleChange('newTimeTAL')}
+                      >
+                        <MenuItem value={0}>Semua</MenuItem>
+                        {
+                          this.state.optionTimeTAL.map((el, index) =>
+                            <MenuItem value={el} key={index}>{el}</MenuItem>
+                          )
+                        }
+                      </SelectOption>
+                    </FormControl>
 
                     <TextField
                       placeholder="bobot"
@@ -316,7 +424,7 @@ export default class cardSettingUserKPIMTAL extends Component {
                       }}
                       style={{ width: '10%' }}
                     />
-                    <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }}>
+                    <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.createNewTAL}>
                       <SaveOutlinedIcon />
                     </Button>
                     <Button style={{ borderRadius: 5, minWidth: 40, color: 'red' }} onClick={this.handleCreateTAL}>
@@ -332,7 +440,11 @@ export default class cardSettingUserKPIMTAL extends Component {
 
         <ModalReward status={this.state.openModalReward} closeModal={this.closeModalReward} />
 
-        <ModalSettingTargetKPIM status={this.state.openModalTargetKPIM} closeModal={this.closeModalTargetKPIM}/>
+        {/* <ModalSettingTargetKPIM status={this.state.openModalTargetKPIM} closeModal={this.closeModalTargetKPIM} indicator={this.state.newIndicatorKPIM} submitForm={this.setNewDataKPIM} data={this.state.dataForEdit} /> */}
+
+        {
+          this.state.openModalTargetKPIM && <ModalSettingTargetKPIM status={this.state.openModalTargetKPIM} closeModal={this.closeModalTargetKPIM} indicator={this.state.newIndicatorKPIM} submitForm={this.setNewDataKPIM} />
+        }
       </>
     )
   }

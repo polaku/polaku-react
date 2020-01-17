@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import PropTypes from 'prop-types';
 
@@ -8,6 +9,8 @@ import SelectOption from '@material-ui/core/Select';
 import SwipeableViews from 'react-swipeable-views';
 
 import CardSettingUserKPIMTAL from '../../components/kpim/cardSettingUserKPIMTAL';
+
+import { fetchDataAllKPIM, fetchDataAllTAL } from '../../store/action';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -34,23 +37,72 @@ TabPanel.propTypes = {
 
 const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
 
-export default class SettingKPIM extends Component {
+class SettingKPIM extends Component {
   state = {
     value: 1,
-    data: [{
-      nama: "Tio",
-      nilai: 80
-    }, {
-      nama: "Ardi",
-      nilai: 75
-    }],
-    bulan: '',
+    data: [],
+    bulan: new Date().getMonth() + 1,
     minggu: '',
-    optionMinggu: []
+    optionMinggu: [],
+    dataForDisplay: [],
+    allKPIM: [],
+    allTAL: [],
+    firstDateInWeek: new Date().getDate() - (new Date().getDay() - 1),
+    weekNow: null
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.fetchWeek()
+    this.setState({
+      minggu: this.getWeeks(new Date())
+    })
+  }
+
+  async componentDidUpdate(prevProps, prevState) {
+    if (prevProps.bawahan !== this.props.bawahan) {
+      let month = new Date().getMonth() + 1
+      this.fetchData(month)
+    }
+  }
+
+  fetchData = async (month) => {
+    let temp = [], tempForDisplay = []
+    await this.props.fetchDataAllKPIM(new Date().getFullYear())
+    await this.props.fetchDataAllTAL(new Date().getFullYear())
+
+    this.setState({
+      allKPIM: this.props.dataAllKPIM,
+      allTAL: this.props.dataAllTAL
+    })
+
+    await this.props.bawahan.forEach(async element => {
+      let newData = {
+        user_id: element.user_id,
+        fullname: element.fullname,
+        avatar: element.avatar
+      }
+      newData.kpim = await this.props.dataAllKPIM.filter(el => el.user_id === element.user_id)
+      temp.push(newData)
+    });
+    console.log("minggu ke ", this.state.minggu)
+    await temp.forEach(async user => {
+      user.tal = await this.props.dataAllTAL.filter(element => user.user_id === element.user_id && Number(element.week) === Number(this.state.minggu) )
+
+      // user.tal = await this.props.dataAllTAL.forEach(element => {
+      //   // user.user_id === element.user_id && Number(element.week) === Number(this.state.weekNow)
+      //   console.log(Number(element.week), Number(this.state.weekNow), Number(element.week) === Number(this.state.weekNow))
+      // })
+    })
+
+    tempForDisplay = temp
+
+    await tempForDisplay.forEach(async user => {
+      await user.kpim.forEach(async kpim => {
+        let filteredKPIMScore = await kpim.kpimScore.filter(kpimScore => Number(kpimScore.month) === Number(month))
+        kpim.score = filteredKPIMScore
+      })
+    })
+    this.setState({ data: temp, dataForDisplay: tempForDisplay })
   }
 
   fetchWeek = () => {
@@ -66,14 +118,12 @@ export default class SettingKPIM extends Component {
     this.setState({ value: newValue })
   };
 
-  handleChange = name => event => {
+  handleChange = name => async event => {
     if (name === 'bulan') {
       let batasAtas, batasBawah, loopingWeek = []
       if (event.target.value === "" || event.target.value === 0) {
-        this.setState({
-          [name]: event.target.value
-        })
         this.fetchWeek()
+        this.fetchData(new Date().getMonth() + 1)
       } else {
         batasAtas = Math.ceil(event.target.value * 4.345)
         batasBawah = batasAtas - 4
@@ -87,15 +137,38 @@ export default class SettingKPIM extends Component {
         }
 
         this.setState({
-          [name]: event.target.value, optionMinggu: loopingWeek
+          optionMinggu: loopingWeek
         })
+        await this.fetchData(event.target.value)
       }
-
     }
 
     this.setState({ [name]: event.target.value });
-    // console.log(event.target.value)
+
+    if (name === 'minggu') {
+      console.log("MASUK")
+      await this.fetchData(this.state.bulan)
+    }
   };
+
+  refresh = () => {
+    let month = new Date().getMonth() + 1
+    this.fetchData(month)
+  }
+
+  getWeeks = date => {
+    let theDay = date
+    var target = new Date(theDay);
+    var dayNr = (new Date(theDay).getDay() + 6) % 7;
+
+    target.setDate(target.getDate() - dayNr + 3);
+
+    var jan4 = new Date(target.getFullYear(), 0, 4);
+    var dayDiff = (target - jan4) / 86400000;
+    var weekNr = 1 + Math.ceil(dayDiff / 7);
+
+    return weekNr;
+  }
 
   render() {
     return (
@@ -123,11 +196,11 @@ export default class SettingKPIM extends Component {
           </TabPanel>
 
           {/* BUTUH TINDAKAN */}
-          <TabPanel value={this.state.value} index={1} style={{ height: '85vh' }}>
-            <Grid id="user" container>
+          <TabPanel value={this.state.value} index={1} style={{ height: '85vh', width: '98%' }}>
+            <Grid id="user" container style={{ marginLeft: 20 }}>
               {
                 this.state.data.map((el, index) =>
-                  <Grid style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'cener', width: 80, marginRight: 15 }} key={index}>
+                  <Grid style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'cener', width: 80, marginRight: 30 }} key={index}>
                     <Badge
                       overlap="circle"
                       anchorOrigin={{
@@ -138,7 +211,7 @@ export default class SettingKPIM extends Component {
                     >
                       <Avatar alt="Travis Howard" src="http://api.polagroup.co.id/uploads/icon_user.png" style={{ width: 80, height: 80 }} />
                     </Badge>
-                    <p style={{ margin: 0, textAlign: 'center' }}>{el.nama}</p>
+                    <p style={{ margin: 0, textAlign: 'center' }}>{el.fullname}</p>
                   </Grid>
                 )
               }
@@ -184,19 +257,20 @@ export default class SettingKPIM extends Component {
                   </MenuItem>
                   {
                     this.state.optionMinggu.map((el, index) =>
-                      <MenuItem value={index} key={index}>{el}</MenuItem>
+                      <MenuItem value={el} key={index}>{el}</MenuItem>
                     )
                   }
                 </SelectOption>
               </FormControl>
-
             </Grid>
 
             <Grid id="main" style={{ marginTop: 20, }}>
-
               {/* CARD */}
-              <CardSettingUserKPIMTAL/>
-
+              {
+                this.state.dataForDisplay.map((el, index) =>
+                  <CardSettingUserKPIMTAL data={el} key={index} refresh={this.refresh} firstDateInWeek={this.state.firstDateInWeek} weekNow={this.state.minggu} month={this.state.bulan} />
+                )
+              }
             </Grid>
 
           </TabPanel>
@@ -210,3 +284,19 @@ export default class SettingKPIM extends Component {
     )
   }
 }
+
+const mapDispatchToProps = {
+  fetchDataAllKPIM,
+  fetchDataAllTAL
+}
+
+const mapStateToProps = ({ loading, error, dataAllKPIM, bawahan, dataAllTAL }) => {
+  return {
+    loading,
+    error,
+    dataAllKPIM,
+    bawahan,
+    dataAllTAL,
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(SettingKPIM)

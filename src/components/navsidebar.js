@@ -168,6 +168,7 @@ function Navsidebar(props) {
             sisaCuti: data.sisaCuti,
             evaluator1: data.evaluator1,
             evaluator2: data.evaluator2,
+            bawahan: data.bawahan
           }
           if (data.role_id === 1) {
             newData.isAdmin = true

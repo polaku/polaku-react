@@ -302,7 +302,7 @@ const api = store => next => async action => {
 
         if (el.leave_date) {  // cuti
           let lastDate = el.leave_date.split(" ")[0].split(",")
-          let newLastDate = lastDate[lastDate.length - 1] 
+          let newLastDate = lastDate[lastDate.length - 1]
           if (
             (
               Number(newLastDate.slice(newLastDate.length - 5, newLastDate.length - 3)) >= new Date().getMonth()
@@ -318,7 +318,7 @@ const api = store => next => async action => {
             //   }
             // } else { // for data from mobile (yyyy-mm-dd hh:mm:ss)
             //   if ((Number(newLastDate.slice(newLastDate.length - 2, newLastDate.length)) + (Number(el.leave_request) - 1)) >= new Date().getDate()) {                
-                if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+            if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
             //   }
             // }
 
@@ -371,7 +371,7 @@ const api = store => next => async action => {
           }
         }
       })
-      
+
       next({
         type: 'FETCH_DATA_CONTACT_US_SUCCESS',
         payload: { dataContactUs: newData, dataContactUsStaff: newDataStaff, dataAllContactUs: getData.data.data }
@@ -384,7 +384,46 @@ const api = store => next => async action => {
       })
     }
   }
+  else if (action.type === 'FETCH_DATA_ALL_KPIM') {
+    next({
+      type: 'FETCH_DATA_LOADING'
+    })
 
+    let getData
+    try {
+      getData = await API.get(`/kpim?year=${action.payload}`, { headers: { token } })
+      next({
+        type: 'FETCH_DATA_ALL_KPIM_SUCCESS',
+        payload: { dataAllKPIM: getData.data.data }
+      })
+
+    } catch (err) {
+      next({
+        type: 'FETCH_DATA_ERROR',
+        payload: err
+      })
+    }
+  }
+  else if (action.type === 'FETCH_DATA_ALL_TAL') {
+    next({
+      type: 'FETCH_DATA_LOADING'
+    })
+
+    let getData
+    try {
+      getData = await API.get(`/tal?year=${action.payload}`, { headers: { token } })
+      next({
+        type: 'FETCH_DATA_ALL_TAL_SUCCESS',
+        payload: { dataAllTAL: getData.data.data }
+      })
+
+    } catch (err) {
+      next({
+        type: 'FETCH_DATA_ERROR',
+        payload: err
+      })
+    }
+  }
   else {
     next(action)
   }

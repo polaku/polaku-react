@@ -83,3 +83,17 @@ export function fetchDataContactUs(payload) {
     payload
   }
 }
+
+export function fetchDataAllKPIM(payload) {
+  return {
+    type: 'FETCH_DATA_ALL_KPIM',
+    payload
+  }
+}
+
+export function fetchDataAllTAL(payload) {
+  return {
+    type: 'FETCH_DATA_ALL_TAL',
+    payload
+  }
+}

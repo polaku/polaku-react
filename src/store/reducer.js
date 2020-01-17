@@ -7,6 +7,7 @@ const defaultState = {
   sisaCuti: 0,
   evaluator1: null,
   evaluator2: null,
+  bawahan: null,
   loading: false,
   error: {},
   isLogin: false,
@@ -26,6 +27,8 @@ const defaultState = {
   dataContactUs: [],
   dataContactUsStaff: [],
   dataAllContactUs: [],
+  dataAllKPIM: [],
+  dataAllTAL: [],
 }
 
 function reducer(state = defaultState, action) {
@@ -40,7 +43,8 @@ function reducer(state = defaultState, action) {
         isCreatorAssistant: action.payload.isCreatorAssistant,
         sisaCuti: action.payload.sisaCuti,
         evaluator1: action.payload.evaluator1,
-        evaluator2: action.payload.evaluator2
+        evaluator2: action.payload.evaluator2,
+        bawahan: action.payload.bawahan
       }
     }
     case 'FETCH_DATA_USERS_SUCCESS': {
@@ -122,6 +126,18 @@ function reducer(state = defaultState, action) {
         dataContactUs: action.payload.dataContactUs,
         dataContactUsStaff: action.payload.dataContactUsStaff,
         dataAllContactUs: action.payload.dataAllContactUs
+      }
+    }
+    case 'FETCH_DATA_ALL_KPIM_SUCCESS': {
+      return {
+        ...state,
+        dataAllKPIM: action.payload.dataAllKPIM
+      }
+    }
+    case 'FETCH_DATA_ALL_TAL_SUCCESS': {
+      return {
+        ...state,
+        dataAllTAL: action.payload.dataAllTAL
       }
     }
     case 'FETCH_DATA_ERROR': {
