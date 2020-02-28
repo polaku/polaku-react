@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom'
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import { withRouter } from 'react-router-dom';
+
+import { Paper, Grid, Typography } from '@material-ui/core';
 
 import ArrowForwardIosOutlinedIcon from '@material-ui/icons/ArrowForwardIosOutlined';
 import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
@@ -20,10 +19,10 @@ class cardSetting extends Component {
   navigate = () => {
     this.props.history.push(this.props.data.route)
   }
-  
+
   render() {
     return (
-      <Paper style={{ padding: 15, display: 'flex', minHeight: 120, height: 'auto', paddingRight: 10, cursor:'pointer' }} onClick={this.navigate}>
+      <Paper style={{ padding: 15, display: 'flex', minHeight: 120, height: 'auto', paddingRight: 10, cursor: 'pointer' }} onClick={this.navigate}>
         <> {/* Icon */}
           { // Meeting room
             this.props.data.icon === 'SupervisorAccountOutlinedIcon' && <SupervisorAccountOutlinedIcon style={{ marginLeft: 10, width: 50, height: 50 }} />
@@ -62,7 +61,7 @@ class cardSetting extends Component {
             {this.props.data.information}
           </Typography>
         </Grid>
-        <Grid style={{display:'flex', flexDirection:'column', justifyContent:'center'}}>
+        <Grid style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <Grid />
           <ArrowForwardIosOutlinedIcon style={{ width: 40, textAlign: 'center' }} />
           <Grid />

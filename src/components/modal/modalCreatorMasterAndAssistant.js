@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Fade from '@material-ui/core/Fade';
-import Typography from '@material-ui/core/Typography';
+import Cookies from 'js-cookie';
 
-import FormControl from '@material-ui/core/FormControl';
+import {
+  Modal, Backdrop, Button, CircularProgress, Fade, Typography, FormControl
+} from '@material-ui/core';
+
 import { fetchDataUsers } from '../../store/action';
 
 import SeCreatableSelect from 'react-select/creatable';
@@ -47,7 +45,7 @@ class modalCreatorMasterAndAssistant extends Component {
   send = e => {
     e.preventDefault();
 
-    let token = localStorage.getItem('token')
+    let token = Cookies.get('POLAGROUP')
     this.setState({
       proses: true
     })
@@ -67,7 +65,7 @@ class modalCreatorMasterAndAssistant extends Component {
           proses: false,
         })
         if (err.message === "Request failed with status code 400") {
-          swal("Creator master sudah ada","","warning")
+          swal("Creator master sudah ada", "", "warning")
         }
       })
   }
@@ -133,7 +131,7 @@ class modalCreatorMasterAndAssistant extends Component {
                   onClick={this.cancel}
                   variant="contained"
                   color="secondary"
-                  style={{ alignSelf: 'center', marginRight:10 }}
+                  style={{ alignSelf: 'center', marginRight: 10 }}
                   disabled={this.state.proses}>
                   CANCEL
                 </Button>

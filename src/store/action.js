@@ -5,73 +5,73 @@ export function setUser(payload) {
   }
 }
 
-export function fetchDataUsers(payload) {
+export function fetchDataUsers() {
   return {
     type: 'FETCH_DATA_USERS'
   }
 }
 
-export function fetchDataBuildings(payload) {
+export function fetchDataBuildings() {
   return {
     type: 'FETCH_DATA_BUILDINGS'
   }
 }
 
-export function fetchDataRooms(payload) {
+export function fetchDataRooms() {
   return {
     type: 'FETCH_DATA_ROOMS'
   }
 }
 
-export function fetchDataRoomMaster(payload) {  
+export function fetchDataRoomMaster() {  
   return {
     type: 'FETCH_DATA_ROOM_MASTER'
   }
 }
 
-export function fetchDataCompanies(payload) {
+export function fetchDataCompanies() {
   return {
     type: 'FETCH_DATA_COMPANIES'
   }
 }
 
-export function fetchDataBookingRooms(payload) {
+export function fetchDataBookingRooms() {
   return {
     type: 'FETCH_DATA_BOOKING_ROOMS'
   }
 }
 
-export function fetchDataMyBookingRooms(payload) {
+export function fetchDataMyBookingRooms() {
   return {
     type: 'FETCH_DATA_MY_BOOKING_ROOMS'
   }
 }
 
-export function fetchDataEvent(payload) {
+export function fetchDataEvent() {
   return {
     type: 'FETCH_DATA_EVENT'
   }
 }
 
-export function fetchDataEventNeedApproval(payload) {
+export function fetchDataEventNeedApproval() {
   return {
     type: 'FETCH_DATA_EVENT_NEED_APPROVAL'
   }
 }
 
-export function fetchDataCreatorMasterAndAssistant(payload) {
+export function fetchDataCreatorMasterAndAssistant() {
   return {
     type: 'FETCH_DATA_CREATOR_MASTER_AND_ASSISTANT'
   }
 }
 
-export function fetchDataDepartment(payload) {
+export function fetchDataDepartment() {
   return {
     type: 'FETCH_DATA_DEPARTMENT'
   }
 }
 
-export function fetchDataNotification(payload) {
+export function fetchDataNotification() {
   return {
     type: 'FETCH_DATA_NOTIFICATION'
   }
@@ -95,5 +95,24 @@ export function fetchDataAllTAL(payload) {
   return {
     type: 'FETCH_DATA_ALL_TAL',
     payload
+  }
+}
+
+export function fetchDataRewardKPIM(payload) {
+  return {
+    type: 'FETCH_DATA_REWARD_KPIM',
+    payload
+  }
+}
+
+export function fetchDataPosition() {
+  return {
+    type: 'FETCH_DATA_POSITION'
+  }
+}
+
+export function userLogout() {
+  return {
+    type: 'USER_LOGOUT'
   }
 }

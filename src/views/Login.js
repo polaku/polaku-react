@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 import {
   TextField, InputAdornment, Typography, Button, CircularProgress
@@ -10,9 +12,11 @@ import LockIcon from '@material-ui/icons/Lock';
 
 import swal from 'sweetalert';
 
+import { setUser, fetchDataNotification } from '../store/action';
+
 import { API } from '../config/API';
 
-export default class Login extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,6 +26,13 @@ export default class Login extends Component {
       editableInput: true
     }
   }
+
+  componentDidMount() {
+    if (Cookies.get("POLAGROUP")) {
+      this.props.history.push("/bookingRoom")
+    }
+  }
+
 
   handleChange = name => event => {
     this.setState({ [name]: event.target.value });
@@ -34,14 +45,17 @@ export default class Login extends Component {
       proses: true,
       editableInput: false
     })
+
     let user, data, newData
     user = {
       username: this.state.username,
       password: this.state.password
     }
+
     try {
       data = await API.post('/users/signin', user)
-      localStorage.setItem('token', data.data.token)
+      Cookies.set('POLAGROUP', data.data.token, { expires: 365 });
+
       if (data) {
         this.setState({
           proses: false,
@@ -50,25 +64,29 @@ export default class Login extends Component {
           password: ''
         })
         newData = {
-          user_id: data.user_id,
-          isRoomMaster: data.isRoomMaster,
-          isCreatorMaster: data.isCreatorMaster,
-          isCreatorAssistant: data.isCreatorAssistant,
-          sisaCuti: data.sisaCuti,
-          evaluator1: data.evaluator1,
-          evaluator2: data.evaluator2,
-          bawahan: data.bawahan,
+          user_id: data.data.user_id,
+          isRoomMaster: data.data.isRoomMaster,
+          isCreatorMaster: data.data.isCreatorMaster,
+          isCreatorAssistant: data.data.isCreatorAssistant,
+          sisaCuti: data.data.sisaCuti,
+          evaluator1: data.data.evaluator1,
+          evaluator2: data.data.evaluator2,
+          bawahan: data.data.bawahan,
         }
-        if (data.role_id === 1) {
+        if (data.data.role_id === 1) {
           newData.isAdmin = true
         } else {
           newData.isAdmin = false
         }
 
+        if (data.adminContactCategori) {
+          newData.adminContactCategori = data.adminContactCategori
+        }
+
         await this.props.setUser(newData)
         await this.props.fetchDataNotification()
       }
-      this.props.navigation.navigate("Home")
+      this.props.history.push("/bookingRoom")
     } catch (err) {
       swal('Error', `${err}`)
       this.setState({
@@ -76,7 +94,6 @@ export default class Login extends Component {
         editableInput: true
       })
     }
-
   }
 
   render() {
@@ -136,60 +153,16 @@ export default class Login extends Component {
           </form>
 
           <Typography style={{ marginTop: 20, fontSize: 12 }}>©<Link to='/login'> polagroup</Link></Typography>
-          <Typography style={{ fontSize: 12 }}>2019 - Version 1.0.0</Typography>
+          <Typography style={{ fontSize: 12 }}>2020 - Version 2.0.0</Typography>
         </div>
       </div>
     )
   }
 }
 
-// import React from 'react';
-// import clsx from 'clsx';
-// import { makeStyles } from '@material-ui/core/styles';
-// import MenuItem from '@material-ui/core/MenuItem';
-// import TextField from '@material-ui/core/TextField';
-// import Grid from '@material-ui/core/Grid';
+const mapDispatchToProps = {
+  setUser,
+  fetchDataNotification
+}
 
-
-
-// export default function OutlinedTextFields() {
-//   // const classes = useStyles();
-//   const [values, setValues] = React.useState({
-//     name: 'Cat in the Hat',
-//     age: '',
-//     multiline: 'Controlled',
-//     currency: 'EUR',
-//   });
-
-//   const handleChange = name => event => {
-//     setValues({ ...values, [name]: event.target.value });
-//   };
-
-//   return (
-//     // <form className={classes.container} noValidate autoComplete="off">
-//     <form>
-//       <Grid item xs={12}>
-//       <TextField
-//         id="outlined-name"
-//         label="Name"
-//         className={{width: 200}}
-//         value={values.name}
-//         onChange={handleChange('name')}
-//         margin="normal"
-//         variant="outlined"
-//       />
-//       </Grid>
-//       <Grid item xs={12}>
-//       <TextField
-//         id="outlined-password-input"
-//         label="Password"
-//         className={{width: 200}}
-//         type="password"
-//         autoComplete="current-password"
-//         margin="normal"
-//         variant="outlined"
-//       />
-//       </Grid>
-//     </form>
-//   );
-// }
+export default connect(null, mapDispatchToProps)(Login)

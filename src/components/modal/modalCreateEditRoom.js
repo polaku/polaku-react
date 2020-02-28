@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Fade from '@material-ui/core/Fade';
-import FormControl from '@material-ui/core/FormControl';
-import TextField from '@material-ui/core/TextField';
+import Cookies from 'js-cookie';
+
+import {
+  Modal, Backdrop, Button, CircularProgress, Fade, FormControl, TextField
+} from '@material-ui/core';
+
 import { fetchDataRooms } from '../../store/action';
 
 import { API } from '../../config/API';
+
+import swal from 'sweetalert';
 
 class modalCreateEditRoom extends Component {
   constructor(props) {
@@ -36,7 +37,7 @@ class modalCreateEditRoom extends Component {
     this.setState({
       proses: true
     })
-    let token = localStorage.getItem('token')
+    let token = Cookies.get('POLAGROUP')
 
     if (this.props.statusCreate) {
       let newData = {
@@ -59,7 +60,7 @@ class modalCreateEditRoom extends Component {
           })
         })
         .catch(err => {
-          console.log(err);
+          swal('please try again')
           this.setState({
             proses: false
           })
@@ -84,7 +85,7 @@ class modalCreateEditRoom extends Component {
           })
         })
         .catch(err => {
-          console.log(err);
+          swal('please try again')
           this.setState({
             proses: false
           })

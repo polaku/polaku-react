@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Cookies from 'js-cookie';
 
-import { Grid } from '@material-ui/core';
+import { Grid, Tooltip, IconButton } from '@material-ui/core';
 
-import IconButton from '@material-ui/core/IconButton';
 import PeopleIcon from '@material-ui/icons/People';
 import PersonIcon from '@material-ui/icons/Person';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import Tooltip from '@material-ui/core/Tooltip';
 
 import ModalCreateEditBookingRoom from '../modal/modalCreateEditBookingRoom';
 import { API } from '../../config/API';
@@ -36,7 +35,7 @@ class cardBookingRoom extends Component {
     this.setState({
       proses: true
     })
-    let token = localStorage.getItem('token')
+    let token = Cookies.get('POLAGROUP')
 
     API.delete(`/bookingRoom/${this.props.data.room_booking_id}`,
       {

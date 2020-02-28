@@ -4,31 +4,20 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {
-  Paper, Tabs, Tab, Typography, Box, Divider, Grid, Button, Popover, Table, TableBody, TableCell, TableHead, TableRow, TablePagination, TextField, Select
+  Paper, Tabs, Tab, Typography, Box, Divider, Grid, Button, Popover,
+  TextField, MenuItem, IconButton, Checkbox, MenuList, Select as SelectOption
 } from '@material-ui/core';
-// import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
 
 import SwipeableViews from 'react-swipeable-views';
 
 import ArrowDropUpOutlinedIcon from '@material-ui/icons/ArrowDropUpOutlined';
 import ArrowDropDownOutlinedIcon from '@material-ui/icons/ArrowDropDownOutlined';
-import ArchiveIcon from '@material-ui/icons/Archive';
+import SearchIcon from '@material-ui/icons/Search';
 
-import CardReport from '../../components/report/CardReport';
+import CardReportKPIM from '../../components/kpim/cardReportKPIM';
 import Download from '../../components/exportToExcel'
 
-import orderBy from 'lodash/orderBy';
-
-import swal from 'sweetalert';
-
-import { fetchDataContactUs } from '../../store/action';
+import { fetchDataAllKPIM } from '../../store/action';
 
 const invertDirection = {
   asc: "desc",
@@ -58,18 +47,19 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
+
+
 class ReportIjin extends Component {
   state = {
     month: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
     monthSelected: 0,
+    weekSelected: 0,
+    optionMinggu: [],
+
     value: 0,
     index: 0,
-    anchorEl: null,
     openFilter: false,
-    monthStart: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-    monthEnd: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
-    newMonthStart: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-    newMonthEnd: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+
     data: [],
     dataForDisplay: [],
     page: 0,
@@ -79,47 +69,342 @@ class ReportIjin extends Component {
 
     labelValue: [
       {
-        label: "name",
+        label: "Name",
         value: "name"
       }, {
-        label: "total_nilai",
+        label: "Total Nilai",
         value: "totalNilai"
       }, {
-        label: "tal",
+        label: "TAL",
         value: "tal"
       }, {
-        label: "kpim",
+        label: "KPIM",
         value: "kpim"
       }
     ],
 
+    kpim: [],
+    tal: [],
+
     searchName: "",
-    filterCategori: ""
-  }
+    filterCategori: "",
+    selectAll: false,
+    statusCheckAll: false,
+
+    unduhLaporan: ["semua", "KPIM", "TAL"],
+    anchorElSubMenu: null,
+    openSubMenu: false,
+
+    labelValueReportNilai: [
+      {
+        label: "Nama",
+        value: "nama"
+      }, {
+        label: "KPIM1",
+        value: "kpim1"
+      }, {
+        label: "KPIM2",
+        value: "kpim2"
+      }, {
+        label: "KPIM3",
+        value: "kpim3"
+      }, {
+        label: "KPIM4",
+        value: "kpim4"
+      }, {
+        label: "KPIM5",
+        value: "kpim5"
+      }, {
+        label: "TAL",
+        value: "TAL"
+      }, {
+        label: "Total Nilai",
+        value: "totalNilai"
+      },
+    ],
+    labelValueKPIM: [
+      {
+        label: "Nama",
+        value: "nama"
+      }, {
+        label: "Indikator",
+        value: "indikator"
+      }, {
+        label: "Nilai",
+        value: "nilai"
+      },
+    ],
+    labelValueTAL: [
+      {
+        label: "Nama",
+        value: "nama"
+      }, {
+        label: "TAL",
+        value: "tal"
+      }, {
+        label: "Minggu",
+        value: "minggu"
+      }, {
+        label: "Nilai",
+        value: "nilai"
+      },
+    ],
+    dataNilaiReport: [],
+    dataNilaiKPIM: [],
+    dataNilaiTAL: [],
+    counterCeklis: 0,
+
+    updatedAt: new Date(),
+    dataForDownload: []
+  };
 
   async componentDidMount() {
+    this.setState({
+      monthSelected: new Date().getMonth()
+    })
     await this.fetchData()
-  }
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.dataNilaiKPIM !== this.state.dataNilaiKPIM) {
+      if (this.state.dataNilaiKPIM.length > 0) {
+        this.setState({
+          statusCeklis: true
+        })
+      } else {
+        this.setState({
+          statusCeklis: false
+        })
+      }
+    }
+
+    if (prevState.updatedAt !== this.state.updatedAt) {
+      let counter = 0, counterVisible = 0
+
+      this.state.dataForDisplay.forEach(el => {
+        if (el.isVisible) {
+          counterVisible++
+        }
+        if (el.isCheck && el.isVisible) {
+          counter++
+        }
+      })
+
+      if (counterVisible !== counter) {
+        this.setState({
+          statusCheckAll: false
+        })
+      }
+
+      this.setState({
+        counterCeklis: counter
+      })
+    }
+
+    if (prevState.monthSelected !== this.state.monthSelected) {
+      let batasAtas, batasBawah, loopingWeek = []
+
+      batasAtas = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.monthSelected + 1, 0))
+      batasBawah = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.monthSelected, 1))
+
+      for (let i = batasBawah; i <= batasAtas; i++) {
+        loopingWeek.push(i)
+      }
+
+      if (batasAtas === 53) {
+        loopingWeek[loopingWeek.length - 1] = 1
+      }
+      this.setState({
+        optionMinggu: loopingWeek,
+        weekSelected: 0,
+      })
+
+      this.fetchData()
+    }
+
+    if (prevState.weekSelected !== this.state.weekSelected) {
+      this.fetchData()
+    }
+  };
+
 
   fetchData = async () => {
-    let newData = [{
-      name: "Tio",
-      totalNilai: 80,
-      tal: 75,
-      kpim: 60
-    }, {
-      name: "Ardi",
-      totalNilai: 70,
-      tal: 85,
-      kpim: 70
-    }]
+    let tempData = []
+    await this.props.fetchDataAllKPIM({ year: new Date().getFullYear(), hasConfirm: true })
 
-    this.setState({
-      dataForDisplay: newData,
-      data: newData
+    await this.props.dataAllKPIM.sort(this.sortingUser)
+
+    let tempUser = this.props.dataAllKPIM[0].user_id, temp = []
+    this.props.dataAllKPIM.forEach((kpim, index) => {
+      if (tempUser !== kpim.user_id) {
+        tempUser = kpim.user_id
+        tempData.push(temp)
+        temp = []
+      }
+      temp.push(kpim)
+      if (index === this.props.dataAllKPIM.length - 1) {
+        tempData.push(temp)
+      }
+    });
+
+    let forDisplay = []
+
+    await tempData.forEach(async (el, index) => {
+      let a = await this.fetchDataForDisplay(el)
+
+      if ((a.kpim && a.kpim.length > 0) || (a.tal && a.tal.dataTAL.length > 0)) {
+        a.isVisible = true
+      } else {
+        a.isVisible = false
+      }
+
+      a.isCheck = false
+      forDisplay.push(a)
+
+      if (index === tempData.length - 1) {
+        this.setState({
+          dataForDisplay: forDisplay,
+          data: forDisplay
+        })
+      }
     })
-  }
+  };
 
+  fetchDataForDisplay = async  args => {
+    let tempDataForDisplayKPIM = [], tempDataForDisplayTAL = [], nilaiKPI = 0
+
+    let kpim = await args.filter(el => el.indicator_kpim.toLowerCase() !== "tal")
+    let tal = await args.find(el => el.indicator_kpim.toLowerCase() === "tal")
+
+    await kpim.forEach(async element => {
+      let kpimScore = await element.kpimScore.find(el => el.month === this.state.monthSelected + 1 && el.hasConfirm === true)
+      if (kpimScore) {
+        let score = {
+          indicator_kpim: element.indicator_kpim,
+          ...kpimScore
+        }
+        nilaiKPI += Number(kpimScore.score_kpim_monthly) * (Number(kpimScore.bobot) / 100)
+
+        tempDataForDisplayKPIM.push(score)
+      }
+    });
+    let tempTAL = await tal.kpimScore.find(el => el.month === this.state.monthSelected + 1)
+
+    tempTAL && tempTAL.tbl_tals.forEach(async element => {
+
+      let newTALScore
+      if (this.state.weekSelected === 0) {
+        newTALScore = await element.tbl_tal_scores.filter(el => el.month === this.state.monthSelected + 1 && el.hasConfirm === true)
+      } else {
+        newTALScore = await element.tbl_tal_scores.filter(el => el.month === this.state.monthSelected + 1 && el.hasConfirm === true && el.week === this.state.weekSelected)
+      }
+
+      await newTALScore.forEach(el => {
+        let newData = {
+          indicator_tal: element.indicator_tal,
+          ...el
+        }
+        tempDataForDisplayTAL.push(newData)
+      })
+    })
+
+    await tempDataForDisplayTAL.sort(this.sortingWeek)
+
+    if (tempTAL) {
+      tempTAL.indicator_kpim = "TAL"
+      tempTAL.dataTAL = tempDataForDisplayTAL
+    }
+
+    let b = await this.fetchDataReport(tempDataForDisplayKPIM, tempTAL, tal.user_id, args[0].tbl_user.tbl_account_detail.fullname)
+
+    if (tempTAL) {
+      if (tempTAL.hasConfirm) {
+        nilaiKPI += Number(tempTAL.score_kpim_monthly) * (Number(tempTAL.bobot) / 100)
+        return {
+          kpim: tempDataForDisplayKPIM,
+          tal: tempTAL,
+          nilaiKPI,
+          nilaiTAL: tempTAL.score_kpim_monthly,
+          userId: tal.user_id,
+          fullname: args[0].tbl_user.tbl_account_detail.fullname,
+          ...b
+        }
+      } else {
+        return {
+          kpim: tempDataForDisplayKPIM,
+          tal: tempTAL,
+          nilaiKPI,
+          nilaiTAL: 0,
+          userId: tal.user_id,
+          fullname: args[0].tbl_user.tbl_account_detail.fullname,
+          ...b
+        }
+      }
+    } else {
+      return {}
+    }
+  };
+
+  fetchDataReport = async (kpim, tal, userId, userFullname) => {
+    let newArr = [null, null, null, null, null], tempTotalNilai = 0, tempDataKPIM = [], tempDataTAL = []
+
+    kpim.forEach((el, index) => {
+      newArr[index] = el.score_kpim_monthly
+
+      tempTotalNilai += Number(el.score_kpim_monthly) * (Number(el.bobot) / 100)
+    })
+
+    let newData = [...kpim, tal]
+
+    if (tal) tempTotalNilai += Number(tal.score_kpim_monthly) * (Number(tal.bobot) / 100)
+
+    let dataNilaiReport = [
+      {
+        userId: userId,
+        nama: userFullname,
+        kpim1: newArr[0],
+        kpim2: newArr[1],
+        kpim3: newArr[2],
+        kpim4: newArr[3],
+        kpim5: newArr[4],
+        totalNilai: tempTotalNilai
+      }
+    ]
+    
+    if (tal) dataNilaiReport[0].TAL = tal.score_kpim_monthly
+
+    // FETCH DATA KPIM
+    await newData.forEach(el => {
+      let tempObj = {
+        userId: userId,
+        nama: userFullname,
+        indikator: el ? el.indicator_kpim : "",
+        nilai: el ? el.score_kpim_monthly : ""
+      }
+      tempDataKPIM.push(tempObj)
+    })
+
+    // FETCH DATA TAL
+    tal && await tal.dataTAL.forEach(el => {
+      let tempObj = {
+        userId: userId,
+        nama: userFullname,
+        tal: el.indicator_tal,
+        minggu: el.week,
+        nilai: el.score_tal
+      }
+      tempDataTAL.push(tempObj)
+    })
+
+    return {
+      dataNilaiReport,
+      dataNilaiKPIM: tempDataKPIM,
+      dataNilaiTAL: tempDataTAL,
+    }
+  };
+
+
+  
   handleChangeTabs = (event, newValue) => {
     this.setState({ value: newValue })
   };
@@ -128,16 +413,12 @@ class ReportIjin extends Component {
     this.setState({ index: index })
   };
 
-  handleChange = name => value => {
-    this.setState({ [name]: value });
+  handleChange = name => event => {
+    this.setState({ [name]: event.target.value });
   };
 
   handleSearching = name => event => {
     this.setState({ [name]: event.target.value });
-  };
-
-  handleClick = event => {
-    this.setState({ anchorEl: event.currentTarget, openFilter: true })
   };
 
   handleClose = () => {
@@ -149,77 +430,148 @@ class ReportIjin extends Component {
     })
   };
 
-  filterData = async () => {
-    await this.setState({
-      anchorEl: null,
-      openFilter: false,
-      monthStart: this.state.newMonthStart,
-      monthEnd: this.state.newMonthEnd,
-      dataForDisplay: [],
-      data: [],
-    })
-    this.fetchData()
-  }
-
-  handleChangePage = (event, newPage) => {
+  handleSort = async () => {
     this.setState({
-      page: newPage
+      sortDirection: invertDirection[this.state.sortDirection]
     })
-  }
+    await this.state.dataForDisplay.sort(this.sortingName)
+  };
 
-  handleChangeRowsPerPage = event => {
-    this.setState({
-      rowsPerPage: event.target.value,
-      page: 0
-    })
-  }
+  sortingName = (a, b) => {
+    if (this.state.sortDirection === "asc") {
+      if (a.fullname < b.fullname) {
+        return -1;
+      }
+      if (a.fullname > b.fullname) {
+        return 1;
+      }
+    } else {
+      if (a.fullname < b.fullname) {
+        return 1;
+      }
+      if (a.fullname > b.fullname) {
+        return -1;
+      }
+    }
+    return 0;
+  };
 
-  handleSort = columnName => {
-    this.setState(state => ({
-      columnToSort: columnName,
-      sortDirection: state.columnToSort === columnName
-        ? invertDirection[state.sortDirection]
-        : 'asc'
-    }))
-  }
+  sortingWeek = (a, b) => {
+    if (Number(a.week) < Number(b.week)) {
+      return -1;
+    }
+    if (Number(a.week) > Number(b.week)) {
+      return 1;
+    }
+    return 0;
+  };
 
   searching = async event => {
     event.preventDefault()
-    if (this.state.filterCategori === "") {
-      swal("Categori filter belum dipilih");
-    } else {
-      let hasilSearch = await this.state.data.filter(el => el[this.state.filterCategori].toLowerCase().match(new RegExp(this.state.searchName.toLowerCase())))
-      this.setState({ dataForDisplay: hasilSearch })
-      if (this.state.filterCategori === "") {
-        this.setState({ dataForDisplay: this.state.data })
-      }
+
+    let hasilSearch = await this.state.data.filter(el => el.fullname.toLowerCase().match(new RegExp(this.state.searchName.toLowerCase())))
+    this.setState({ dataForDisplay: hasilSearch })
+  };
+
+  sortingUser = (a, b) => {
+    if (Number(a.user_id) < Number(b.user_id)) {
+      return -1;
     }
-  }
+    if (Number(a.user_id) > Number(b.user_id)) {
+      return 1;
+    }
+    return 0;
+  };
+
+  handleChangeCheck = event => {
+    this.setState({
+      selectAll: event.target.checked,
+      statusCheckAll: event.target.checked,
+    })
+
+    if (!event.target.checked) {
+      this.setState({
+        dataNilaiReport: [],
+        dataNilaiKPIM: [],
+        dataNilaiTAL: []
+      })
+    }
+  };
+
+  handleClickSubMenu = event => {
+    this.setState({
+      anchorElSubMenu: event.currentTarget,
+      openSubMenu: true
+    })
+    this.fetchDataForDownload()
+  };
+
+  handleCloseSubMenu = () => {
+    this.setState({
+      anchorElSubMenu: null,
+      openSubMenu: false,
+      anchorElMenu: null,
+      openMenu: false
+    })
+  };
+
+  fetchDataForDownload = async () => {
+    let newData = await this.state.dataForDisplay.filter(el => el.isCheck && el.isVisible)
+
+    let dataNilaiReport = []
+    let dataNilaiKPIM = []
+    let dataNilaiTAL = []
+
+    newData.forEach(el => {
+      dataNilaiReport = [...dataNilaiReport, ...el.dataNilaiReport]
+      dataNilaiKPIM = [...dataNilaiKPIM, ...el.dataNilaiKPIM]
+      dataNilaiTAL = [...dataNilaiTAL, ...el.dataNilaiTAL]
+    })
+
+    this.setState({
+      dataNilaiReport,
+      dataNilaiKPIM,
+      dataNilaiTAL
+    })
+  };
+
+
+  handleCheck = (userId, status) => {
+    let tempData = this.state.dataForDisplay
+
+    tempData.forEach(el => {
+      if (el.userId === userId) {
+        el.isCheck = status
+      }
+    })
+
+    this.setState({
+      dataForDisplay: tempData,
+      updatedAt: new Date()
+    })
+  };
+
+  getNumberOfWeek = date => {
+    let theDay = date
+    var target = new Date(theDay);
+    var dayNr = (new Date(theDay).getDay() + 6) % 7;
+
+    target.setDate(target.getDate() - dayNr + 3);
+
+    var jan4 = new Date(target.getFullYear(), 0, 4);
+    var dayDiff = (target - jan4) / 86400000;
+    var weekNr = 1 + Math.ceil(dayDiff / 7);
+
+    return weekNr;
+  };
 
   render() {
-    function getDate(waktuAwal, waktuAkhir) {
-      let months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
-
-      let month1 = months[new Date(waktuAwal).getMonth()]
-      let month2 = months[new Date(waktuAkhir).getMonth()]
-
-      if (month1 === month2) return `${month1} ${new Date(waktuAkhir).getFullYear()}`
-      else if (new Date(waktuAwal).getFullYear() === new Date(waktuAkhir).getFullYear()) return `${month1} - ${month2} ${new Date(waktuAkhir).getFullYear()}`
-      else return `${month1} ${new Date(waktuAwal).getFullYear()} -${month2} ${new Date(waktuAkhir).getFullYear()}`
-
-    }
 
     return (
       <div style={{ padding: '10px 40px' }}>
         <p style={{ fontSize: 24, fontWeight: 'bold', margin: 0 }}>Report KPIM</p>
 
-        {
-          this.state.dataForDisplay.length !== 0 && <Grid style={{ display: 'flex', alignItems: 'center' }}>
-            <ArchiveIcon />
-            <Download nameSheet="Laporan_KPIM" labelValue={this.state.labelValue} data={this.state.dataForDisplay} />
-          </Grid>
-        }
-
+        {/* BAGIAN ATAS */}
         <Paper square style={{ padding: '10px 20px 20px 20px', margin: '10px 0px' }}>
           <Grid style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Tabs
@@ -233,63 +585,31 @@ class ReportIjin extends Component {
               <Tab label="BPW" style={{ marginRight: 30 }} /> */}
             </Tabs>
             <Grid style={{ display: 'flex', alignItems: 'center' }}>
-              <Typography>{getDate(this.state.monthStart, this.state.monthEnd)}</Typography>
-              <Button variant="contained" onClick={this.handleClick} style={{ marginLeft: 10 }}>
-                set tanggal
-              </Button>
-              <Popover
-                open={this.state.openFilter}
-                anchorEl={this.state.anchorEl}
-                onClose={this.handleClose}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
+              <SelectOption
+                value={this.state.monthSelected}
+                onChange={this.handleChange('monthSelected')}
               >
-                <Grid
-                  style={{ width: 300, padding: 20, display: 'flex', flexDirection: 'column' }}>
-                  <MuiPickersUtilsProvider utils={DateFnsUtils} style={{ margin: 0 }}>
-                    <KeyboardDatePicker
-                      margin="normal"
-                      id="month-start"
-                      label="Tanggal Mulai"
-                      format="dd/MM/yyyy"
-                      style={{ margin: 0, width: '100%' }}
-                      value={this.state.newMonthStart}
-                      onChange={this.handleChange('newMonthStart')}
-                      // defaultValue={new Date((new Date().getFullYear(), new Date().getMonth(), new Date().getDate()))}
-                      KeyboardButtonProps={{
-                        'aria-label': 'change date',
-                      }}
-                      disabled={this.state.proses}
-                    />
-                  </MuiPickersUtilsProvider>
-                  <p style={{ textAlign: "center", margin: 10 }}>s/d</p>
-                  <MuiPickersUtilsProvider utils={DateFnsUtils} style={{ margin: 0 }}>
-                    <KeyboardDatePicker
-                      margin="normal"
-                      id="month-end"
-                      label="Tanggal Selesai"
-                      format="dd/MM/yyyy"
-                      style={{ margin: 0, width: '100%' }}
-                      value={this.state.newMonthEnd}
-                      onChange={this.handleChange('newMonthEnd')}
-                      minDate={new Date(new Date(this.state.newMonthStart).getFullYear(), new Date(this.state.newMonthStart).getMonth(), new Date(this.state.newMonthStart).getDate() + 1)}
-                      KeyboardButtonProps={{
-                        'aria-label': 'change date',
-                      }}
-                      disabled={this.state.proses}
-                    />
-                  </MuiPickersUtilsProvider>
-                  <Button variant="contained" style={{ alignSelf: 'flex-end', marginTop: 15 }} onClick={this.filterData}>
-                    oke
-                  </Button>
-                </Grid>
-              </Popover>
+                {
+                  this.state.month.map((month, index) =>
+                    <MenuItem value={index} key={index}>{month} {new Date().getFullYear()}</MenuItem>
+                  )
+                }
+              </SelectOption>
+
+              <SelectOption
+                value={this.state.weekSelected}
+                onChange={this.handleChange('weekSelected')}
+                style={{ width: 130, marginRight: 10, marginLeft: 10 }}
+              >
+                <MenuItem value={0}>
+                  week sebulan
+                  </MenuItem>
+                {
+                  this.state.optionMinggu.map((el, index) =>
+                    <MenuItem value={el} key={index}>{el}</MenuItem>
+                  )
+                }
+              </SelectOption>
             </Grid>
           </Grid>
           <Divider />
@@ -304,27 +624,25 @@ class ReportIjin extends Component {
                 disabled={this.state.proses}
                 style={{ width: '100%', marginRight: 15, marginTop: 3 }}
                 InputProps={{
-                  style: {
-                    height: 35
-                  }
+                  endAdornment: <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={this.searching}
+                  >
+                    <SearchIcon />
+                  </IconButton>,
                 }}
               />
             </form>
-            <FormControl style={{ width: 150, marginRight: 15 }}>
-              <Select value={this.state.filterCategori} onChange={this.handleSearching('filterCategori')} displayEmpty>
-                <MenuItem value="">
-                  <em>Filter</em>
-                </MenuItem>
-                <MenuItem value="name">Name</MenuItem>
-              </Select>
-            </FormControl>
-            <Button onClick={() => this.handleSort('created_at')} variant="contained" style={{ width: 150 }}>
+            <Button onClick={() => this.handleSort('fullname')} variant="contained" style={{ width: 200 }}>
               {
-                this.state.columnToSort === 'created_at' ? (this.state.sortDirection === "desc" ? <>Terbaru <ArrowDropDownOutlinedIcon /></> : <>Terlama <ArrowDropUpOutlinedIcon /></>) : <>Terbaru<ArrowDropDownOutlinedIcon /></>
+                this.state.sortDirection === "desc" ? <>Sorting Nama <ArrowDropDownOutlinedIcon /></> : <>Sorting Nama <ArrowDropUpOutlinedIcon /></>
               }
             </Button>
           </Grid>
         </Paper>
+
+
+
         <SwipeableViews
           index={this.state.value}
           onChangeIndex={this.handleChangeIndex}
@@ -332,83 +650,111 @@ class ReportIjin extends Component {
 
           {/* Semua */}
           <TabPanel value={this.state.value} index={0} style={{ height: '85vh' }}>
-            <Paper style={{ padding: 10, marginBottom: 5 }}>
-              <Table>
-                <TableHead style={{ backgroundColor: '#f8f8f8' }}>
-                  <TableRow>
-                    <TableCell style={{ marginLeft: 50, width: '40%' }} onClick={() => this.handleSort('name')}>
-                      <Grid style={{ display: 'flex', alignItems: 'center' }} >
-                        Nama
-                        {
-                          this.state.columnToSort === 'name' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
-                        }
-                      </Grid>
-                    </TableCell>
-                    <TableCell style={{ width: '20%' }} align="center" onClick={() => this.handleSort('totalNilai')}>
-                      <Grid style={{ display: 'flex', alignItems: 'center' }} >
-                        Total nilai
-                        {
-                          this.state.columnToSort === 'totalNilai' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
-                        }
-                      </Grid>
-                    </TableCell>
-                    <TableCell style={{ width: '20%' }} align="center" onClick={() => this.handleSort('tal')}>
-                      <Grid style={{ display: 'flex', alignItems: 'center' }} >
-                        TAL
-                        {
-                          this.state.columnToSort === 'tal' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
-                        }
-                      </Grid>
-                    </TableCell>
-                    <TableCell style={{ width: '20%' }} align="center" onClick={() => this.handleSort('kpim')}>
-                      <Grid style={{ display: 'flex', alignItems: 'center' }} >
-                        KPIM
-                        {
-                          this.state.columnToSort === 'kpim' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
-                        }
-                      </Grid>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {
-                    orderBy(this.state.dataForDisplay, this.state.columnToSort, this.state.sortDirection).slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((el, index) => (
-                      <CardReport data={el} key={index} />
-                    ))
-                  }
-                </TableBody>
-              </Table>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 20]}
-                component="div"
-                count={this.state.dataForDisplay.length}
-                rowsPerPage={this.state.rowsPerPage}
-                page={this.state.page}
-                backIconButtonProps={{
-                  'aria-label': 'previous page',
-                }}
-                nextIconButtonProps={{
-                  'aria-label': 'next page',
-                }}
-                onChangePage={this.handleChangePage}
-                onChangeRowsPerPage={this.handleChangeRowsPerPage}
-              />
 
+            <Paper id="header" style={{ display: 'flex', padding: '10px 20px', marginBottom: 5 }} >
+              <Grid style={{ display: 'flex', width: '70%', alignItems: 'center' }}>
+                <Grid style={{ width: 300, display: 'flex', alignItems: 'center' }}>
+                  <Checkbox
+                    checked={this.state.statusCheckAll}
+                    onChange={this.handleChangeCheck}
+                    value="secondary"
+                    color="secondary"
+                  />
+                  <p style={{ margin: '0px 10px' }}>pilih untuk lakukan aksi</p>
+                </Grid>
+                <Grid style={{ width: 50, textAlign: 'center' }}>
+                  <p style={{ margin: 0 }}>KPI</p>
+                </Grid>
+                <Grid style={{ width: 50, textAlign: 'center' }}>
+                  <p style={{ margin: 0 }}>TAL</p>
+                </Grid>
+              </Grid>
+              <Grid style={{ width: '10%' }} />
+              <Grid style={{ width: '20%', display: 'flex', alignItems: 'center' }}>
+                <p style={{ margin: 0 }}>Aksi</p>
+              </Grid>
             </Paper>
+            {
+              this.state.dataForDisplay.map((el, index) => <CardReportKPIM data={el} key={index} allSelected={this.state.selectAll} handleCheck={this.handleCheck} />)
+            }
+
           </TabPanel>
         </SwipeableViews>
+
+        {
+          this.state.counterCeklis > 0 &&
+          <Grid style={{ width: '100%', position: 'fixed', bottom: 0, left: 30 }}>
+
+            <Grid style={{ backgroundColor: "#b8b8b8", width: '70%', height: 50, margin: '0 auto', display: 'flex', justifyContent: 'space-between' }}>
+              <Grid style={{ display: 'flex', alignItems: 'center', paddingLeft: 15 }}>
+                <>
+                  <Checkbox
+                    checked={this.state.selectAll}
+                    onChange={this.handleChangeCheck}
+                    value="secondary"
+                    color="secondary"
+                  />
+                  <p style={{ margin: '0px 0px 0px 3px' }}>pilih semua</p>
+                </>
+                <>
+                  <Grid style={{ width: 30, height: 30, borderRadius: 30, backgroundColor: '#d71149', display: 'flex', justifyContent: 'center', alignItems: 'center', marginLeft: 30 }}>
+                    <p style={{ margin: 0, color: 'white', fontSize: 12 }}>{this.state.counterCeklis}</p>
+                  </Grid>
+                  <p style={{ margin: '0px 0px 0px 8px' }}>orang terpilih</p>
+                </>
+              </Grid>
+              <Grid style={{ display: 'flex', alignItems: 'center', marginRight: 30 }}>
+                <Button variant="contained" style={{ borderRadius: 5, padding: 0 }} onClick={this.handleClickSubMenu}>
+                  <p style={{ margin: 0 }}>Unduh</p>
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+        }
+
+        <Popover id="Sub menu unduh"
+          open={this.state.openSubMenu}
+          anchorEl={this.state.anchorElSubMenu}
+          onClose={this.handleCloseSubMenu}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+          }}
+        >
+          <MenuList style={{ width: 100 }} >
+            {
+              this.state.unduhLaporan.map((el, index) =>
+                <MenuItem key={index}>
+                  <Download
+                    title={el}
+                    report="kpim"
+                    labelValueReportNilai={this.state.labelValueReportNilai}
+                    data={this.state.dataNilaiReport}
+                    labelValueKPIM={this.state.labelValueKPIM}
+                    dataKPIM={this.state.dataNilaiKPIM}
+                    labelValueTAL={this.state.labelValueTAL}
+                    dataTAL={this.state.dataNilaiTAL} />
+                </MenuItem>
+              )
+            }
+          </MenuList>
+        </Popover>
       </div>
     )
   }
 }
 
 const mapDispatchToProps = {
-  fetchDataContactUs
+  fetchDataAllKPIM
 }
 
-const mapStateToProps = ({ dataAllContactUs }) => {
+const mapStateToProps = ({ dataAllKPIM }) => {
   return {
-    dataAllContactUs
+    dataAllKPIM
   }
 }
 

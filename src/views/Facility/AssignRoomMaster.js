@@ -1,6 +1,7 @@
 import 'date-fns';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Cookies from 'js-cookie';
 
 import {
   Typography, Button, CircularProgress, FormControl, Grid, FormControlLabel, Checkbox, FormLabel, FormGroup
@@ -11,6 +12,8 @@ import makeAnimated from 'react-select/animated';
 
 import { fetchDataCompanies, fetchDataUsers } from '../../store/action';
 import { API } from '../../config/API';
+
+import swal from 'sweetalert';
 
 const animatedComponents = makeAnimated();
 
@@ -95,7 +98,7 @@ class AssignRoomMaster extends Component {
       proses: true,
       editableInput: false
     })
-    let newData, companyId = [], token = localStorage.getItem('token')
+    let newData, companyId = [], token = Cookies.get('POLAGROUP')
 
     this.state.company.forEach(el => {
       if (el.status === true) {
@@ -113,7 +116,7 @@ class AssignRoomMaster extends Component {
         this.props.history.goBack();
       })
       .catch(err => {
-        console.log(err);
+        swal('please try again')
       })
   }
 

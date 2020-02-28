@@ -1,28 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Fade from '@material-ui/core/Fade';
-import FormControl from '@material-ui/core/FormControl';
-import TextField from '@material-ui/core/TextField';
+import Cookies from 'js-cookie';
+
+import {
+  Modal, Backdrop, Button, CircularProgress, Fade, FormControl, TextField, Divider, Radio, RadioGroup, FormControlLabel, FormLabel
+} from '@material-ui/core';
+
+import SeCreatableSelect from 'react-select/creatable';
+import makeAnimated from 'react-select/animated';
+
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
-import Divider from '@material-ui/core/Divider';
-import SeCreatableSelect from 'react-select/creatable';
-import makeAnimated from 'react-select/animated';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormLabel from '@material-ui/core/FormLabel';
 
 import { fetchDataEvent, fetchDataDepartment, fetchDataCompanies, fetchDataUsers } from '../../store/action';
 
 import { API } from '../../config/API';
+
+import swal from 'sweetalert';
 
 const animatedComponents = makeAnimated();
 
@@ -67,7 +64,7 @@ class modalCreateEditRoom extends Component {
     this.setState({
       proses: true
     })
-    let token = localStorage.getItem('token'), newArray = []
+    let token = Cookies.get('POLAGROUP'), newArray = []
 
     var formData = new FormData();
 
@@ -104,7 +101,7 @@ class modalCreateEditRoom extends Component {
         })
       })
       .catch(err => {
-        console.log(err);
+        swal('please try again')
         this.setState({
           proses: false
         })

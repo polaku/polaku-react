@@ -1,15 +1,92 @@
 import React, { Component } from 'react'
 
-import { Grid, Popover, TextField } from '@material-ui/core';
+import {
+  Grid, Popover
+} from '@material-ui/core';
 
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+
+import PencapaianKPIM from './pencapaianKPIM';
 
 export default class cardIndicator extends Component {
   state = {
     open: false,
     anchorEl: null,
-    newInput: "",
+    persenBefore: 0,
+    persenNow: 0,
+    persenMinggu: 0,
+    persenBulan: 0,
+    editIndicator: false,
+    dataTALWeek: []
+  }
+
+  componentDidMount() {
+    this.fetchData()
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.data !== this.props.data) {
+      this.fetchData()
+    }
+  }
+
+  fetchData = async () => {
+    let persenBefore = 0, persenNow = 0, persenMinggu = 0, persenBulan = 0
+
+    if (this.props.data[1].indicator_kpim.toLowerCase() === "kpim team") {
+
+      if (isNaN(Math.ceil(this.props.data[0].score_kpim_monthly))) persenBefore = 0
+      else persenBefore = Math.ceil(this.props.data[0].score_kpim_monthly) || 0
+
+      if (isNaN(Math.ceil(this.props.data[1].score_kpim_monthly))) persenNow = 0
+      else persenNow = Math.ceil(this.props.data[1].score_kpim_monthly) || 0
+
+    } else if (this.props.data[1].indicator_kpim.toLowerCase() === "tal team") {
+      console.log(this.props.data)
+      if (isNaN(Math.ceil(this.props.data[1].score_kpim_monthly))) persenBulan = 0
+      else persenBulan = Math.ceil(this.props.data[1].score_kpim_monthly) || 0
+
+      if (isNaN(Math.ceil(this.props.data[1].score_kpim_monthly))) {
+        persenMinggu = 0
+        console.log("MASUK SINI", this.props.data)
+      }
+      else {
+        console.log(this.props.weekSelected)
+        console.log(this.props.data[1].talPerMinggu)
+        let nilaiMingguIni = await this.props.data[1].talPerMinggu.find(el => el.week === this.props.weekSelected)
+        // console.log(nilaiMingguIni)
+        if (nilaiMingguIni) {
+
+          persenMinggu = Math.ceil(nilaiMingguIni.scoreTALTeam) || 0
+
+          this.setState({
+            dataTALWeek: nilaiMingguIni.tal
+          })
+        } else {
+          this.setState({
+            dataTALWeek: []
+          })
+        }
+      }
+    } else if (this.props.data[1].indicator_kpim.toLowerCase() !== "tal") {
+      if (this.props.data[0].pencapaian_monthly && this.props.data[0].target_monthly !== 0) persenBefore = Math.ceil(Number(this.props.data[0].pencapaian_monthly) / Number(this.props.data[0].target_monthly) * 100)
+
+      if (this.props.data[1].target_monthly !== 0) persenNow = Math.ceil(Number(this.props.data[1].pencapaian_monthly) / Number(this.props.data[1].target_monthly) * 100)
+    } else {
+      if (isNaN(Math.ceil(this.props.data[0].score_kpim_monthly))) persenBefore = 0
+      else persenBefore = Math.ceil(this.props.data[0].score_kpim_monthly) || 0
+
+      if (isNaN(Math.ceil(this.props.data[1].score_kpim_monthly))) persenNow = 0
+      else persenNow = Math.ceil(this.props.data[1].score_kpim_monthly) || 0
+    }
+
+    this.setState({
+      persenBefore,
+      persenNow,
+      persenMinggu,
+      persenBulan
+    })
   }
 
   handleClick = event => {
@@ -23,24 +100,69 @@ export default class cardIndicator extends Component {
     })
   };
 
-  handleChange = name => event => {
-    this.setState({ [name]: event.target.value });
-  };
+  refresh = () => {
+    this.props.refresh()
+  }
+
+  getNumberOfWeek = date => {
+    //yyyy-mm-dd 
+    let theDay = date
+    var target = new Date(theDay);
+    var dayNr = (new Date(theDay).getDay() + 6) % 7;
+
+    target.setDate(target.getDate() - dayNr + 3);
+
+    var jan4 = new Date(target.getFullYear(), 0, 4);
+    var dayDiff = (target - jan4) / 86400000;
+    var weekNr = 1 + Math.ceil(dayDiff / 7);
+
+    return weekNr;
+  }
 
   render() {
     return (
       <>
-        <Grid style={{ width: '20%', borderRight: '1px solid black', padding: 10, cursor: 'pointer' }} onClick={this.handleClick}>
-          <Grid style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <p style={{ margin: 0, fontSize: 14 }}>{this.props.data.title}</p>
+        <Grid item xs={3} md={2} style={{ padding: 3 }}>
+          <Grid style={{ border: '1px solid black', padding: 10, cursor: 'pointer', backgroundColor: this.props.data[1].indicator_kpim === 'TAL TEAM' ? '#ffaec5' : 'white', minHeight: 120 }} onClick={this.handleClick}>
+            <Grid style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <p style={{ margin: 0, fontSize: 14 }}>{this.props.data[1].indicator_kpim}</p>
+              {
+                this.state.open
+                  ? <ArrowDropUpIcon />
+                  : <ArrowDropDownIcon />
+              }
+            </Grid>
+            <Grid>
+
+            </Grid>
             {
-              this.state.open
-                ? <ArrowDropUpIcon />
-                : <ArrowDropDownIcon />
+              this.props.data[1].indicator_kpim.toLowerCase() === "tal team"
+                ? <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
+                  <Grid style={{ marginRight: 20 }}>
+                    <p style={{ margin: 0, fontSize: 30 }}>{Math.floor(this.state.persenMinggu)}%</p>
+                    <p style={{ margin: 0, fontSize: 12 }}>Minggu ini</p>
+                  </Grid>
+                  <Grid>
+                    <p style={{ margin: 0, fontSize: 25 }}>{Math.floor(this.state.persenBulan)}%</p>
+                    <p style={{ margin: 0, fontSize: 12 }}>Bulan ini</p>
+                  </Grid>
+                </Grid>
+                : <>
+                  <p style={{ margin: 0, fontSize: 30 }}>{Math.floor(this.state.persenNow)}%</p>
+                  <Grid style={{ display: 'flex', alignItems: 'center' }}>
+                    {
+                      (this.state.persenBefore - this.state.persenNow) <= 0
+                        ? <ArrowDropUpIcon style={{ color: 'green' }} />
+                        : <ArrowDropDownIcon style={{ color: 'red' }} />
+                    }
+
+                    <p style={{ margin: '3px 5px 0px 0px', fontSize: 10, color: this.state.persenBefore - this.state.persenNow <= 0 ? 'green' : 'red' }}>{Math.abs(Math.floor(this.state.persenBefore - this.state.persenNow))}%</p>
+                    <p style={{ margin: '3px 0px 0px 0px', fontSize: 10 }}> dari periode sebelumnya</p>
+                  </Grid>
+                </>
             }
+
           </Grid>
-          <p style={{ margin: 0, fontSize: 30 }}>{this.props.data.persen}%</p>
-          <p style={{ margin: '3px 0px 0px 0px', fontSize: 10 }}>{this.props.data.persenPembanding}% dari periode sebelumnya</p>
         </Grid>
 
         <Popover
@@ -56,33 +178,19 @@ export default class cardIndicator extends Component {
             horizontal: 'right',
           }}
         >
-          {/* <Grid style={{ maxHeight: 90, overflow: 'auto', width:200, padding:'0px 10px 0px 10px' }}> */}
           <Grid style={{ width: 200, padding: 10 }}>
-            <Grid style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>Jan19</p>
-              <p style={{ margin: 0, fontSize: 13 }}>Rp 1,300,000</p>
-            </Grid>
-            <Grid style={{ marginTop: 10, display: 'flex', justifyContent: 'space-between' }}>
-              <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>Feb19</p>
-              <p style={{ margin: 0, fontSize: 13 }}>Rp 1,300,000</p>
-            </Grid>
-            <Grid style={{ marginTop: 10, display: 'flex', justifyContent: 'space-between' }}>
-              <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>Mar19</p>
-              <p style={{ margin: 0, fontSize: 13 }}>Rp 1,300,000</p>
-            </Grid>
-            <Grid style={{ marginTop: 5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>Apr19</p>
-              <TextField
-                id="newInput"
-                value={this.state.newInput}
-                onChange={this.handleChange('newInput')}
-                disabled={this.state.proses}
-                style={{ marginLeft: 20, width: 100 }}
-              />
-            </Grid>
+            {
+              this.props.data[1].indicator_kpim.toLowerCase() === "tal team"
+                ? this.state.dataTALWeek.map((tal, index) =>
+                  <PencapaianKPIM data={tal} key={index} refresh={this.refresh} index={index} />
+                )
+                : this.props.data.map((kpim, index) =>
+                  <PencapaianKPIM data={kpim} key={index} refresh={this.refresh} index={index} />
+                )
+            }
+
           </Grid>
         </Popover>
-
       </>
     )
   }

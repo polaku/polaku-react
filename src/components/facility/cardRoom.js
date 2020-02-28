@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Cookies from 'js-cookie';
 
 import {
   ListItem, IconButton, ListItemText, ListItemSecondaryAction
@@ -13,6 +14,8 @@ import ModalCreateEditRoom from '../modal/modalCreateEditRoom';
 import { fetchDataRooms } from '../../store/action';
 import { API } from '../../config/API';
 
+import swal from "sweetalert";
+
 class cardRoom extends Component {
   constructor(props) {
     super(props)
@@ -22,13 +25,13 @@ class cardRoom extends Component {
   }
 
   delete = () => {
-    let token = localStorage.getItem('token')
+    let token = Cookies.get('POLAGROUP')
     API.delete(`/bookingRoom/rooms/${this.props.data.room_id}`, { headers: { token } })
       .then(() => {
         this.props.fetchDataRooms();
       })
       .catch(err => {
-        console.log(err);
+        swal('please try again')
       })
   }
 

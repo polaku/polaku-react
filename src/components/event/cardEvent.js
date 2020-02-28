@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Cookies from 'js-cookie';
+
+import { Button, CircularProgress } from '@material-ui/core';
 
 import { fetchDataEvent, fetchDataEventNeedApproval } from '../../store/action';
 import { API } from '../../config/API';
@@ -22,6 +23,7 @@ class cardEvent extends Component {
       creator: {},
       statusApproval: false,
       openModal: false,
+      closeModal: ''
     }
   }
 
@@ -77,6 +79,12 @@ class cardEvent extends Component {
         })
       }
     }
+
+    if (prevState.closeModal !== this.state.closeModal) {
+      this.setState({
+        openModal: false
+      })
+    }
   }
 
   joinEvent = async (args) => {
@@ -84,7 +92,7 @@ class cardEvent extends Component {
       proses: true
     })
 
-    let token = localStorage.getItem('token'), getData
+    let token = Cookies.get('POLAGROUP'), getData
 
     try {
       getData = await API.post(`/events/follow`,
@@ -127,7 +135,7 @@ class cardEvent extends Component {
       } else {
         swal(err);
       }
-      console.log(err)
+      swal('please try again')
       this.setState({
         proses: false
       })
@@ -143,7 +151,7 @@ class cardEvent extends Component {
   }
 
   approve = args => {
-    let token = localStorage.getItem('token')
+    let token = Cookies.get('POLAGROUP')
 
     API.put(`/events/approvalEvent/${this.props.data.event_id}`,
       {
@@ -156,7 +164,7 @@ class cardEvent extends Component {
         this.props.fetchDataEventNeedApproval()
       })
       .catch(err => {
-        console.log(err)
+        swal('please try again')
         this.setState({
           proses: false
         })
@@ -171,7 +179,7 @@ class cardEvent extends Component {
 
   closeModal = () => {
     this.setState({
-      openModal: false
+      closeModal: new Date(),
     })
   }
 

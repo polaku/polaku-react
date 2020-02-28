@@ -4,11 +4,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {
-  Paper, Tabs, Tab, Typography, Box, Divider, Grid, Button, Popover, Table, TableBody, TableCell, TableHead, TableRow, TablePagination, TextField, Select
+  Paper, Tabs, Tab, Typography, Box, Divider, Grid, Button, Popover, Table, TableBody, TableCell, TableHead, TableRow, TablePagination, TextField, Select, MenuItem, FormControl
 } from '@material-ui/core';
-// import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
+
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
@@ -111,7 +109,6 @@ class ReportIjin extends Component {
   fetchData = async () => {
     let newData = []
     let data = await this.props.dataAllContactUs.filter(el => el.status === "approved")
-    // console.log(this.props.dataAllContactUs)
 
     data.forEach(element => {
 
@@ -276,7 +273,7 @@ class ReportIjin extends Component {
         {
           this.state.dataForDisplay.length !== 0 && <Grid style={{ display: 'flex', alignItems: 'center' }}>
             <ArchiveIcon />
-            <Download nameSheet="Pengajuan_Ijin" labelValue={this.state.labelValue} data={this.state.dataForDisplay} />
+            <Download nameSheet="Pengajuan_Ijin" labelValue={this.state.labelValue} data={this.state.dataForDisplay} title="download report" report="ijin" />
           </Grid>
         }
 

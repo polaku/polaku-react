@@ -1,16 +1,32 @@
 import React, { Component } from 'react'
+import Cookies from 'js-cookie';
 
-import { Modal, Fade, Grid, Backdrop, Typography, OutlinedInput, IconButton, InputAdornment, Button } from '@material-ui/core';
+import {
+  Modal, Fade, Grid, Backdrop, Typography, OutlinedInput, IconButton, InputAdornment, Button
+} from '@material-ui/core';
 
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 
+import { API } from '../../config/API';
+
+import swal from 'sweetalert';
+
 export default class modalReward extends Component {
   state = {
+    listReward: [],
     nilaiBawah: '',
     nilaiAtas: '',
     newReward: '',
     statusAddReward: false,
+  }
+
+  componentDidMount() {
+    let listReward = this.props.data.sort(this.compare)
+
+    this.setState({
+      listReward
+    })
   }
 
   closeModal = () => {
@@ -23,6 +39,40 @@ export default class modalReward extends Component {
 
   addIndicator = () => {
     this.setState({ statusAddReward: !this.state.statusAddReward })
+  }
+
+  saveIndicator = () => {
+    let token = Cookies.get('POLAGROUP')
+
+    let newReward = {
+      nilai_bawah: this.state.nilaiBawah,
+      nilai_atas: this.state.nilaiAtas,
+      reward: this.state.newReward,
+      user_id: this.props.userId
+    }
+
+    let newListReward = this.state.listReward
+    newListReward.push(newReward)
+    newListReward.sort(this.compare)
+
+    API.post('/rewardKPIM', newReward, { headers: { token } })
+      .then(data => {
+        this.setState({ listReward: newListReward, statusAddReward: !this.state.statusAddReward })
+        this.props.refresh()
+      })
+      .catch(err => {
+        swal('please try again')
+      })
+  }
+
+  compare = (a, b) => {
+    if (Number(a.nilai_atas) < Number(b.nilai_atas)) {
+      return 1;
+    }
+    if (Number(a.nilai_atas) > Number(b.nilai_atas)) {
+      return -1;
+    }
+    return 0;
   }
 
   render() {
@@ -60,15 +110,14 @@ export default class modalReward extends Component {
               <p style={{ width: 180, fontSize: 20, margin: 0 }}>nilai  s/d  nilai</p>
               <p style={{ fontSize: 20, margin: 0 }}>reward & consequences didapatkan</p>
             </Grid>
-
-            <Grid style={{ display: 'flex', margin: '5px 0px' }}>
-              <p style={{ width: 180, fontSize: 20, margin: 0 }}>80 - 100</p>
-              <p style={{ fontSize: 20, margin: 0 }}>excellent</p>
-            </Grid>
-            <Grid style={{ display: 'flex', margin: '5px 0px' }}>
-              <p style={{ width: 180, fontSize: 20, margin: 0 }}>70 - 80</p>
-              <p style={{ fontSize: 20, margin: 0 }}>excellent</p>
-            </Grid>
+            {
+              this.state.listReward.map((reward, index) => (
+                <Grid style={{ display: 'flex', margin: '5px 0px' }} key={index}>
+                  <p style={{ width: 180, fontSize: 20, margin: 0 }}>{reward.nilai_bawah} - {reward.nilai_atas}</p>
+                  <p style={{ fontSize: 20, margin: 0 }}>{reward.reward}</p>
+                </Grid>
+              ))
+            }
 
             {
               this.state.statusAddReward
@@ -80,9 +129,6 @@ export default class modalReward extends Component {
                           value={this.state.nilaiBawah}
                           onChange={this.handleChange('nilaiBawah')}
                           variant="outlined"
-                          InputProps={{
-                            style: { height: 35, padding: 0 }
-                          }}
                           style={{ width: '40%' }}
                         />
                         <p style={{ margin: '0px 10px' }}>-</p>
@@ -90,9 +136,6 @@ export default class modalReward extends Component {
                           value={this.state.nilaiAtas}
                           onChange={this.handleChange('nilaiAtas')}
                           variant="outlined"
-                          InputProps={{
-                            style: { height: 35, padding: 0 }
-                          }}
                           style={{ width: '40%' }}
                         />
                       </Grid>
@@ -103,9 +146,6 @@ export default class modalReward extends Component {
                           value={this.state.newReward}
                           onChange={this.handleChange('newReward')}
                           variant="outlined"
-                          InputProps={{
-                            style: { height: 35, padding: 0 }
-                          }}
                           style={{ width: '100%' }}
                           endAdornment={
                             <InputAdornment position="end">
@@ -140,11 +180,8 @@ export default class modalReward extends Component {
                 </Grid>
             }
 
-
-
-
             {/* <Grid style={{width:'100%'}} > */}
-            <Button variant="outlined" color="secondary" style={{ margin: '30px auto 0px auto' }} >
+            <Button variant="outlined" color="secondary" style={{ margin: '30px auto 0px auto' }} onClick={this.saveIndicator}>
               Simpan
               </Button>
             {/* </Grid> */}

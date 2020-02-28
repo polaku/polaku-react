@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import {
-  Paper,
-  Button,
-  Grid,
-  Tabs,
-  Tab
+  Paper, Button, Grid, Tabs, Tab
 } from '@material-ui/core';
 
 import CardPermintaanHRD from '../../components/hr/cardPermintaanHRD';
@@ -27,17 +24,10 @@ class HR extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.evaluator1 === null && this.props.evaluator1 === null) {
-      if (prevProps.evaluator1 !== this.props.evaluator1) {
-        this.fetchData()
-      }
+    if (prevProps.userId !== this.props.userId) {
+      this.fetchData()
     }
   }
-
-  componentDidMount() {
-    this.fetchData()
-  }
-
 
   fetchData = async () => {
     await this.props.fetchDataContactUs(this.props.userId)
@@ -51,10 +41,11 @@ class HR extends Component {
     let tempDataStaff = await this.props.dataContactUsStaff.filter(el => el.date_ijin_absen_start !== null || el.date_imp !== null || el.leave_date !== null)
 
     let tempDataPengajuanStaff = await tempDataStaff.filter(el => el.status === 'new' || el.status === 'new2')
-
+console.log(tempDataPengajuanStaff)
     let tempDataStaffSedangIjin = []
     await tempDataStaff.forEach(el => {
       if (el.status === 'approved') {
+        console.log(el)
         if (el.date_imp && (
           Number(el.date_imp.slice(0, 4)) === new Date().getFullYear() &&
           Number(el.date_imp.slice(5, 7)) === new Date().getMonth() + 1 &&
@@ -156,9 +147,12 @@ class HR extends Component {
                       indicatorColor="secondary"
                       textColor="secondary"
                       onChange={this.handleChangeTabs}
+                      style={{ margin: '0px 10px 0px 20px', width: 400 }}
                     >
-                      <Tab label="Ijin Staf" style={{ margin: '0px 10px 0px 20px' }} />
-                      <Tab label="Ijin Saya" style={{ marginRight: 50 }} />
+                      {
+                        this.props.bawahan.length > 0 && <Tab label="Ijin Staf" style={{ margin: '0px 10px 0px 20px' }} />
+                      }
+                      <Tab label="Ijin Saya" />
                     </Tabs>
                     {
                       this.props.evaluator1 && <Button variant="contained" color="secondary" style={{ height: 40, width: 200 }} onClick={this.handleOpenModal}  >
@@ -168,7 +162,7 @@ class HR extends Component {
                   </Grid>
                   <Grid container>
                     {
-                      this.state.ijinTabs === 0
+                      this.state.ijinTabs === 0 && this.props.bawahan.length > 0
                         ? <>
                           <Grid style={{
                             width: 300,
@@ -260,13 +254,14 @@ const mapDispatchToProps = {
   fetchDataContactUs,
 }
 
-const mapStateToProps = ({ userId, dataContactUs, dataContactUsStaff, evaluator1, evaluator2 }) => {
+const mapStateToProps = ({ userId, dataContactUs, dataContactUsStaff, evaluator1, evaluator2, bawahan }) => {
   return {
     userId,
     dataContactUs,
     dataContactUsStaff,
     evaluator1,
     evaluator2,
+    bawahan,
   }
 }
 

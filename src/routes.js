@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
+import Cookies from 'js-cookie';
 
 import Login from "./views/Login";
 import BookingRoom from "./views/Facility/BookingRoom";
@@ -15,12 +16,14 @@ import CreatorMasterAndAssistant from "./views/Event/CreatorMasterAndAssistant";
 import DetailEvent from "./views/Event/DetailEvent";
 import Setting from './views/Setting/Setting';
 import SettingPerusahaan from './views/Setting/SettingPerusahaan';
+import SettingUser from './views/Setting/SettingUser';
 import HR from './views/HR/HR';
 import ReportIjin from './views/HR/ReportIjin';
 import KPIM from './views/KPIM/DashboardKPIM';
 import TAL from './views/KPIM/TAL';
 import ReportKPIM from './views/KPIM/ReportKPIM';
 import SettingKPIM from './views/KPIM/SettingKPIM';
+import Profil from './views/Profil';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -55,6 +58,7 @@ function Routes() {
         <AuthenticatedRoute path="/event/approvalEvent" component={ApprovalEvent} />
         <AuthenticatedRoute path="/event" component={Event} />
         <AuthenticatedRoute path="/setting/settingPerusahaan" component={SettingPerusahaan} />
+        <AuthenticatedRoute path="/setting/settingUser" component={SettingUser} />
         <AuthenticatedRoute path="/setting" component={Setting} />
         <AuthenticatedRoute path="/hr/report" component={ReportIjin} />
         <AuthenticatedRoute path="/hr" component={HR} />
@@ -62,6 +66,7 @@ function Routes() {
         <AuthenticatedRoute path="/kpim/report" component={ReportKPIM} />
         <AuthenticatedRoute path="/kpim/tal" component={TAL} />
         <AuthenticatedRoute path="/kpim" component={KPIM} />
+        <AuthenticatedRoute path="/profil" component={Profil} />
         <Redirect from="/" to="/login" />
       </Switch>
     </main>
@@ -71,8 +76,8 @@ function Routes() {
 const AuthenticatedRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
-    render={props =>
-      localStorage.getItem("token") ? (
+    render={ props =>
+      Cookies.get('POLAGROUP') ? (
         <Component {...props} />
       ) : (
           <Redirect to={{

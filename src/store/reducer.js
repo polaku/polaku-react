@@ -1,13 +1,14 @@
 const defaultState = {
-  userId: 913,
+  userId: null,
   isAdmin: false,
   isRoomMaster: false,
   isCreatorMaster: false,
   isCreatorAssistant: false,
+  adminContactCategori: null,
   sisaCuti: 0,
   evaluator1: null,
   evaluator2: null,
-  bawahan: null,
+  bawahan: [],
   loading: false,
   error: {},
   isLogin: false,
@@ -29,6 +30,9 @@ const defaultState = {
   dataAllContactUs: [],
   dataAllKPIM: [],
   dataAllTAL: [],
+  dataAllRewardKPIM: [],
+  myRewardKPIM: [],
+  dataPositions: [],
 }
 
 function reducer(state = defaultState, action) {
@@ -44,7 +48,44 @@ function reducer(state = defaultState, action) {
         sisaCuti: action.payload.sisaCuti,
         evaluator1: action.payload.evaluator1,
         evaluator2: action.payload.evaluator2,
-        bawahan: action.payload.bawahan
+        bawahan: action.payload.bawahan,
+        adminContactCategori: action.payload.adminContactCategori
+      }
+    }
+    case 'USER_LOGOUT': {
+      return {
+        userId: null,
+        isAdmin: false,
+        isRoomMaster: false,
+        isCreatorMaster: false,
+        isCreatorAssistant: false,
+        sisaCuti: 0,
+        evaluator1: null,
+        evaluator2: null,
+        bawahan: [],
+        loading: false,
+        error: {},
+        isLogin: false,
+        dataUsers: [],
+        dataRooms: [],
+        dataRoomMaster: [],
+        dataCompanies: [],
+        dataDepartments: [],
+        dataBuildings: [],
+        dataBookingRooms: [],
+        dataMyBookingRooms: [],
+        dataEvents: [],
+        dataEventNeedApproval: [],
+        dataCreatorMasterAndAssistant: [],
+        dataNotification: [],
+        dataNewNotif: [],
+        dataContactUs: [],
+        dataContactUsStaff: [],
+        dataAllContactUs: [],
+        dataAllKPIM: [],
+        dataAllTAL: [],
+        dataAllRewardKPIM: [],
+        myRewardKPIM: []
       }
     }
     case 'FETCH_DATA_USERS_SUCCESS': {
@@ -138,6 +179,19 @@ function reducer(state = defaultState, action) {
       return {
         ...state,
         dataAllTAL: action.payload.dataAllTAL
+      }
+    }
+    case 'FETCH_DATA_REWARD_KPIM_SUCCESS': {
+      return {
+        ...state,
+        dataAllRewardKPIM: action.payload.dataAllRewardKPIM,
+        myRewardKPIM: action.payload.myRewardKPIM
+      }
+    }
+    case 'FETCH_DATA_POSITION_SUCCESS': {
+      return {
+        ...state,
+        dataPositions: action.payload.dataPositions
       }
     }
     case 'FETCH_DATA_ERROR': {

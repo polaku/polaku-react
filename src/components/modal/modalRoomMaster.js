@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Fade from '@material-ui/core/Fade';
-import FormControl from '@material-ui/core/FormControl';
-import Grid from '@material-ui/core/Grid';
-import FormLabel from '@material-ui/core/FormLabel';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+import Cookies from 'js-cookie';
+
+import {
+  Modal, Backdrop, Button, CircularProgress, Fade, FormControl, Grid, FormLabel, FormGroup, FormControlLabel, Checkbox
+} from '@material-ui/core';
+
 import { fetchDataCompanies, fetchDataUsers, fetchDataRoomMaster } from '../../store/action';
 
 import { API } from '../../config/API';
+
+import swal from 'sweetalert';
 
 class modalRoomMaster extends Component {
   constructor(props) {
@@ -77,7 +74,7 @@ class modalRoomMaster extends Component {
   };
 
   save = () => {
-    let newData, companyId = [], token = localStorage.getItem('token')
+    let newData, companyId = [], token = Cookies.get('POLAGROUP')
 
     this.state.company.forEach(el => {
       if (el.status === true) {
@@ -95,11 +92,11 @@ class modalRoomMaster extends Component {
         this.props.closeModal()
       })
       .catch(err => {
-        console.log(err);
+        swal('please try again')
       })
   }
 
-  cancel = () =>{
+  cancel = () => {
     this.props.closeModal()
   }
 
@@ -160,7 +157,7 @@ class modalRoomMaster extends Component {
                 fullWidth
                 variant="contained"
                 color="secondary"
-                style={{ margin: '20px 0', width: 100, alignSelf: 'center', marginRight:30 }}
+                style={{ margin: '20px 0', width: 100, alignSelf: 'center', marginRight: 30 }}
                 data-testid='buttonSignin'
                 disabled={this.state.proses}
                 onClick={this.cancel}>

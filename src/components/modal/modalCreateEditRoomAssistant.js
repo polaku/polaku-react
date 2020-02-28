@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Fade from '@material-ui/core/Fade';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
+import Cookies from 'js-cookie';
+
+import {
+  Modal, Backdrop, Button, CircularProgress, Fade, FormControl, FormLabel
+} from '@material-ui/core';
+
 import SeCreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
 import { fetchDataRooms, fetchDataUsers, fetchDataRoomMaster } from '../../store/action';
@@ -51,7 +50,7 @@ class modalCreateEditRoomAssistant extends Component {
   }
 
   save = () => {
-    let newData, roomId = [], token = localStorage.getItem('token')
+    let newData, roomId = [], token = Cookies.get('POLAGROUP')
 
     if (this.props.statusCreate) {
       this.state.roomSelected.forEach(el => {
@@ -86,7 +85,7 @@ class modalCreateEditRoomAssistant extends Component {
           this.props.refresh()
         })
         .catch(err => {
-          console.log(err);
+          swal('please try again')
         })
     }
   }

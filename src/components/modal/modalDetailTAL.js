@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 
-import { Modal, Backdrop, Fade, Grid, Table, TableHead, TableRow, TableBody, TableCell } from '@material-ui/core';
+import {
+  Modal, Backdrop, Fade, Grid, Table, TableHead, TableRow, TableBody, TableCell
+} from '@material-ui/core';
 
 import CardItemTAL from '../kpim/cardItemTAL';
 
 export default class modalDetailTAL extends Component {
   closeModal = () => {
     this.props.closeModal()
+  }
+
+  refresh = () => {
+    this.props.refresh()
   }
 
   render() {
@@ -45,13 +51,13 @@ export default class modalDetailTAL extends Component {
                     Item
                     </TableCell>
                   <TableCell style={{ width: '10%', padding: '14px 16px 14px 16px' }} align="center">
-                    Weight
+                    Load
                     </TableCell>
                   <TableCell style={{ width: '15%', padding: '14px 16px 14px 16px' }} align="center">
                     When
                     </TableCell>
                   <TableCell align="center" style={{ width: '10%', padding: '14px 16px 14px 16px' }}>
-                    Load
+                    Weight
                     </TableCell>
                   <TableCell align="center" style={{ width: '15%', padding: '14px 16px 14px 16px' }} >
                     Pencapaian
@@ -63,12 +69,10 @@ export default class modalDetailTAL extends Component {
               </TableHead>
               <TableBody>
                 {
-                  this.props.data.items.map((el, index) => (
-                    <CardItemTAL data={el} key={index} />
+                  this.props.data.map((el, index) => (
+                    <CardItemTAL data={el} key={index} refresh={this.refresh}/>
                   ))
                 }
-
-
               </TableBody>
             </Table>
           </Grid>

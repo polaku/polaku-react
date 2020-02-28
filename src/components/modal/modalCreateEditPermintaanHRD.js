@@ -1,17 +1,12 @@
 import 'date-fns';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import SelectOption from '@material-ui/core/Select';
+import Cookies from 'js-cookie';
+
+import {
+  Modal, Backdrop, Fade, TextField, Typography, Button, CircularProgress, InputLabel, MenuItem, FormControl, Select as SelectOption
+} from '@material-ui/core';
+
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
@@ -135,8 +130,9 @@ class modalCreateEditPermintaanHRD extends Component {
     this.props.handleCloseModal()
   }
 
-  createPengajuan = async () => {
-
+  createPengajuan = async e => {
+    e.preventDefault()
+    
     if (this.state.isEdit) {
       this.editPengajuan()
     } else {
@@ -144,7 +140,7 @@ class modalCreateEditPermintaanHRD extends Component {
         proses: true,
         editableInput: false
       })
-      let newData = {}, token = localStorage.getItem('token')
+      let newData = {}, token = Cookies.get('POLAGROUP')
 
       if (this.state.jenisIjin === 7) {
         if (Number(this.state.startHour) > Number(this.state.endHour)) {
@@ -209,7 +205,6 @@ class modalCreateEditPermintaanHRD extends Component {
             editableInput: true
           })
           swal('please try again')
-          console.log(err);
         })
     }
   }
@@ -219,7 +214,7 @@ class modalCreateEditPermintaanHRD extends Component {
       proses: true,
       editableInput: false
     })
-    let newData = {}, token = localStorage.getItem('token')
+    let newData = {}, token = Cookies.get('POLAGROUP')
 
     if (this.state.jenisIjin === 7) {
       if (Number(this.state.startHour) > Number(this.state.endHour)) {
@@ -282,7 +277,6 @@ class modalCreateEditPermintaanHRD extends Component {
           editableInput: true
         })
         swal('please try again')
-        console.log(err);
       })
   }
 

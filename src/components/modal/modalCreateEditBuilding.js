@@ -1,18 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Button from '@material-ui/core/Button';
-import InputLabel from '@material-ui/core/InputLabel';
-import SelectOption from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Fade from '@material-ui/core/Fade';
-import FormControl from '@material-ui/core/FormControl';
-import TextField from '@material-ui/core/TextField';
+import Cookies from 'js-cookie';
+
+import {
+  Modal, Backdrop, Button, InputLabel, Select as SelectOption, MenuItem, CircularProgress, Fade, FormControl, TextField
+} from '@material-ui/core';
+
 import { fetchDataBuildings } from '../../store/action';
 
 import { API } from '../../config/API';
+
+import swal from 'sweetalert';
 
 class modalCreateEditBuilding extends Component {
   constructor(props) {
@@ -37,7 +35,7 @@ class modalCreateEditBuilding extends Component {
     this.setState({
       proses: true
     })
-    let token = localStorage.getItem('token')
+    let token = Cookies.get('POLAGROUP')
 
     if (this.props.statusCreate) {
       let newData = {
@@ -56,7 +54,7 @@ class modalCreateEditBuilding extends Component {
           })
         })
         .catch(err => {
-          console.log(err);
+          swal('please try again')
           this.setState({
             proses: false
           })
@@ -78,7 +76,7 @@ class modalCreateEditBuilding extends Component {
           })
         })
         .catch(err => {
-          console.log(err);
+          swal('please try again')
           this.setState({
             proses: false
           })

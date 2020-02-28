@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Cookies from 'js-cookie';
 
 import {
   Grid, Button, Divider, Typography, CircularProgress, Paper
 } from '@material-ui/core';
 
 import { API } from '../../config/API';
+
+import swal from 'sweetalert';
 
 class DetailEvent extends Component {
   constructor(props) {
@@ -29,7 +32,7 @@ class DetailEvent extends Component {
 
   fetchData = () => {
     let temp = []
-    let token = localStorage.getItem('token')
+    let token = Cookies.get('POLAGROUP')
     API.get(`/events/${this.props.match.params.id}`, { headers: { token } })
       .then(async ({ data }) => {
         this.setState({
@@ -54,7 +57,7 @@ class DetailEvent extends Component {
 
       })
       .catch(err =>
-        console.log(err)
+        swal('please try again')
       )
 
     this.setState({

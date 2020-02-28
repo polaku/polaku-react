@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import {Grid, Button } from '@material-ui/core';
+import { Grid, Button } from '@material-ui/core';
 
 import Calendar from '../../components/calendar/calendar.js';
 

@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Cookies from 'js-cookie';
 
-import { Modal, Fade, Grid, Backdrop, Typography, Button } from '@material-ui/core';
+import {
+  Modal, Fade, Grid, Backdrop, Typography, Button
+} from '@material-ui/core';
+
 import SeCreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
 
@@ -18,6 +22,7 @@ class modalCopyIndicatorKPIM extends Component {
   }
 
   async componentDidMount() {
+    console.log(this.props.data)
     let listUser = this.props.bawahan.filter(el => el.user_id !== this.props.userId)
 
     this.setState({
@@ -36,7 +41,7 @@ class modalCopyIndicatorKPIM extends Component {
   };
 
   submitForm = () => {
-    let token = localStorage.getItem("token"), tempMonthly = []
+    let token = Cookies.get('POLAGROUP'), tempMonthly = []
     let newData = {
       indicator_kpim: this.props.data.indicator_kpim,
       target: this.props.data.target,
@@ -45,8 +50,12 @@ class modalCopyIndicatorKPIM extends Component {
       user_id: this.state.user.user_id,
     }
 
+    for (let i = 0; i < 12; i++) {
+      tempMonthly.push(0)
+    }
+
     this.props.data.kpimScore.forEach(el => {
-      tempMonthly.push(el.target_monthly)
+      tempMonthly[el.month - 1] = el.target_monthly
     })
 
     newData.monthly = tempMonthly
@@ -58,7 +67,7 @@ class modalCopyIndicatorKPIM extends Component {
         this.props.closeModal()
       })
       .catch(err => {
-        console.log(err)
+        swal('please try again')
       })
   }
 

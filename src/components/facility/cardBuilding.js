@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Cookies from 'js-cookie';
 
 import {
   Button, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, ExpansionPanelActions, Divider, Typography, List
@@ -50,7 +51,7 @@ class cardBuilding extends Component {
   }
 
   deleteBuilding = () => {
-    let token = localStorage.getItem('token')
+    let token = Cookies.get('POLAGROUP')
 
     API.delete(`/bookingRoom/building/${this.props.data.building_id}`, { headers: { token } })
       .then(() => {

@@ -2,23 +2,12 @@ import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import Cookies from 'js-cookie';
 
+import {
+  Drawer, AppBar, Toolbar, List, CssBaseline, Typography, Divider, IconButton, ListItem, ListItemIcon, ListItemText, Collapse, Badge, Menu, MenuItem
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Collapse from '@material-ui/core/Collapse';
-import Badge from '@material-ui/core/Badge';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -40,6 +29,8 @@ import { setUser, fetchDataNotification } from '../store/action';
 import { API } from '../config/API';
 
 import TimeAgo from 'react-timeago'
+
+import swal from 'sweetalert';
 
 const drawerWidth = 250;
 
@@ -117,12 +108,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Navsidebar(props) {
+  // const history = useHistory();
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [openChildBookingRoom, setOpenChildBookingRoom] = React.useState(false);
   const [openChildEvent, setOpenChildEvent] = React.useState(false);
   const [openChildHR, setOpenChildHR] = React.useState(false);
   const [openChildKPIM, setOpenChildKPIM] = React.useState(false);
+  const [isAtasan, setIsAtasan] = React.useState(false);
 
   const [selectedIndex, setSelectedIndex] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -156,8 +149,9 @@ function Navsidebar(props) {
   }
 
   useEffect(() => {
-    if (localStorage.getItem('token')) {
-      let token = localStorage.getItem('token')
+
+    if (Cookies.get('POLAGROUP')) {
+      let token = Cookies.get('POLAGROUP')
       API.get('/users/checkToken', { headers: { token } })
         .then(async ({ data }) => {
           let newData = {
@@ -176,9 +170,15 @@ function Navsidebar(props) {
             newData.isAdmin = false
           }
 
+          if (data.adminContactCategori) {
+            newData.adminContactCategori = data.adminContactCategori
+          }
+
           await props.setUser(newData)
           await props.fetchDataNotification()
         })
+    } else {
+      props.history.push('/login')
     }
     // eslint-disable-next-line
   }, [])
@@ -210,15 +210,31 @@ function Navsidebar(props) {
       setSelectedIndex(4.2)
     } else if (props.location.pathname === '/kpim/setting') {
       setSelectedIndex(4.3)
-    }else if (props.location.pathname === '/setting') {
+    } else if (props.location.pathname === '/setting') {
       setSelectedIndex(99)
     } else if (props.location.pathname === '/setting/settingPerusahaan') {
       setSelectedIndex(99)
+    } else if (props.location.pathname === '/profil') {
+      setSelectedIndex(100)
     }
   }, [props.location.pathname])
 
+  useEffect(() => {
+    setOpen(false)
+    setOpenChildBookingRoom(false)
+    setOpenChildEvent(false)
+    setOpenChildHR(false)
+    setOpenChildKPIM(false)
+    setIsAtasan(false)
+    if (props.bawahan.length > 0) {
+      setIsAtasan(true)
+    } else {
+      setIsAtasan(false)
+    }
+  }, [props.bawahan])
+
   const handleClickNotif = event => {
-    let newData = [], token = localStorage.getItem('token')
+    let newData = [], token = Cookies.get('POLAGROUP')
     setAnchorEl(event.currentTarget);
     props.dataNewNotif.forEach(element => {
       newData.push(element.notifications_id)
@@ -229,7 +245,7 @@ function Navsidebar(props) {
         await props.fetchDataNotification()
       })
       .catch(err => {
-        console.log(err)
+        swal('please try again')
       })
   };
 
@@ -238,198 +254,200 @@ function Navsidebar(props) {
   };
 
   const updateStatus = id => {
-    let token = localStorage.getItem('token')
+    let token = Cookies.get('POLAGROUP')
 
     API.put(`/notification/${id}`, { read: 1 }, { headers: { token } })
       .then(async data => {
       })
       .catch(err => {
-        console.log(err)
+        swal('please try again')
       })
   }
 
   return (
     <div className={classes.root}>
       <CssBaseline />
+      {
+        Cookies.get('POLAGROUP') && <>
 
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
-        <Toolbar>
-          <div className={classes.grow}>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              className={clsx(classes.menuButton, {
-                [classes.hide]: open,
-              })}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap>
-              Polaku
-          </Typography>
-          </div>
-          <IconButton color="inherit" onClick={handleClickNotif}>
-            {
-              props.dataNewNotif.length !== 0
-                ? <Badge badgeContent={props.dataNewNotif.length} color="primary">
-                  <NotificationsIcon />
-                </Badge>
-                : <NotificationsNoneIcon />
-            }
-          </IconButton>
-          <Menu
-            id="long-menu"
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-            PaperProps={{
-              style: {
-                maxHeight: 48 * 4.5,
-                width: 350,
-                marginTop: 50,
-                borderRadius: 5,
-              },
-            }}
+          <AppBar
+            position="fixed"
+            className={clsx(classes.appBar, {
+              [classes.appBarShift]: open,
+            })}
           >
-            {
-              props.dataNotification && props.dataNotification.map((notif, index) => {
-                return notif.link && <Link to={notif.link} key={index} style={{ textDecoration: 'none', color: 'black' }} onClick={() => updateStatus(notif.notifications_id)}>
-                  <MenuItem onClick={handleClose} style={{ backgroundColor: !notif.read ? '#e9e9e9' : 'white' }}>
-                    <ListItemIcon>
-                      {
-                        notif.value === "Meeting" ? <MeetingRoomIcon />
-                          : notif.value === "Event" ? <EventIcon />
-                            : <SendIcon />
-                      }
-                    </ListItemIcon>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <Typography variant="body1" >New {notif.value} - {notif.description}</Typography>
-                      <TimeAgo date={notif.created_at} style={{ fontSize: 12 }} />
-                    </div>
-                    <Divider />
-                  </MenuItem>
-                </Link>
-              })
-            }
-          </Menu>
-        </Toolbar>
-      </AppBar>
-
-      <Drawer
-        variant="permanent"
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        })}
-        classes={{
-          paper: clsx({
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          }),
-        }}
-        open={open}
-      >
-        <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon style={{ color: 'white' }} />
-          </IconButton>
-        </div>
-
-        <Divider />
-
-        <List>
-          {/* Booking Room */}
-          <>
-            {
-              open
-                ? <ListItem button key="Facility"
-                  onClick={event => handleClick(event, 'openChildBookingRoom')} selected={selectedIndex === 0 || selectedIndex === 0.1 || selectedIndex === 0.2 || selectedIndex === 0.3}>
-                  <ListItemIcon>
-                    <MeetingRoomOutlinedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Facility" />
-                  {openChildBookingRoom ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                : <Link to="/bookingRoom" onClick={event => handleListItemClick(event, 0)} style={{ textDecoration: "none", fontWeight: 'bold' }}>
-                  <ListItem button key="Booking Room" selected={selectedIndex === 0 || selectedIndex === 0.1 || selectedIndex === 0.2 || selectedIndex === 0.3}>
-                    <ListItemIcon style={{ marginLeft: 8 }}>
-                      <MeetingRoomOutlinedIcon />
-                    </ListItemIcon>
-                  </ListItem>
-                </Link>
-            }
-
-            <Collapse in={openChildBookingRoom} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <Link to="/bookingRoom" onClick={event => handleListItemClick(event, 0)} style={{ textDecoration: 'none', color: 'black' }}>
-                  <ListItem button className={classes.nested} selected={selectedIndex === 0}>
-                    <ListItemText primary="List Booking Room" />
-                  </ListItem>
-                </Link>
+            <Toolbar>
+              <div className={classes.grow}>
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  onClick={handleDrawerOpen}
+                  edge="start"
+                  className={clsx(classes.menuButton, {
+                    [classes.hide]: open,
+                  })}
+                >
+                  <MenuIcon />
+                </IconButton>
+                <Typography variant="h6" noWrap>
+                  Polaku
+          </Typography>
+              </div>
+              <IconButton color="inherit" onClick={handleClickNotif}>
                 {
-                  props.isAdmin
-                    ? <Link to="/bookingRoom/roomMaster" onClick={event => handleListItemClick(event, 0.1)} style={{ textDecoration: 'none', color: 'black' }}>
-                      <ListItem button className={classes.nested} selected={selectedIndex === 0.1}>
-                        <ListItemText primary="Room Master" />
-                      </ListItem>
+                  props.dataNewNotif.length !== 0
+                    ? <Badge badgeContent={props.dataNewNotif.length} color="primary">
+                      <NotificationsIcon />
+                    </Badge>
+                    : <NotificationsNoneIcon />
+                }
+              </IconButton>
+              <Menu
+                id="long-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+                PaperProps={{
+                  style: {
+                    maxHeight: 48 * 4.5,
+                    width: 350,
+                    marginTop: 50,
+                    borderRadius: 5,
+                  },
+                }}
+              >
+                {
+                  props.dataNotification && props.dataNotification.map((notif, index) => {
+                    return notif.link && <Link to={notif.link} key={index} style={{ textDecoration: 'none', color: 'black' }} onClick={() => updateStatus(notif.notifications_id)}>
+                      <MenuItem onClick={handleClose} style={{ backgroundColor: !notif.read ? '#e9e9e9' : 'white' }}>
+                        <ListItemIcon>
+                          {
+                            notif.value === "Meeting" ? <MeetingRoomIcon />
+                              : notif.value === "Event" ? <EventIcon />
+                                : <SendIcon />
+                          }
+                        </ListItemIcon>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          <Typography variant="body1" >New {notif.value} - {notif.description}</Typography>
+                          <TimeAgo date={notif.created_at} style={{ fontSize: 12 }} />
+                        </div>
+                        <Divider />
+                      </MenuItem>
                     </Link>
-                    : props.isRoomMaster && <Link to="/bookingRoom/roomAssistant" onClick={event => handleListItemClick(event, 0.2)} style={{ textDecoration: 'none', color: 'black' }}>
-                      <ListItem button className={classes.nested} selected={selectedIndex === 0.2}>
-                        <ListItemText primary="Room Assistant" />
+                  })
+                }
+              </Menu>
+            </Toolbar>
+          </AppBar>
+
+          <Drawer
+            variant="permanent"
+            className={clsx(classes.drawer, {
+              [classes.drawerOpen]: open,
+              [classes.drawerClose]: !open,
+            })}
+            classes={{
+              paper: clsx({
+                [classes.drawerOpen]: open,
+                [classes.drawerClose]: !open,
+              }),
+            }}
+            open={open}
+          >
+            <div className={classes.toolbar}>
+              <IconButton onClick={handleDrawerClose}>
+                <ChevronLeftIcon style={{ color: 'white' }} />
+              </IconButton>
+            </div>
+
+            <Divider />
+
+            <List>
+              {/* Booking Room */}
+              <>
+                {
+                  open
+                    ? <ListItem button key="Facility"
+                      onClick={event => handleClick(event, 'openChildBookingRoom')} selected={selectedIndex === 0 || selectedIndex === 0.1 || selectedIndex === 0.2 || selectedIndex === 0.3}>
+                      <ListItemIcon>
+                        <MeetingRoomOutlinedIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Facility" />
+                      {openChildBookingRoom ? <ExpandLess /> : <ExpandMore />}
+                    </ListItem>
+                    : <Link to="/bookingRoom" onClick={event => handleListItemClick(event, 0)} style={{ textDecoration: "none", fontWeight: 'bold' }}>
+                      <ListItem button key="Booking Room" selected={selectedIndex === 0 || selectedIndex === 0.1 || selectedIndex === 0.2 || selectedIndex === 0.3}>
+                        <ListItemIcon style={{ marginLeft: 8 }}>
+                          <MeetingRoomOutlinedIcon />
+                        </ListItemIcon>
                       </ListItem>
                     </Link>
                 }
 
+                <Collapse in={openChildBookingRoom} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <Link to="/bookingRoom" onClick={event => handleListItemClick(event, 0)} style={{ textDecoration: 'none', color: 'black' }}>
+                      <ListItem button className={classes.nested} selected={selectedIndex === 0}>
+                        <ListItemText primary="List Booking Room" />
+                      </ListItem>
+                    </Link>
+                    {
+                      props.isAdmin
+                        ? <Link to="/bookingRoom/roomMaster" onClick={event => handleListItemClick(event, 0.1)} style={{ textDecoration: 'none', color: 'black' }}>
+                          <ListItem button className={classes.nested} selected={selectedIndex === 0.1}>
+                            <ListItemText primary="Room Master" />
+                          </ListItem>
+                        </Link>
+                        : props.isRoomMaster && <Link to="/bookingRoom/roomAssistant" onClick={event => handleListItemClick(event, 0.2)} style={{ textDecoration: 'none', color: 'black' }}>
+                          <ListItem button className={classes.nested} selected={selectedIndex === 0.2}>
+                            <ListItemText primary="Room Assistant" />
+                          </ListItem>
+                        </Link>
+                    }
 
-                <Link to="/bookingRoom/rooms" onClick={event => handleListItemClick(event, 0.3)} style={{ textDecoration: 'none', color: 'black' }}>
-                  <ListItem button className={classes.nested} selected={selectedIndex === 0.3}>
-                    <ListItemText primary="Building & Room" />
-                  </ListItem>
-                </Link>
-              </List>
-            </Collapse>
-          </>
 
-          {/* Menu Event */}
-          <>
-            {
-              open
-                ? <Link to="/event" onClick={event => handleListItemClick(event, 1)} style={{ textDecoration: "none", color: 'black' }}>
-                  <ListItem button key="Event"
-                    selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
-                    <ListItemIcon>
-                      <EventOutlinedIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Event" />
-                  </ListItem>
-                </Link>
-                // <ListItem button key="Event"
-                //   onClick={event => handleClick(event, 'openChildEvent')}
-                //   selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
-                //   <ListItemIcon>
-                //     <EventOutlinedIcon />
-                //   </ListItemIcon>
-                //   <ListItemText primary="Event" />
-                //   {openChildEvent ? <ExpandLess /> : <ExpandMore />}
-                // </ListItem>
-                : <Link to="/event" onClick={event => handleListItemClick(event, 1)}>
-                  <ListItem button key="Event" selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3} >
-                    <ListItemIcon style={{ marginLeft: 8 }}>
-                      <EventOutlinedIcon />
-                    </ListItemIcon>
-                  </ListItem>
-                </Link>
-            }
+                    <Link to="/bookingRoom/rooms" onClick={event => handleListItemClick(event, 0.3)} style={{ textDecoration: 'none', color: 'black' }}>
+                      <ListItem button className={classes.nested} selected={selectedIndex === 0.3}>
+                        <ListItemText primary="Building & Room" />
+                      </ListItem>
+                    </Link>
+                  </List>
+                </Collapse>
+              </>
 
-            {/* <Collapse in={openChildEvent} timeout="auto" unmountOnExit>
+              {/* Menu Event */}
+              <>
+                {
+                  open
+                    ? <Link to="/event" onClick={event => handleListItemClick(event, 1)} style={{ textDecoration: "none", color: 'black' }}>
+                      <ListItem button key="Event"
+                        selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
+                        <ListItemIcon>
+                          <EventOutlinedIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Event" />
+                      </ListItem>
+                    </Link>
+                    // <ListItem button key="Event"
+                    //   onClick={event => handleClick(event, 'openChildEvent')}
+                    //   selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
+                    //   <ListItemIcon>
+                    //     <EventOutlinedIcon />
+                    //   </ListItemIcon>
+                    //   <ListItemText primary="Event" />
+                    //   {openChildEvent ? <ExpandLess /> : <ExpandMore />}
+                    // </ListItem>
+                    : <Link to="/event" onClick={event => handleListItemClick(event, 1)}>
+                      <ListItem button key="Event" selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3} >
+                        <ListItemIcon style={{ marginLeft: 8 }}>
+                          <EventOutlinedIcon />
+                        </ListItemIcon>
+                      </ListItem>
+                    </Link>
+                }
+
+                {/* <Collapse in={openChildEvent} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 <Link to="/event" onClick={event => handleListItemClick(event, 1.1)} style={{ textDecoration: 'none', color: 'black' }}>
                   <ListItem button className={classes.nested} selected={selectedIndex === 1.1}>
@@ -458,129 +476,145 @@ function Navsidebar(props) {
                 }
               </List>
             </Collapse> */}
-          </>
+              </>
 
-          {/* HR */}
-          <>
-            {
-              open
-                ?
-                <ListItem button key="HR"
-                  onClick={event => handleClick(event, 'openChildHR')} selected={selectedIndex === 3 || selectedIndex === 3.1}>
+              {/* HR */}
+              <>
+                {
+                  open
+                    ? props.adminContactCategori === 4
+                      ? <ListItem button key="HR"
+                        onClick={event => handleClick(event, 'openChildHR')} selected={selectedIndex === 3 || selectedIndex === 3.1}>
+                        <ListItemIcon>
+                          <SupervisorAccountIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="HR" />
+                        {openChildHR ? <ExpandLess /> : <ExpandMore />}
+                      </ListItem>
+                      : <Link to="/hr" onClick={event => handleListItemClick(event, 3)} style={{ textDecoration: "none", color: 'black' }}>
+                        <ListItem button key="HR" selected={selectedIndex === 3 || selectedIndex === 3.1}>
+                          <ListItemIcon>
+                            <SupervisorAccountIcon />
+                          </ListItemIcon>
+                          <ListItemText primary="HR" />
+                        </ListItem>
+                      </Link>
+                    : <Link to="/hr" onClick={event => handleListItemClick(event, 3)}>
+                      <ListItem button key="HR" selected={selectedIndex === 3 || selectedIndex === 3.1} >
+                        <ListItemIcon style={{ marginLeft: 8 }}>
+                          <SupervisorAccountIcon />
+                        </ListItemIcon>
+                      </ListItem>
+                    </Link>
+                }
+
+                <Collapse in={openChildHR} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <Link to="/hr" onClick={event => handleListItemClick(event, 3)} style={{ textDecoration: 'none', color: 'black' }}>
+                      <ListItem button className={classes.nested} selected={selectedIndex === 3}>
+                        <ListItemText primary="Pengajuan" />
+                      </ListItem>
+                    </Link>
+                    <Link to="/hr/report" onClick={event => handleListItemClick(event, 3.1)} style={{ textDecoration: 'none', color: 'black' }}>
+                      <ListItem button className={classes.nested} selected={selectedIndex === 3.1}>
+                        <ListItemText primary="Report" />
+                      </ListItem>
+                    </Link>
+                  </List>
+                </Collapse>
+              </>
+
+              {/* KPIM */}
+              <>
+                {
+                  open
+                    ? <ListItem button key="KPIM"
+                      onClick={event => handleClick(event, 'openChildKPIM')} selected={selectedIndex === 4 || selectedIndex === 4.1 || selectedIndex === 4.2 || selectedIndex === 4.3}>
+                      <ListItemIcon>
+                        <BarChartIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="KPIM" />
+                      {openChildKPIM ? <ExpandLess /> : <ExpandMore />}
+                    </ListItem>
+                    : <Link to="/kpim" onClick={event => handleListItemClick(event, 4)}>
+                      <ListItem button key="KPIM" selected={selectedIndex === 4 || selectedIndex === 4.1 || selectedIndex === 4.2 || selectedIndex === 4.3} >
+                        <ListItemIcon style={{ marginLeft: 8 }}>
+                          <BarChartIcon />
+                        </ListItemIcon>
+                      </ListItem>
+                    </Link>
+                }
+                <Collapse in={openChildKPIM} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <Link to="/kpim" onClick={event => handleListItemClick(event, 4)} style={{ textDecoration: 'none', color: 'black' }}>
+                      <ListItem button className={classes.nested} selected={selectedIndex === 4}>
+                        <ListItemText primary="Dashboard" />
+                      </ListItem>
+                    </Link>
+                    <Link to="/kpim/tal" onClick={event => handleListItemClick(event, 4.1)} style={{ textDecoration: 'none', color: 'black' }}>
+                      <ListItem button className={classes.nested} selected={selectedIndex === 4.1}>
+                        <ListItemText primary="TAL" />
+                      </ListItem>
+                    </Link>
+                    {
+                      isAtasan && <>
+                        <Link to="/kpim/report" onClick={event => handleListItemClick(event, 4.2)} style={{ textDecoration: 'none', color: 'black' }}>
+                          <ListItem button className={classes.nested} selected={selectedIndex === 4.2}>
+                            <ListItemText primary="Report" />
+                          </ListItem>
+                        </Link>
+                        <Link to="/kpim/setting" onClick={event => handleListItemClick(event, 4.3)} style={{ textDecoration: 'none', color: 'black' }}>
+                          <ListItem button className={classes.nested} selected={selectedIndex === 4.3}>
+                            <ListItemText primary="Setting" />
+                          </ListItem>
+                        </Link>
+                      </>
+                    }
+
+                  </List>
+                </Collapse>
+              </>
+
+              {/* Menu Setting */}
+              <>
+                {
+                  open
+                    ? <Link to="/setting" onClick={event => handleListItemClick(event, 99)} style={{ textDecoration: 'none', color: 'black' }}>
+                      <ListItem button key="Setting" selected={selectedIndex === 99} >
+                        <ListItemIcon>
+                          <SettingsOutlinedIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Setting" />
+                      </ListItem>
+                    </Link>
+                    : <Link to="/setting" onClick={event => handleListItemClick(event, 99)}>
+                      <ListItem button key="Setting" selected={selectedIndex === 99} >
+                        <ListItemIcon style={{ marginLeft: 8 }}>
+                          <SettingsOutlinedIcon />
+                        </ListItemIcon>
+                      </ListItem>
+                    </Link>
+                }
+              </>
+
+            </List>
+
+            <Divider />
+
+            <List>
+              <Link to="/profil" onClick={event => handleListItemClick(event, 100)} style={{ textDecoration: 'none', color: 'black' }}>
+                <ListItem button key="Profil" selected={selectedIndex === 100} >
                   <ListItemIcon>
-                    <SupervisorAccountIcon />
+                    <PersonOutlineOutlinedIcon />
                   </ListItemIcon>
-                  <ListItemText primary="HR" />
-                  {openChildHR ? <ExpandLess /> : <ExpandMore />}
+                  <ListItemText primary="Profil" />
                 </ListItem>
-                : <Link to="/hr" onClick={event => handleListItemClick(event, 3)}>
-                  <ListItem button key="HR" selected={selectedIndex === 3 || selectedIndex === 3.1} >
-                    <ListItemIcon style={{ marginLeft: 8 }}>
-                      <SupervisorAccountIcon />
-                    </ListItemIcon>
-                  </ListItem>
+              </Link>
+            </List>
+          </Drawer>
 
-                </Link>
-            }
-
-            <Collapse in={openChildHR} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <Link to="/hr" onClick={event => handleListItemClick(event, 3)} style={{ textDecoration: 'none', color: 'black' }}>
-                  <ListItem button className={classes.nested} selected={selectedIndex === 3}>
-                    <ListItemText primary="Pengajuan" />
-                  </ListItem>
-                </Link>
-                <Link to="/hr/report" onClick={event => handleListItemClick(event, 3.1)} style={{ textDecoration: 'none', color: 'black' }}>
-                  <ListItem button className={classes.nested} selected={selectedIndex === 3.1}>
-                    <ListItemText primary="Report" />
-                  </ListItem>
-                </Link>
-              </List>
-            </Collapse>
-          </>
-
-          {/* KPIM */}
-          <>
-            {
-              open
-                ? <ListItem button key="KPIM"
-                  onClick={event => handleClick(event, 'openChildKPIM')} selected={selectedIndex === 4 || selectedIndex === 4.1 || selectedIndex === 4.2 || selectedIndex === 4.3}>
-                  <ListItemIcon>
-                    <BarChartIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="KPIM" />
-                  {openChildKPIM ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                : <Link to="/kpim" onClick={event => handleListItemClick(event, 4)}>
-                  <ListItem button key="KPIM" selected={selectedIndex === 4 || selectedIndex === 4.1 || selectedIndex === 4.2 || selectedIndex === 4.3} >
-                    <ListItemIcon style={{ marginLeft: 8 }}>
-                      <BarChartIcon />
-                    </ListItemIcon>
-                  </ListItem>
-
-                </Link>
-            }
-            <Collapse in={openChildKPIM} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <Link to="/kpim" onClick={event => handleListItemClick(event, 4)} style={{ textDecoration: 'none', color: 'black' }}>
-                  <ListItem button className={classes.nested} selected={selectedIndex === 4}>
-                    <ListItemText primary="Dashboard" />
-                  </ListItem>
-                </Link>
-                <Link to="/kpim/tal" onClick={event => handleListItemClick(event, 4.1)} style={{ textDecoration: 'none', color: 'black' }}>
-                  <ListItem button className={classes.nested} selected={selectedIndex === 4.1}>
-                    <ListItemText primary="TAL" />
-                  </ListItem>
-                </Link>
-                <Link to="/kpim/report" onClick={event => handleListItemClick(event, 4.2)} style={{ textDecoration: 'none', color: 'black' }}>
-                  <ListItem button className={classes.nested} selected={selectedIndex === 4.2}>
-                    <ListItemText primary="Report" />
-                  </ListItem>
-                </Link>
-                <Link to="/kpim/setting" onClick={event => handleListItemClick(event, 4.3)} style={{ textDecoration: 'none', color: 'black' }}>
-                  <ListItem button className={classes.nested} selected={selectedIndex === 4.3}>
-                    <ListItemText primary="Setting" />
-                  </ListItem>
-                </Link>
-              </List>
-            </Collapse>
-          </>
-
-          {/* Menu Setting */}
-          <>
-            {
-              open
-                ? <Link to="/setting" onClick={event => handleListItemClick(event, 99)} style={{ textDecoration: 'none', color: 'black' }}>
-                  <ListItem button key="Setting" selected={selectedIndex === 99} >
-                    <ListItemIcon>
-                      <SettingsOutlinedIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Setting" />
-                  </ListItem>
-                </Link>
-                : <Link to="/setting" onClick={event => handleListItemClick(event, 99)}>
-                  <ListItem button key="Setting" selected={selectedIndex === 99} >
-                    <ListItemIcon style={{ marginLeft: 8 }}>
-                      <SettingsOutlinedIcon />
-                    </ListItemIcon>
-                  </ListItem>
-                </Link>
-            }
-          </>
-
-        </List>
-
-        <Divider />
-
-        <List>
-          <ListItem button key="Profil" selected={selectedIndex === 2} onClick={event => handleListItemClick(event, 2)}>
-            <ListItemIcon>
-              <PersonOutlineOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Profil" />
-          </ListItem>
-        </List>
-      </Drawer>
+        </>
+      }
     </div >
   );
 }
@@ -590,7 +624,7 @@ const mapDispatchToProps = {
   fetchDataNotification
 }
 
-const mapStateToProps = ({ isAdmin, isRoomMaster, isCreatorMaster, isCreatorAssistant, dataNotification, userId, dataNewNotif }) => {
+const mapStateToProps = ({ isAdmin, isRoomMaster, isCreatorMaster, isCreatorAssistant, dataNotification, userId, dataNewNotif, bawahan, adminContactCategori }) => {
   return {
     isAdmin,
     isRoomMaster,
@@ -598,7 +632,10 @@ const mapStateToProps = ({ isAdmin, isRoomMaster, isCreatorMaster, isCreatorAssi
     isCreatorAssistant,
     dataNotification,
     userId,
-    dataNewNotif
+    dataNewNotif,
+    bawahan,
+    adminContactCategori
   }
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Navsidebar))

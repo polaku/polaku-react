@@ -1,19 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import Popover from '@material-ui/core/Popover';
-import Paper from '@material-ui/core/Paper';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
-import Divider from '@material-ui/core/Divider';
+
+import {
+  ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Checkbox, FormControlLabel, Typography, Grid, Button, Popover, Paper, ClickAwayListener, MenuItem, MenuList, Divider
+} from '@material-ui/core';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import BusinessOutlinedIcon from '@material-ui/icons/BusinessOutlined';
@@ -173,7 +163,7 @@ class panelOnBoarding extends Component {
                 </div>
                 <Grid container>
                   <Grid item sm={3} style={{ paddingRight: 5 }}>
-                    <Grid style={{ backgroundColor: 'white', width:'100%', border: '1px solid #e3e3e3',  }}>
+                    <Grid style={{ backgroundColor: 'white', width: '100%', border: '1px solid #e3e3e3', }}>
                       Status Alamat
                   </Grid>
                   </Grid>

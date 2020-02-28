@@ -1,12 +1,12 @@
 import 'date-fns';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Cookies from 'js-cookie';
 
 import {
-  TextField, Typography, Button, CircularProgress, InputLabel, MenuItem, FormControl
+  TextField, Typography, Button, CircularProgress, InputLabel, MenuItem, FormControl, Select as SelectOption
 } from '@material-ui/core';
 
-import SelectOption from '@material-ui/core/Select';
 import DateFnsUtils from '@date-io/date-fns';
 
 import {
@@ -65,7 +65,6 @@ class CreateBookingRoom extends Component {
       })
 
     } catch (err) {
-      console.log(err);
       swal('Error', `${err}`)
     }
   }
@@ -81,7 +80,7 @@ class CreateBookingRoom extends Component {
       editableInput: false
     })
 
-    let token = localStorage.getItem('token');
+    let token = Cookies.get('POLAGROUP')
 
     if (!this.state.room_id || !this.state.date_in || !this.state.time_in || !this.state.time_out || !this.state.subject) {
       swal('Data incomplete!', "", "warning");
@@ -158,7 +157,7 @@ class CreateBookingRoom extends Component {
             swal('Waktu yang dipesan sudah terpesan oleh orang lain, harap menentukan waktu yang lain', "", "error");
           } else if (err.message === 'Request failed with status code 403') {
             swal('Waktu login telah habis, silahkan login kembali', "", "error");
-            localStorage.clear()
+            Cookies.remove('POLAGROUP')
           } else {
             swal('Error', `${err}`)
           }

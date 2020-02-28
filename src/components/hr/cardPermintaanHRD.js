@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
+import Cookies from 'js-cookie';
 
-import { Card, Grid, Avatar, Paper, Button } from '@material-ui/core';
+import {
+  Card, Grid, Avatar, Paper, Button
+} from '@material-ui/core';
 
 import ModalCreateEditPermintaanHRD from '../modal/modalCreateEditPermintaanHRD';
 
@@ -115,7 +118,7 @@ export default class cardPermintaanHRD extends Component {
           this.setState({
             proses: true
           })
-          let token = localStorage.getItem('token')
+          let token = Cookies.get('POLAGROUP')
 
           API.put(`/contactUs/cancel/${this.props.data.contact_id}`, {}, { headers: { token } })
             .then(data => {
@@ -146,7 +149,7 @@ export default class cardPermintaanHRD extends Component {
     })
       .then((yesAnswer) => {
         if (yesAnswer) {
-          let token = localStorage.getItem('token')
+          let token = Cookies.get('POLAGROUP')
           API.get(`/contactUs/rejected/${this.props.data.contact_id}`, { headers: { token } })
             .then(async () => {
               swal("Sukses ditolak", "", "success");
@@ -171,7 +174,7 @@ export default class cardPermintaanHRD extends Component {
     })
       .then((yesAnswer) => {
         if (yesAnswer) {
-          let newStatus, token = localStorage.getItem('token')
+          let newStatus, token = Cookies.get('POLAGROUP')
           if (this.props.data.status === 'new') {
             newStatus = 'new2'
           } else if (this.props.data.status === 'new2') {

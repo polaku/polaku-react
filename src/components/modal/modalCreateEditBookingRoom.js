@@ -1,17 +1,12 @@
 import 'date-fns';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import SelectOption from '@material-ui/core/Select';
+import Cookies from 'js-cookie';
+
+import {
+  Modal, Backdrop, Fade, TextField, Typography, Button, CircularProgress, InputLabel, MenuItem, FormControl, Select as SelectOption
+} from '@material-ui/core';
+
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
@@ -40,7 +35,6 @@ class modalCreateEditBookingRoom extends Component {
       subject: '',
       count: '',
       partisipan: [],
-      password: '',
       proses: false,
       editableInput: true,
       people: [],
@@ -96,7 +90,7 @@ class modalCreateEditBookingRoom extends Component {
       editableInput: false
     })
 
-    let token = localStorage.getItem('token');
+    let token = Cookies.get('POLAGROUP')
 
     if (!this.state.room_id || !this.state.date_in || !this.state.time_in || !this.state.time_out || !this.state.subject) {
       swal("Data incomplete", "", "warning");
@@ -136,9 +130,13 @@ class modalCreateEditBookingRoom extends Component {
       })
     } else {
       let idPartisipan = [], time_in, time_out
-      this.state.partisipan.forEach(el => {
-        idPartisipan.push(el.user_id)
-      })
+      if (this.state.partisipan.length > 0) {
+        this.state.partisipan.forEach(el => {
+          idPartisipan.push(el.user_id)
+        })
+      }else{
+        idPartisipan.push(this.props.userId)
+      }
 
       time_in = `${new Date(this.state.time_in).getHours()}:${new Date(this.state.time_in).getMinutes()}`
       time_out = `${new Date(this.state.time_out).getHours()}:${new Date(this.state.time_out).getMinutes()}`
@@ -177,7 +175,8 @@ class modalCreateEditBookingRoom extends Component {
               swal('Waktu yang dipesan sudah terpesan oleh orang lain, harap menentukan waktu yang lain', "", "error");
             } else if (err.message === 'Request failed with status code 403') {
               swal('Waktu login telah habis, silahkan login kembali', "", "error");
-              localStorage.clear()
+
+              Cookies.remove('POLAGROUP');
             } else {
               swal('Error', `${err}`)
             }
@@ -207,7 +206,7 @@ class modalCreateEditBookingRoom extends Component {
               swal('Waktu yang dipesan sudah terpesan oleh orang lain, harap menentukan waktu yang lain', "", "error");
             } else if (err.message === 'Request failed with status code 403') {
               swal('Waktu login telah habis, silahkan login kembali', "", "error");
-              localStorage.clear()
+              Cookies.remove('POLAGROUP')
             } else {
               swal('Error', `${err}`)
             }
@@ -408,11 +407,12 @@ const mapDispatchToProps = {
   fetchDataRooms,
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataRooms }) => {
+const mapStateToProps = ({ loading, dataUsers, dataRooms, userId }) => {
   return {
     loading,
     dataUsers,
     dataRooms,
+    userId,
   }
 }
 

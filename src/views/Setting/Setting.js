@@ -51,7 +51,7 @@ export default class Setting extends Component {
         icon: 'AccountCircleOutlinedIcon',
         title: 'Akun',
         information: 'Atur profil akun dan biodata',
-        route: ''
+        route: '/setting/settingUser'
       },
     ]
   }

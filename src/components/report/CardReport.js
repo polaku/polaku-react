@@ -1,6 +1,16 @@
 import React, { Component } from 'react'
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
+import Cookies from 'js-cookie';
+
+import { TableCell, TableRow, Checkbox, IconButton, Tooltip } from '@material-ui/core';
+
+// import EditIcon from '@material-ui/icons/Edit';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+
+import ModalDetailUser from '../modal/modalDetailUser';
+
+import { API } from '../../config/API';
+
+import swal from 'sweetalert';
 
 export default class CardReport extends Component {
   state = {
@@ -10,10 +20,15 @@ export default class CardReport extends Component {
     tglSelesai: '',
     timeImpSelesai: '',
     lamaIjin: '',
-    sisaCuti: ''
+    sisaCuti: '',
+
+    //setting user
+    isActive: false,
+    openModalDetailUser: false,
   }
 
   componentDidMount() {
+    // ============ REPORT IJIN (START) ============
     if (this.props.data.categori_id === 6) {
       this.setState({
         statusIjin: "Cuti",
@@ -45,6 +60,36 @@ export default class CardReport extends Component {
         sisaCuti: this.props.data.tbl_user.tbl_account_detail.leave
       })
     }
+    // ============ REPORT IJIN (END) ============
+
+
+    if (this.props.data.nik) {
+      this.setState({
+        isActive: this.props.data.isActive
+      })
+    }
+  }
+
+  handleChangeCheck = event => {
+    this.setState({
+      isActive: event.target.checked
+    })
+
+    let token = Cookies.get('POLAGROUP')
+
+    API.put(`/users/editUser/${this.props.data.userId}`, { isActive: event.target.checked }, { headers: { token } })
+      .then(() => {
+        this.props.refresh()
+      })
+      .catch(err => {
+        swal('please try again')
+      })
+  }
+
+  handleModalDetailUser = () => {
+    this.setState({
+      openModalDetailUser: !this.state.openModalDetailUser
+    })
   }
 
   render() {
@@ -72,6 +117,43 @@ export default class CardReport extends Component {
             <TableCell>{this.props.data.tal}</TableCell>
             <TableCell>{this.props.data.kpim}</TableCell>
           </TableRow>
+        }
+
+        {
+          this.props.data.nik && <>
+            <TableRow  >{/* Untuk SETTING USER */}
+              <TableCell component="th" scope="row" style={{ display: 'flex', alignItems: 'center', height: 80, padding: 13 }}>
+                {this.props.data.company}
+              </TableCell>
+              <TableCell style={{ padding: 13 }}>{this.props.data.name}</TableCell>
+              <TableCell style={{ padding: 13 }}>{this.props.data.username}</TableCell>
+              <TableCell style={{ padding: 13 }}>{this.props.data.initial}</TableCell>
+              <TableCell style={{ padding: 13 }}>{this.props.data.nik}</TableCell>
+              <TableCell style={{ padding: 13 }}>{this.props.data.evaluator1}</TableCell>
+              <TableCell style={{ padding: 13 }}>{this.props.data.evaluator2}</TableCell>
+              <TableCell style={{ padding: 13 }}>
+                <Tooltip title={this.state.isActive ? "Jadikan non aktif" : "Jadikan aktif"} placement="top-end">
+                  <Checkbox
+                    checked={this.state.isActive}
+                    onChange={this.handleChangeCheck}
+                    value="secondary"
+                    color="secondary"
+                  />
+                </Tooltip>
+
+              </TableCell>
+              <TableCell style={{ padding: 13 }}>
+                <IconButton aria-label="detail" onClick={this.handleModalDetailUser}>
+                  <Tooltip title="detail user" placement="top-end">
+                    <AccountCircleIcon />
+                  </Tooltip>
+                </IconButton>
+              </TableCell>
+            </TableRow>
+            {
+              this.state.openModalDetailUser && <ModalDetailUser status={this.state.openModalDetailUser} closeModal={this.handleModalDetailUser} data={this.props.data} refresh={this.props.refresh} />
+            }
+          </>
         }
 
       </>

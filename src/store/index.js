@@ -1,9 +1,10 @@
 import { createStore, applyMiddleware } from 'redux'
 import reducer from './reducer'
 import { API } from '../config/API';
+import Cookies from 'js-cookie';
 
 const api = store => next => async action => {
-  let token = localStorage.getItem('token')
+  let token = Cookies.get('POLAGROUP')
 
   if (action.type === 'FETCH_DATA_USERS') {
     next({
@@ -14,9 +15,11 @@ const api = store => next => async action => {
     try {
       getData = await API.get('/users', { headers: { token } })
 
+      let newData = await getData.data.data.filter(user => user.tbl_account_detail)
+      
       next({
         type: 'FETCH_DATA_USERS_SUCCESS',
-        payload: getData.data.data
+        payload: newData
       })
 
     } catch (err) {
@@ -297,7 +300,6 @@ const api = store => next => async action => {
       // let newDataStaff = await getData.data.data.filter(el => el.evaluator_1 === action.payload || el.evaluator_2 === action.payload)
 
       let newData = [], newDataStaff = []
-
       await getData.data.data.forEach(el => {
 
         if (el.leave_date) {  // cuti
@@ -305,12 +307,13 @@ const api = store => next => async action => {
           let newLastDate = lastDate[lastDate.length - 1]
           if (
             (
-              Number(newLastDate.slice(newLastDate.length - 5, newLastDate.length - 3)) >= new Date().getMonth()
+              Number(newLastDate.slice(newLastDate.length - 5, newLastDate.length - 3)) >= new Date().getMonth() + 1
               && Number(newLastDate.slice(newLastDate.length - 10, newLastDate.length - 6)) >= new Date().getFullYear()
             )
           ) {
 
             if (el.user_id === action.payload) newData.push(el)
+            else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
 
             // if (lastDate.length > 1) {   // for data from web php (yyyy-mm-dd,yyyy-mm-dd,yyyy-mm-dd) 
             //   if (Number(newLastDate.slice(newLastDate.length - 2, newLastDate.length)) >= new Date().getDate()) {
@@ -318,29 +321,31 @@ const api = store => next => async action => {
             //   }
             // } else { // for data from mobile (yyyy-mm-dd hh:mm:ss)
             //   if ((Number(newLastDate.slice(newLastDate.length - 2, newLastDate.length)) + (Number(el.leave_request) - 1)) >= new Date().getDate()) {                
-            if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
             //   }
             // }
 
           } else if (Number(newLastDate.slice(newLastDate.length - 10, newLastDate.length - 6)) > new Date().getFullYear()) {   // if next year
 
             if (el.user_id === action.payload) newData.push(el)
-            if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+            else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
           }
+
+
+
         } else if (el.date_imp) {  // imp
           if (
             Number(el.date_imp.slice(el.date_imp.length - 5, el.date_imp.length - 3)) > new Date().getMonth()
             && Number(el.date_imp.slice(el.date_imp.length - 10, el.date_imp.length - 6)) >= new Date().getFullYear()) {
 
             if (el.user_id === action.payload) newData.push(el)
+            else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
 
-            if (Number(el.date_imp.slice(el.date_imp.length - 2, el.date_imp.length)) >= new Date().getDate()) {
-              if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
-            }
+            // if (Number(el.date_imp.slice(el.date_imp.length - 2, el.date_imp.length)) >= new Date().getDate()) {
+            // }
 
           } else if (Number(el.date_imp.slice(el.date_imp.length - 10, el.date_imp.length - 6)) > new Date().getFullYear()) {   // if next year
             if (el.user_id === action.payload) newData.push(el)
-            if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+            else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
           }
         } else if (el.date_ijin_absen_end) {  // ia
           if (
@@ -348,14 +353,14 @@ const api = store => next => async action => {
             && Number(el.date_ijin_absen_end.slice(el.date_ijin_absen_end.length - 10, el.date_ijin_absen_end.length - 6)) >= new Date().getFullYear()) {
 
             if (el.user_id === action.payload) newData.push(el)
+            else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
 
-            if (Number(el.date_ijin_absen_end.slice(el.date_ijin_absen_end.length - 2, el.date_ijin_absen_end.length)) > new Date().getDate()) {
-              if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
-            }
+            // if (Number(el.date_ijin_absen_end.slice(el.date_ijin_absen_end.length - 2, el.date_ijin_absen_end.length)) > new Date().getDate()) {
+            // }
 
           } else if (Number(el.date_ijin_absen_end.slice(el.date_ijin_absen_end.length - 10, el.date_ijin_absen_end.length - 6)) > new Date().getFullYear()) {  // if next year
             if (el.user_id === action.payload) newData.push(el)
-            if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+            else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
           }
         } else if (el.type === "contact_us") {  // type === contact_us
           if ((el.status !== 'done' && el.status !== 'cancel') ||
@@ -363,11 +368,11 @@ const api = store => next => async action => {
               new Date(el.done_expired_date).getFullYear() >= new Date().getFullYear())) {
 
             if (el.user_id === action.payload) newData.push(el)
-            if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+            else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
 
           } else if (new Date(el.done_expired_date).getFullYear() > new Date().getFullYear()) { // if next year
             if (el.user_id === action.payload) newData.push(el)
-            if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+            else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
           }
         }
       })
@@ -389,12 +394,14 @@ const api = store => next => async action => {
       type: 'FETCH_DATA_LOADING'
     })
 
-    let getData
+    let getDataKPIM
     try {
-      getData = await API.get(`/kpim?year=${action.payload}`, { headers: { token } })
+      if (action.payload) getDataKPIM = await API.get(`/kpim?year=${action.payload.year}`, { headers: { token } })
+      else getDataKPIM = await API.get(`/kpim`, { headers: { token } })
+
       next({
         type: 'FETCH_DATA_ALL_KPIM_SUCCESS',
-        payload: { dataAllKPIM: getData.data.data }
+        payload: { dataAllKPIM: getDataKPIM.data.data }
       })
 
     } catch (err) {
@@ -412,9 +419,54 @@ const api = store => next => async action => {
     let getData
     try {
       getData = await API.get(`/tal?year=${action.payload}`, { headers: { token } })
+
       next({
         type: 'FETCH_DATA_ALL_TAL_SUCCESS',
         payload: { dataAllTAL: getData.data.data }
+      })
+
+    } catch (err) {
+      next({
+        type: 'FETCH_DATA_ERROR',
+        payload: err
+      })
+    }
+  }
+  else if (action.type === 'FETCH_DATA_REWARD_KPIM') {
+    next({
+      type: 'FETCH_DATA_LOADING'
+    })
+
+    let getData
+    try {
+      getData = await API.get(`/rewardKPIM?all=true`, { headers: { token } })
+
+      let myRewardKPIM = await getData.data.data.filter(el => el.user_id === action.payload)
+
+      next({
+        type: 'FETCH_DATA_REWARD_KPIM_SUCCESS',
+        payload: { dataAllRewardKPIM: getData.data.data, myRewardKPIM }
+      })
+
+    } catch (err) {
+      next({
+        type: 'FETCH_DATA_ERROR',
+        payload: err
+      })
+    }
+  }
+  else if (action.type === 'FETCH_DATA_POSITION') {
+    next({
+      type: 'FETCH_DATA_LOADING'
+    })
+
+    let getData
+    try {
+      getData = await API.get(`/position`, { headers: { token } })
+
+      next({
+        type: 'FETCH_DATA_POSITION_SUCCESS',
+        payload: { dataPositions: getData.data.data }
       })
 
     } catch (err) {

@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
-import Modal from '@material-ui/core/Modal';
-import Fade from '@material-ui/core/Fade';
-import Backdrop from '@material-ui/core/Backdrop';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { connect } from 'react-redux';
+import Cookies from 'js-cookie';
+
+import {
+  Modal, Fade, Backdrop, Paper, Grid, Divider, Typography, Button, CircularProgress
+} from '@material-ui/core';
 
 import swal from 'sweetalert';
 
@@ -24,8 +20,7 @@ class modalEvent extends Component {
       statusJoinUser: 'Not Join',
       proses: false,
       creator: {},
-      statusApproval: false,
-      openModal: false
+      statusApproval: false
     }
   }
 
@@ -61,7 +56,7 @@ class modalEvent extends Component {
       proses: true
     })
 
-    let token = localStorage.getItem('token'), getData
+    let token = Cookies.get('POLAGROUP'), getData
 
     try {
       getData = await API.post(`/events/follow`,
@@ -97,7 +92,7 @@ class modalEvent extends Component {
 
     } catch (err) {
       if (err.message === 'Request failed with status code 403') {
-        alert('Waktu login telah habis, silahkan login kembali')
+        swal('Waktu login telah habis, silahkan login kembali', "", "error");
       } else {
         swal('Error', `${err}`)
       }
@@ -186,7 +181,8 @@ class modalEvent extends Component {
                   }}>
                     <p style={{ margin: 10 }}> {this.state.joinEvent.length} Mengikuti </p>
                     {
-                      this.state.statusJoinUser !== 'Join'
+                      this.props.data.end_date >= new Date() && 
+                      (this.state.statusJoinUser !== 'Join'
                         ? <Button style={{
                           width: 'auto',
                           backgroundColor: '#A2A2A2',
@@ -219,7 +215,7 @@ class modalEvent extends Component {
                               :
                               <p style={{ textAlign: 'center', margin: 0, fontSize: 12, color: 'white' }}> Batal Ikuti </p>
                           }
-                        </Button>
+                        </Button>)
                     }
                   </div>
                 </Grid>
