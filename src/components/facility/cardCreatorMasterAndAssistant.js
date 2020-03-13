@@ -19,7 +19,7 @@ class cardCreatorMasterAndAssistant extends Component {
 
     API.delete(`/events/masterCreator/${this.props.data.master_creator_id}`, { headers: { token } })
       .then(() => {
-        this.props.fetchDataCreatorMasterAndAssistant()
+        this.props.refresh()
       })
       .catch(err => {
         swal('please try again')

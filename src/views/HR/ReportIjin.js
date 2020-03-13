@@ -57,54 +57,67 @@ TabPanel.propTypes = {
 };
 
 class ReportIjin extends Component {
-  state = {
-    month: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
-    monthSelected: 0,
-    value: 0,
-    index: 0,
-    anchorEl: null,
-    openFilter: false,
-    monthStart: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-    monthEnd: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
-    newMonthStart: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-    newMonthEnd: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
-    data: [],
-    dataForDisplay: [],
-    page: 0,
-    rowsPerPage: 5,
-    columnToSort: "",
-    sortDirection: "desc",
+  constructor(props) {
+    super(props)
+    this._isMounted = false
+    this.state = {
+      month: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+      monthSelected: 0,
+      value: 0,
+      index: 0,
+      anchorEl: null,
+      openFilter: false,
+      monthStart: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      monthEnd: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+      newMonthStart: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      newMonthEnd: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+      data: [],
+      dataForDisplay: [],
+      page: 0,
+      rowsPerPage: 5,
+      columnToSort: "",
+      sortDirection: "desc",
 
-    labelValue: [
-      {
-        label: "name",
-        value: "name"
-      }, {
-        label: "tanggal_mulai",
-        value: "tglMulai"
-      }, {
-        label: "tanggal_selesai",
-        value: "tglSelesai"
-      }, {
-        label: "lama_ijin",
-        value: "lamaIjin"
-      }, {
-        label: "status_ijin",
-        value: "statusIjin"
-      }, {
-        label: "sisa_cuti",
-        value: "sisaCuti"
-      }
-    ],
+      labelValue: [
+        {
+          label: "name",
+          value: "name"
+        }, {
+          label: "tanggal_mulai",
+          value: "tglMulai"
+        }, {
+          label: "tanggal_selesai",
+          value: "tglSelesai"
+        }, {
+          label: "lama_ijin",
+          value: "lamaIjin"
+        }, {
+          label: "status_ijin",
+          value: "statusIjin"
+        }, {
+          label: "sisa_cuti",
+          value: "sisaCuti"
+        }
+      ],
 
-    searchName: "",
-    filterCategori: ""
+      searchName: "",
+      filterCategori: ""
+    }
   }
 
   async componentDidMount() {
-    await this.props.fetchDataContactUs()
-    await this.fetchData()
+    this._isMounted = true
+
+    if (this._isMounted) {
+      await this.props.fetchDataContactUs()
+      await this.fetchData()
+    }
   }
+
+  componentWillUnmount() {
+    this._isMounted = false
+  }
+
 
   fetchData = async () => {
     let newData = []
@@ -171,7 +184,7 @@ class ReportIjin extends Component {
       }
     });
 
-    this.setState({
+    this._isMounted && this.setState({
       dataForDisplay: newData,
       data: newData
     })

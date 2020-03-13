@@ -15,27 +15,35 @@ import CardTAL from '../../components/kpim/cardTAL';
 import { fetchDataAllTAL } from '../../store/action';
 
 class TAL extends Component {
-  state = {
-    months: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+  constructor(props) {
+    super(props)
+    this._isMounted = false
+    this.state = {
+      months: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
 
-    dataForDisplay: [],
-    mingguAwalBulan: 0,
-    mingguAkhirBulan: 0,
-    persenanTALMonth: 0,
-    monthSelected: 0,
-    isEmpty: false
+      dataForDisplay: [],
+      mingguAwalBulan: 0,
+      mingguAkhirBulan: 0,
+      persenanTALMonth: 0,
+      monthSelected: 0,
+      isEmpty: false
+    }
   }
 
   async componentDidMount() {
-    this.setState({
-      mingguAwalBulan: this.getNumberOfWeek(new Date(new Date().getFullYear(), new Date().getMonth(), 1)),
-      mingguAkhirBulan: this.getNumberOfWeek(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)),
-      persenanTALMonth: 0,
-      monthSelected: new Date().getMonth()
-    })
+    this._isMounted = true
 
-    await this.fetchData()
-    await this.fetchDataForDisplay()
+    if (this._isMounted) {
+      this.setState({
+        mingguAwalBulan: this.getNumberOfWeek(new Date(new Date().getFullYear(), new Date().getMonth(), 1)),
+        mingguAkhirBulan: this.getNumberOfWeek(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)),
+        persenanTALMonth: 0,
+        monthSelected: new Date().getMonth()
+      })
+
+      await this.fetchData()
+      await this.fetchDataForDisplay()
+    }
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -50,6 +58,10 @@ class TAL extends Component {
       await this.fetchData()
       await this.fetchDataForDisplay()
     }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false
   }
 
 
@@ -68,14 +80,16 @@ class TAL extends Component {
       tempTAL.push(tempTALweek)
     }
 
-    this.setState({
+    this._isMounted && this.setState({
       dataTAL: tempTAL
     })
   }
 
   fetchDataForDisplay = () => {
     let isEmpty = true
-    let allData = this.state.dataTAL.slice(this.state.mingguAwalBulan - 1, this.state.mingguAkhirBulan)
+    let allData = []
+
+    if (this.state.dataTAL && this.state.dataTAL.length > 0) allData = this.state.dataTAL.slice(this.state.mingguAwalBulan - 1, this.state.mingguAkhirBulan)
 
 
     let counterWeek = 0, tempTotalScore = 0, tempScore = 0
@@ -94,7 +108,7 @@ class TAL extends Component {
 
     if (isNaN(tempScore)) tempScore = 0
 
-    this.setState({
+    this._isMounted && this.setState({
       dataForDisplay: allData,
       persenanTALMonth: tempScore,
       isEmpty
@@ -169,7 +183,7 @@ class TAL extends Component {
 
         <Grid container style={{ marginTop: 10 }}>
           {
-            this.state.dataForDisplay.map((el, index) =>
+            this.state.dataForDisplay.length > 0 && this.state.dataForDisplay.map((el, index) =>
               <CardTAL data={el} key={index} refresh={this.refresh} />
             )
           }
@@ -177,7 +191,7 @@ class TAL extends Component {
           {
             this.state.isEmpty && <Grid style={{ display: 'flex', margin: '50px auto 10px auto', flexDirection: 'column', textAlign: 'center' }}>
               <img src={require('../../assets/settingKPIM.png')} alt="Logo" style={{ width: 500, maxHeight: 500 }} />
-              <p style={{ marginTop: 10, fontFamily:'Simonetta', fontSize: 20, textShadow:'4px 4px 4px #aaa' }} >BELUM ADA TAL</p>
+              <p style={{ marginTop: 10, fontFamily: 'Simonetta', fontSize: 20, textShadow: '4px 4px 4px #aaa' }} >BELUM ADA TAL</p>
             </Grid>
           }
         </Grid>

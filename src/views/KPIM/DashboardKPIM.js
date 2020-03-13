@@ -21,65 +21,77 @@ import { API } from '../../config/API';
 import swal from 'sweetalert';
 
 class DashboardKPIM extends Component {
-  state = {
-    months: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
-    statusAddNewTal: false,
-    chooseWhen: ['Setiap hari', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
-    firstDateInWeek: new Date().getDate() - (new Date().getDay() - 1),
+  constructor(props) {
+    super(props)
+    this._isMounted = false
+    this.state = {
+      months: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+      statusAddNewTal: false,
+      chooseWhen: ['Setiap hari', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+      firstDateInWeek: new Date().getDate() - (new Date().getDay() - 1),
 
-    indicator_tal: '',
-    weight: '',
-    when: '',
-    load: '',
-    achievement: '',
-    link: '',
+      indicator_tal: '',
+      weight: '',
+      when: '',
+      load: '',
+      achievement: '',
+      link: '',
 
-    weekNow: 0,
-    weekSelected: 0,
-    monthSelected: null,
+      weekNow: 0,
+      weekSelected: 0,
+      monthSelected: null,
 
-    allKPIM: [],
-    kpimSelected: [],
-    persenKPIM: 0,
-    kpimTAL: null,
-    kpimTeam: [],
+      allKPIM: [],
+      kpimSelected: [],
+      persenKPIM: 0,
+      kpimTAL: null,
+      kpimTeam: [],
 
-    allTAL: [],
-    talSelected: [],
-    persenTAL: 0,
-    totalWeight: 0,
+      allTAL: [],
+      talSelected: [],
+      persenTAL: 0,
+      totalWeight: 0,
 
-    lastUpdate: null,
-    currentReward: '',
+      lastUpdate: null,
+      currentReward: '',
 
-    validateCreateTAL: false,
+      validateCreateTAL: false,
+
+      idBawahanSelected: 0,
+      talTeam: []
+    }
   }
 
   async componentDidMount() {
-    if (this.props.location.state) {
-      await this.fetchData(new Date().getMonth(), this.props.location.state.userId)
+    this._isMounted = true
 
-      await this.props.fetchDataRewardKPIM(this.props.location.state.userId)
+    if (this._isMounted) {
+      if (this.props.location.state) {
+        await this.fetchData(new Date().getMonth(), this.props.location.state.userId)
 
-      await this.props.myRewardKPIM.sort(this.sortingReward)
+        await this.props.fetchDataRewardKPIM(this.props.location.state.userId)
 
-      this.setState({
-        weekNow: this.getNumberOfWeek(new Date()),
-        weekSelected: this.getNumberOfWeek(new Date()),
-        monthSelected: new Date().getMonth()
-      })
-    } else if (this.props.userId) {
-      await this.fetchData(new Date().getMonth(), this.props.userId)
+        await this.props.myRewardKPIM.sort(this.sortingReward)
 
-      await this.props.fetchDataRewardKPIM(this.props.userId)
+        this._isMounted && this.setState({
+          idBawahanSelected: this.props.location.state.userId,
+          weekNow: this.getNumberOfWeek(new Date()),
+          weekSelected: this.getNumberOfWeek(new Date()),
+          monthSelected: new Date().getMonth()
+        })
+      } else if (this.props.userId) {
+        await this.fetchData(new Date().getMonth(), this.props.userId)
 
-      await this.props.myRewardKPIM.sort(this.sortingReward)
+        await this.props.fetchDataRewardKPIM(this.props.userId)
 
-      this.setState({
-        weekNow: this.getNumberOfWeek(new Date()),
-        weekSelected: this.getNumberOfWeek(new Date()),
-        monthSelected: new Date().getMonth()
-      })
+        await this.props.myRewardKPIM.sort(this.sortingReward)
+
+        this._isMounted && this.setState({
+          weekNow: this.getNumberOfWeek(new Date()),
+          weekSelected: this.getNumberOfWeek(new Date()),
+          monthSelected: new Date().getMonth()
+        })
+      }
     }
 
   }
@@ -158,13 +170,29 @@ class DashboardKPIM extends Component {
       })
     }
 
-    if (prevProps.location.state !== this.props.location.state) {
-      if (!this.props.location.state) {
-        await this.fetchData(new Date().getMonth(), this.props.userId)
-        await this.fetchKPIMSelected()
-        await this.fetchTALSelected()
-      }
-    }
+    // if (prevProps.location.state !== this.props.location.state) {
+    //   if (!this.props.location.state) {
+    //     console.log("MASUK")
+
+    //     this.setState({
+    //       idBawahanSelected: this.props.location.state.userId
+    //     })
+    //     await this.fetchData(new Date().getMonth(), this.props.userId)
+    //     await this.fetchKPIMSelected()
+    //     await this.fetchTALSelected()
+    //   }
+    // }
+
+    // if (prevProps.bawahan !== this.props.bawahan) {
+    //   console.log("MASUK bawahan update")
+    //   await this.fetchData(new Date().getMonth(), this.props.bawahan)
+    //   await this.fetchKPIMSelected()
+    //   await this.fetchTALSelected()
+    // }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false
   }
 
   fetchData = async (monthSelected, userId) => {
@@ -196,15 +224,31 @@ class DashboardKPIM extends Component {
 
       if (this.props.bawahan.length > 0 && !this.props.location.state) {
         //kpim tal TEAM
-        let tempKPIMTALTeambefore = this.state.talTeam[i - 2] || []
+        let tempKPIMTALTeambefore
+        if (this.state.talTeam[i - 2]) tempKPIMTALTeambefore = this.state.talTeam[i - 2]
+        else tempKPIMTALTeambefore = []
         let tempKPIMTALTeamnow = this.state.talTeam[i - 1]
         tempKPIMmonth.push([tempKPIMTALTeambefore, tempKPIMTALTeamnow])
 
-        //kpim TEAM
-        let tempKPIMTeambefore = this.state.kpimTeam[i - 2] || []
-        let tempKPIMTeamnow = this.state.kpimTeam[i - 1]
-        tempKPIMmonth.push([tempKPIMTeambefore, tempKPIMTeamnow])
+        // //kpim TEAM
+        // let tempKPIMTeambefore = this.state.kpimTeam[i - 2] || []
+        // let tempKPIMTeamnow = this.state.kpimTeam[i - 1]
+        // tempKPIMmonth.push([tempKPIMTeambefore, tempKPIMTeamnow])
       }
+      let KPIMTEAM = await allKPIM.filter(kpim => kpim.indicator_kpim.toLowerCase() === "kpim team")
+
+      KPIMTEAM && await KPIMTEAM.forEach(async kpim => {
+        let tempKPIMbefore = await kpim.kpimScore.find(kpimMonth => Number(kpimMonth.month) === i - 1)
+        let tempKPIMnow = await kpim.kpimScore.find(kpimMonth => Number(kpimMonth.month) === i)
+
+        let newKPIMbefore = tempKPIMbefore ? { ...kpim, ...tempKPIMbefore } : []
+        let newKPIMnow = { ...kpim, ...tempKPIMnow }
+        delete newKPIMbefore.kpimScore
+        delete newKPIMnow.kpimScore
+
+        tempKPIMnow && tempKPIMmonth.push([newKPIMbefore, newKPIMnow])
+      })
+
       let onlyTAL = await allKPIM.filter(kpim => kpim.indicator_kpim.toLowerCase() === "tal")
 
       onlyTAL && await onlyTAL.forEach(async kpim => {
@@ -219,7 +263,7 @@ class DashboardKPIM extends Component {
         tempKPIMnow && tempKPIMmonth.push([newKPIMbefore, newKPIMnow])
       })
 
-      let onlyKPIM = await allKPIM.filter(kpim => kpim.indicator_kpim.toLowerCase() !== "tal")
+      let onlyKPIM = await allKPIM.filter(kpim => kpim.indicator_kpim.toLowerCase() !== "tal" && kpim.indicator_kpim.toLowerCase() !== "kpim team")
 
       await onlyKPIM.forEach(async kpim => {
 
@@ -236,7 +280,7 @@ class DashboardKPIM extends Component {
       tempKPIM.push(tempKPIMmonth)
     }
 
-    this.setState({
+    this._isMounted && this.setState({
       allTAL: tempTAL,
       allKPIM: tempKPIM,
       kpimSelected: []
@@ -252,7 +296,7 @@ class DashboardKPIM extends Component {
       tempTotalWeight += Number(talWeek.weight)
     })
 
-    this.setState({
+    this._isMounted && this.setState({
       talSelected,
       persenTAL: tempPersenTAL,
       totalWeight: tempTotalWeight
@@ -274,7 +318,7 @@ class DashboardKPIM extends Component {
       }
     })
 
-    this.setState({
+    this._isMounted && this.setState({
       kpimSelected,
       persenKPIM,
       kpimTAL
@@ -282,14 +326,15 @@ class DashboardKPIM extends Component {
   }
 
   fetchDataKPIMTALBawahan = async (monthSelected) => {
-    let tempKPIM = [], tempTAL = [], counterUserKPIM = 0, kpimMonthly = [], talMonthly = []
+    // let tempKPIM = [], tempTAL = [],  kpimMonthly = [], talMonthly = []
+    let tempTAL = [], talMonthly = []
 
     this.props.bawahan && await this.props.bawahan.forEach(async element => { //fetch kpim per user
-      let newKPIM = [], newTAL = []
+      let newTAL = []
 
-      newKPIM = this.props.dataAllKPIM.filter(el => el.user_id === element.user_id)
-      tempKPIM = [...tempKPIM, ...newKPIM]
-      if (newKPIM.length > 0) counterUserKPIM++
+      // newKPIM = this.props.dataAllKPIM.filter(el => el.user_id === element.user_id)
+      // tempKPIM = [...tempKPIM, ...newKPIM]
+      // if (newKPIM.length > 0) counterUserKPIM++
 
       newTAL = this.props.dataAllTAL.filter(el => el.user_id === element.user_id)
 
@@ -303,27 +348,27 @@ class DashboardKPIM extends Component {
     // console.log(tempTAL)
 
     for (let i = 0; i < 12; i++) { //fetch kpim dan tal user per bulan
-      let kpimBawahanPerbulan = [], talBawahanPerbulan = []
+      let talBawahanPerbulan = []
 
-      tempKPIM.forEach(async kpim => {
-        let userKPIMScore = kpim.kpimScore.find(kpimScore => Number(kpimScore.month) === i + 1)
-        if (userKPIMScore) kpimBawahanPerbulan.push(userKPIMScore)
-      })
+      // tempKPIM.forEach(async kpim => {
+      //   let userKPIMScore = kpim.kpimScore.find(kpimScore => Number(kpimScore.month) === i + 1)
+      //   if (userKPIMScore) kpimBawahanPerbulan.push(userKPIMScore)
+      // })
 
-      let objKPIM = {
-        indicator_kpim: "KPIM TEAM",
-        score_kpim_monthly: 0,
-        month: i + 1,
-        year: "" + new Date().getFullYear()
-      }
-      let tempScoreKPIM = 0
+      // let objKPIM = {
+      //   indicator_kpim: "KPIM TEAM",
+      //   score_kpim_monthly: 0,
+      //   month: i + 1,
+      //   year: "" + new Date().getFullYear()
+      // }
+      // let tempScoreKPIM = 0
 
-      kpimBawahanPerbulan.forEach(kpimMonth => {
-        tempScoreKPIM += kpimMonth.score_kpim_monthly * (Number(kpimMonth.bobot) / 100)
-      })
+      // kpimBawahanPerbulan.forEach(kpimMonth => {
+      //   tempScoreKPIM += kpimMonth.score_kpim_monthly * (Number(kpimMonth.bobot) / 100)
+      // })
 
-      objKPIM.score_kpim_monthly = tempScoreKPIM / counterUserKPIM
-      kpimMonthly.push(objKPIM)
+      // objKPIM.score_kpim_monthly = tempScoreKPIM / counterUserKPIM
+      // kpimMonthly.push(objKPIM)
 
       //filter tal perbulan
       tempTAL.forEach(async tal => {
@@ -390,8 +435,9 @@ class DashboardKPIM extends Component {
 
 
       talAllUserPerBulan.length > 0 && talAllUserPerBulan.forEach(el => {
-        let tempTALScoreAllUserPerMinggu = 0, temTALUser = 0
-        let tempObj = {}
+        let tempTALScoreAllUserPerMinggu = 0
+        // let tempObj = {}, temTALUser = 0
+
         el.tal.forEach(element => {
           let tempTALScorePerUserPerMinggu = 0
 
@@ -400,18 +446,15 @@ class DashboardKPIM extends Component {
           })
           tempTALScoreAllUserPerMinggu += tempTALScorePerUserPerMinggu
 
-          tempObj = {
-            score: tempTALScorePerUserPerMinggu,
-            talScore: element
-          }
+          // tempObj = {
+          //   score: tempTALScorePerUserPerMinggu,
+          //   talScore: element
+          // }
         })
 
         el.scoreTALTeam = tempTALScoreAllUserPerMinggu / el.tal.length || 0
-        // console.log(el)
       })
-      // console.log(tempScoreTAL, counterPembagiTALSebulan)
-      // console.log(talBawahanPerbulan)
-      talMonthly[talMonthly.length - 1] && console.log(talMonthly[talMonthly.length - 1].talPerMinggu[talMonthly[talMonthly.length - 1].talPerMinggu.length - 1])
+
       if (i !== 0) {
         let weekBeforeMonth = talMonthly[talMonthly.length - 1].talPerMinggu[talMonthly[talMonthly.length - 1].talPerMinggu.length - 1]
         weekBeforeMonth && talAllUserPerBulan.unshift(weekBeforeMonth)
@@ -421,9 +464,9 @@ class DashboardKPIM extends Component {
       objTAL.talPerMinggu = talAllUserPerBulan
       talMonthly.push(objTAL)
     }
-    console.log(talMonthly)
-    this.setState({
-      kpimTeam: kpimMonthly,
+
+    this._isMounted && this.setState({
+      // kpimTeam: kpimMonthly,
       talTeam: talMonthly
     })
   }
@@ -551,6 +594,19 @@ class DashboardKPIM extends Component {
           <Grid item style={{ display: 'flex', alignItems: 'center' }}>
             <BarChartIcon />
             <p style={{ margin: 0, fontSize: 20 }}>KEY PERFORMANCE INDICATOR MATRIX {this.props.location.state && `(${this.props.location.state.fullname})`}</p>
+            {/* {
+              this.props.location.state && <SelectOption
+                value={this.state.idBawahanSelected}
+                onChange={this.handleChange('idBawahanSelected')}
+                style={{ marginLeft: 10 }}
+              >
+                {
+                  this.props.bawahan.map(user =>
+                    <MenuItem value={user.user_id} key={user.user_id}>{user.fullname}</MenuItem>
+                  )
+                }
+              </SelectOption>
+            } */}
           </Grid>
           {
             this.state.monthSelected !== null && <SelectOption

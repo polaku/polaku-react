@@ -24,23 +24,23 @@ export default class pencapaianKPIM extends Component {
   }
 
   componentDidMount() {
-    // console.log(this.props.data)
-    
     this.setState({
       pencapaian: this.props.data.pencapaian_monthly
     })
 
-    if(this.props.data.indicator_kpim.toLowerCase() === "tal team"){
-      // this.setState({
-      //   this.props.data.tal
-      // })
-      let tempScore = 0
-      this.props.data.tal.forEach( el => {
-        tempScore += el.score_tal
-      })
-      this.setState({
-        persenNow: tempScore
-      })
+    if (this.props.data.indicator_kpim) {
+      if (this.props.data.indicator_kpim.toLowerCase() === "tal team") {
+        // this.setState({
+        //   this.props.data.tal
+        // })
+        let tempScore = 0
+        this.props.data.tal.forEach(el => {
+          tempScore += el.score_tal
+        })
+        this.setState({
+          persenNow: tempScore
+        })
+      }
     }
   }
 
@@ -100,11 +100,11 @@ export default class pencapaianKPIM extends Component {
 
               : this.props.data.indicator_kpim.toLowerCase() === "tal team"
                 ? <Grid style={{ display: 'flex', justifyContent: 'space-between' }} >
-                    <p style={{ margin: 0, fontSize: 13, color: 'gray', maxWidth: '75%' }}>{this.props.data.tal[0].fullname}</p>
-                    {/* <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{this.props.data.tal[0].fullname}</p>
+                  <p style={{ margin: 0, fontSize: 13, color: 'gray', maxWidth: '75%' }}>{this.props.data.tal[0].fullname}</p>
+                  {/* <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{this.props.data.tal[0].fullname}</p>
                     <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)}{this.props.data.year.slice(2, 4)}</p> */}
-                    <p style={{ margin: 0, fontSize: 13 }}>{isNaN(this.state.persenNow) ? 0 : Math.ceil(this.state.persenNow)} %</p>
-                  </Grid>
+                  <p style={{ margin: 0, fontSize: 13 }}>{isNaN(this.state.persenNow) ? 0 : Math.ceil(this.state.persenNow)} %</p>
+                </Grid>
                 : this.props.data.pencapaian_monthly
                   ? this.state.editIndicator
                     ? <Grid style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} >

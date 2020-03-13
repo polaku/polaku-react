@@ -75,6 +75,12 @@ export default class cardSettingUserKPIM extends Component {
         isVisible: false,
       })
     }
+
+    if (new Date().getDate() < 27) {
+      this.setState({
+        statusValid: false
+      })
+    }
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -106,6 +112,12 @@ export default class cardSettingUserKPIM extends Component {
       } else {
         this.setState({
           isVisible: false
+        })
+      }
+
+      if (new Date().getDate() < 27) {
+        this.setState({
+          statusValid: false
         })
       }
     }
@@ -157,8 +169,6 @@ export default class cardSettingUserKPIM extends Component {
         else this.setState({ adaWeightTALYangKosong: true })
       });
     });
-    console.log(statusSudahKirimNilai)
-
 
     tempTALMonth = await tempKPIM.find(kpim => kpim.indicator_kpim === 'TAL')
     tempTALMonth && delete tempTALMonth.kpimScore
@@ -352,7 +362,7 @@ export default class cardSettingUserKPIM extends Component {
     let newData = {
       bobot: this.state.bobot,
     }
-
+    
     API.put(`/kpim/${this.state.TALMonth.kpim_score_id}?update=month`, newData, { headers: { token } })
       .then(data => {
         this.setState({
@@ -456,7 +466,7 @@ export default class cardSettingUserKPIM extends Component {
                   {
                     (
                       ((this.state.KPIM.length === 0 && !this.state.TALMonth) && !this.state.statusSudahKirimNilai) ||
-                      ((!this.state.statusCreateKPIM && this.state.KPIM.length < 5 && this.props.weekCurrent <= (this.getNumberOfWeek(new Date(new Date().getFullYear(), this.props.month - 1, 1)) + 1)) && !this.state.statusSudahKirimNilai)
+                      ((!this.state.statusCreateKPIM && this.state.KPIM.length < 4 && this.props.weekCurrent <= (this.getNumberOfWeek(new Date(new Date().getFullYear(), this.props.month - 1, 1)) + 1)) && !this.state.statusSudahKirimNilai)
 
                     ) && <Button onClick={this.handleCreateKPIM}
                       style={{ borderRadius: 15, minWidth: 24, backgroundColor: '#e0e0e0', padding: 0 }} >

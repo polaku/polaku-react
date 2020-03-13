@@ -13,42 +13,50 @@ import { fetchDataAllKPIM, fetchDataAllTAL, fetchDataRewardKPIM } from '../../st
 const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
 
 class panelSetting extends Component {
-  state = {
-    value: 1,
-    data: [],
-    bulan: new Date().getMonth() + 1,
-    minggu: '',
-    optionMinggu: [],
-    dataForDisplay: [],
-    firstDateInWeek: new Date().getDate() - (new Date().getDay() - 1),
-    weekCurrent: null,
-    needAction: 0
+  constructor(props) {
+    super(props)
+    this._isMounted = false
+    this.state = {
+      value: 1,
+      data: [],
+      bulan: new Date().getMonth() + 1,
+      minggu: '',
+      optionMinggu: [],
+      dataForDisplay: [],
+      firstDateInWeek: new Date().getDate() - (new Date().getDay() - 1),
+      weekCurrent: null,
+      needAction: 0
+    }
   }
 
   async componentDidMount() {
-    this.fetchWeek()
-    this.setState({
-      minggu: this.getNumberOfWeek(new Date()),
-      weekCurrent: this.getNumberOfWeek(new Date())
-    })
+    this._isMounted = true
 
-    let batasAtas, batasBawah, loopingWeek = []
-    // batasAtas = Math.ceil(this.state.bulan * 4.345)
-    batasAtas = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.bulan, 0))
-    batasBawah = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.bulan - 1, 1))
-
-    for (batasBawah; batasBawah <= batasAtas; batasBawah++) {
-      loopingWeek.push(batasBawah)
+    if(this._isMounted){
+      this.fetchWeek()
+      this.setState({
+        minggu: this.getNumberOfWeek(new Date()),
+        weekCurrent: this.getNumberOfWeek(new Date())
+      })
+  
+      let batasAtas, batasBawah, loopingWeek = []
+      // batasAtas = Math.ceil(this.state.bulan * 4.345)
+      batasAtas = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.bulan, 0))
+      batasBawah = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.bulan - 1, 1))
+  
+      for (batasBawah; batasBawah <= batasAtas; batasBawah++) {
+        loopingWeek.push(batasBawah)
+      }
+  
+      if (batasAtas === 53) {
+        loopingWeek[loopingWeek.length - 1] = 1
+      }
+  
+      this.setState({
+        optionMinggu: loopingWeek
+      })
+      this.fetchData(this.state.bulan)
     }
-
-    if (batasAtas === 53) {
-      loopingWeek[loopingWeek.length - 1] = 1
-    }
-
-    this.setState({
-      optionMinggu: loopingWeek
-    })
-    this.fetchData(this.state.bulan)
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -75,6 +83,10 @@ class panelSetting extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this._isMounted = false
+  }
+  
   fetchData = async (month) => {
     let temp = [], tempForDisplay = []
     await this.props.fetchDataAllKPIM({ year: new Date().getFullYear() })
@@ -128,7 +140,7 @@ class panelSetting extends Component {
       })
     })
 
-    this.setState({ data: temp, dataForDisplay: tempForDisplay, needAction: 0 })
+    this._isMounted && this.setState({ data: temp, dataForDisplay: tempForDisplay, needAction: 0 })
   }
 
   fetchWeek = () => {
@@ -208,7 +220,6 @@ class panelSetting extends Component {
   }
 
   navigateDashboardBawahan = (userId, fullname) => {
-    console.log(userId)
     this.props.history.push('/kpim', { userId, fullname })
   }
 
@@ -306,7 +317,7 @@ class panelSetting extends Component {
           {
             this.state.needAction === 0 && this.props.status !== "all" && <>
               <img src={require('../../assets/settingKPIM.png')} alt="Logo" style={{ width: 500, maxHeight: 500, margin: '50px auto 10px auto' }} />
-              <p style={{ marginTop: 10, fontFamily: 'Simonetta', fontSize: 20, textShadow:'4px 4px 4px #aaa' }} >TIDAK ADA YANG BUTUH TINDAKAN</p>
+              <p style={{ marginTop: 10, fontFamily: 'Simonetta', fontSize: 20, textShadow: '4px 4px 4px #aaa' }} >TIDAK ADA YANG BUTUH TINDAKAN</p>
             </>
           }
 

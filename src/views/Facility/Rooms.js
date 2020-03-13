@@ -9,15 +9,25 @@ import ModalCreateEditBuilding from '../../components/modal/modalCreateEditBuild
 import { fetchDataBuildings, fetchDataRooms, fetchDataCompanies } from '../../store/action';
 
 class Rooms extends Component {
-  state = {
-    dataBuildings: [],
-    // dataCompanies: [],
-    openModal: false,
+  constructor(props) {
+    super(props)
+    this._isMounted = false
+    this.state = {
+      dataBuildings: [],
+      // dataCompanies: [],
+      openModal: false,
+    }
   }
 
   async componentDidMount() {
-    this.fetchData()
+    this._isMounted = true
+    this._isMounted && this.fetchData()
   }
+
+  componentWillUnmount() {
+    this._isMounted = false
+  }
+
 
   fetchData = async () => {
     await this.props.fetchDataBuildings()
@@ -30,7 +40,7 @@ class Rooms extends Component {
       element.tbl_rooms = tempListRoom
     });
 
-    this.setState({
+    this._isMounted && this.setState({
       dataBuildings: tempBuildings,
       // dataCompanies: this.props.dataCompanies
     })
@@ -70,7 +80,9 @@ class Rooms extends Component {
             <CardBuilding data={building} key={index} fetchData={this.fetchData} />
           ))
         }
-        <ModalCreateEditBuilding status={this.state.openModal} closeModal={this.closeModal} companies={this.props.dataCompanies} statusCreate={true} fetchData={this.fetchData} />
+        {
+          this.state.openModal && <ModalCreateEditBuilding status={this.state.openModal} closeModal={this.closeModal} companies={this.props.dataCompanies} statusCreate={true} fetchData={this.fetchData} />
+        }        
       </div>
     )
   }

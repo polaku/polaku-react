@@ -17,7 +17,7 @@ import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
 class cardSetting extends Component {
 
   navigate = () => {
-    this.props.history.push(this.props.data.route)
+    this.props.data.route !== "" && this.props.history.push(this.props.data.route)
   }
 
   render() {

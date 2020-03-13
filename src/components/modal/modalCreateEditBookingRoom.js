@@ -72,6 +72,7 @@ class modalCreateEditBookingRoom extends Component {
       this.setState({
         room_id: this.props.data.room_id,
         subject: this.props.data.subject,
+        count: this.props.data.count,
         date_in: new Date(this.props.data.date_in),
         time_in: new Date().setHours(time_in[0], time_in[1]),
         time_out: new Date().setHours(time_out[0], time_out[1]),
@@ -130,13 +131,13 @@ class modalCreateEditBookingRoom extends Component {
       })
     } else {
       let idPartisipan = [], time_in, time_out
-      if (this.state.partisipan.length > 0) {
-        this.state.partisipan.forEach(el => {
-          idPartisipan.push(el.user_id)
-        })
-      }else{
-        idPartisipan.push(this.props.userId)
-      }
+      // if (this.state.partisipan.length > 0) {
+      this.state.partisipan.forEach(el => {
+        idPartisipan.push(el.user_id)
+      })
+      // } else {
+      //   idPartisipan.push(this.props.userId)
+      // }
 
       time_in = `${new Date(this.state.time_in).getHours()}:${new Date(this.state.time_in).getMinutes()}`
       time_out = `${new Date(this.state.time_out).getHours()}:${new Date(this.state.time_out).getMinutes()}`
@@ -146,13 +147,14 @@ class modalCreateEditBookingRoom extends Component {
         time_in: time_in,
         time_out: time_out,
         subject: this.state.subject,
+        room_id: this.state.room_id,
+        count: this.state.count
       }
 
       if (this.props.statusCreate === true) {
-        newData.room_id = this.state.room_id
-        newData.partisipan = idPartisipan.join()
-        newData.count = this.state.partisipan.length
-
+        newData.partisipan = `[${idPartisipan.join()}]`
+        newData.count = this.state.count
+        console.log(newData)
         API.post('/bookingRoom', newData,
           {
             headers: {
@@ -353,6 +355,15 @@ class modalCreateEditBookingRoom extends Component {
                   }
                 </FormControl>
               }
+              <FormControl style={{ margin: '10px 0 10px 0' }}>
+                <TextField
+                  id="jumlah_orang"
+                  label="Total Participant"
+                  value={this.state.count}
+                  onChange={this.handleChange('count')}
+                  disabled={this.state.proses}
+                />
+              </FormControl>
               <div style={{ position: 'relative' }}>
                 <Button
                   type="submit"

@@ -111,6 +111,19 @@ export function fetchDataPosition() {
   }
 }
 
+export function fetchDataPolanews() {
+  return {
+    type: 'FETCH_DATA_POLANEWS'
+  }
+}
+
+export function fetchDataUserDetail(payload) {
+  return {
+    type: 'FETCH_DATA_USER_DETAIL',
+    payload
+  }
+}
+
 export function userLogout() {
   return {
     type: 'USER_LOGOUT'

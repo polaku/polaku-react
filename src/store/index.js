@@ -2,6 +2,10 @@ import { createStore, applyMiddleware } from 'redux'
 import reducer from './reducer'
 import { API } from '../config/API';
 import Cookies from 'js-cookie';
+// import axios from 'axios';
+
+// const CancelToken = axios.CancelToken;
+// let cancel;
 
 const api = store => next => async action => {
   let token = Cookies.get('POLAGROUP')
@@ -16,7 +20,7 @@ const api = store => next => async action => {
       getData = await API.get('/users', { headers: { token } })
 
       let newData = await getData.data.data.filter(user => user.tbl_account_detail)
-      
+
       next({
         type: 'FETCH_DATA_USERS_SUCCESS',
         payload: newData
@@ -133,7 +137,7 @@ const api = store => next => async action => {
     let getData
     try {
       getData = await API.get('/bookingRoom', { headers: { token } })
-
+console.log(getData.data.data)
       next({
         type: 'FETCH_DATA_BOOKING_ROOMS_SUCCESS',
         payload: getData.data.data
@@ -467,6 +471,48 @@ const api = store => next => async action => {
       next({
         type: 'FETCH_DATA_POSITION_SUCCESS',
         payload: { dataPositions: getData.data.data }
+      })
+
+    } catch (err) {
+      next({
+        type: 'FETCH_DATA_ERROR',
+        payload: err
+      })
+    }
+  }
+  else if (action.type === 'FETCH_DATA_POLANEWS') {
+    next({
+      type: 'FETCH_DATA_LOADING'
+    })
+
+    let getData
+    try {
+      getData = await API.get(`/news`, { headers: { token } })
+
+      next({
+        type: 'FETCH_DATA_POLANEWS_SUCCESS',
+        payload: { dataPolanews: getData.data.data }
+      })
+
+    } catch (err) {
+      next({
+        type: 'FETCH_DATA_ERROR',
+        payload: err
+      })
+    }
+  }
+  else if (action.type === 'FETCH_DATA_USER_DETAIL') {
+    next({
+      type: 'FETCH_DATA_LOADING'
+    })
+
+    let getData
+    try {
+      getData = await API.get(`/users/${action.payload}`, { headers: { token } })
+
+      next({
+        type: 'FETCH_DATA_USER_DETAIL_SUCCESS',
+        payload: { dataUserDetail: getData.data.data }
       })
 
     } catch (err) {

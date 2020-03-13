@@ -1,5 +1,6 @@
 const defaultState = {
   userId: null,
+  dataUserDetail: {},
   isAdmin: false,
   isRoomMaster: false,
   isCreatorMaster: false,
@@ -33,6 +34,7 @@ const defaultState = {
   dataAllRewardKPIM: [],
   myRewardKPIM: [],
   dataPositions: [],
+  dataPolanews: []
 }
 
 function reducer(state = defaultState, action) {
@@ -50,6 +52,12 @@ function reducer(state = defaultState, action) {
         evaluator2: action.payload.evaluator2,
         bawahan: action.payload.bawahan,
         adminContactCategori: action.payload.adminContactCategori
+      }
+    }
+    case 'FETCH_DATA_USER_DETAIL_SUCCESS': {
+      return {
+        ...state,
+        dataUserDetail: action.payload.dataUserDetail
       }
     }
     case 'USER_LOGOUT': {
@@ -192,6 +200,12 @@ function reducer(state = defaultState, action) {
       return {
         ...state,
         dataPositions: action.payload.dataPositions
+      }
+    }
+    case 'FETCH_DATA_POLANEWS_SUCCESS': {
+      return {
+        ...state,
+        dataPolanews: action.payload.dataPolanews
       }
     }
     case 'FETCH_DATA_ERROR': {

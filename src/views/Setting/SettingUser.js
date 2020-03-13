@@ -62,83 +62,90 @@ TabPanel.propTypes = {
 };
 
 class SettingUser extends Component {
-  state = {
-    value: 2,
-    rowsPerPage: 10,
-    page: 0,
-    columnToSort: "",
-    sortDirection: "desc",
-    keyword: "",
-    filterCategori: "",
+  constructor(props) {
+    super(props)
+    this._isMounted = false
+    this.state = {
+      value: 0,
+      rowsPerPage: 10,
+      page: 0,
+      columnToSort: "",
+      sortDirection: "desc",
+      keyword: "",
+      filterCategori: "",
 
-    data: [],
-    dataForDisplay: [],
+      data: [],
+      dataForDisplay: [],
 
-    companyId: '',
-    companyName: '',
-    fullname: '',
-    username: '',
-    password: '',
-    konfirmasiPassword: '',
-    passwordNotExact: false,
-    email: '',
-    initial: '',
-    dateBirth: new Date(1990, 0, 1),
-    nik: '',
-    address: '',
-    phone: '',
-    idEvaluator1: 0,
-    idEvaluator2: 0,
-    dataUser: [],
-    dataUserForChoose: [],
-    positionId: '',
-    buildingId: '',
+      companyId: '',
+      companyName: '',
+      fullname: '',
+      username: '',
+      password: '',
+      konfirmasiPassword: '',
+      passwordNotExact: false,
+      email: '',
+      initial: '',
+      dateBirth: new Date(1990, 0, 1),
+      nik: '',
+      address: '',
+      phone: '',
+      idEvaluator1: 0,
+      idEvaluator2: 0,
+      dataUser: [],
+      dataUserForChoose: [],
+      positionId: '',
+      buildingId: '',
 
-    companyIdNotValid: false,
-    companyNameNotValid: false,
-    fullnameNotValid: false,
-    usernameNotValid: false,
-    passwordNotValid: false,
-    konfirmasiPasswordNotValid: false,
-    emailNotValid: false,
-    initialNotValid: false,
-    nikNotValid: false,
-    idEvaluator1NotValid: false,
-    idEvaluator2NotValid: false,
-    dataUserNotValid: false,
-    dataUserForChooseNotValid: false,
-    positionIdNotValid: false,
-    buildingIdNotValid: false,
+      companyIdNotValid: false,
+      companyNameNotValid: false,
+      fullnameNotValid: false,
+      usernameNotValid: false,
+      passwordNotValid: false,
+      konfirmasiPasswordNotValid: false,
+      emailNotValid: false,
+      initialNotValid: false,
+      nikNotValid: false,
+      idEvaluator1NotValid: false,
+      idEvaluator2NotValid: false,
+      dataUserNotValid: false,
+      dataUserForChooseNotValid: false,
+      positionIdNotValid: false,
+      buildingIdNotValid: false,
 
-    labelValue: [
-      {
-        label: "nama",
-        value: "name"
-      }, {
-        label: "company",
-        value: "company"
-      }, {
-        label: "nik",
-        value: "nik"
-      }, {
-        label: "evaluator1",
-        value: "evaluator1"
-      }, {
-        label: "evaluator2",
-        value: "evaluator2"
-      }
-    ],
+      labelValue: [
+        {
+          label: "nama",
+          value: "name"
+        }, {
+          label: "company",
+          value: "company"
+        }, {
+          label: "nik",
+          value: "nik"
+        }, {
+          label: "evaluator1",
+          value: "evaluator1"
+        }, {
+          label: "evaluator2",
+          value: "evaluator2"
+        }
+      ],
 
-    fileCuti: null,
-    fileEvaluator: null,
-    fileUser: null,
+      fileCuti: null,
+      fileEvaluator: null,
+      fileUser: null,
+    }
   }
 
   async componentDidMount() {
-    await this.fetchData()
-    await this.props.fetchDataCompanies()
-    await this.props.fetchDataPosition()
-    await this.props.fetchDataBuildings()
+    this._isMounted = true
+    if (this._isMounted) {
+      await this.fetchData()
+      await this.props.fetchDataCompanies()
+      await this.props.fetchDataPosition()
+      await this.props.fetchDataBuildings()
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -155,6 +162,9 @@ class SettingUser extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this._isMounted = false
+  }
 
   fetchData = async () => {
     await this.props.fetchDataUsers()
@@ -176,7 +186,7 @@ class SettingUser extends Component {
       tempNewDataUsers.push(objUser)
     });
 
-    this.setState({
+    this._isMounted && this.setState({
       data: tempNewDataUsers,
       dataForDisplay: tempNewDataUsers,
       dataUser: this.props.dataUsers
@@ -406,17 +416,19 @@ class SettingUser extends Component {
     event.preventDefault()
     let hasilSearch
     if (this.state.filterCategori === "") {
-      hasilSearch = await this.state.data.filter(el => el.company.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())) || el.name.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())) || el.username.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())) || el.initial.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())) || el.nik.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())) || el.evaluator1.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())) || el.evaluator2.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase()))
+      hasilSearch = await this.state.data.filter(el =>
+        (el.company && el.company.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase()))) ||
+        (el.name && el.name.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase()))) ||
+        (el.username && el.username.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase()))) ||
+        (el.initial && el.initial.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase()))) ||
+        (el.nik && el.nik.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase()))) ||
+        (el.evaluator1 && el.evaluator1.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase()))) ||
+        (el.evaluator2 && el.evaluator2.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())))
       )
-
     } else {
-
       hasilSearch = await this.state.data.filter(el => el[this.state.filterCategori].toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())))
     }
     this.setState({ dataForDisplay: hasilSearch })
-    if (this.state.filterCategori === "") {
-      this.setState({ dataForDisplay: this.state.data })
-    }
   }
 
   handleUploadFile = args => (e) => {
@@ -623,7 +635,8 @@ class SettingUser extends Component {
             <TabPanel value={this.state.value} index={1}>
               <Typography style={{ fontSize: 40, margin: '10px auto 30px auto', width: 250 }}>Tambah User</Typography>
               <Grid container style={{ display: 'flex' }}>
-                <Grid item sm={12} md={6} id="kiri" style={{ display: 'flex', paddingRight: 30, flexDirection: 'column', alignItems: 'flex-end' }}>
+                <Grid item lg={2} />
+                <Grid item sm={12} lg={4} id="kiri" style={{ display: 'flex', padding: 10, flexDirection: 'column' }}>
                   <form>
                     <Grid style={{ display: 'flex', alignItems: 'center', marginBottom: 15 }}>
                       <p style={{ margin: 0, width: 150 }}>NIK</p>
@@ -633,7 +646,7 @@ class SettingUser extends Component {
                         onChange={this.handleChange('nik')}
                         variant="outlined"
                         InputProps={{
-                          style: { height: 35, padding: 0 }
+                          style: { height: 40, padding: 0 }
                         }}
                         style={{ width: 250 }}
                         error={this.state.nikNotValid}
@@ -646,7 +659,7 @@ class SettingUser extends Component {
                         onChange={this.handleChange('fullname')}
                         variant="outlined"
                         InputProps={{
-                          style: { height: 35, padding: 0, width: '100%' }
+                          style: { height: 40, padding: 0, width: '100%' }
                         }}
                         style={{ width: 250 }}
                         error={this.state.fullnameNotValid}
@@ -659,7 +672,7 @@ class SettingUser extends Component {
                         onChange={this.handleChange('initial')}
                         variant="outlined"
                         InputProps={{
-                          style: { height: 35, padding: 0, width: '100%' }
+                          style: { height: 40, padding: 0, width: '100%' }
                         }}
                         style={{ width: 250 }}
                         error={this.state.initialNotValid}
@@ -693,7 +706,7 @@ class SettingUser extends Component {
                         multiline
                         rows="4"
                         InputProps={{
-                          style: { padding: 0, width: '100%' }
+                          style: { padding: 10, width: '100%' }
                         }}
                         style={{ width: 250 }}
                       />
@@ -706,7 +719,7 @@ class SettingUser extends Component {
                         onChange={this.handleChange('phone')}
                         variant="outlined"
                         InputProps={{
-                          style: { height: 35, padding: 0, width: '100%' }
+                          style: { height: 40, padding: 0, width: '100%' }
                         }}
                         style={{ width: 250 }}
                       />
@@ -718,7 +731,7 @@ class SettingUser extends Component {
                         onChange={this.handleChange('username')}
                         variant="outlined"
                         InputProps={{
-                          style: { height: 35, padding: 0, width: '100%' }
+                          style: { height: 40, padding: 0, width: '100%' }
                         }}
                         style={{ width: 250 }}
                         error={this.state.usernameNotValid}
@@ -732,7 +745,7 @@ class SettingUser extends Component {
                         onChange={this.handleChange('password')}
                         variant="outlined"
                         InputProps={{
-                          style: { height: 35, padding: 0, width: '100%' }
+                          style: { height: 40, padding: 0, width: '100%' }
                         }}
                         style={{ width: 250 }}
                         error={this.state.passwordNotValid}
@@ -746,7 +759,7 @@ class SettingUser extends Component {
                         onChange={this.handleChange('konfirmasiPassword')}
                         variant="outlined"
                         InputProps={{
-                          style: { height: 35, padding: 0, width: '100%' }
+                          style: { height: 40, padding: 0, width: '100%' }
                         }}
                         style={{ width: 250 }}
                         error={this.state.passwordNotExact}
@@ -760,7 +773,7 @@ class SettingUser extends Component {
                         onChange={this.handleChange('email')}
                         variant="outlined"
                         InputProps={{
-                          style: { height: 35, padding: 0, width: '100%' }
+                          style: { height: 40, padding: 0, width: '100%' }
                         }}
                         style={{ width: 250 }}
                         error={this.state.emailNotValid}
@@ -769,7 +782,7 @@ class SettingUser extends Component {
                   </form>
 
                 </Grid>
-                <Grid item sm={12} md={6} id="kanan" style={{ display: 'flex', paddingLeft: 30, flexDirection: 'column' }}>
+                <Grid item sm={12} lg={5} id="kanan" style={{ display: 'flex', padding: 10, flexDirection: 'column' }}>
                   <Grid style={{ display: 'flex', alignItems: 'center', marginBottom: 15 }}>
                     <p style={{ margin: 0, width: 150 }}>Company</p>
                     <Select
@@ -850,6 +863,7 @@ class SettingUser extends Component {
                     </Select>
                   </Grid>
                 </Grid>
+                <Grid item lg={1} />
               </Grid>
               <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 20, marginBottom: 30 }}>
                 <Button style={{ marginRight: 20 }}>

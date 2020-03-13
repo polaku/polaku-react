@@ -6,7 +6,6 @@ import {
 
 export default class modalRememberSendGrade extends Component {
   componentDidMount(){
-    console.log("OKE")
   }
 
   render() {

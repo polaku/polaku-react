@@ -13,6 +13,7 @@ import { fetchDataRoomMaster, fetchDataRooms } from '../../store/action';
 class AssignRoomAssistant extends Component {
   constructor(props) {
     super(props)
+    this._isMounted = false
     this.state = {
       data: [],
       openModal: false,
@@ -22,8 +23,14 @@ class AssignRoomAssistant extends Component {
   }
 
   componentDidMount() {
-    this.fetchData()
+    this._isMounted = true
+    this._isMounted && this.fetchData()
   }
+
+  componentWillUnmount() {
+    this._isMounted = false
+  }
+  
 
   fetchData = async () => {
     await this.props.fetchDataRoomMaster()
@@ -46,7 +53,7 @@ class AssignRoomAssistant extends Component {
       element.tbl_rooms = tempListRoom
     });
 
-    this.setState({
+    this._isMounted && this.setState({
       data: dataRoomMaster
     })
   }
@@ -118,7 +125,9 @@ class AssignRoomAssistant extends Component {
             onChangeRowsPerPage={this.handleChangeRowsPerPage}
           />
         </Paper>
-        <ModalCreateEditRoomAssistant status={this.state.openModal} closeModal={this.closeModal} statusCreate={true} />
+        {
+          this.state.openModal && <ModalCreateEditRoomAssistant status={this.state.openModal} closeModal={this.closeModal} statusCreate={true} />
+        }
       </div>
     )
   }

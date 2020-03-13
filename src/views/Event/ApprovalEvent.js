@@ -8,9 +8,20 @@ import CardEvent from '../../components/event/cardEvent';
 import { fetchDataEventNeedApproval } from '../../store/action';
 
 class ApprovalEvent extends Component {
-  async componentDidMount() {
-    await this.props.fetchDataEventNeedApproval()
+  constructor(props) {
+    super(props)
+    this._isMounted = false
   }
+
+  async componentDidMount() {
+    this._isMounted = true
+    this._isMounted && await this.props.fetchDataEventNeedApproval()
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false
+  }
+  
 
   render() {
     return (

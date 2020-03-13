@@ -95,7 +95,6 @@ export default class cardReport extends Component {
     }
 
     if (this.props.data !== prevProps.data) {
-
       this.setState({
         openDetail: false,
         openTAL: false,

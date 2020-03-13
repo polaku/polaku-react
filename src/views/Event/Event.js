@@ -53,7 +53,9 @@ class Event extends Component {
               ))
             }
           </Grid>
-          <ModalCreateEditEvent status={this.state.openModal} statusCreate={true} closeModal={this.closeModal} />
+          {
+            this.state.openModal && <ModalCreateEditEvent status={this.state.openModal} statusCreate={true} closeModal={this.closeModal} />
+          }
         </Grid>
       </Grid >
     )

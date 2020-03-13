@@ -29,7 +29,7 @@ class Login extends Component {
 
   componentDidMount() {
     if (Cookies.get("POLAGROUP")) {
-      this.props.history.push("/bookingRoom")
+      this.props.history.push("/polanews")
     }
   }
 
@@ -86,7 +86,7 @@ class Login extends Component {
         await this.props.setUser(newData)
         await this.props.fetchDataNotification()
       }
-      this.props.history.push("/bookingRoom")
+      this.props.history.push("/polanews")
     } catch (err) {
       swal('Error', `${err}`)
       this.setState({

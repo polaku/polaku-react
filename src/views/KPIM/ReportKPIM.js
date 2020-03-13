@@ -162,10 +162,10 @@ class ReportIjin extends Component {
     this.setState({
       monthSelected: new Date().getMonth()
     })
-    await this.fetchData()
+    // await this.fetchData()
   };
 
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     if (prevState.dataNilaiKPIM !== this.state.dataNilaiKPIM) {
       if (this.state.dataNilaiKPIM.length > 0) {
         this.setState({
@@ -219,7 +219,7 @@ class ReportIjin extends Component {
         weekSelected: 0,
       })
 
-      this.fetchData()
+      await this.fetchData()
     }
 
     if (prevState.weekSelected !== this.state.weekSelected) {
@@ -249,7 +249,7 @@ class ReportIjin extends Component {
 
     let forDisplay = []
 
-    await tempData.forEach(async (el, index) => {
+    tempData.forEach(async (el, index) => {
       let a = await this.fetchDataForDisplay(el)
 
       if ((a.kpim && a.kpim.length > 0) || (a.tal && a.tal.dataTAL.length > 0)) {
@@ -288,7 +288,9 @@ class ReportIjin extends Component {
         tempDataForDisplayKPIM.push(score)
       }
     });
-    let tempTAL = await tal.kpimScore.find(el => el.month === this.state.monthSelected + 1)
+
+    let tempTAL
+    if (tal) tempTAL = await tal.kpimScore.find(el => el.month === this.state.monthSelected + 1)
 
     tempTAL && tempTAL.tbl_tals.forEach(async element => {
 
@@ -315,7 +317,7 @@ class ReportIjin extends Component {
       tempTAL.dataTAL = tempDataForDisplayTAL
     }
 
-    let b = await this.fetchDataReport(tempDataForDisplayKPIM, tempTAL, tal.user_id, args[0].tbl_user.tbl_account_detail.fullname)
+    let b = await this.fetchDataReport(tempDataForDisplayKPIM, tempTAL, args[0].tbl_user.user_id, args[0].tbl_user.tbl_account_detail.fullname)
 
     if (tempTAL) {
       if (tempTAL.hasConfirm) {
@@ -325,7 +327,7 @@ class ReportIjin extends Component {
           tal: tempTAL,
           nilaiKPI,
           nilaiTAL: tempTAL.score_kpim_monthly,
-          userId: tal.user_id,
+          userId: args[0].tbl_user.user_id,
           fullname: args[0].tbl_user.tbl_account_detail.fullname,
           ...b
         }
@@ -335,7 +337,7 @@ class ReportIjin extends Component {
           tal: tempTAL,
           nilaiKPI,
           nilaiTAL: 0,
-          userId: tal.user_id,
+          userId: args[0].tbl_user.user_id,
           fullname: args[0].tbl_user.tbl_account_detail.fullname,
           ...b
         }
@@ -370,7 +372,7 @@ class ReportIjin extends Component {
         totalNilai: tempTotalNilai
       }
     ]
-    
+
     if (tal) dataNilaiReport[0].TAL = tal.score_kpim_monthly
 
     // FETCH DATA KPIM
@@ -404,7 +406,7 @@ class ReportIjin extends Component {
   };
 
 
-  
+
   handleChangeTabs = (event, newValue) => {
     this.setState({ value: newValue })
   };
@@ -675,7 +677,7 @@ class ReportIjin extends Component {
               </Grid>
             </Paper>
             {
-              this.state.dataForDisplay.map((el, index) => <CardReportKPIM data={el} key={index} allSelected={this.state.selectAll} handleCheck={this.handleCheck} />)
+              this.state.dataForDisplay.map((el, index) => <CardReportKPIM data={el} key={index} allSelected={this.state.selectAll} handleCheck={this.handleCheck} refresh={this.fetchData} />)
             }
 
           </TabPanel>

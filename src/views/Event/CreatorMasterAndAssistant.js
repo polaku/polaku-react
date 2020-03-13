@@ -11,16 +11,39 @@ import ModalCreatorMasterAndAssistant from '../../components/modal/modalCreatorM
 import { fetchDataCreatorMasterAndAssistant, fetchDataUsers } from '../../store/action';
 
 class CreatorMasterAndAssistant extends Component {
-  state = {
-    proses: false,
-    page: 0,
-    rowsPerPage: 5,
-    openModal: false,
+  constructor(props) {
+    super(props)
+    this._isMounted = false
+    this.state = {
+      proses: false,
+      page: 0,
+      rowsPerPage: 5,
+      openModal: false,
+      data: []
+    }
   }
 
   async componentDidMount() {
-    await this.props.fetchDataCreatorMasterAndAssistant()
+    this._isMounted = true
+    if (this._isMounted && this.props.userId) {
+      this.fetchData()
+    }
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.userId !== this.props.userId) {
+      this._isMounted && this.fetchData()
+    }
+  }
+
+  fetchData = async () => {
+    await this.props.fetchDataCreatorMasterAndAssistant()
+
+    let data = await this.props.dataCreatorMasterAndAssistant.filter(el => el.chief === this.props.userId)
+
+    this._isMounted && this.setState({ data })
+  }
+
 
   handleChangePage = (event, newPage) => {
     this.setState({
@@ -35,8 +58,8 @@ class CreatorMasterAndAssistant extends Component {
     })
   }
 
-  refresh = () => {
-    this.props.fetchDataCreatorMasterAndAssistant()
+  refresh = async () => {
+    await this.fetchData()
     this.setState({
       openModal: false
     })
@@ -81,8 +104,8 @@ class CreatorMasterAndAssistant extends Component {
             </TableHead>
             <TableBody>
               {
-                this.props.dataCreatorMasterAndAssistant.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((element, index) => (
-                  <CardCreatorMasterAndAssistant key={index} data={element} index={index + 1} />
+                this.state.data.length > 0 && this.state.data.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((element, index) => (
+                  <CardCreatorMasterAndAssistant key={index} data={element} index={index + 1} refresh={this.refresh} />
                 ))
               }
             </TableBody>
@@ -90,7 +113,7 @@ class CreatorMasterAndAssistant extends Component {
           <TablePagination
             rowsPerPageOptions={[5, 10, 20]}
             component="div"
-            count={this.props.dataCreatorMasterAndAssistant.length}
+            count={this.state.data.length}
             rowsPerPage={this.state.rowsPerPage}
             page={this.state.page}
             backIconButtonProps={{
@@ -103,7 +126,10 @@ class CreatorMasterAndAssistant extends Component {
             onChangeRowsPerPage={this.handleChangeRowsPerPage}
           />
         </Paper>
-        <ModalCreatorMasterAndAssistant status={this.state.openModal} refresh={this.refresh} closeModal={this.closeModal} />
+        {
+          this.state.openModal && <ModalCreatorMasterAndAssistant status={this.state.openModal} refresh={this.refresh} closeModal={this.closeModal} />
+        }
+
       </Grid>
     )
   }
@@ -114,9 +140,10 @@ const mapDispatchToProps = {
   fetchDataUsers,
 }
 
-const mapStateToProps = ({ loading, dataCreatorMasterAndAssistant, dataUsers, isAdmin, error }) => {
+const mapStateToProps = ({ loading, userId, dataCreatorMasterAndAssistant, dataUsers, isAdmin, error }) => {
   return {
     loading,
+    userId,
     dataCreatorMasterAndAssistant,
     dataUsers,
     isAdmin,

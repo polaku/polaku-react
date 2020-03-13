@@ -7,7 +7,7 @@ import Login from "./views/Login";
 import BookingRoom from "./views/Facility/BookingRoom";
 import CreateBookingRoom from "./views/Facility/CreateBookingRoom";
 import AssignRoomMaster from "./views/Facility/AssignRoomMaster";
-import RoomAssistant from "./views/Facility/RoomAssistant";
+import AssignRoomAssistant from "./views/Facility/AssignRoomAssistant";
 import RoomMaster from "./views/Facility/RoomMaster";
 import Rooms from "./views/Facility/Rooms";
 import Event from "./views/Event/Event";
@@ -24,6 +24,7 @@ import TAL from './views/KPIM/TAL';
 import ReportKPIM from './views/KPIM/ReportKPIM';
 import SettingKPIM from './views/KPIM/SettingKPIM';
 import Profil from './views/Profil';
+import Polanews from './views/Polanews/Polanews';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -49,7 +50,7 @@ function Routes() {
         <Route path="/login" component={Login} />
         <AuthenticatedRoute path="/bookingRoom/roomMaster/assignRoomMaster" component={AssignRoomMaster} />
         <AuthenticatedRoute path="/bookingRoom/roomMaster" component={RoomMaster} />
-        <AuthenticatedRoute path="/bookingRoom/roomAssistant" component={RoomAssistant} />
+        <AuthenticatedRoute path="/bookingRoom/roomAssistant" component={AssignRoomAssistant} />
         <AuthenticatedRoute path="/bookingRoom/createbookingRoom" component={CreateBookingRoom} />
         <AuthenticatedRoute path="/bookingRoom/rooms" component={Rooms} />
         <AuthenticatedRoute path="/bookingRoom" component={BookingRoom} />
@@ -67,6 +68,7 @@ function Routes() {
         <AuthenticatedRoute path="/kpim/tal" component={TAL} />
         <AuthenticatedRoute path="/kpim" component={KPIM} />
         <AuthenticatedRoute path="/profil" component={Profil} />
+        <AuthenticatedRoute path="/polanews" component={Polanews} />
         <Redirect from="/" to="/login" />
       </Switch>
     </main>

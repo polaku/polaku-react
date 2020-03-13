@@ -179,6 +179,7 @@ export default class cardSettingIndicator extends Component {
       let newData = { ...this.state.dataForEdit }
       newData.indicator_kpim = this.state.indicatorKPIM
       newData.monthly = newData.kpimScore
+      newData.month = this.props.data.month
       delete newData.kpimScore
 
       newData.monthly.forEach(el => {
@@ -187,6 +188,7 @@ export default class cardSettingIndicator extends Component {
           el.pencapaian_monthly = this.state.capaian
         }
       })
+
 
       API.put(`/kpim/${this.props.data.kpim_id}`, newData, { headers: { token } })
         .then((data) => {
@@ -288,26 +290,37 @@ export default class cardSettingIndicator extends Component {
   }
 
   deleteIndicator = () => {
-    let token = Cookies.get('POLAGROUP')
+    swal({
+      title: "Apa kamu yakin?",
+      text: "Menghapus tidak akan bisa dikembalikan lagi!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+      .then((willDelete) => {
+        if (willDelete) {
+          let token = Cookies.get('POLAGROUP')
 
-    if (this.props.status === "TAL") {
-      API.delete(`/tal/${this.props.data.tal_score_id}?delete=week`, { headers: { token } })
-        .then(data => {
-          this.props.refresh()
-        })
-        .catch(err => {
-          swal('please try again')
-        })
-    } else {
+          if (this.props.status === "TAL") {
+            API.delete(`/tal/${this.props.data.tal_score_id}?delete=week`, { headers: { token } })
+              .then(data => {
+                this.props.refresh()
+              })
+              .catch(err => {
+                swal('please try again')
+              })
+          } else {
 
-      API.delete(`/kpim/${this.props.data.kpim_score_id}?delete=month`, { headers: { token } })
-        .then(data => {
-          this.props.refresh()
-        })
-        .catch(err => {
-          swal('please try again')
-        })
-    }
+            API.delete(`/kpim/${this.props.data.kpim_score_id}?delete=month`, { headers: { token } })
+              .then(data => {
+                this.props.refresh()
+              })
+              .catch(err => {
+                swal('please try again')
+              })
+          }
+        }
+      });
   }
 
   render() {
@@ -439,7 +452,7 @@ export default class cardSettingIndicator extends Component {
             : <Paper style={{ marginBottom: 2, marginTop: 2, padding: '5px 20px', display: 'flex', justifyContent: 'space-between' }}>
               {
                 this.state.statusEdit
-                  ? <>
+                  ? <Grid style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
                     <Grid style={{ display: 'flex', alignItems: 'center', width: '45%', }}>
                       <p style={{ margin: '0px 10px 0px 0px', fontSize: 13, color: '#d71149' }}>{getMonth(this.props.data.month)}</p>
                       <TextField
@@ -487,7 +500,7 @@ export default class cardSettingIndicator extends Component {
                         <CancelPresentationOutlinedIcon />
                       </Button>
                     </Grid>
-                  </>
+                  </Grid>
                   : <>
                     <Grid style={{ display: 'flex', alignItems: 'center' }}>
                       <p style={{ margin: '0px 10px 0px 0px', fontSize: 13, color: '#d71149' }}>{getMonth(this.props.data.month)}</p>

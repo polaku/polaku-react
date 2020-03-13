@@ -99,8 +99,14 @@ class cardBuilding extends Component {
             Create Room
             </Button>
         </ExpansionPanelActions>
-        <ModalCreateEditBuilding status={this.state.openModalBuilding} closeModal={this.closeModalBuilding} data={this.props.data} companies={this.props.dataCompanies} statusCreate={false} />
-        <ModalCreateEditRoom status={this.state.openModalRoom} closeModal={this.closeModalRoom} data={this.props.data} statusCreate={true} fetchData={this.fetchData} />
+        {
+          this.state.openModalBuilding && <ModalCreateEditBuilding status={this.state.openModalBuilding} closeModal={this.closeModalBuilding} data={this.props.data} companies={this.props.dataCompanies} statusCreate={false} />
+        }
+        {
+          this.state.openModalRoom && <ModalCreateEditRoom status={this.state.openModalRoom} closeModal={this.closeModalRoom} data={this.props.data} statusCreate={true} fetchData={this.fetchData} />
+        }
+        
+        
       </ExpansionPanel>
     )
   }

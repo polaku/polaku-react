@@ -41,11 +41,10 @@ class HR extends Component {
     let tempDataStaff = await this.props.dataContactUsStaff.filter(el => el.date_ijin_absen_start !== null || el.date_imp !== null || el.leave_date !== null)
 
     let tempDataPengajuanStaff = await tempDataStaff.filter(el => el.status === 'new' || el.status === 'new2')
-console.log(tempDataPengajuanStaff)
+
     let tempDataStaffSedangIjin = []
     await tempDataStaff.forEach(el => {
       if (el.status === 'approved') {
-        console.log(el)
         if (el.date_imp && (
           Number(el.date_imp.slice(0, 4)) === new Date().getFullYear() &&
           Number(el.date_imp.slice(5, 7)) === new Date().getMonth() + 1 &&
@@ -244,7 +243,10 @@ console.log(tempDataPengajuanStaff)
           }
         </Grid>
 
-        <ModalCreateEditPermintaanHRD status={this.state.openModal} handleCloseModal={this.handleCloseModal} fetchData={this.fetchData} />
+        {
+          this.state.openModal && <ModalCreateEditPermintaanHRD status={this.state.openModal} handleCloseModal={this.handleCloseModal} fetchData={this.fetchData} />
+        }
+
       </>
     )
   }

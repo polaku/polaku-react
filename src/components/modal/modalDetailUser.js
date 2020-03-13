@@ -49,8 +49,6 @@ class modalDetailUser extends Component {
       isActive: this.props.data.isActive,
       dataUser: filterUser
     })
-
-    console.log(this.props.data)
   }
 
   closeModal = () => {

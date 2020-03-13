@@ -20,6 +20,7 @@ const animatedComponents = makeAnimated();
 class AssignRoomMaster extends Component {
   constructor(props) {
     super(props);
+    this._isMounted = false
     this.state = {
       allCheck: false,
       company: [],
@@ -31,30 +32,39 @@ class AssignRoomMaster extends Component {
   }
 
   async componentDidMount() {
-    let temp = [], tempComp = []
-    await this.props.fetchDataCompanies()
-    await this.props.fetchDataUsers()
+    this._isMounted = true
 
-    tempComp = this.props.dataCompanies
+    if (this._isMounted) {
+      let temp = [], tempComp = []
+      await this.props.fetchDataCompanies()
+      await this.props.fetchDataUsers()
 
-    tempComp.forEach(element => {
-      element.status = false
-    });
+      tempComp = this.props.dataCompanies
 
-    this.props.dataUsers.forEach(element => {
-      let newData = {
-        user_id: element.user_id,
-      }
-      if (element.tbl_account_detail) newData.fullname = element.tbl_account_detail.fullname
+      tempComp.forEach(element => {
+        element.status = false
+      });
 
-      temp.push(newData)
-    });
+      this.props.dataUsers.forEach(element => {
+        let newData = {
+          user_id: element.user_id,
+        }
+        if (element.tbl_account_detail) newData.fullname = element.tbl_account_detail.fullname
 
-    this.setState({
-      users: temp,
-      company: tempComp
-    })
+        temp.push(newData)
+      });
+
+      this._isMounted && this.setState({
+        users: temp,
+        company: tempComp
+      })
+    }
   }
+
+  componentWillUnmount() {
+    this._isMounted = false
+  }
+
 
   handleChange = name => event => {
     this.setState({ [name]: event.target.value });

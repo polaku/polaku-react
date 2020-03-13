@@ -24,6 +24,7 @@ import EventIcon from '@material-ui/icons/Event';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import BarChartIcon from '@material-ui/icons/BarChart';
+import ImportContactsRoundedIcon from '@material-ui/icons/ImportContactsRounded';
 
 import { setUser, fetchDataNotification } from '../store/action';
 import { API } from '../config/API';
@@ -184,20 +185,34 @@ function Navsidebar(props) {
   }, [])
 
   useEffect(() => {
-    if (props.location.pathname === '/bookingRoom') {
+    if (props.location.pathname === '/polanews') {
       setSelectedIndex(0)
+    } else if (props.location.pathname === '/bookingRoom') {
+      setSelectedIndex(1)
     } else if (props.location.pathname === '/bookingRoom/roomMaster') {
-      setSelectedIndex(0.1)
+      if (props.isAdmin) {
+        setSelectedIndex(1.1)
+      } else {
+        props.history.push('/bookingRoom')
+      }
     } else if (props.location.pathname === '/bookingRoom/roomAssistant') {
-      setSelectedIndex(0.2)
+      if (props.isRoomMaster) {
+        setSelectedIndex(1.2)
+      } else {
+        props.history.push('/bookingRoom')
+      }
     } else if (props.location.pathname === '/bookingRoom/rooms') {
-      setSelectedIndex(0.3)
+      if (props.isAdmin || props.isRoomMaster) {
+        setSelectedIndex(1.3)
+      } else {
+        props.history.push('/bookingRoom')
+      }
     } else if (props.location.pathname === '/event') {
-      setSelectedIndex(1.1)
+      setSelectedIndex(2.1)
     } else if (props.location.pathname === '/event/approvalEvent') {
-      setSelectedIndex(1.2)
+      setSelectedIndex(2.2)
     } else if (props.location.pathname === '/event/creatorMasterAndAssistant') {
-      setSelectedIndex(1.3)
+      setSelectedIndex(2.3)
     } else if (props.location.pathname === '/hr') {
       setSelectedIndex(3)
     } else if (props.location.pathname === '/hr/report') {
@@ -210,14 +225,16 @@ function Navsidebar(props) {
       setSelectedIndex(4.2)
     } else if (props.location.pathname === '/kpim/setting') {
       setSelectedIndex(4.3)
-    } else if (props.location.pathname === '/setting') {
-      setSelectedIndex(99)
-    } else if (props.location.pathname === '/setting/settingPerusahaan') {
-      setSelectedIndex(99)
+    } else if (props.location.pathname === '/setting' || props.location.pathname === '/setting/settingPerusahaan' || props.location.pathname === '/setting/settingUser') {
+      if (props.isAdmin || props.userId === 30 || props.userId === 33 || props.adminContactCategori === 4) {
+        setSelectedIndex(99)
+      } else {
+        props.history.goBack()
+      }
     } else if (props.location.pathname === '/profil') {
       setSelectedIndex(100)
     }
-  }, [props.location.pathname])
+  }, [props.location.pathname, props.isAdmin, props.userId, props.adminContactCategori, props.history, props.isRoomMaster])
 
   useEffect(() => {
     setOpen(false)
@@ -289,9 +306,8 @@ function Navsidebar(props) {
                 >
                   <MenuIcon />
                 </IconButton>
-                <Typography variant="h6" noWrap>
-                  Polaku
-          </Typography>
+              <img src={require('../assets/polagroup.png')} alt="Logo" style={{ width: 175, maxHeight: 50 }} />
+
               </div>
               <IconButton color="inherit" onClick={handleClickNotif}>
                 {
@@ -364,20 +380,53 @@ function Navsidebar(props) {
             <Divider />
 
             <List>
+              {/* Polanews */}
+              <>
+                {
+                  open
+                    ? <Link to="/polanews" onClick={event => handleListItemClick(event, 0)} style={{ textDecoration: "none", color: 'black' }}>
+                      <ListItem button key="Polanews"
+                        selected={selectedIndex === 0}>
+                        <ListItemIcon>
+                          <ImportContactsRoundedIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Berita Pola" />
+                      </ListItem>
+                    </Link>
+                    : <Link to="/polanews" onClick={event => handleListItemClick(event, 0)}>
+                      <ListItem button key="Polanews" selected={selectedIndex === 0} >
+                        <ListItemIcon style={{ marginLeft: 8 }}>
+                          <ImportContactsRoundedIcon />
+                        </ListItemIcon>
+                      </ListItem>
+                    </Link>
+                }
+              </>
+
+
               {/* Booking Room */}
               <>
                 {
                   open
-                    ? <ListItem button key="Facility"
-                      onClick={event => handleClick(event, 'openChildBookingRoom')} selected={selectedIndex === 0 || selectedIndex === 0.1 || selectedIndex === 0.2 || selectedIndex === 0.3}>
-                      <ListItemIcon>
-                        <MeetingRoomOutlinedIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Facility" />
-                      {openChildBookingRoom ? <ExpandLess /> : <ExpandMore />}
-                    </ListItem>
-                    : <Link to="/bookingRoom" onClick={event => handleListItemClick(event, 0)} style={{ textDecoration: "none", fontWeight: 'bold' }}>
-                      <ListItem button key="Booking Room" selected={selectedIndex === 0 || selectedIndex === 0.1 || selectedIndex === 0.2 || selectedIndex === 0.3}>
+                    ? (props.isAdmin || props.isRoomMaster)
+                      ? <ListItem button key="Facility"
+                        onClick={event => handleClick(event, 'openChildBookingRoom')} selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
+                        <ListItemIcon>
+                          <MeetingRoomOutlinedIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Fasilitas" />
+                        {openChildBookingRoom ? <ExpandLess /> : <ExpandMore />}
+                      </ListItem>
+                      : <Link to="/bookingRoom" onClick={event => handleListItemClick(event, 1)} style={{ textDecoration: "none", color: 'black' }}>
+                        <ListItem button key="Booking Room" selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
+                          <ListItemIcon>
+                            <MeetingRoomOutlinedIcon />
+                          </ListItemIcon>
+                          <ListItemText primary="Booking Room" />
+                        </ListItem>
+                      </Link>
+                    : <Link to="/bookingRoom" onClick={event => handleListItemClick(event, 1)} style={{ textDecoration: "none", fontWeight: 'bold' }}>
+                      <ListItem button key="Booking Room" selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
                         <ListItemIcon style={{ marginLeft: 8 }}>
                           <MeetingRoomOutlinedIcon />
                         </ListItemIcon>
@@ -387,29 +436,29 @@ function Navsidebar(props) {
 
                 <Collapse in={openChildBookingRoom} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    <Link to="/bookingRoom" onClick={event => handleListItemClick(event, 0)} style={{ textDecoration: 'none', color: 'black' }}>
-                      <ListItem button className={classes.nested} selected={selectedIndex === 0}>
-                        <ListItemText primary="List Booking Room" />
+                    <Link to="/bookingRoom" onClick={event => handleListItemClick(event, 1)} style={{ textDecoration: 'none', color: 'black' }}>
+                      <ListItem button className={classes.nested} selected={selectedIndex === 1}>
+                        <ListItemText primary="Daftar pesan ruangan" />
                       </ListItem>
                     </Link>
                     {
                       props.isAdmin
-                        ? <Link to="/bookingRoom/roomMaster" onClick={event => handleListItemClick(event, 0.1)} style={{ textDecoration: 'none', color: 'black' }}>
-                          <ListItem button className={classes.nested} selected={selectedIndex === 0.1}>
+                        ? <Link to="/bookingRoom/roomMaster" onClick={event => handleListItemClick(event, 1.1)} style={{ textDecoration: 'none', color: 'black' }}>
+                          <ListItem button className={classes.nested} selected={selectedIndex === 1.1}>
                             <ListItemText primary="Room Master" />
                           </ListItem>
                         </Link>
-                        : props.isRoomMaster && <Link to="/bookingRoom/roomAssistant" onClick={event => handleListItemClick(event, 0.2)} style={{ textDecoration: 'none', color: 'black' }}>
-                          <ListItem button className={classes.nested} selected={selectedIndex === 0.2}>
+                        : props.isRoomMaster && <Link to="/bookingRoom/roomAssistant" onClick={event => handleListItemClick(event, 1.2)} style={{ textDecoration: 'none', color: 'black' }}>
+                          <ListItem button className={classes.nested} selected={selectedIndex === 1.2}>
                             <ListItemText primary="Room Assistant" />
                           </ListItem>
                         </Link>
                     }
 
 
-                    <Link to="/bookingRoom/rooms" onClick={event => handleListItemClick(event, 0.3)} style={{ textDecoration: 'none', color: 'black' }}>
-                      <ListItem button className={classes.nested} selected={selectedIndex === 0.3}>
-                        <ListItemText primary="Building & Room" />
+                    <Link to="/bookingRoom/rooms" onClick={event => handleListItemClick(event, 1.3)} style={{ textDecoration: 'none', color: 'black' }}>
+                      <ListItem button className={classes.nested} selected={selectedIndex === 1.3}>
+                        <ListItemText primary="Gedung & Ruangan" />
                       </ListItem>
                     </Link>
                   </List>
@@ -420,26 +469,27 @@ function Navsidebar(props) {
               <>
                 {
                   open
-                    ? <Link to="/event" onClick={event => handleListItemClick(event, 1)} style={{ textDecoration: "none", color: 'black' }}>
-                      <ListItem button key="Event"
-                        selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
+                    ? (props.isAdmin || props.isCreatorMaster || props.isCreatorAssistant)
+                      ? <ListItem button key="Event"
+                        onClick={event => handleClick(event, 'openChildEvent')}
+                        selected={selectedIndex === 2 || selectedIndex === 2.1 || selectedIndex === 2.2 || selectedIndex === 2.3}>
                         <ListItemIcon>
                           <EventOutlinedIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Event" />
+                        <ListItemText primary="Acara" />
+                        {openChildEvent ? <ExpandLess /> : <ExpandMore />}
                       </ListItem>
-                    </Link>
-                    // <ListItem button key="Event"
-                    //   onClick={event => handleClick(event, 'openChildEvent')}
-                    //   selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
-                    //   <ListItemIcon>
-                    //     <EventOutlinedIcon />
-                    //   </ListItemIcon>
-                    //   <ListItemText primary="Event" />
-                    //   {openChildEvent ? <ExpandLess /> : <ExpandMore />}
-                    // </ListItem>
-                    : <Link to="/event" onClick={event => handleListItemClick(event, 1)}>
-                      <ListItem button key="Event" selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3} >
+                      : <Link to="/event" onClick={event => handleListItemClick(event, 2)} style={{ textDecoration: "none", color: 'black' }}>
+                        <ListItem button key="Event"
+                          selected={selectedIndex === 2 || selectedIndex === 2.1 || selectedIndex === 2.2 || selectedIndex === 2.3}>
+                          <ListItemIcon>
+                            <EventOutlinedIcon />
+                          </ListItemIcon>
+                          <ListItemText primary="Acara" />
+                        </ListItem>
+                      </Link>
+                    : <Link to="/event" onClick={event => handleListItemClick(event, 2)}>
+                      <ListItem button key="Event" selected={selectedIndex === 2 || selectedIndex === 2.1 || selectedIndex === 2.2 || selectedIndex === 2.3} >
                         <ListItemIcon style={{ marginLeft: 8 }}>
                           <EventOutlinedIcon />
                         </ListItemIcon>
@@ -447,42 +497,42 @@ function Navsidebar(props) {
                     </Link>
                 }
 
-                {/* <Collapse in={openChildEvent} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <Link to="/event" onClick={event => handleListItemClick(event, 1.1)} style={{ textDecoration: 'none', color: 'black' }}>
-                  <ListItem button className={classes.nested} selected={selectedIndex === 1.1}>
-                    <ListItemText primary="Event" />
-                  </ListItem>
-                </Link>
-                {
-                  (props.isAdmin || props.isCreatorMaster || props.isCreatorAssistant) && <Link to="/event/approvalEvent" onClick={event => handleListItemClick(event, 1.2)} style={{ textDecoration: 'none', color: 'black' }}>
-                    <ListItem button className={classes.nested} selected={selectedIndex === 1.2}>
-                      <ListItemText primary="Approval Event" />
-                    </ListItem>
-                  </Link>
-                }
-                {
-                  props.isAdmin
-                    ? <Link to="/event/creatorMasterAndAssistant" onClick={event => handleListItemClick(event, 1.3)} style={{ textDecoration: 'none', color: 'black' }}>
-                      <ListItem button className={classes.nested} selected={selectedIndex === 1.3}>
-                        <ListItemText primary="Creator Master" />
+                <Collapse in={openChildEvent} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <Link to="/event" onClick={event => handleListItemClick(event, 2.1)} style={{ textDecoration: 'none', color: 'black' }}>
+                      <ListItem button className={classes.nested} selected={selectedIndex === 2.1}>
+                        <ListItemText primary="Acara" />
                       </ListItem>
                     </Link>
-                    : props.isCreatorMaster && <Link to="/event/creatorMasterAndAssistant" onClick={event => handleListItemClick(event, 1.3)} style={{ textDecoration: 'none', color: 'black' }}>
-                      <ListItem button className={classes.nested} selected={selectedIndex === 1.3}>
-                        <ListItemText primary="Creator Assistant" />
-                      </ListItem>
-                    </Link>
-                }
-              </List>
-            </Collapse> */}
+                    {
+                      (props.isAdmin || props.isCreatorMaster || props.isCreatorAssistant) && <Link to="/event/approvalEvent" onClick={event => handleListItemClick(event, 2.2)} style={{ textDecoration: 'none', color: 'black' }}>
+                        <ListItem button className={classes.nested} selected={selectedIndex === 2.2}>
+                          <ListItemText primary="Acara disetujui" />
+                        </ListItem>
+                      </Link>
+                    }
+                    {
+                      props.isAdmin
+                        ? <Link to="/event/creatorMasterAndAssistant" onClick={event => handleListItemClick(event, 2.3)} style={{ textDecoration: 'none', color: 'black' }}>
+                          <ListItem button className={classes.nested} selected={selectedIndex === 2.3}>
+                            <ListItemText primary="Creator Master" />
+                          </ListItem>
+                        </Link>
+                        : props.isCreatorMaster && <Link to="/event/creatorMasterAndAssistant" onClick={event => handleListItemClick(event, 2.3)} style={{ textDecoration: 'none', color: 'black' }}>
+                          <ListItem button className={classes.nested} selected={selectedIndex === 2.3}>
+                            <ListItemText primary="Creator Assistant" />
+                          </ListItem>
+                        </Link>
+                    }
+                  </List>
+                </Collapse>
               </>
 
               {/* HR */}
               <>
                 {
                   open
-                    ? props.adminContactCategori === 4
+                    ? props.adminContactCategori === 4 || props.userId === 1
                       ? <ListItem button key="HR"
                         onClick={event => handleClick(event, 'openChildHR')} selected={selectedIndex === 3 || selectedIndex === 3.1}>
                         <ListItemIcon>
@@ -560,12 +610,12 @@ function Navsidebar(props) {
                       isAtasan && <>
                         <Link to="/kpim/report" onClick={event => handleListItemClick(event, 4.2)} style={{ textDecoration: 'none', color: 'black' }}>
                           <ListItem button className={classes.nested} selected={selectedIndex === 4.2}>
-                            <ListItemText primary="Report" />
+                            <ListItemText primary="Laporan" />
                           </ListItem>
                         </Link>
                         <Link to="/kpim/setting" onClick={event => handleListItemClick(event, 4.3)} style={{ textDecoration: 'none', color: 'black' }}>
                           <ListItem button className={classes.nested} selected={selectedIndex === 4.3}>
-                            <ListItemText primary="Setting" />
+                            <ListItemText primary="Pengaturan KPIM" />
                           </ListItem>
                         </Link>
                       </>
@@ -578,22 +628,26 @@ function Navsidebar(props) {
               {/* Menu Setting */}
               <>
                 {
-                  open
-                    ? <Link to="/setting" onClick={event => handleListItemClick(event, 99)} style={{ textDecoration: 'none', color: 'black' }}>
-                      <ListItem button key="Setting" selected={selectedIndex === 99} >
-                        <ListItemIcon>
-                          <SettingsOutlinedIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Setting" />
-                      </ListItem>
-                    </Link>
-                    : <Link to="/setting" onClick={event => handleListItemClick(event, 99)}>
-                      <ListItem button key="Setting" selected={selectedIndex === 99} >
-                        <ListItemIcon style={{ marginLeft: 8 }}>
-                          <SettingsOutlinedIcon />
-                        </ListItemIcon>
-                      </ListItem>
-                    </Link>
+                  (props.isAdmin || props.userId === 30 || props.userId === 33 || props.adminContactCategori === 4) && <>
+                    {
+                      open
+                        ? <Link to="/setting" onClick={event => handleListItemClick(event, 99)} style={{ textDecoration: 'none', color: 'black' }}>
+                          <ListItem button key="Setting" selected={selectedIndex === 99} >
+                            <ListItemIcon>
+                              <SettingsOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Pengaturan" />
+                          </ListItem>
+                        </Link>
+                        : <Link to="/setting" onClick={event => handleListItemClick(event, 99)}>
+                          <ListItem button key="Setting" selected={selectedIndex === 99} >
+                            <ListItemIcon style={{ marginLeft: 8 }}>
+                              <SettingsOutlinedIcon />
+                            </ListItemIcon>
+                          </ListItem>
+                        </Link>
+                    }
+                  </>
                 }
               </>
 
@@ -601,18 +655,32 @@ function Navsidebar(props) {
 
             <Divider />
 
-            <List>
-              <Link to="/profil" onClick={event => handleListItemClick(event, 100)} style={{ textDecoration: 'none', color: 'black' }}>
-                <ListItem button key="Profil" selected={selectedIndex === 100} >
-                  <ListItemIcon>
-                    <PersonOutlineOutlinedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Profil" />
-                </ListItem>
-              </Link>
-            </List>
-          </Drawer>
+            {/* PROFIL */}
+            <>
+              {
+                open
+                  ? <List>
+                    <Link to="/profil" onClick={event => handleListItemClick(event, 100)} style={{ textDecoration: 'none', color: 'black' }}>
+                      <ListItem button key="Profil" selected={selectedIndex === 100} >
+                        <ListItemIcon>
+                          <PersonOutlineOutlinedIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Profil" />
+                      </ListItem>
+                    </Link>
+                  </List>
+                  : <List><Link to="/profil" onClick={event => handleListItemClick(event, 100)} style={{ textDecoration: 'none', color: 'black' }}>
+                    <ListItem button key="Profil" selected={selectedIndex === 100} >
+                      <ListItemIcon style={{ marginLeft: 8 }}>
+                        <PersonOutlineOutlinedIcon />
+                      </ListItemIcon>
+                    </ListItem>
+                  </Link>
+                  </List>
+              }
+            </>
 
+          </Drawer>
         </>
       }
     </div >

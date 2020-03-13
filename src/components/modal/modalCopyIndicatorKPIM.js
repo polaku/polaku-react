@@ -22,7 +22,6 @@ class modalCopyIndicatorKPIM extends Component {
   }
 
   async componentDidMount() {
-    console.log(this.props.data)
     let listUser = this.props.bawahan.filter(el => el.user_id !== this.props.userId)
 
     this.setState({
