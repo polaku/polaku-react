@@ -32,26 +32,26 @@ class panelSetting extends Component {
   async componentDidMount() {
     this._isMounted = true
 
-    if(this._isMounted){
+    if (this._isMounted) {
       this.fetchWeek()
       this.setState({
         minggu: this.getNumberOfWeek(new Date()),
         weekCurrent: this.getNumberOfWeek(new Date())
       })
-  
+
       let batasAtas, batasBawah, loopingWeek = []
       // batasAtas = Math.ceil(this.state.bulan * 4.345)
       batasAtas = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.bulan, 0))
       batasBawah = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.bulan - 1, 1))
-  
+
       for (batasBawah; batasBawah <= batasAtas; batasBawah++) {
         loopingWeek.push(batasBawah)
       }
-  
+
       if (batasAtas === 53) {
         loopingWeek[loopingWeek.length - 1] = 1
       }
-  
+
       this.setState({
         optionMinggu: loopingWeek
       })
@@ -86,7 +86,7 @@ class panelSetting extends Component {
   componentWillUnmount() {
     this._isMounted = false
   }
-  
+
   fetchData = async (month) => {
     let temp = [], tempForDisplay = []
     await this.props.fetchDataAllKPIM({ year: new Date().getFullYear() })
@@ -316,7 +316,7 @@ class panelSetting extends Component {
           }
           {
             this.state.needAction === 0 && this.props.status !== "all" && <>
-              <img src={require('../../assets/settingKPIM.png')} alt="Logo" style={{ width: 500, maxHeight: 500, margin: '50px auto 10px auto' }} />
+              <img src={process.env.PUBLIC_URL + '/settingKPIM.png'} alt="Logo" style={{ width: 500, maxHeight: 500, margin: '50px auto 10px auto' }} />
               <p style={{ marginTop: 10, fontFamily: 'Simonetta', fontSize: 20, textShadow: '4px 4px 4px #aaa' }} >TIDAK ADA YANG BUTUH TINDAKAN</p>
             </>
           }

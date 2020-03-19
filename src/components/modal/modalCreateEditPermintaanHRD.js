@@ -333,7 +333,7 @@ class modalCreateEditPermintaanHRD extends Component {
             {
               this.state.jenisIjin === 6 && <p style={{ fontWeight: 'bold', marginTop: 0, fontSize: 24 }}>Sisa cuti anda {this.props.sisaCuti} hari</p>
             }
-            <img src={require('../../assets/ijin.jpeg')} alt="Logo" style={{ width: 200 }} />
+            <img src={process.env.PUBLIC_URL + '/ijin.jpeg'} alt="Logo" style={{ width: 200 }}/>
             <p style={{ fontWeight: 'bold' }}>Ajukan ijin dengan mengisi beberapa detail dibawah ini</p>
             <form noValidate autoComplete="off" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
               {/* <MultipleDatePicker

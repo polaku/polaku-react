@@ -306,7 +306,7 @@ function Navsidebar(props) {
                 >
                   <MenuIcon />
                 </IconButton>
-              <img src={require('../assets/polagroup.png')} alt="Logo" style={{ width: 175, maxHeight: 50 }} />
+                <img src={process.env.PUBLIC_URL + '/polagroup.png'} alt="Logo" style={{ width: 175, maxHeight: 50 }} />
 
               </div>
               <IconButton color="inherit" onClick={handleClickNotif}>

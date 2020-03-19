@@ -103,7 +103,7 @@ export default class modalReward extends Component {
             flexDirection: 'column',
             padding: '40px 30px'
           }}>
-            <img src={require('../../assets/reward.png')} alt="Logo" style={{ width: 120, maxHeight: 120, alignSelf: 'center' }} />
+            <img src={process.env.PUBLIC_URL + '/reward.png'} alt="Logo" style={{ width: 120, maxHeight: 120, alignSelf: 'center' }} />
             <Typography style={{ alignSelf: 'center', fontSize: 35, fontWeight: 'bold', margin: 10 }}>Reward & Consequences</Typography>
 
             <Grid style={{ display: 'flex', margin: '10px 0px' }}>

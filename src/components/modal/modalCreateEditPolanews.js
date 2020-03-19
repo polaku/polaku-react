@@ -229,7 +229,7 @@ export default class modalCreateEditPolanews extends Component {
                         ? <img src={this.props.data.thumbnail} alt="thumbnail" style={{ width: 150, height: 180 }} />
                         : this.state.imgPreview
                           ? <img src={this.state.imgPreview} alt="thumbnail" style={{ width: 150, height: 180 }} />
-                          : <img src={require('../../assets/placeholder.png')} alt="Logo" style={{ width: 150, height: 150 }} />
+                          : <img src={process.env.PUBLIC_URL + '/placeholder.png'} alt="Logo" style={{ width: 150, height: 150 }}/>
                     }
                   </Grid>
                 </Grid>

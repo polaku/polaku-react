@@ -206,7 +206,7 @@ class HR extends Component {
             }
           </Grid >
           <Grid style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <img src={require('../../assets/icon orang.png')} alt="Logo" style={{ width: 400, maxHeight: 250, }} />
+            <img src={process.env.PUBLIC_URL + '/icon orang.png'} alt="Logo" style={{ width: 400, maxHeight: 250, }} />
           </Grid>
           {/* <img src="https://polaku.polagroup.co.id/uploads/logo.png" alt="Logo" /> */}
 

@@ -190,7 +190,7 @@ class TAL extends Component {
 
           {
             this.state.isEmpty && <Grid style={{ display: 'flex', margin: '50px auto 10px auto', flexDirection: 'column', textAlign: 'center' }}>
-              <img src={require('../../assets/settingKPIM.png')} alt="Logo" style={{ width: 500, maxHeight: 500 }} />
+              <img src={process.env.PUBLIC_URL + '/settingKPIM.png'} alt="Logo" style={{ width: 500, maxHeight: 500 }} />
               <p style={{ marginTop: 10, fontFamily: 'Simonetta', fontSize: 20, textShadow: '4px 4px 4px #aaa' }} >BELUM ADA TAL</p>
             </Grid>
           }
