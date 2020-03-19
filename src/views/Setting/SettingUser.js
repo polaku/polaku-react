@@ -911,7 +911,7 @@ class SettingUser extends Component {
                   </Grid>
                   <Grid item xs={12} md={12} lg={6} style={{ display: 'flex' }} >
                     <p style={{ margin: '0px 10px 0px 20px' }}>format .xlsx </p>
-                    <a href="https://polaku.polagroup.co.id/assets/sample/leave.xlsx">download sample import cuti</a>
+                    <a href={process.env.PUBLIC_URL + '/leave.xlsx'}>download sample import cuti</a>
                   </Grid>
                 </Grid>
                 <Grid style={{ margin: '10px 0px 0px 220px' }}>
@@ -953,7 +953,7 @@ class SettingUser extends Component {
                   </Grid>
                   <Grid item xs={12} md={12} lg={6} style={{ display: 'flex' }} >
                     <p style={{ margin: '0px 10px 0px 20px' }}>format .xlsx </p>
-                    <a href="https://polaku.polagroup.co.id/assets/sample/evaluator.xlsx">download sample import evaluator</a>
+                    <a href={process.env.PUBLIC_URL + '/evaluator.xlsx'}>download sample import cuti</a>
                   </Grid>
                 </Grid>
                 <Grid style={{ margin: '10px 0px 0px 220px' }}>
@@ -995,7 +995,7 @@ class SettingUser extends Component {
                   </Grid>
                   <Grid item xs={12} md={12} lg={6} style={{ display: 'flex' }} >
                     <p style={{ margin: '0px 10px 0px 20px' }}>format .xlsx </p>
-                    <a href="https://polaku.polagroup.co.id/assets/sample/user.xlsx">download sample import user</a>
+                    <a href={process.env.PUBLIC_URL + '/user.xlsx'}>download sample import cuti</a>
                   </Grid>
                 </Grid>
                 <Grid style={{ margin: '10px 0px 0px 220px' }}>
