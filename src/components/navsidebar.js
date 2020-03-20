@@ -174,7 +174,7 @@ function Navsidebar(props) {
           if (data.adminContactCategori) {
             newData.adminContactCategori = data.adminContactCategori
           }
-
+          console.log(data.adminContactCategori)
           await props.setUser(newData)
           await props.fetchDataNotification()
         })
@@ -226,7 +226,7 @@ function Navsidebar(props) {
     } else if (props.location.pathname === '/kpim/setting') {
       setSelectedIndex(4.3)
     } else if (props.location.pathname === '/setting' || props.location.pathname === '/setting/settingPerusahaan' || props.location.pathname === '/setting/settingUser') {
-      if (props.isAdmin || props.userId === 30 || props.userId === 33 || props.adminContactCategori === 4) {
+      if (props.isAdmin || props.userId === 30 || props.userId === 33 || Number(props.adminContactCategori) === 4) {
         setSelectedIndex(99)
       } else {
         props.history.goBack()
@@ -250,6 +250,9 @@ function Navsidebar(props) {
     }
   }, [props.bawahan])
 
+  useEffect(() => {
+    console.log(props.adminContactCategori)
+  }, [props.adminContactCategori])
   const handleClickNotif = event => {
     let newData = [], token = Cookies.get('POLAGROUP')
     setAnchorEl(event.currentTarget);
@@ -334,7 +337,7 @@ function Navsidebar(props) {
                 }}
               >
                 {
-                  props.dataNotification && props.dataNotification.map((notif, index) => {
+                  props.dataNotification.length > 0 && props.dataNotification.map((notif, index) => {
                     return notif.link && <Link to={notif.link} key={index} style={{ textDecoration: 'none', color: 'black' }} onClick={() => updateStatus(notif.notifications_id)}>
                       <MenuItem onClick={handleClose} style={{ backgroundColor: !notif.read ? '#e9e9e9' : 'white' }}>
                         <ListItemIcon>
@@ -532,7 +535,7 @@ function Navsidebar(props) {
               <>
                 {
                   open
-                    ? props.adminContactCategori === 4 || props.userId === 1
+                    ? Number(props.adminContactCategori) === 4 || props.userId === 1
                       ? <ListItem button key="HR"
                         onClick={event => handleClick(event, 'openChildHR')} selected={selectedIndex === 3 || selectedIndex === 3.1}>
                         <ListItemIcon>
@@ -628,7 +631,7 @@ function Navsidebar(props) {
               {/* Menu Setting */}
               <>
                 {
-                  (props.isAdmin || props.userId === 30 || props.userId === 33 || props.adminContactCategori === 4) && <>
+                  (props.isAdmin || props.userId === 30 || props.userId === 33 || Number(props.adminContactCategori) === 4) && <>
                     {
                       open
                         ? <Link to="/setting" onClick={event => handleListItemClick(event, 99)} style={{ textDecoration: 'none', color: 'black' }}>

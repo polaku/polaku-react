@@ -16,7 +16,7 @@ export default class exportToExcel extends React.Component {
         <ExcelFile element={<p style={{ cursor: 'pointer', fontWeight: 'bold', marign: 0 }}>{this.props.title}</p>}>
           <ExcelSheet data={this.props.data} name={this.props.nameSheet}>
             {
-              this.props.labelValue.map((el, index) => (
+              this.props.labelValue.length > 0 && this.props.labelValue.map((el, index) => (
                 <ExcelColumn label={el.label} value={el.value} key={index} />
               ))
             }
@@ -31,21 +31,21 @@ export default class exportToExcel extends React.Component {
           <ExcelFile element={<p style={{ cursor: 'pointer', marign: 0 }}>{this.props.title}</p>}>
             <ExcelSheet data={this.props.data} name="report nilai">
               {
-                this.props.labelValueReportNilai.map((el, index) => (
+                this.props.labelValueReportNilai.length > 0 && this.props.labelValueReportNilai.map((el, index) => (
                   <ExcelColumn label={el.label} value={el.value} key={index} />
                 ))
               }
             </ExcelSheet>
             <ExcelSheet data={this.props.dataKPIM} name="report KPIM">
               {
-                this.props.labelValueKPIM.map((el, index) => (
+                this.props.labelValueKPIM.length > 0 && this.props.labelValueKPIM.map((el, index) => (
                   <ExcelColumn label={el.label} value={el.value} key={index} />
                 ))
               }
             </ExcelSheet>
             <ExcelSheet data={this.props.dataTAL} name="report TAL">
               {
-                this.props.labelValueTAL.map((el, index) => (
+                this.props.labelValueTAL.length > 0 && this.props.labelValueTAL.map((el, index) => (
                   <ExcelColumn label={el.label} value={el.value} key={index} />
                 ))
               }
@@ -57,7 +57,7 @@ export default class exportToExcel extends React.Component {
           <ExcelFile element={<p style={{ cursor: 'pointer', marign: 0 }}>{this.props.title}</p>}>
             <ExcelSheet data={this.props.dataKPIM} name="report KPIM">
               {
-                this.props.labelValueKPIM.map((el, index) => (
+                this.props.labelValueKPIM.length > 0 && this.props.labelValueKPIM.map((el, index) => (
                   <ExcelColumn label={el.label} value={el.value} key={index} />
                 ))
               }
@@ -69,7 +69,7 @@ export default class exportToExcel extends React.Component {
           <ExcelFile element={<p style={{ cursor: 'pointer', marign: 0 }}>{this.props.title}</p>}>
             <ExcelSheet data={this.props.dataTAL} name="report TAL">
               {
-                this.props.labelValueTAL.map((el, index) => (
+                this.props.labelValueTAL.length > 0 && this.props.labelValueTAL.map((el, index) => (
                   <ExcelColumn label={el.label} value={el.value} key={index} />
                 ))
               }
@@ -86,7 +86,7 @@ export default class exportToExcel extends React.Component {
         <ExcelFile element={<p style={{ cursor: 'pointer', fontWeight: 'bold', marign: 0 }}>{this.props.title}</p>}>
           <ExcelSheet data={this.props.data} name={this.props.nameSheet}>
             {
-              this.props.labelValue.map((el, index) => (
+              this.props.labelValue.length > 0 && this.props.labelValue.map((el, index) => (
                 <ExcelColumn label={el.label} value={el.value} key={index} />
               ))
             }

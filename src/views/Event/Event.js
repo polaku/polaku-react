@@ -48,7 +48,7 @@ class Event extends Component {
           </Button>
           <Grid style={{ height: '76vh', width: '100%', overflow: 'scroll' }}>
             {
-              this.props.dataEvents.map((event, index) => (
+              this.props.dataEvents && this.props.dataEvents.map((event, index) => (
                 <CardEvent key={index} data={event} />
               ))
             }

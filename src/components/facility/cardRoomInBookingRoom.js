@@ -37,7 +37,7 @@ export default class cardRoomInBookingRoom extends Component {
         <Divider />
         <CardContent style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
           {
-            this.props.data && this.props.data.tbl_booking_rooms.map((el, index) => (
+            this.props.data && this.props.data.tbl_booking_rooms.length > 0 && this.props.data.tbl_booking_rooms.map((el, index) => (
               <CardBookingRoom data={el} key={index} refresh={this.refresh} />
             ))
           }

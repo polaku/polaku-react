@@ -209,7 +209,7 @@ export default class cardReport extends Component {
                       </TableHead>
                       <TableBody>
                         {
-                          this.props.data.kpim.map((el, index) => <TableRow key={index}>
+                          this.props.data.kpim && this.props.data.kpim.map((el, index) => <TableRow key={index}>
                             <TableCell component="th" scope="row" style={{ alignItems: 'center', width: '40%' }}>
                               {el.indicator_kpim}
                             </TableCell>

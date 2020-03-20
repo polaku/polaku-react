@@ -222,7 +222,7 @@ class modalDetailUser extends Component {
                         onChange={this.handleChange('companyId')}
                       >
                         {
-                          this.props.dataCompanies.map((company, index) =>
+                          this.props.dataCompanies && this.props.dataCompanies.map((company, index) =>
                             <MenuItem value={company.company_id} key={index}>{company.company_name}</MenuItem>
                           )
                         }

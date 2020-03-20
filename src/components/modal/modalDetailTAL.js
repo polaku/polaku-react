@@ -69,7 +69,7 @@ export default class modalDetailTAL extends Component {
               </TableHead>
               <TableBody>
                 {
-                  this.props.data.map((el, index) => (
+                  this.props.data && this.props.data.map((el, index) => (
                     <CardItemTAL data={el} key={index} refresh={this.refresh}/>
                   ))
                 }

@@ -73,14 +73,15 @@ class Login extends Component {
           evaluator2: data.data.evaluator2,
           bawahan: data.data.bawahan,
         }
+        
         if (data.data.role_id === 1) {
           newData.isAdmin = true
         } else {
           newData.isAdmin = false
         }
 
-        if (data.adminContactCategori) {
-          newData.adminContactCategori = data.adminContactCategori
+        if (data.data.adminContactCategori) {
+          newData.adminContactCategori = data.data.adminContactCategori
         }
 
         await this.props.setUser(newData)
