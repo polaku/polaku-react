@@ -436,11 +436,12 @@ export default class cardSettingIndicator extends Component {
                           }
                         </>
                       }
-                      {
-                        !this.props.data.hasConfirm && <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick}>
+                      {/* {
+                        !this.props.data.hasConfirm &&  */}
+                        <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick}>
                           <MoreHorizIcon />
                         </Button>
-                      }
+                      {/* } */}
                     </Grid>
                   </Grid>
                 </Paper>
@@ -569,11 +570,12 @@ export default class cardSettingIndicator extends Component {
                           <p style={{ margin: '0px 10px 4px 0px', fontSize: 10 }}>/ {this.state.target_monthly}</p>
                         }
                       </Grid>
-                      {
-                        !this.props.data.hasConfirm && <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick}>
+                      {/* {
+                        !this.props.data.hasConfirm &&  */}
+                        <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick}>
                           <MoreHorizIcon />
                         </Button>
-                      }
+                      {/* } */}
                     </Grid>
                   </>
               }

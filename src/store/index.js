@@ -137,7 +137,7 @@ const api = store => next => async action => {
     let getData
     try {
       getData = await API.get('/bookingRoom', { headers: { token } })
-console.log(getData.data.data)
+      console.log(getData.data.data)
       next({
         type: 'FETCH_DATA_BOOKING_ROOMS_SUCCESS',
         payload: getData.data.data

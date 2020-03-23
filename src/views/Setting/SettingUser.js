@@ -953,7 +953,7 @@ class SettingUser extends Component {
                   </Grid>
                   <Grid item xs={12} md={12} lg={6} style={{ display: 'flex' }} >
                     <p style={{ margin: '0px 10px 0px 20px' }}>format .xlsx </p>
-                    <a href={process.env.PUBLIC_URL + '/evaluator.xlsx'}>download sample import cuti</a>
+                    <a href={process.env.PUBLIC_URL + '/evaluator.xlsx'}>download sample import evaluator</a>
                   </Grid>
                 </Grid>
                 <Grid style={{ margin: '10px 0px 0px 220px' }}>
@@ -995,7 +995,7 @@ class SettingUser extends Component {
                   </Grid>
                   <Grid item xs={12} md={12} lg={6} style={{ display: 'flex' }} >
                     <p style={{ margin: '0px 10px 0px 20px' }}>format .xlsx </p>
-                    <a href={process.env.PUBLIC_URL + '/user.xlsx'}>download sample import cuti</a>
+                    <a href={process.env.PUBLIC_URL + '/user.xlsx'}>download sample import user</a>
                   </Grid>
                 </Grid>
                 <Grid style={{ margin: '10px 0px 0px 220px' }}>

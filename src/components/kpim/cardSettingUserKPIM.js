@@ -463,16 +463,17 @@ export default class cardSettingUserKPIM extends Component {
               <Paper id="header" style={{ display: 'flex', padding: '10px 20px', justifyContent: 'space-between', marginBottom: 5 }} >
                 <Grid style={{ display: 'flex' }}>
                   <Typography style={{ marginRight: 20 }}>KPIM</Typography>
-                  {
+                  {/* {
                     (
                       ((this.state.KPIM.length === 0 && !this.state.TALMonth) && !this.state.statusSudahKirimNilai) ||
                       ((!this.state.statusCreateKPIM && this.state.KPIM.length < 4 && this.props.weekCurrent <= (this.getNumberOfWeek(new Date(new Date().getFullYear(), this.props.month - 1, 1)) + 1)) && !this.state.statusSudahKirimNilai)
 
-                    ) && <Button onClick={this.handleCreateKPIM}
+                    ) &&  */}
+                    <Button onClick={this.handleCreateKPIM}
                       style={{ borderRadius: 15, minWidth: 24, backgroundColor: '#e0e0e0', padding: 0 }} >
                       <AddIcon />
                     </Button>
-                  }
+                  {/* } */}
                   {
                     this.state.KPIM.length === 0 && !this.state.TALMonth && <>
                       <ErrorOutlineOutlinedIcon style={{ color: 'white', backgroundColor: '#d71149', borderRadius: 15, margin: '0px 0px 0px 20px' }} />
@@ -573,31 +574,15 @@ export default class cardSettingUserKPIM extends Component {
                         this.state.TALMonth && <p style={{ margin: '0px 10px 0px 0px', fontSize: 13, color: '#d71149' }}>{getMonth(this.state.TALMonth.month)}</p>
                       }
                       <Typography style={{ marginRight: 20 }}>TAL</Typography>
-                      {
-                        // (this.state.TAL.length === 0 || (!this.state.statusCreateTAL && this.props.weekCurrent <= this.props.week)) && <Button onClick={this.handleCreateTAL}
-                        (!this.state.statusCreateTAL && this.props.weekCurrent <= this.props.week && !this.state.statusSudahKirimNilai) && <Button onClick={this.handleCreateTAL}
+                      {/* { */}
+                        {/* (this.state.TAL.length === 0 || (!this.state.statusCreateTAL && this.props.weekCurrent <= this.props.week)) && <Button onClick={this.handleCreateTAL} */}
+
+                        {/* (!this.state.statusCreateTAL && this.props.weekCurrent <= this.props.week && !this.state.statusSudahKirimNilai) &&  */}
+                        <Button onClick={this.handleCreateTAL}
                           style={{ borderRadius: 15, minWidth: 24, backgroundColor: '#e0e0e0', padding: 0 }} >
                           <AddIcon />
                         </Button>
-                      }
-                      {/* {
-                        this.state.TAL.length === 0 && <>
-                          <ErrorOutlineOutlinedIcon style={{ color: 'white', backgroundColor: '#d71149', borderRadius: 15, margin: '0px 0px 0px 20px' }} />
-                          <p style={{ margin: '0px 0px 0px 10px', color: '#d71149' }}>TAL KOSONG</p>
-                        </>
-                      }
-                      {
-                        this.state.TAL.length > 0 && this.state.bobotTAL < 100 && <>
-                          <ErrorOutlineOutlinedIcon style={{ color: 'white', backgroundColor: '#d71149', borderRadius: 15, margin: '0px 0px 0px 20px' }} />
-                          <p style={{ margin: '0px 0px 0px 10px', color: '#d71149' }}>Bobot belum 100%</p>
-                        </>
-                      }
-                      {
-                        this.state.bobotTAL >= 100 && this.state.adaWeightTALYangKosong && <>
-                          <ErrorOutlineOutlinedIcon style={{ color: 'white', backgroundColor: '#d71149', borderRadius: 15, margin: '0px 0px 0px 20px' }} />
-                          <p style={{ margin: '0px 0px 0px 10px', color: '#d71149' }}>Bobot TAL ada yang masih 0</p>
-                        </>
-                      } */}
+                      {/* } */}
                     </Grid>
 
                     <Grid style={{ display: 'flex' }}>

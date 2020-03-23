@@ -308,13 +308,14 @@ class DashboardKPIM extends Component {
     let kpimSelected = this.state.allKPIM[this.state.monthSelected], persenKPIM = 0, kpimTAL = null
 
     kpimSelected.forEach(kpim => {
-      if (kpim[1].indicator_kpim.toLowerCase() !== "kpim team") {
-        if (Number(kpim[1].target_monthly) > 0 && kpim[1].indicator_kpim.toLowerCase() !== "tal") persenKPIM += Math.floor(((Number(kpim[1].pencapaian_monthly) / Number(kpim[1].target_monthly)) * 100) * (Number(kpim[1].bobot) / 100))
-        else persenKPIM += Number(kpim[1].score_kpim_monthly) * (Number(kpim[1].bobot) / 100) || 0
-
-        if (kpim[1].indicator_kpim.toLowerCase() === "tal") {
-          kpimTAL = kpim[1]
-        }
+      if (Number(kpim[1].target_monthly) > 0 && kpim[1].indicator_kpim.toLowerCase() !== "tal") {
+        persenKPIM += Math.floor(((Number(kpim[1].pencapaian_monthly) / Number(kpim[1].target_monthly)) * 100) * (Number(kpim[1].bobot) / 100))
+      }
+      else {
+        persenKPIM += Number(kpim[1].score_kpim_monthly) * (Number(kpim[1].bobot) / 100) || 0
+      }
+      if (kpim[1].indicator_kpim.toLowerCase() === "tal") {
+        kpimTAL = kpim[1]
       }
     })
 

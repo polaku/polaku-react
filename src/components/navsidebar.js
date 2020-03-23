@@ -250,9 +250,6 @@ function Navsidebar(props) {
     }
   }, [props.bawahan])
 
-  useEffect(() => {
-    console.log(props.adminContactCategori)
-  }, [props.adminContactCategori])
   const handleClickNotif = event => {
     let newData = [], token = Cookies.get('POLAGROUP')
     setAnchorEl(event.currentTarget);
