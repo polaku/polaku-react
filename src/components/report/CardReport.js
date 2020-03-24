@@ -70,6 +70,14 @@ export default class CardReport extends Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.data.nik !== this.props.data.nik) {
+      this.setState({
+        isActive: this.props.data.isActive
+      })
+    }
+  }  
+
   handleChangeCheck = event => {
     this.setState({
       isActive: event.target.checked

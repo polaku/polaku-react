@@ -792,7 +792,7 @@ class SettingUser extends Component {
                       error={this.state.companyIdNotValid}
                     >
                       {
-                        this.props.dataCompanies.length > 0 && this.props.dataCompanies.map((company, index) =>
+                        this.props.dataCompanies && this.props.dataCompanies.length > 0 && this.props.dataCompanies.map((company, index) =>
                           <MenuItem value={company.company_id} key={index}>{company.company_name}</MenuItem>
                         )
                       }
@@ -808,7 +808,7 @@ class SettingUser extends Component {
                     >
                       <MenuItem value="">-</MenuItem>
                       {
-                        this.props.dataPositions.length > 0 && this.props.dataPositions.map((position, index) =>
+                         this.props.dataPositions && this.props.dataPositions.length > 0 && this.props.dataPositions.map((position, index) =>
                           <MenuItem value={position.position_id} key={index}>{position.position}</MenuItem>
                         )
                       }
@@ -824,7 +824,7 @@ class SettingUser extends Component {
                     >
                       <MenuItem value="">-</MenuItem>
                       {
-                        this.props.dataBuildings.length > 0 && this.props.dataBuildings.map((building, index) =>
+                        this.props.dataBuildings && this.props.dataBuildings.length > 0 && this.props.dataBuildings.map((building, index) =>
                           <MenuItem value={building.building_id} key={index}>{building.building}</MenuItem>
                         )
                       }
@@ -840,7 +840,7 @@ class SettingUser extends Component {
                     >
                       <MenuItem value="">-</MenuItem>
                       {
-                        this.state.dataUser.length > 0 && this.state.dataUser.map((user, index) =>
+                        this.state.dataUser && this.state.dataUser.length > 0 && this.state.dataUser.map((user, index) =>
                           <MenuItem value={user.user_id} key={index}>{user.tbl_account_detail.fullname}</MenuItem>
                         )
                       }
@@ -856,7 +856,7 @@ class SettingUser extends Component {
                     >
                       <MenuItem value="">-</MenuItem>
                       {
-                        this.state.dataUser.length > 0 && this.state.dataUser.map((user, index) =>
+                        this.state.dataUser && this.state.dataUser.length > 0 && this.state.dataUser.map((user, index) =>
                           <MenuItem value={user.user_id} key={index}>{user.tbl_account_detail.fullname}</MenuItem>
                         )
                       }

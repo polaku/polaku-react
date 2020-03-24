@@ -121,6 +121,12 @@ export default class cardSettingUserKPIM extends Component {
         })
       }
     }
+
+    if (prevProps.week !== this.props.week || prevProps.month !== this.props.month) {
+      if (this.state.newOptionTimeTAL === 0) {
+        this.fetchNewOptionTimeTAL()
+      }
+    }
   }
 
   fetchData = async () => {
@@ -210,13 +216,6 @@ export default class cardSettingUserKPIM extends Component {
   handleChange = name => event => {
     if (name === "newOptionTimeTAL") {
       let day = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']
-      let date = []
-      let awalMinggu = new Date().getDate() - new Date().getDay() + 1
-      let akhirMinggu = awalMinggu + 6
-
-      for (let i = awalMinggu; i <= akhirMinggu; i++) {
-        date.push(i)
-      }
 
       if (event.target.value === 1) {
         this.setState({
@@ -224,8 +223,8 @@ export default class cardSettingUserKPIM extends Component {
           [name]: event.target.value
         })
       } else if (event.target.value === 0) {
+        this.fetchNewOptionTimeTAL()
         this.setState({
-          optionTimeTAL: date,
           [name]: event.target.value
         })
       }
@@ -233,6 +232,34 @@ export default class cardSettingUserKPIM extends Component {
       this.setState({ [name]: event.target.value });
     }
   };
+
+  fetchNewOptionTimeTAL = () => {
+    let date = []
+    let awalMinggu
+    console.log("MASUK")
+    if (this.props.week !== this.getNumberOfWeek(new Date())) {
+      let awalMingguSekarang = new Date().getDate() - new Date().getDay() + 1
+      let selisihMinggu = this.props.week - this.getNumberOfWeek(new Date())
+      for (let i = 1; i <= 7; i++) {
+        let newDate = new Date(new Date().getFullYear(), new Date().getMonth(), (awalMingguSekarang + (selisihMinggu * 7)))
+
+        if (this.props.month == newDate.getMonth() + 1) {
+          date.push(newDate.getDate())
+        }
+        awalMingguSekarang++
+      }
+    } else {
+      awalMinggu = new Date().getDate() - new Date().getDay() + 1
+      for (let i = 1; i <= 7; i++) {
+        date.push(awalMinggu)
+        awalMinggu++
+      }
+    }
+
+    this.setState({
+      optionTimeTAL: date
+    })
+  }
 
   openModalReward = () => {
     this.setState({
@@ -362,7 +389,7 @@ export default class cardSettingUserKPIM extends Component {
     let newData = {
       bobot: this.state.bobot,
     }
-    
+
     API.put(`/kpim/${this.state.TALMonth.kpim_score_id}?update=month`, newData, { headers: { token } })
       .then(data => {
         this.setState({
@@ -469,10 +496,10 @@ export default class cardSettingUserKPIM extends Component {
                       ((!this.state.statusCreateKPIM && this.state.KPIM.length < 4 && this.props.weekCurrent <= (this.getNumberOfWeek(new Date(new Date().getFullYear(), this.props.month - 1, 1)) + 1)) && !this.state.statusSudahKirimNilai)
 
                     ) &&  */}
-                    <Button onClick={this.handleCreateKPIM}
-                      style={{ borderRadius: 15, minWidth: 24, backgroundColor: '#e0e0e0', padding: 0 }} >
-                      <AddIcon />
-                    </Button>
+                  <Button onClick={this.handleCreateKPIM}
+                    style={{ borderRadius: 15, minWidth: 24, backgroundColor: '#e0e0e0', padding: 0 }} >
+                    <AddIcon />
+                  </Button>
                   {/* } */}
                   {
                     this.state.KPIM.length === 0 && !this.state.TALMonth && <>
@@ -575,13 +602,13 @@ export default class cardSettingUserKPIM extends Component {
                       }
                       <Typography style={{ marginRight: 20 }}>TAL</Typography>
                       {/* { */}
-                        {/* (this.state.TAL.length === 0 || (!this.state.statusCreateTAL && this.props.weekCurrent <= this.props.week)) && <Button onClick={this.handleCreateTAL} */}
+                      {/* (this.state.TAL.length === 0 || (!this.state.statusCreateTAL && this.props.weekCurrent <= this.props.week)) && <Button onClick={this.handleCreateTAL} */}
 
-                        {/* (!this.state.statusCreateTAL && this.props.weekCurrent <= this.props.week && !this.state.statusSudahKirimNilai) &&  */}
-                        <Button onClick={this.handleCreateTAL}
-                          style={{ borderRadius: 15, minWidth: 24, backgroundColor: '#e0e0e0', padding: 0 }} >
-                          <AddIcon />
-                        </Button>
+                      {/* (!this.state.statusCreateTAL && this.props.weekCurrent <= this.props.week && !this.state.statusSudahKirimNilai) &&  */}
+                      <Button onClick={this.handleCreateTAL}
+                        style={{ borderRadius: 15, minWidth: 24, backgroundColor: '#e0e0e0', padding: 0 }} >
+                        <AddIcon />
+                      </Button>
                       {/* } */}
                     </Grid>
 
