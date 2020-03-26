@@ -243,7 +243,7 @@ export default class cardSettingUserKPIM extends Component {
       for (let i = 1; i <= 7; i++) {
         let newDate = new Date(new Date().getFullYear(), new Date().getMonth(), (awalMingguSekarang + (selisihMinggu * 7)))
 
-        if (this.props.month == newDate.getMonth() + 1) {
+        if (this.props.month === newDate.getMonth() + 1) {
           date.push(newDate.getDate())
         }
         awalMingguSekarang++

@@ -77,18 +77,20 @@ export default class modalSettingTargetKPIM extends Component {
       this.setState({ tahun: newTahun })
     }
 
-    let currentWeek = this.getNumberOfWeek(new Date())
-    let firstWeekInSelectedMonth = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.props.month - 1, 1))
+    // let currentWeek = this.getNumberOfWeek(new Date())
+    // let firstWeekInSelectedMonth = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.props.month - 1, 1))
 
-    if (firstWeekInSelectedMonth + 1 >= currentWeek || this.props.KPIMLength === 0) {
+
+    // if (firstWeekInSelectedMonth + 1 >= currentWeek || this.props.KPIMLength === 0) {
+      // if (firstWeekInSelectedMonth + 1 >= currentWeek ) {
       this.setState({
         batasBulan: this.props.month - 1
       })
-    } else {
-      this.setState({
-        batasBulan: this.props.month
-      })
-    }
+    // } else {
+      // this.setState({
+      //   batasBulan: this.props.month
+      // })
+    // }
   }
 
   closeModal = () => {
