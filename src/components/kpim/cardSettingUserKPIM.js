@@ -235,25 +235,16 @@ export default class cardSettingUserKPIM extends Component {
 
   fetchNewOptionTimeTAL = () => {
     let date = []
-    let awalMinggu
-    console.log("MASUK")
-    if (this.props.week !== this.getNumberOfWeek(new Date())) {
-      let awalMingguSekarang = new Date().getDate() - new Date().getDay() + 1
-      let selisihMinggu = this.props.week - this.getNumberOfWeek(new Date())
-      for (let i = 1; i <= 7; i++) {
-        let newDate = new Date(new Date().getFullYear(), new Date().getMonth(), (awalMingguSekarang + (selisihMinggu * 7)))
 
-        if (this.props.month === newDate.getMonth() + 1) {
-          date.push(newDate.getDate())
-        }
-        awalMingguSekarang++
+    let awalMingguSekarang = new Date().getDate() - new Date().getDay() + 1
+    let selisihMinggu = this.props.week - this.getNumberOfWeek(new Date())
+    for (let i = 1; i <= 7; i++) {
+      let newDate = new Date(new Date().getFullYear(), new Date().getMonth(), (awalMingguSekarang + (selisihMinggu * 7)))
+
+      if (this.props.month === newDate.getMonth() + 1) {
+        date.push(newDate.getDate())
       }
-    } else {
-      awalMinggu = new Date().getDate() - new Date().getDay() + 1
-      for (let i = 1; i <= 7; i++) {
-        date.push(awalMinggu)
-        awalMinggu++
-      }
+      awalMingguSekarang++
     }
 
     this.setState({
@@ -665,7 +656,8 @@ export default class cardSettingUserKPIM extends Component {
                   {/* PANEL TAL */}
                   {
                     this.state.openTAL && this.state.TAL.map((el, index) =>
-                      <CardSettingIndicator status="TAL" data={el} refresh={this.refresh} key={index} week={this.props.week} bobotKPIM={this.state.bobotKPIM} bobotTAL={this.state.bobotTAL} />
+                      <CardSettingIndicator status="TAL" data={el} refresh={this.refresh} key={index} week={this.props.week} bobotKPIM={this.state.bobotKPIM} bobotTAL={this.state.bobotTAL} month={this.props.month}
+                      />
                     )
                   }
 

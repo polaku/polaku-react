@@ -84,10 +84,10 @@ class Login extends Component {
           newData.adminContactCategori = data.data.adminContactCategori
         }
 
+        this.props.history.push("/polanews")
         await this.props.setUser(newData)
         await this.props.fetchDataNotification()
       }
-      this.props.history.push("/polanews")
     } catch (err) {
       swal('Error', `${err}`)
       this.setState({

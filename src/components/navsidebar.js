@@ -174,7 +174,7 @@ function Navsidebar(props) {
           if (data.adminContactCategori) {
             newData.adminContactCategori = data.adminContactCategori
           }
-          console.log(data.adminContactCategori)
+
           await props.setUser(newData)
           await props.fetchDataNotification()
         })

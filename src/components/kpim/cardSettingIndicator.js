@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Cookies from 'js-cookie';
 
 import {
-  Grid, Button, Paper, Popover, Typography, MenuList, MenuItem, ListItemIcon, TextField
+  Grid, Button, Paper, Popover, Typography, MenuList, MenuItem, ListItemIcon, TextField, FormControl, InputLabel, Select as SelectOption,
 } from '@material-ui/core';
 
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
@@ -44,6 +44,11 @@ export default class cardSettingIndicator extends Component {
     tempScoreKPIM: [],
     achievement: 0,
     weight: 0,
+
+    newOptionTimeTAL: 1,
+    newTimeTAL: '',
+
+    optionTimeTAL: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
   }
 
   async componentDidMount() {
@@ -53,6 +58,18 @@ export default class cardSettingIndicator extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.data !== this.props.data) {
       this.fetchData()
+    }
+
+    if (prevProps.week !== this.props.week || prevProps.month !== this.props.month) {
+      if (this.state.newOptionTimeTAL === 0) {
+        this.fetchNewOptionTimeTAL()
+      }
+    }
+
+    if (prevState.newOptionTimeTAL !== this.state.newOptionTimeTAL) {
+      if (this.state.newOptionTimeTAL === 0) {
+        this.fetchNewOptionTimeTAL()
+      }
     }
   }
 
@@ -269,6 +286,8 @@ export default class cardSettingIndicator extends Component {
 
     if (!statusOverWeight) {
       let newData = {
+        forDay: this.state.newOptionTimeTAL,
+        time: this.state.newTimeTAL,
         weight: this.state.weight,
         achievement: this.state.achievement
       }
@@ -323,6 +342,41 @@ export default class cardSettingIndicator extends Component {
       });
   }
 
+  fetchNewOptionTimeTAL = () => {
+    let date = []
+
+    let awalMingguSekarang = new Date().getDate() - new Date().getDay() + 1
+    let selisihMinggu = this.props.week - this.getNumberOfWeek(new Date())
+    for (let i = 1; i <= 7; i++) {
+      let newDate = new Date(new Date().getFullYear(), new Date().getMonth(), (awalMingguSekarang + (selisihMinggu * 7)))
+
+      if (this.props.month === newDate.getMonth() + 1) {
+        console.log(this.props.month === newDate.getMonth() + 1)
+        date.push(newDate.getDate())
+      }
+      awalMingguSekarang++
+    }
+
+    this.setState({
+      optionTimeTAL: date
+    })
+  }
+
+  getNumberOfWeek = date => {
+    let theDay = date
+    var target = new Date(theDay);
+    var dayNr = (new Date(theDay).getDay() + 6) % 7;
+
+    target.setDate(target.getDate() - dayNr + 3);
+
+    var jan4 = new Date(target.getFullYear(), 0, 4);
+    var dayDiff = (target - jan4) / 86400000;
+    var weekNr = 1 + Math.ceil(dayDiff / 7);
+
+    return weekNr;
+  }
+
+
   render() {
     function getMonth(args) {
       let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -334,15 +388,37 @@ export default class cardSettingIndicator extends Component {
         {
           this.props.status === "TAL"
             ? (this.state.statusEdit
-              ?
-              <Grid style={{ display: 'flex', alignItems: 'center', marginTop: 3 }}>
+              ? <Grid style={{ display: 'flex', alignItems: 'center', marginTop: 3 }}>
                 <SubdirectoryArrowRightOutlinedIcon style={{ color: '#e3e3e3', margin: '0px 5px' }} />
                 <Paper style={{ marginBottom: 2, marginTop: 3, padding: '5px 20px', display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center', height: 50 }}>
                   <Grid style={{ display: 'flex', alignItems: 'center', width: '40%' }}>
                     <p style={{ margin: '0px 10px 0px 0px', fontSize: 13, color: '#d71149' }}>w{this.props.week}</p>
                     <p style={{ margin: 0 }}>{this.props.data.indicator_tal}</p>
                   </Grid>
-                  <p style={{ margin: '0px 10px 0px 0px' }}>{this.props.data.when_day || `Tanggal ${this.props.data.when_date}`}</p>
+                  <FormControl variant="outlined" style={{ width: '15%', marginRight:10 }} margin='dense'>
+                    <InputLabel>Ket Waktu</InputLabel>
+                    <SelectOption
+                      value={this.state.newOptionTimeTAL}
+                      onChange={this.handleChange('newOptionTimeTAL')}
+                    >
+                      <MenuItem value={0}>Tanggal</MenuItem>
+                      <MenuItem value={1}>Hari</MenuItem>
+                    </SelectOption>
+                  </FormControl>
+
+                  <FormControl variant="outlined" style={{ width: '15%', marginRight:10 }} margin='dense'>
+                    <InputLabel>Waktu</InputLabel>
+                    <SelectOption
+                      value={this.state.newTimeTAL}
+                      onChange={this.handleChange('newTimeTAL')}
+                    >
+                      {
+                        this.state.optionTimeTAL.map((el, index) =>
+                          <MenuItem value={el} key={index}>{el}</MenuItem>
+                        )
+                      }
+                    </SelectOption>
+                  </FormControl>
 
                   <TextField
                     label="Weight"
@@ -350,7 +426,7 @@ export default class cardSettingIndicator extends Component {
                     onChange={this.handleChange('weight')}
                     variant="outlined"
                     InputProps={{
-                      style: { height: 35, padding: 0 }
+                      style: { height: 40, padding: 0 }
                     }}
                     style={{ width: '15%', margin: '0px 10px 0px 0px' }}
                   />
@@ -360,7 +436,7 @@ export default class cardSettingIndicator extends Component {
                     onChange={this.handleChange('achievement')}
                     variant="outlined"
                     InputProps={{
-                      style: { height: 35, padding: 0 }
+                      style: { height: 40, padding: 0 }
                     }}
                     style={{ width: '18%', margin: '0px 10px 0px 0px' }}
                   />
@@ -374,6 +450,7 @@ export default class cardSettingIndicator extends Component {
                   </Grid>
                 </Paper>
               </Grid>
+
               : <Grid style={{ display: 'flex', alignItems: 'center', marginTop: 3 }}>
                 <SubdirectoryArrowRightOutlinedIcon style={{ color: '#e3e3e3', margin: '0px 15' }} />
                 <Paper style={{ marginBottom: 2, marginTop: 2, padding: '5px 20px', display: 'flex', justifyContent: 'space-between', width: '100%' }}>
@@ -438,9 +515,9 @@ export default class cardSettingIndicator extends Component {
                       }
                       {/* {
                         !this.props.data.hasConfirm &&  */}
-                        <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick}>
-                          <MoreHorizIcon />
-                        </Button>
+                      <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick}>
+                        <MoreHorizIcon />
+                      </Button>
                       {/* } */}
                     </Grid>
                   </Grid>
@@ -572,9 +649,9 @@ export default class cardSettingIndicator extends Component {
                       </Grid>
                       {/* {
                         !this.props.data.hasConfirm &&  */}
-                        <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick}>
-                          <MoreHorizIcon />
-                        </Button>
+                      <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick}>
+                        <MoreHorizIcon />
+                      </Button>
                       {/* } */}
                     </Grid>
                   </>
