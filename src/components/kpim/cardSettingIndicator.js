@@ -286,10 +286,12 @@ export default class cardSettingIndicator extends Component {
 
     if (!statusOverWeight) {
       let newData = {
-        forDay: this.state.newOptionTimeTAL,
-        time: this.state.newTimeTAL,
         weight: this.state.weight,
         achievement: this.state.achievement
+      }
+      if (this.state.newTimeTAL) {
+        newData.forDay = this.state.newOptionTimeTAL
+        newData.time = this.state.newTimeTAL
       }
       let token = Cookies.get('POLAGROUP')
 
@@ -395,7 +397,7 @@ export default class cardSettingIndicator extends Component {
                     <p style={{ margin: '0px 10px 0px 0px', fontSize: 13, color: '#d71149' }}>w{this.props.week}</p>
                     <p style={{ margin: 0 }}>{this.props.data.indicator_tal}</p>
                   </Grid>
-                  <FormControl variant="outlined" style={{ width: '15%', marginRight:10 }} margin='dense'>
+                  <FormControl variant="outlined" style={{ width: '15%', marginRight: 10 }} margin='dense'>
                     <InputLabel>Ket Waktu</InputLabel>
                     <SelectOption
                       value={this.state.newOptionTimeTAL}
@@ -406,7 +408,7 @@ export default class cardSettingIndicator extends Component {
                     </SelectOption>
                   </FormControl>
 
-                  <FormControl variant="outlined" style={{ width: '15%', marginRight:10 }} margin='dense'>
+                  <FormControl variant="outlined" style={{ width: '15%', marginRight: 10 }} margin='dense'>
                     <InputLabel>Waktu</InputLabel>
                     <SelectOption
                       value={this.state.newTimeTAL}
@@ -456,7 +458,7 @@ export default class cardSettingIndicator extends Component {
                 <Paper style={{ marginBottom: 2, marginTop: 2, padding: '5px 20px', display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                   <Grid style={{ display: 'flex', alignItems: 'center', width: '60%' }}>
                     <p style={{ margin: '0px 10px 0px 0px', fontSize: 13, color: '#d71149' }}>w{this.props.week}</p>
-                    <p style={{ margin: 0 }}>{this.props.data.indicator_tal}</p>
+                    <p style={{ margin: 0, textAlign: 'left' }}>{this.props.data.indicator_tal}</p>
                   </Grid>
                   <Grid style={{ display: 'flex', alignItems: 'center', width: '40%', justifyContent: 'space-between' }}>
                     <p style={{ margin: '0px 10px 0px 0px', width: '30%' }}>{this.props.data.when_day || `Tanggal ${this.props.data.when_date}`}</p>

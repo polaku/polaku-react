@@ -142,8 +142,11 @@ class modalCreateEditBookingRoom extends Component {
       time_in = `${new Date(this.state.time_in).getHours()}:${new Date(this.state.time_in).getMinutes()}`
       time_out = `${new Date(this.state.time_out).getHours()}:${new Date(this.state.time_out).getMinutes()}`
 
+      let dateInMonth = new Date(this.state.date_in).getMonth()+1 < 10 ? `0${new Date(this.state.date_in).getMonth()+1}` : new Date(this.state.date_in).getMonth()+1
+      let dateInDate = new Date(this.state.date_in).getDate() < 10 ? `0${new Date(this.state.date_in).getDate()}` : new Date(this.state.date_in).getDate() 
+
       let newData = {
-        date_in: this.state.date_in,
+        date_in: `${new Date(this.state.date_in).getFullYear()}-${dateInMonth}-${dateInDate}`,
         time_in: time_in,
         time_out: time_out,
         subject: this.state.subject,
@@ -154,7 +157,6 @@ class modalCreateEditBookingRoom extends Component {
       if (this.props.statusCreate === true) {
         newData.partisipan = `[${idPartisipan.join()}]`
         newData.count = this.state.count
-        console.log(newData)
         API.post('/bookingRoom', newData,
           {
             headers: {
