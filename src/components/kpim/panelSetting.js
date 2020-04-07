@@ -311,7 +311,7 @@ class panelSetting extends Component {
           {/* CARD */}
           {
             this.state.dataForDisplay.map((el, index) =>
-              <CardSettingUserKPIM data={el} key={index} refresh={this.refresh} firstDateInWeek={this.state.firstDateInWeek} week={this.state.minggu} month={this.state.bulan} weekCurrent={this.state.weekCurrent} setNeedAction={this.setNeedAction} status={this.props.status} />
+              <CardSettingUserKPIM data={el} key={index} refresh={this.refresh} firstDateInWeek={this.state.firstDateInWeek} week={this.state.minggu} month={this.state.bulan} weekCurrent={this.state.weekCurrent} setNeedAction={this.setNeedAction} status={this.props.status} lastWeekInMonth={this.state.optionMinggu[this.state.optionMinggu.length-1]}/>
             )
           }
           {

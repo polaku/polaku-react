@@ -75,12 +75,12 @@ export default class cardSettingUserKPIM extends Component {
         isVisible: false,
       })
     }
-
-    if (new Date().getDate() < 27) {
-      this.setState({
-        statusValid: false
-      })
-    }
+    if ((new Date().getDate() < 27 && (new Date().getMonth() + 1) === Number(this.props.month)) || 
+      ((new Date().getMonth() + 1) > Number(this.props.month) && this.props.lastWeekInMonth!==this.props.week)) {
+        this.setState({
+          statusValid: false
+        })
+      }
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -103,7 +103,6 @@ export default class cardSettingUserKPIM extends Component {
     if (prevProps.data !== this.props.data) {
       await this.fetchData()
       if ((this.state.KPIM.length === 0 && this.state.TAL.length === 0) || this.state.bobotKPIM < 100 || this.state.bobotTAL < 100 || this.state.adaBobotKPIMYangKosong || this.state.adaWeightTALYangKosong) {
-
         this.props.setNeedAction(this.props.data.user_id)
         this.setState({
           statusValid: false
@@ -111,11 +110,13 @@ export default class cardSettingUserKPIM extends Component {
 
       } else {
         this.setState({
-          isVisible: false
+          isVisible: false,
+          statusValid: true
         })
       }
 
-      if (new Date().getDate() < 27) {
+      if ((new Date().getDate() < 27 && (new Date().getMonth() + 1) === Number(this.props.month)) || 
+      ((new Date().getMonth() + 1) > Number(this.props.month) && this.props.lastWeekInMonth!==this.props.week)) {
         this.setState({
           statusValid: false
         })
@@ -138,7 +139,6 @@ export default class cardSettingUserKPIM extends Component {
       adaBobotKPIMYangKosong: false,
       adaWeightTALYangKosong: false
     })
-
     await this.props.data.kpim.forEach(kpim => {
       kpim.score.forEach(element => {
         let newScoreKPIM = {
