@@ -25,6 +25,9 @@ export default class cardReport extends Component {
     openSubMenu: false,
     labelValueReportNilai: [
       {
+        label: "NIK",
+        value: "nik"
+      }, {
         label: "Nama",
         value: "nama"
       }, {
@@ -48,11 +51,19 @@ export default class cardReport extends Component {
       }, {
         label: "Total Nilai",
         value: "totalNilai"
+      }, {
+        label: "NIK Evaluator",
+        value: "nikEvaluator"
+      }, {
+        label: "Nama Evaluator",
+        value: "namaEvaluator"
       },
     ],
-
     labelValueKPIM: [
       {
+        label: "NIK",
+        value: "nik"
+      }, {
         label: "Nama",
         value: "nama"
       }, {
@@ -61,11 +72,19 @@ export default class cardReport extends Component {
       }, {
         label: "Nilai",
         value: "nilai"
+      }, {
+        label: "NIK Evaluator",
+        value: "nikEvaluator"
+      }, {
+        label: "Nama Evaluator",
+        value: "namaEvaluator"
       },
     ],
-
     labelValueTAL: [
       {
+        label: "NIK",
+        value: "nik"
+      }, {
         label: "Nama",
         value: "nama"
       }, {
@@ -77,6 +96,12 @@ export default class cardReport extends Component {
       }, {
         label: "Nilai",
         value: "nilai"
+      }, {
+        label: "NIK Evaluator",
+        value: "nikEvaluator"
+      }, {
+        label: "Nama Evaluator",
+        value: "namaEvaluator"
       },
     ],
   }
@@ -90,7 +115,7 @@ export default class cardReport extends Component {
 
     if (this.state.isSelected !== prevState.isSelected) {
       // if (this.state.isVisible) {
-        this.props.handleCheck(this.props.data.userId, this.state.isSelected)
+      this.props.handleCheck(this.props.data.userId, this.state.isSelected)
       // }
     }
 
@@ -164,8 +189,8 @@ export default class cardReport extends Component {
               this.state.openDetail
                 ? <Paper id="header" style={{ backgroundColor: '#e5e5e5', height: '100%', paddingBottom: '10px', margin: '20px 0px' }}>
                   <Grid style={{ display: 'flex', padding: '10px 20px', justifyContent: 'space-between', marginBottom: 5 }}>
-                    <Grid style={{ display: 'flex', width: '70%', alignItems: 'center' }}>
-                      <Grid style={{ width: 300, display: 'flex', alignItems: 'center' }}>
+                    <Grid style={{ display: 'flex', width: '60%', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <Grid style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
                         <Checkbox
                           checked={this.state.isSelected}
                           onChange={this.handleChangeCheck}
@@ -174,15 +199,19 @@ export default class cardReport extends Component {
                         />
                         <Typography>NIK : {this.props.data.fullname}</Typography>
                       </Grid>
-                      <Grid style={{ width: 50, textAlign: 'center' }}>
-                        <Typography>{this.props.data.nilaiKPI}</Typography>
-                      </Grid>
-                      <Grid style={{ width: 50, textAlign: 'center' }}>
-                        <Typography>{this.props.data.nilaiTAL}</Typography>
+                      <Grid style={{ display: 'flex', alignItems: 'center', paddingRight: 30 }}>
+                        <Grid style={{ width: 50, textAlign: 'center' }}>
+                          <Typography>{this.props.data.nilaiKPI}</Typography>
+                        </Grid>
+                        <Grid style={{ width: 50, textAlign: 'center' }}>
+                          <Typography>{this.props.data.nilaiTAL}</Typography>
+                        </Grid>
                       </Grid>
                     </Grid>
-                    <Grid style={{ width: '10%' }} />
-                    <Grid style={{ width: '20%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Grid style={{ width: '25%', display: 'flex', alignItems: 'center' }} >
+                      <Typography>{this.props.data.evaluator}</Typography>
+                    </Grid>
+                    <Grid style={{ width: '15%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Button variant="contained" style={{ borderRadius: 5, padding: 0 }} onClick={this.handleClickMenu}>
                         <p style={{ margin: 0 }}>Menu</p>
                       </Button>
@@ -215,9 +244,9 @@ export default class cardReport extends Component {
                             </TableCell>
                             <TableCell style={{ width: '15%' }}>{el.target_monthly}</TableCell>
                             <TableCell style={{ width: '15%' }}>{el.pencapaian_monthly}</TableCell>
-                            <TableCell style={{ width: '10%' }}>{isNaN((Number(el.pencapaian_monthly) / Number(el.target_monthly)) * 100) ? 0 : ((Number(el.pencapaian_monthly) / Number(el.target_monthly)) * 100)}%</TableCell>
+                            <TableCell style={{ width: '10%' }}>{isNaN((Number(el.pencapaian_monthly) / Number(el.target_monthly)) * 100) ? 0 : (Math.round((Number(el.pencapaian_monthly) / Number(el.target_monthly)) * 100))}%</TableCell>
                             <TableCell style={{ width: '5%' }}>{el.bobot}%</TableCell>
-                            <TableCell style={{ width: '5%' }}>{isNaN(Number(el.score_kpim_monthly) * (Number(el.bobot) / 100)) ? 0 : (Number(el.score_kpim_monthly) * (Number(el.bobot) / 100))}</TableCell>
+                            <TableCell style={{ width: '5%' }}>{isNaN(Number(el.score_kpim_monthly) * (Number(el.bobot) / 100)) ? 0 : (Math.round(Number(el.score_kpim_monthly) * (Number(el.bobot) / 100)))}</TableCell>
                           </TableRow>)
                         }
                         { //KHUSUS TAL
@@ -241,7 +270,7 @@ export default class cardReport extends Component {
                             <TableCell style={{ width: '15%' }} />
                             <TableCell style={{ width: '10%' }} />
                             <TableCell style={{ width: '5%' }}>{this.props.data.tal.bobot}%</TableCell>
-                            <TableCell style={{ width: '5%' }}>{isNaN(Number(this.props.data.tal.score_kpim_monthly) * (Number(this.props.data.tal.bobot) / 100)) ? 0 : (Number(this.props.data.tal.score_kpim_monthly) * (Number(this.props.data.tal.bobot) / 100))}</TableCell>
+                            <TableCell style={{ width: '5%' }}>{isNaN(Number(this.props.data.tal.score_kpim_monthly) * (Number(this.props.data.tal.bobot) / 100)) ? 0 : (Math.round(Number(this.props.data.tal.score_kpim_monthly) * (Number(this.props.data.tal.bobot) / 100)))}</TableCell>
                           </TableRow>
                         }
                       </TableBody>
@@ -287,8 +316,8 @@ export default class cardReport extends Component {
 
                 </Paper>
                 : <Paper id="header" style={{ display: 'flex', padding: '10px 20px', justifyContent: 'space-between', marginBottom: 5, marginTop: 10 }} >
-                  <Grid style={{ display: 'flex', width: '70%', alignItems: 'center' }}>
-                    <Grid style={{ width: 300, display: 'flex', alignItems: 'center' }}>
+                  <Grid style={{ display: 'flex', width: '60%', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <Grid style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
                       <Checkbox
                         checked={this.state.isSelected}
                         onChange={this.handleChangeCheck}
@@ -297,15 +326,19 @@ export default class cardReport extends Component {
                       />
                       <Typography>NIK : {this.props.data.fullname}</Typography>
                     </Grid>
-                    <Grid style={{ width: 50, textAlign: 'center' }}>
-                      <Typography>{this.props.data.nilaiKPI}</Typography>
-                    </Grid>
-                    <Grid style={{ width: 50, textAlign: 'center' }}>
-                      <Typography>{this.props.data.nilaiTAL}</Typography>
+                    <Grid style={{ display: 'flex', alignItems: 'center', paddingRight: 30 }}>
+                      <Grid style={{ width: 50, textAlign: 'center' }}>
+                        <Typography>{this.props.data.nilaiKPI}</Typography>
+                      </Grid>
+                      <Grid style={{ width: 50, textAlign: 'center' }}>
+                        <Typography>{this.props.data.nilaiTAL}</Typography>
+                      </Grid>
                     </Grid>
                   </Grid>
-                  <Grid style={{ width: '10%' }} />
-                  <Grid style={{ width: '20%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Grid style={{ width: '25%', display: 'flex', alignItems: 'center' }} >
+                    <Typography>{this.props.data.evaluator}</Typography>
+                  </Grid>
+                  <Grid style={{ width: '15%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Button variant="contained" style={{ borderRadius: 5, padding: 0 }} onClick={this.handleClickMenu}>
                       <p style={{ margin: 0 }}>Menu</p>
                     </Button>

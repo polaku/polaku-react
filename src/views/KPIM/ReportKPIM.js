@@ -51,6 +51,7 @@ TabPanel.propTypes = {
 
 class ReportIjin extends Component {
   state = {
+    loading: false,
     month: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
     monthSelected: 0,
     weekSelected: 0,
@@ -97,6 +98,9 @@ class ReportIjin extends Component {
 
     labelValueReportNilai: [
       {
+        label: "NIK",
+        value: "nik"
+      }, {
         label: "Nama",
         value: "nama"
       }, {
@@ -120,10 +124,19 @@ class ReportIjin extends Component {
       }, {
         label: "Total Nilai",
         value: "totalNilai"
+      }, {
+        label: "NIK Evaluator",
+        value: "nikEvaluator"
+      }, {
+        label: "Nama Evaluator",
+        value: "namaEvaluator"
       },
     ],
     labelValueKPIM: [
       {
+        label: "NIK",
+        value: "nik"
+      }, {
         label: "Nama",
         value: "nama"
       }, {
@@ -132,10 +145,19 @@ class ReportIjin extends Component {
       }, {
         label: "Nilai",
         value: "nilai"
+      }, {
+        label: "NIK Evaluator",
+        value: "nikEvaluator"
+      }, {
+        label: "Nama Evaluator",
+        value: "namaEvaluator"
       },
     ],
     labelValueTAL: [
       {
+        label: "NIK",
+        value: "nik"
+      }, {
         label: "Nama",
         value: "nama"
       }, {
@@ -147,6 +169,12 @@ class ReportIjin extends Component {
       }, {
         label: "Nilai",
         value: "nilai"
+      }, {
+        label: "NIK Evaluator",
+        value: "nikEvaluator"
+      }, {
+        label: "Nama Evaluator",
+        value: "namaEvaluator"
       },
     ],
     dataNilaiReport: [],
@@ -162,7 +190,6 @@ class ReportIjin extends Component {
     this.setState({
       monthSelected: new Date().getMonth()
     })
-    // await this.fetchData()
   };
 
   async componentDidUpdate(prevProps, prevState) {
@@ -203,7 +230,9 @@ class ReportIjin extends Component {
 
     if (prevState.monthSelected !== this.state.monthSelected) {
       let batasAtas, batasBawah, loopingWeek = []
-
+      this.setState({
+        loading: true
+      })
       batasAtas = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.monthSelected + 1, 0))
       batasBawah = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.monthSelected, 1))
 
@@ -220,10 +249,19 @@ class ReportIjin extends Component {
       })
 
       await this.fetchData()
+      this.setState({
+        loading: false
+      })
     }
 
     if (prevState.weekSelected !== this.state.weekSelected) {
+      this.setState({
+        loading: true
+      })
       this.fetchData()
+      this.setState({
+        loading: false
+      })
     }
   };
 
@@ -317,28 +355,29 @@ class ReportIjin extends Component {
       tempTAL.dataTAL = tempDataForDisplayTAL
     }
 
-    let b = await this.fetchDataReport(tempDataForDisplayKPIM, tempTAL, args[0].tbl_user.user_id, args[0].tbl_user.tbl_account_detail.fullname)
-
+    let b = await this.fetchDataReport(tempDataForDisplayKPIM, tempTAL, args[0].tbl_user.user_id, args[0].tbl_user.tbl_account_detail.nik, args[0].tbl_user.tbl_account_detail.fullname, args[0].tbl_user.tbl_account_detail.idEvaluator1 ? args[0].tbl_user.tbl_account_detail.idEvaluator1.tbl_account_detail.nik : '', args[0].tbl_user.tbl_account_detail.idEvaluator1 ? args[0].tbl_user.tbl_account_detail.idEvaluator1.tbl_account_detail.fullname : '')
     if (tempTAL) {
       if (tempTAL.hasConfirm) {
         nilaiKPI += Number(tempTAL.score_kpim_monthly) * (Number(tempTAL.bobot) / 100)
         return {
           kpim: tempDataForDisplayKPIM,
           tal: tempTAL,
-          nilaiKPI,
-          nilaiTAL: tempTAL.score_kpim_monthly,
+          nilaiKPI: Math.round(nilaiKPI),
+          nilaiTAL: Math.round(tempTAL.score_kpim_monthly),
           userId: args[0].tbl_user.user_id,
           fullname: args[0].tbl_user.tbl_account_detail.fullname,
+          evaluator: args[0].tbl_user.tbl_account_detail.idEvaluator1 ? args[0].tbl_user.tbl_account_detail.idEvaluator1.tbl_account_detail.fullname : '',
           ...b
         }
       } else {
         return {
           kpim: tempDataForDisplayKPIM,
           tal: tempTAL,
-          nilaiKPI,
+          nilaiKPI: Math.round(nilaiKPI),
           nilaiTAL: 0,
           userId: args[0].tbl_user.user_id,
           fullname: args[0].tbl_user.tbl_account_detail.fullname,
+          evaluator: args[0].tbl_user.tbl_account_detail.idEvaluator1 ? args[0].tbl_user.tbl_account_detail.idEvaluator1.tbl_account_detail.fullname : '',
           ...b
         }
       }
@@ -347,7 +386,7 @@ class ReportIjin extends Component {
     }
   };
 
-  fetchDataReport = async (kpim, tal, userId, userFullname) => {
+  fetchDataReport = async (kpim, tal, userId, nik, userFullname, nikEvaluator, evaluatorFullname) => {
     let newArr = [null, null, null, null, null], tempTotalNilai = 0, tempDataKPIM = [], tempDataTAL = []
 
     kpim.forEach((el, index) => {
@@ -362,14 +401,17 @@ class ReportIjin extends Component {
 
     let dataNilaiReport = [
       {
+        nik,
         userId: userId,
         nama: userFullname,
-        kpim1: newArr[0],
-        kpim2: newArr[1],
-        kpim3: newArr[2],
-        kpim4: newArr[3],
-        kpim5: newArr[4],
-        totalNilai: tempTotalNilai
+        nikEvaluator: nikEvaluator,
+        namaEvaluator: evaluatorFullname,
+        kpim1: Math.round(newArr[0]),
+        kpim2: Math.round(newArr[1]),
+        kpim3: Math.round(newArr[2]),
+        kpim4: Math.round(newArr[3]),
+        kpim5: Math.round(newArr[4]),
+        totalNilai: Math.round(tempTotalNilai)
       }
     ]
 
@@ -378,10 +420,13 @@ class ReportIjin extends Component {
     // FETCH DATA KPIM
     await newData.forEach(el => {
       let tempObj = {
+        nik,
         userId: userId,
         nama: userFullname,
+        nikEvaluator: nikEvaluator,
+        namaEvaluator: evaluatorFullname,
         indikator: el ? el.indicator_kpim : "",
-        nilai: el ? el.score_kpim_monthly : ""
+        nilai: el ? Math.round(el.score_kpim_monthly) : ""
       }
       tempDataKPIM.push(tempObj)
     })
@@ -389,14 +434,21 @@ class ReportIjin extends Component {
     // FETCH DATA TAL
     tal && await tal.dataTAL.forEach(el => {
       let tempObj = {
+        nik,
         userId: userId,
         nama: userFullname,
+        nikEvaluator: nikEvaluator,
+        namaEvaluator: evaluatorFullname,
         tal: el.indicator_tal,
         minggu: el.week,
-        nilai: el.score_tal
+        nilai: Math.round(el.score_tal)
       }
       tempDataTAL.push(tempObj)
     })
+
+    // console.log(dataNilaiReport)
+    // console.log(tempDataKPIM)
+    // console.log(tempDataTAL)
 
     return {
       dataNilaiReport,
@@ -404,8 +456,6 @@ class ReportIjin extends Component {
       dataNilaiTAL: tempDataTAL,
     }
   };
-
-
 
   handleChangeTabs = (event, newValue) => {
     this.setState({ value: newValue })
@@ -654,7 +704,7 @@ class ReportIjin extends Component {
           <TabPanel value={this.state.value} index={0} style={{ height: '85vh' }}>
 
             <Paper id="header" style={{ display: 'flex', padding: '10px 20px', marginBottom: 5 }} >
-              <Grid style={{ display: 'flex', width: '70%', alignItems: 'center' }}>
+              <Grid style={{ display: 'flex', width: '60%', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Grid style={{ width: 300, display: 'flex', alignItems: 'center' }}>
                   <Checkbox
                     checked={this.state.statusCheckAll}
@@ -664,20 +714,26 @@ class ReportIjin extends Component {
                   />
                   <p style={{ margin: '0px 10px' }}>pilih untuk lakukan aksi</p>
                 </Grid>
-                <Grid style={{ width: 50, textAlign: 'center' }}>
-                  <p style={{ margin: 0 }}>KPI</p>
-                </Grid>
-                <Grid style={{ width: 50, textAlign: 'center' }}>
-                  <p style={{ margin: 0 }}>TAL</p>
+                <Grid style={{ display: 'flex', alignItems: 'center', paddingRight: 30 }}>
+                  <Grid style={{ width: 50, textAlign: 'center' }}>
+                    <p style={{ margin: 0 }}>KPI</p>
+                  </Grid>
+                  <Grid style={{ width: 50, textAlign: 'center' }}>
+                    <p style={{ margin: 0 }}>TAL</p>
+                  </Grid>
                 </Grid>
               </Grid>
-              <Grid style={{ width: '10%' }} />
-              <Grid style={{ width: '20%', display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '25%', display: 'flex', alignItems: 'center' }}>
+                <p style={{ margin: 0 }}>Evaluator</p>
+              </Grid>
+              <Grid style={{ width: '15%', display: 'flex', alignItems: 'center' }}>
                 <p style={{ margin: 0 }}>Aksi</p>
               </Grid>
             </Paper>
             {
-              this.state.dataForDisplay.map((el, index) => <CardReportKPIM data={el} key={index} allSelected={this.state.selectAll} handleCheck={this.handleCheck} refresh={this.fetchData} />)
+              this.state.loading
+                ? <p style={{ textAlign: 'center' }}>Mengambil data</p>
+                : this.state.dataForDisplay.map((el, index) => <CardReportKPIM data={el} key={index} allSelected={this.state.selectAll} handleCheck={this.handleCheck} refresh={this.fetchData} />)
             }
 
           </TabPanel>
@@ -745,7 +801,7 @@ class ReportIjin extends Component {
             }
           </MenuList>
         </Popover>
-      </div>
+      </div >
     )
   }
 }

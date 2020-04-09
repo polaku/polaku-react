@@ -25,6 +25,7 @@ class DashboardKPIM extends Component {
     super(props)
     this._isMounted = false
     this.state = {
+      proses: false,
       months: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
       statusAddNewTal: false,
       chooseWhen: ['Setiap hari', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
@@ -312,7 +313,7 @@ class DashboardKPIM extends Component {
         persenKPIM += Math.floor(((Number(kpim[1].pencapaian_monthly) / Number(kpim[1].target_monthly)) * 100) * (Number(kpim[1].bobot) / 100))
       }
       else if (kpim[1].indicator_kpim.toLowerCase() !== "tal team") {
-        persenKPIM += Math.round(Number(kpim[1].score_kpim_monthly) * (Number(kpim[1].bobot) / 100) * 100) / 100  || 0
+        persenKPIM += Math.round(Number(kpim[1].score_kpim_monthly) * (Number(kpim[1].bobot) / 100) * 100) / 100 || 0
       }
       if (kpim[1].indicator_kpim.toLowerCase() === "tal") {
         kpimTAL = kpim[1]
@@ -490,6 +491,9 @@ class DashboardKPIM extends Component {
 
   saveNewTal = () => {
     if ((Number(this.state.totalWeight) + Number(this.state.weight)) <= 100 && Number(this.state.load) <= 10) {
+      this.setState({
+        proses: true
+      })
       let newData = {
         indicator_tal: this.state.indicator_tal,
         weight: this.state.weight,
@@ -523,10 +527,14 @@ class DashboardKPIM extends Component {
             achievement: '',
             link: '',
             statusAddNewTal: false,
-            lastUpdate: new Date()
+            lastUpdate: new Date(),
+            proses: false
           })
         })
         .catch(err => {
+          this.setState({
+            proses: false
+          })
           swal('please try again')
         })
     } else {
@@ -761,8 +769,8 @@ class DashboardKPIM extends Component {
                           }}
                         /> */}
                         <Grid style={{ display: 'flex', justifyContent: 'flex-end', margin: '15px' }}>
-                          <Button color="secondary" onClick={this.addNewTal} style={{ height: 40, marginRight: 15 }}>batal</Button>
-                          <Button color="primary" onClick={this.saveNewTal} style={{ height: 40 }}>simpan</Button>
+                          <Button color="secondary" onClick={this.addNewTal} style={{ height: 40, marginRight: 15 }} disabled={this.state.proses}>batal</Button>
+                          <Button color="primary" onClick={this.saveNewTal} style={{ height: 40 }} disabled={this.state.proses}>simpan</Button>
                         </Grid>
                       </TableCell>
                     </TableRow>

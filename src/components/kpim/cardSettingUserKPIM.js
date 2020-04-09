@@ -41,7 +41,7 @@ export default class cardSettingUserKPIM extends Component {
     newTimeTAL: '',
     newBobotTAL: '',
 
-    optionTimeTAL: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+    optionTimeTAL: [],
 
     openModalReward: false,
     openModalTargetKPIM: false,
@@ -65,6 +65,19 @@ export default class cardSettingUserKPIM extends Component {
   async componentDidMount() {
     await this.fetchData()
 
+    let listDate = this.fetchOptionDateInWeek()
+    let day = []
+
+    listDate.forEach(el => {
+      let date = new Date(new Date().getFullYear(), this.props.month - 1, el).getDay()
+      let listDay = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+
+      day.push(listDay[date])
+    })
+    this.setState({
+      optionTimeTAL: day
+    })
+
     if ((this.state.KPIM.length === 0 && this.state.TAL.length === 0) || this.state.bobotKPIM < 100 || this.state.bobotTAL < 100 || this.state.adaBobotKPIMYangKosong || this.state.adaWeightTALYangKosong) {
       this.props.setNeedAction(this.props.data.user_id)
       this.setState({
@@ -75,12 +88,12 @@ export default class cardSettingUserKPIM extends Component {
         isVisible: false,
       })
     }
-    if ((new Date().getDate() < 27 && (new Date().getMonth() + 1) === Number(this.props.month)) || 
-      ((new Date().getMonth() + 1) > Number(this.props.month) && this.props.lastWeekInMonth!==this.props.week)) {
-        this.setState({
-          statusValid: false
-        })
-      }
+    if ((new Date().getDate() < 27 && (new Date().getMonth() + 1) === Number(this.props.month)) ||
+      ((new Date().getMonth() + 1) > Number(this.props.month) && this.props.lastWeekInMonth !== this.props.week)) {
+      this.setState({
+        statusValid: false
+      })
+    }
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -115,8 +128,8 @@ export default class cardSettingUserKPIM extends Component {
         })
       }
 
-      if ((new Date().getDate() < 27 && (new Date().getMonth() + 1) === Number(this.props.month)) || 
-      ((new Date().getMonth() + 1) > Number(this.props.month) && this.props.lastWeekInMonth!==this.props.week)) {
+      if ((new Date().getDate() < 27 && (new Date().getMonth() + 1) === Number(this.props.month)) ||
+        ((new Date().getMonth() + 1) > Number(this.props.month) && this.props.lastWeekInMonth !== this.props.week)) {
         this.setState({
           statusValid: false
         })
@@ -124,8 +137,24 @@ export default class cardSettingUserKPIM extends Component {
     }
 
     if (prevProps.week !== this.props.week || prevProps.month !== this.props.month) {
+      let listDate = this.fetchOptionDateInWeek()
       if (this.state.newOptionTimeTAL === 0) {
-        this.fetchNewOptionTimeTAL()
+        this.setState({
+          optionTimeTAL: listDate
+        })
+      } else {
+        let day = []
+
+        listDate.forEach(el => {
+          let date = new Date(new Date().getFullYear(), this.props.month - 1, el).getDay()
+          let listDay = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+
+          day.push(listDay[date])
+        })
+
+        this.setState({
+          optionTimeTAL: day
+        })
       }
     }
   }
@@ -223,9 +252,9 @@ export default class cardSettingUserKPIM extends Component {
           [name]: event.target.value
         })
       } else if (event.target.value === 0) {
-        this.fetchNewOptionTimeTAL()
         this.setState({
-          [name]: event.target.value
+          [name]: event.target.value,
+          optionTimeTAL: this.fetchOptionDateInWeek()
         })
       }
     } else {
@@ -233,7 +262,7 @@ export default class cardSettingUserKPIM extends Component {
     }
   };
 
-  fetchNewOptionTimeTAL = () => {
+  fetchOptionDateInWeek = () => {
     let date = []
 
     let awalMingguSekarang = new Date().getDate() - new Date().getDay() + 1
@@ -247,9 +276,7 @@ export default class cardSettingUserKPIM extends Component {
       awalMingguSekarang++
     }
 
-    this.setState({
-      optionTimeTAL: date
-    })
+    return date
   }
 
   openModalReward = () => {
@@ -330,7 +357,7 @@ export default class cardSettingUserKPIM extends Component {
 
       if (this.props.week !== weekNow) {
         let bedaMinggu = this.props.week - weekNow
-        let newFirstDateInWeek = new Date(new Date().getFullYear(), new Date().getMonth(), (new Date().getDate() + (bedaMinggu * 7)))
+        let newFirstDateInWeek = new Date(new Date().getFullYear(), new Date().getMonth(), (firstDateInWeekNow + (bedaMinggu * 7)))
 
         firstDateInWeekNow = newFirstDateInWeek.getDate()
       }
@@ -347,6 +374,8 @@ export default class cardSettingUserKPIM extends Component {
         firstDateInWeek: firstDateInWeekNow,
         kpim_score_id: this.state.TALMonth.kpim_score_id
       }
+
+      console.log(newData)
 
       API.post('/tal', newData, { headers: { token } })
         .then(async data => {
@@ -408,26 +437,41 @@ export default class cardSettingUserKPIM extends Component {
   }
 
   kirimNilai = () => {
-    let arrayKPIMScoreId = []
-    let token = Cookies.get("POLAGROUP")
-
-    this.props.data.kpim.forEach(kpim => {
-      kpim.score.forEach(kpimScore => {
-        arrayKPIMScoreId.push(kpimScore.kpim_score_id)
-      })
+    swal({
+      title: "Apa anda yakin ingin mengirim nilainya?",
+      text: "Jika nilai sudah dikirim, nilai tidak dapat diubah kembali",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
     })
+      .then((yesAnswer) => {
+        if (yesAnswer) {
+          let arrayKPIMScoreId = []
+          let token = Cookies.get("POLAGROUP")
 
-    API.put('/kpim/sendGrade', { arrayKPIMScoreId }, { headers: { token } })
-      .then(data => {
-        this.setState({
-          openModalSendGrade: false
-        })
-        swal("Kirim nilai sukses!", "", "success")
-        this.props.refresh()
-      })
-      .catch(err => {
-        swal("Please try again")
-      })
+          this.props.data.kpim.forEach(kpim => {
+            kpim.score.forEach(kpimScore => {
+              arrayKPIMScoreId.push(kpimScore.kpim_score_id)
+            })
+          })
+
+          API.put('/kpim/sendGrade', { arrayKPIMScoreId }, { headers: { token } })
+            .then(data => {
+              this.setState({
+                openModalSendGrade: false
+              })
+              swal("Kirim nilai sukses!", "", "success")
+              this.props.refresh()
+            })
+            .catch(err => {
+              swal("Please try again")
+            })
+        }
+      });
+
+
+
+
 
   }
 

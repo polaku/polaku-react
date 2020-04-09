@@ -21,6 +21,7 @@ export default class cardTAL extends Component {
     link: '',
     editAchievement: false,
     editLoad: false,
+    proses: false
   }
 
   componentDidMount() {
@@ -58,6 +59,10 @@ export default class cardTAL extends Component {
         swal('achievement melebihi 100')
       }
     } else {
+      this.setState({
+        proses: true
+      })
+
       if (args === 'load') newData = { load: this.state.load }
       else if (args === 'achievement') newData = { achievement: this.state.achievement }
       else if (args === 'link') newData = { link: this.state.link }
@@ -67,10 +72,14 @@ export default class cardTAL extends Component {
           this.setState({
             editAchievement: false,
             editLoad: false,
+            proses: false
           })
           this.props.refresh()
         })
         .catch(err => {
+          this.setState({
+            proses: false
+          })
           console.log(err)
           swal('please try again')
         })
@@ -112,6 +121,7 @@ export default class cardTAL extends Component {
                           style: { height: 35, padding: 0 }
                         }}
                         error={this.state.load > 10}
+                        disabled={this.state.proses}
                       />
                     </form>
                     <CancelPresentationIcon style={{ color: 'red', cursor: 'pointer', marginLeft: 5 }} onClick={this.editLoad} />
@@ -126,6 +136,7 @@ export default class cardTAL extends Component {
                       style: { height: 35, padding: 0 }
                     }}
                     error={this.state.load > 10}
+                    disabled={this.state.proses}
                   />
                 </form>
             }
@@ -153,6 +164,7 @@ export default class cardTAL extends Component {
                         style: { height: 35, padding: 0 }
                       }}
                       error={this.state.achievement > 100}
+                      disabled={this.state.proses}
                     />
                   </form>
                   <CancelPresentationIcon style={{ color: 'red', cursor: 'pointer', marginLeft: 5 }} onClick={this.editAchievement} />
@@ -167,6 +179,7 @@ export default class cardTAL extends Component {
                     style: { height: 35, padding: 0 }
                   }}
                   error={this.state.achievement > 100}
+                  disabled={this.state.proses}
                 />
               </form>
           }</TableCell>
@@ -181,6 +194,7 @@ export default class cardTAL extends Component {
                   InputProps={{
                     style: { height: 35, padding: 0 }
                   }}
+                  disabled={this.state.proses}
                 />
               </form>
           }</TableCell>

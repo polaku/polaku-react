@@ -122,6 +122,7 @@ class panelSetting extends Component {
       await user.kpim.forEach(async kpim => {
         let filteredKPIMScore = await kpim.kpimScore.filter(kpimScore => Number(kpimScore.month) === Number(month))
 
+        // For Score KPIM month before
         let tes = kpim.kpimScore.filter(kpimScore => Number(kpimScore.month) === (Number(month) - 1))
 
         tes.forEach(kpim => {
@@ -135,7 +136,8 @@ class panelSetting extends Component {
       else user.scoreKPIMBefore = 0
 
       await user.tal.forEach(async tal => {
-        let filteredTALScore = await tal.talScore.filter(talScore => Number(talScore.week) === Number(this.state.minggu))
+        let filteredTALScore = await tal.talScore.filter(talScore => Number(talScore.week) === Number(this.state.minggu) && Number(talScore.month) === Number(month))
+        if(filteredTALScore) console.log(filteredTALScore)
         tal.score = filteredTALScore
       })
     })
