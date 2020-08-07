@@ -46,7 +46,7 @@ class Event extends Component {
           <Button variant="outlined" color="primary" style={{ marginBottom: 10 }} onClick={this.openModal}>
             Buat Acara
           </Button>
-          <Grid style={{ height: '76vh', width: '100%', overflow: 'scroll' }}>
+          <Grid style={{ height: '76vh', width: '100%', overflow: 'auto' }}>
             {
               this.props.dataEvents && this.props.dataEvents.map((event, index) => (
                 <CardEvent key={index} data={event} />

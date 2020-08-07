@@ -191,6 +191,11 @@ class SettingUser extends Component {
       dataForDisplay: tempNewDataUsers,
       dataUser: this.props.dataUsers
     })
+
+    // if(this.state.keyword !== ''){
+    //   console.log("MASUK")
+    //   this.searching()
+    // }
   }
 
   handleChangeTabs = (event, newTabs) => {
@@ -222,9 +227,10 @@ class SettingUser extends Component {
   handleChange = name => async event => {
     if (name === 'companyId') {
       let company = this.props.dataCompanies.find(company => company.company_id === event.target.value)
-      let filterUser = await this.props.dataUsers.filter(user => user.tbl_account_detail.company_id === event.target.value)
+      // let filterUser = await this.props.dataUsers.filter(user => user.tbl_account_detail.company_id === event.target.value)
 
-      this.setState({ [name]: event.target.value, companyName: company.company_name, dataUser: filterUser });
+      // this.setState({ [name]: event.target.value, companyName: company.company_name, dataUser: filterUser });
+      this.setState({ [name]: event.target.value, companyName: company.company_name });
     } else if (name === 'konfirmasiPassword') {
       this.setState({ [name]: event.target.value });
     } else {
@@ -413,7 +419,8 @@ class SettingUser extends Component {
   }
 
   searching = async event => {
-    event.preventDefault()
+    event && event.preventDefault()
+
     let hasilSearch
     if (this.state.filterCategori === "") {
       hasilSearch = await this.state.data.filter(el =>

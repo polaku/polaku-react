@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Cookies from 'js-cookie';
 
 import {
-  Grid, LinearProgress, Table, TableHead, TableRow, TableCell, TableBody, TextField, Button, MenuItem, Select as SelectOption
+  Grid, LinearProgress, Table, TableHead, TableRow, TableCell, TableBody, TextField, Button, MenuItem, Select as SelectOption, CircularProgress
 } from '@material-ui/core';
 
 import BarChartIcon from '@material-ui/icons/BarChart';
@@ -28,7 +28,7 @@ class DashboardKPIM extends Component {
       proses: false,
       months: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
       statusAddNewTal: false,
-      chooseWhen: ['Setiap hari', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+      chooseWhen: [],
       firstDateInWeek: new Date().getDate() - (new Date().getDay() - 1),
 
       indicator_tal: '',
@@ -38,8 +38,7 @@ class DashboardKPIM extends Component {
       achievement: '',
       link: '',
 
-      weekNow: 0,
-      weekSelected: 0,
+      weekSelected: null,
       monthSelected: null,
 
       allKPIM: [],
@@ -48,7 +47,6 @@ class DashboardKPIM extends Component {
       kpimTAL: null,
       kpimTeam: [],
 
-      allTAL: [],
       talSelected: [],
       persenTAL: 0,
       totalWeight: 0,
@@ -59,7 +57,10 @@ class DashboardKPIM extends Component {
       validateCreateTAL: false,
 
       idBawahanSelected: 0,
-      talTeam: []
+      talTeam: [],
+      prosesTAL: true,
+      prosesKPIM: true,
+      listBawahan: this.props.bawahan
     }
   }
 
@@ -68,79 +69,59 @@ class DashboardKPIM extends Component {
 
     if (this._isMounted) {
       if (this.props.location.state) {
-        await this.fetchData(new Date().getMonth(), this.props.location.state.userId)
+        this.setState({
+          idBawahanSelected: this.props.location.state.userId,
+          weekSelected: this.getNumberOfWeek(new Date()),
+          monthSelected: new Date().getMonth() + 1
+        })
+
+        let token = Cookies.get('POLAGROUP')
+        let dataUser = await API.get(`/users/${this.props.location.state.userId}`, { headers: { token } })
+        // console.log(dataUser)
+        this.setState({ listBawahan: dataUser.data.bawahan })
+        await this.fetchData(new Date().getMonth() + 1, this.getNumberOfWeek(new Date()), this.props.location.state.userId)
 
         await this.props.fetchDataRewardKPIM(this.props.location.state.userId)
 
         await this.props.myRewardKPIM.sort(this.sortingReward)
 
-        this._isMounted && this.setState({
-          idBawahanSelected: this.props.location.state.userId,
-          weekNow: this.getNumberOfWeek(new Date()),
-          weekSelected: this.getNumberOfWeek(new Date()),
-          monthSelected: new Date().getMonth()
-        })
       } else if (this.props.userId) {
-        await this.fetchData(new Date().getMonth(), this.props.userId)
+        this.setState({
+          weekSelected: this.getNumberOfWeek(new Date()),
+          monthSelected: new Date().getMonth() + 1
+        })
+        await this.fetchData(new Date().getMonth() + 1, this.getNumberOfWeek(new Date()), this.props.userId)
 
         await this.props.fetchDataRewardKPIM(this.props.userId)
 
         await this.props.myRewardKPIM.sort(this.sortingReward)
-
-        this._isMounted && this.setState({
-          weekNow: this.getNumberOfWeek(new Date()),
-          weekSelected: this.getNumberOfWeek(new Date()),
-          monthSelected: new Date().getMonth()
-        })
       }
     }
-
   }
 
   async componentDidUpdate(prevProps, prevState) {
     //assign tal selected for display
     if (prevState.weekSelected !== this.state.weekSelected) {
-      await this.fetchTALSelected()
-
-      if (this.state.weekSelected >= this.getNumberOfWeek(new Date())) {
-        this.setState({
-          validateCreateTAL: true
-        })
-      } else {
-        this.setState({
-          validateCreateTAL: false
-        })
+      if (prevState.weekSelected !== null) {
+        await this.fetchData(this.state.monthSelected, this.state.weekSelected, this.props.location.state ? this.props.location.state.userId : this.props.userId)
       }
     }
 
     //assign kpim selected for display
     if (prevState.monthSelected !== this.state.monthSelected) {
+      if (prevState.monthSelected !== null) {
+        if (this.state.monthSelected === new Date().getMonth() + 1) {
+          this.setState({
+            weekSelected: this.getNumberOfWeek(new Date()),
+          })
+        } else {
+          let mingguAwalBulan = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.monthSelected, 1))
 
-      if (this.state.monthSelected === new Date().getMonth()) {
-        this.setState({
-          weekSelected: this.getNumberOfWeek(new Date()),
-        })
-      } else {
-        let mingguAwalBulan = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.monthSelected, 1))
-
-        this.setState({
-          weekSelected: mingguAwalBulan,
-        })
+          this.setState({
+            weekSelected: mingguAwalBulan,
+          })
+        }
       }
-
-      await this.fetchKPIMSelected()
-
-    }
-
-    //update when add pencapaian_monthly
-    if (prevState.lastUpdate !== this.state.lastUpdate) {
-      if (this.props.location.state) {
-        await this.fetchData(new Date().getMonth(), this.props.location.state.userId)
-      } else {
-        await this.fetchData(new Date().getMonth(), this.props.userId)
-      }
-      await this.fetchKPIMSelected()
-      await this.fetchTALSelected()
     }
 
     //fetch myreward kpim 
@@ -158,319 +139,187 @@ class DashboardKPIM extends Component {
     }
 
     if (prevProps.userId !== this.props.userId) {
-      await this.fetchData(new Date().getMonth(), this.props.userId)
+      if (!this.props.location.state) {
+        this.setState({ listBawahan: this.props.bawahan })
+        await this.fetchData(new Date().getMonth() + 1, this.getNumberOfWeek(new Date()), this.props.userId)
 
-      await this.props.fetchDataRewardKPIM(this.props.userId)
+        await this.props.fetchDataRewardKPIM(this.props.userId)
 
-      await this.props.myRewardKPIM.sort(this.sortingReward)
+        await this.props.myRewardKPIM.sort(this.sortingReward)
 
-      this.setState({
-        weekNow: this.getNumberOfWeek(new Date()),
-        weekSelected: this.getNumberOfWeek(new Date()),
-        monthSelected: new Date().getMonth()
-      })
+        this.setState({
+          weekSelected: this.getNumberOfWeek(new Date()),
+          monthSelected: new Date().getMonth() + 1
+        })
+      }
     }
 
-    // if (prevProps.location.state !== this.props.location.state) {
-    //   if (!this.props.location.state) {
-    //     console.log("MASUK")
+    if (prevProps.location.state !== this.props.location.state) {
+      if (!this.props.location.state && prevProps.userId !== null) {
+        this.setState({ listBawahan: this.props.bawahan, prosesKPIM: true, prosesTAL: true })
+        await this.fetchData(new Date().getMonth() + 1, this.getNumberOfWeek(new Date()), this.props.userId)
 
-    //     this.setState({
-    //       idBawahanSelected: this.props.location.state.userId
-    //     })
-    //     await this.fetchData(new Date().getMonth(), this.props.userId)
-    //     await this.fetchKPIMSelected()
-    //     await this.fetchTALSelected()
-    //   }
-    // }
+        await this.props.fetchDataRewardKPIM(this.props.userId)
 
-    // if (prevProps.bawahan !== this.props.bawahan) {
-    //   console.log("MASUK bawahan update")
-    //   await this.fetchData(new Date().getMonth(), this.props.bawahan)
-    //   await this.fetchKPIMSelected()
-    //   await this.fetchTALSelected()
-    // }
+        await this.props.myRewardKPIM.sort(this.sortingReward)
+
+        this.setState({
+          weekSelected: this.getNumberOfWeek(new Date()),
+          monthSelected: new Date().getMonth() + 1
+        })
+      }
+    }
   }
 
   componentWillUnmount() {
     this._isMounted = false
   }
 
-  fetchData = async (monthSelected, userId) => {
-    let allTAL = [], tempTAL = [], allKPIM = [], tempKPIM = []
+  fetchData = async (monthSelected, weekSelected, userId) => {
+    let tempTAL = [], talTeam;
+    await this.props.fetchDataAllKPIM({ "for-dashboard": true, year: new Date().getFullYear(), month: monthSelected, week: weekSelected, userId })
 
-    await this.props.fetchDataAllKPIM({ year: new Date().getFullYear() })
-    await this.props.fetchDataAllTAL(new Date().getFullYear())
+    // ===== HANDLE TAL ===== //
+    let dataTAL = await this.props.dataAllKPIM.find(kpim => kpim.user_id === userId && kpim.indicator_kpim.toLowerCase() === "tal")
+    await dataTAL.tbl_kpim_scores[1].tbl_tals.forEach(tal => {
+      let newTAL = { ...tal, ...tal.tbl_tal_scores[0] }
+      delete newTAL.tbl_tal_scores
+      tempTAL.push(newTAL)
+    })
 
-    allTAL = await this.props.dataAllTAL.filter(tal => tal.user_id === userId)
-    allKPIM = await this.props.dataAllKPIM.filter(kpim => kpim.user_id === userId)
+    await this.fetchTALSelected(tempTAL, monthSelected, weekSelected)
+    this.setState({ prosesTAL: false })
+    // ===== HANDLE TAL ===== //
 
-    for (let i = 1; i <= 53; i++) { //fetch tal per minggu
-      let tempTALweek = []
-      await allTAL.forEach(async tal => {
-        let temp = await tal.talScore.find(talWeek => Number(talWeek.week) === i)
-        let newTAL = { ...tal, ...temp }
-        delete newTAL.talScore
-        temp && tempTALweek.push(newTAL)
-      })
-      tempTAL.push(tempTALweek)
+
+    // ===== HANDLE TAL TEAM ===== //
+    if (this.state.listBawahan.length > 0) {
+      await this.props.fetchDataAllTAL({ "for-tal-team": true, year: new Date().getFullYear(), month: monthSelected, week: weekSelected, userId: this.props.location.state ? this.props.location.state.userId : this.props.userId })
+
+      talTeam = await this.fetchDataTALTeam(monthSelected, weekSelected)
     }
+    // ==== HANDLE TAL TEAM ===== //
 
-    if (this.props.bawahan.length > 0 && !this.props.location.state) {
-      await this.fetchDataKPIMTALBawahan(monthSelected)
-    }
 
-    for (let i = 1; i <= 12; i++) { //fetch kpim per bulan (before&now month)
-      let tempKPIMmonth = []
+    // ===== HANDLE KPIM ===== //
+    let allKPIM = []
+    let KPIM = await this.props.dataAllKPIM.filter(kpim => kpim.user_id === userId && kpim.indicator_kpim.toLowerCase() !== "tal" && kpim.indicator_kpim.toLowerCase() !== "kpim team")
+    let KPIMTeam = await this.props.dataAllKPIM.find(kpim => kpim.user_id === userId && kpim.indicator_kpim.toLowerCase() !== "tal" && kpim.indicator_kpim.toLowerCase() === "kpim team")
+    let TAL = await this.props.dataAllKPIM.find(kpim => kpim.user_id === userId && kpim.indicator_kpim.toLowerCase() === "tal")
+    if (KPIMTeam) allKPIM.push(KPIMTeam)
 
-      if (this.props.bawahan.length > 0 && !this.props.location.state) {
-        //kpim tal TEAM
-        let tempKPIMTALTeambefore
-        if (this.state.talTeam[i - 2]) tempKPIMTALTeambefore = this.state.talTeam[i - 2]
-        else tempKPIMTALTeambefore = []
-        let tempKPIMTALTeamnow = this.state.talTeam[i - 1]
-        tempKPIMmonth.push([tempKPIMTALTeambefore, tempKPIMTALTeamnow])
-
-        // //kpim TEAM
-        // let tempKPIMTeambefore = this.state.kpimTeam[i - 2] || []
-        // let tempKPIMTeamnow = this.state.kpimTeam[i - 1]
-        // tempKPIMmonth.push([tempKPIMTeambefore, tempKPIMTeamnow])
-      }
-      let KPIMTEAM = await allKPIM.filter(kpim => kpim.indicator_kpim.toLowerCase() === "kpim team")
-
-      KPIMTEAM && await KPIMTEAM.forEach(async kpim => {
-        let tempKPIMbefore = await kpim.kpimScore.find(kpimMonth => Number(kpimMonth.month) === i - 1)
-        let tempKPIMnow = await kpim.kpimScore.find(kpimMonth => Number(kpimMonth.month) === i)
-
-        let newKPIMbefore = tempKPIMbefore ? { ...kpim, ...tempKPIMbefore } : []
-        let newKPIMnow = { ...kpim, ...tempKPIMnow }
-        delete newKPIMbefore.kpimScore
-        delete newKPIMnow.kpimScore
-
-        tempKPIMnow && tempKPIMmonth.push([newKPIMbefore, newKPIMnow])
-      })
-
-      let onlyTAL = await allKPIM.filter(kpim => kpim.indicator_kpim.toLowerCase() === "tal")
-
-      onlyTAL && await onlyTAL.forEach(async kpim => {
-        let tempKPIMbefore = await kpim.kpimScore.find(kpimMonth => Number(kpimMonth.month) === i - 1)
-        let tempKPIMnow = await kpim.kpimScore.find(kpimMonth => Number(kpimMonth.month) === i)
-
-        let newKPIMbefore = tempKPIMbefore ? { ...kpim, ...tempKPIMbefore } : []
-        let newKPIMnow = { ...kpim, ...tempKPIMnow }
-        delete newKPIMbefore.kpimScore
-        delete newKPIMnow.kpimScore
-
-        tempKPIMnow && tempKPIMmonth.push([newKPIMbefore, newKPIMnow])
-      })
-
-      let onlyKPIM = await allKPIM.filter(kpim => kpim.indicator_kpim.toLowerCase() !== "tal" && kpim.indicator_kpim.toLowerCase() !== "kpim team")
-
-      await onlyKPIM.forEach(async kpim => {
-
-        let tempKPIMbefore = await kpim.kpimScore.find(kpimMonth => Number(kpimMonth.month) === i - 1)
-        let tempKPIMnow = await kpim.kpimScore.find(kpimMonth => Number(kpimMonth.month) === i)
-
-        let newKPIMbefore = tempKPIMbefore ? { ...kpim, ...tempKPIMbefore } : []
-        let newKPIMnow = { ...kpim, ...tempKPIMnow }
-        delete newKPIMbefore.kpimScore
-        delete newKPIMnow.kpimScore
-
-        tempKPIMnow && tempKPIMmonth.push([newKPIMbefore, newKPIMnow])
-      })
-      tempKPIM.push(tempKPIMmonth)
-    }
-
-    this._isMounted && this.setState({
-      allTAL: tempTAL,
-      allKPIM: tempKPIM,
+    this.setState({
       kpimSelected: []
     })
+
+    let kpimSelected = []
+
+    if (talTeam) kpimSelected.push(talTeam)
+    if (allKPIM.length > 0) kpimSelected = [...kpimSelected, ...allKPIM]
+    if (KPIM.length > 0) kpimSelected = [...kpimSelected, ...KPIM]
+    if (TAL) kpimSelected.push(TAL)
+
+    await this.fetchKPIMSelected(kpimSelected, monthSelected)
+    this.setState({ prosesKPIM: false })
+    // ===== HANDLE KPIM ===== //
 
   }
 
   //Untuk table tal yang bawah
-  fetchTALSelected = () => {
-    let talSelected = this.state.allTAL[this.state.weekSelected - 1], tempPersenTAL = 0, tempTotalWeight = 0
+  fetchTALSelected = async (data, monthSelected, weekSelected) => {
+    let talSelected = data, tempPersenTAL = 0, tempTotalWeight = 0, validateCreateTAL = false
     talSelected.forEach(talWeek => {
       tempPersenTAL += (Number(talWeek.achievement) * (Number(talWeek.weight) / 100))
       tempTotalWeight += Number(talWeek.weight)
     })
 
+    if (weekSelected >= this.getNumberOfWeek(new Date())) {
+      validateCreateTAL = true
+    }
+
+    await this.fetchOptionDateInWeek(monthSelected, weekSelected)
+
     this._isMounted && this.setState({
+      validateCreateTAL,
       talSelected,
       persenTAL: tempPersenTAL,
       totalWeight: tempTotalWeight
     })
   }
 
-  fetchKPIMSelected = () => {
-    // console.log(this.state.weekSelected)
-    let kpimSelected = this.state.allKPIM[this.state.monthSelected], persenKPIM = 0, kpimTAL = null
+  fetchKPIMSelected = async (data, monthSelected) => {
+    let kpimSelected = data, persenKPIM = 0, kpimTAL = null
 
-    kpimSelected.forEach(kpim => {
-      if (Number(kpim[1].target_monthly) > 0 && kpim[1].indicator_kpim.toLowerCase() !== "tal" && kpim[1].indicator_kpim.toLowerCase() !== "tal team") {
-        persenKPIM += Math.floor(((Number(kpim[1].pencapaian_monthly) / Number(kpim[1].target_monthly)) * 100) * (Number(kpim[1].bobot) / 100))
-      }
-      else if (kpim[1].indicator_kpim.toLowerCase() !== "tal team") {
-        persenKPIM += Math.round(Number(kpim[1].score_kpim_monthly) * (Number(kpim[1].bobot) / 100) * 100) / 100 || 0
-      }
-      if (kpim[1].indicator_kpim.toLowerCase() === "tal") {
-        kpimTAL = kpim[1]
+    await kpimSelected.forEach(async (kpim) => {
+      if (kpim.indicator_kpim.toLowerCase() !== "tal team") {
+        let kpimNow = await kpim.tbl_kpim_scores.find(kpim_score => kpim_score.month === monthSelected)
+        persenKPIM += Number(kpimNow.score_kpim_monthly) * (Number(kpimNow.bobot) / 100)
+
+        if (kpim.indicator_kpim.toLowerCase() === "tal") {
+          kpimTAL = kpimNow
+        }
       }
     })
 
+    // DELETE KPIM TAL
+    // kpimSelected = await kpimSelected.filter(kpim => kpim.indicator_kpim.toLowerCase() !== "tal")
+
     this._isMounted && this.setState({
       kpimSelected,
-      persenKPIM,
+      persenKPIM: Math.round(persenKPIM),
       kpimTAL
     })
   }
 
-  fetchDataKPIMTALBawahan = async (monthSelected) => {
-    // let tempKPIM = [], tempTAL = [],  kpimMonthly = [], talMonthly = []
-    let tempTAL = [], talMonthly = []
+  fetchDataTALTeam = async (monthSelected, weekSelected) => {
+    let persenWeek = 0;
 
-    this.props.bawahan && await this.props.bawahan.forEach(async element => { //fetch kpim per user
-      let newTAL = []
+    // ===== FETCH TAL WEEK (START) ===== // 
+    let talBawahanThisWeek = []
+    this.state.listBawahan && await this.state.listBawahan.forEach(async element => { //fetch kpim per user
+      let newTAL = [], tempTALScore = 0
+      newTAL = await this.props.dataAllTAL.filter(el => el.user_id === element.user_id)
 
-      // newKPIM = this.props.dataAllKPIM.filter(el => el.user_id === element.user_id)
-      // tempKPIM = [...tempKPIM, ...newKPIM]
-      // if (newKPIM.length > 0) counterUserKPIM++
-
-      newTAL = this.props.dataAllTAL.filter(el => el.user_id === element.user_id)
-
-      newTAL.forEach(el => {
-        el.fullname = element.fullname
+      await newTAL.forEach(async el => {
+        let talScore = await el.tbl_tal_scores.find(tal_score => tal_score.week === weekSelected)
+        if (talScore) tempTALScore += talScore.score_tal
       })
-
-      tempTAL = [...tempTAL, ...newTAL]
+      let talBawahan = {
+        fullname: element.fullname,
+        score_tal: tempTALScore
+      }
+      talBawahanThisWeek.push(talBawahan)
+      persenWeek += tempTALScore
     });
+    // =====  FETCH TAL WEEK (END)  ===== // 
 
-    // console.log(tempTAL)
 
-    for (let i = 0; i < 12; i++) { //fetch kpim dan tal user per bulan
-      let talBawahanPerbulan = []
-
-      // tempKPIM.forEach(async kpim => {
-      //   let userKPIMScore = kpim.kpimScore.find(kpimScore => Number(kpimScore.month) === i + 1)
-      //   if (userKPIMScore) kpimBawahanPerbulan.push(userKPIMScore)
-      // })
-
-      // let objKPIM = {
-      //   indicator_kpim: "KPIM TEAM",
-      //   score_kpim_monthly: 0,
-      //   month: i + 1,
-      //   year: "" + new Date().getFullYear()
-      // }
-      // let tempScoreKPIM = 0
-
-      // kpimBawahanPerbulan.forEach(kpimMonth => {
-      //   tempScoreKPIM += kpimMonth.score_kpim_monthly * (Number(kpimMonth.bobot) / 100)
-      // })
-
-      // objKPIM.score_kpim_monthly = tempScoreKPIM / counterUserKPIM
-      // kpimMonthly.push(objKPIM)
-
-      //filter tal perbulan
-      tempTAL.forEach(async tal => {
-        let userTALScore = []
-        tal.talScore.forEach(talScore => {
-          if (Number(talScore.month) === i + 1) {
-            talScore.user_id = tal.user_id
-            talScore.fullname = tal.fullname
-            userTALScore.push(talScore)
-          }
-        })
-
-        if (userTALScore.length > 0) talBawahanPerbulan = [...talBawahanPerbulan, ...userTALScore]
+    // ===== FETCH TAL MONTH (START) ===== // 
+    let pembagiTALTEAM = 0, tempTALScore = 0, tempWeekBawahan = [], userIdProcessing = this.props.dataAllTAL[0].user_id;
+    await this.props.dataAllTAL.forEach(async (tal) => {
+      await tal.tbl_tal_scores.forEach(tal_score => {
+        tempTALScore += tal_score.score_tal
+        if (tempWeekBawahan.indexOf(tal_score.week) < 0) tempWeekBawahan.push(tal_score.week)
+        if (userIdProcessing !== tal.user_id) {
+          userIdProcessing = tal.user_id
+          pembagiTALTEAM += tempWeekBawahan.length
+          tempWeekBawahan = []
+        }
       })
+    })
+    pembagiTALTEAM += tempWeekBawahan.length
 
-      await talBawahanPerbulan.sort(this.compare)
-
-      // console.log(talBawahanPerbulan)
-      let objTAL = {
-        indicator_kpim: "TAL TEAM",
-        score_kpim_monthly: 0,
-        month: i + 1,
-        year: "" + new Date().getFullYear()
-      }
-
-      let weekProcessing = 0, tempScoreTAL = 0, counterPembagiTALSebulan = 0, userIdSelected = null
-      let talUserPerminggu = [], talAllUserPerminggu = [], talAllUserPerBulan = []
-
-      await talBawahanPerbulan.forEach((talScore, index) => {
-        if ((userIdSelected === null && weekProcessing === 0) || (userIdSelected === talScore.user_id && weekProcessing === talScore.week)) {
-          talUserPerminggu.push(talScore)
-          if (index === talBawahanPerbulan.length - 1) {
-            talAllUserPerminggu.push({ user_id: userIdSelected, indicator_kpim: "TAL TEAM", tal: talUserPerminggu })
-            talAllUserPerBulan.push({ week: weekProcessing, tal: talAllUserPerminggu })
-            talAllUserPerminggu = []
-          }
-
-        } else {
-          talAllUserPerminggu.push({ user_id: userIdSelected, indicator_kpim: "TAL TEAM", tal: talUserPerminggu })
-          if ((weekProcessing !== 0 && weekProcessing !== talScore.week) || (index === talBawahanPerbulan.length - 1)) {
-            talAllUserPerBulan.push({ week: weekProcessing, tal: talAllUserPerminggu })
-            talAllUserPerminggu = []
-          }
-          talUserPerminggu = []
-          talUserPerminggu.push(talScore)
-        }
-
-        if ((userIdSelected === talScore.user_id && weekProcessing !== talScore.week) ||
-          (userIdSelected !== talScore.user_id && weekProcessing === talScore.week) ||
-          (userIdSelected !== talScore.user_id && weekProcessing !== talScore.week)) {
-          counterPembagiTALSebulan++
-        }
-
-        if (userIdSelected !== talScore.user_id) {
-          userIdSelected = talScore.user_id
-        }
-
-        if (weekProcessing !== talScore.week) {
-          weekProcessing = talScore.week
-        }
-
-        tempScoreTAL += Number(talScore.score_tal)
-      })
-
-
-      talAllUserPerBulan.length > 0 && talAllUserPerBulan.forEach(el => {
-        let tempTALScoreAllUserPerMinggu = 0
-        // let tempObj = {}, temTALUser = 0
-
-        el.tal.forEach(element => {
-          let tempTALScorePerUserPerMinggu = 0
-
-          element.tal.forEach(tal_score => {
-            tempTALScorePerUserPerMinggu += tal_score.score_tal
-          })
-          tempTALScoreAllUserPerMinggu += tempTALScorePerUserPerMinggu
-
-          // tempObj = {
-          //   score: tempTALScorePerUserPerMinggu,
-          //   talScore: element
-          // }
-        })
-
-        el.scoreTALTeam = tempTALScoreAllUserPerMinggu / el.tal.length || 0
-      })
-
-      if (i !== 0) {
-        let weekBeforeMonth = talMonthly[talMonthly.length - 1].talPerMinggu[talMonthly[talMonthly.length - 1].talPerMinggu.length - 1]
-        weekBeforeMonth && talAllUserPerBulan.unshift(weekBeforeMonth)
-      }
-
-      objTAL.score_kpim_monthly = tempScoreTAL / counterPembagiTALSebulan
-      objTAL.talPerMinggu = talAllUserPerBulan
-      talMonthly.push(objTAL)
+    let objTAL = {
+      indicator_kpim: "TAL TEAM",
+      persenMonth: Math.round(tempTALScore / pembagiTALTEAM),
+      persenWeek: Math.round(persenWeek / this.state.listBawahan.length),
+      month: monthSelected,
+      year: "" + new Date().getFullYear(),
+      talBawahanThisWeek
     }
 
-    this._isMounted && this.setState({
-      // kpimTeam: kpimMonthly,
-      talTeam: talMonthly
-    })
+    return objTAL
+    // =====  FETCH TAL MONTH (END)  ===== // 
   }
 
   handleChange = name => event => {
@@ -518,7 +367,7 @@ class DashboardKPIM extends Component {
       let token = Cookies.get('POLAGROUP')
       API.post("/tal", newData, { headers: { token } })
         .then(async ({ data }) => {
-          await this.fetchData(this.state.monthSelected)
+          await this.fetchData(this.state.monthSelected, this.state.weekSelected, this.props.location.state ? this.props.location.state.userId : this.props.userId)
           this.setState({
             indicator_tal: '',
             weight: '',
@@ -536,6 +385,7 @@ class DashboardKPIM extends Component {
             proses: false
           })
           swal('please try again')
+          console.log(err)
         })
     } else {
       swal("Weight tal lebih dari 100", "", "warning")
@@ -561,15 +411,15 @@ class DashboardKPIM extends Component {
 
     target.setDate(target.getDate() - dayNr + 3);
 
-    var jan4 = new Date(target.getFullYear(), 0, 4);
-    var dayDiff = (target - jan4) / 86400000;
+    var reference = new Date(target.getFullYear(), 0, 4);
+    var dayDiff = (target - reference) / 86400000;
     var weekNr = 1 + Math.ceil(dayDiff / 7);
 
     return weekNr;
   }
 
   refresh = async () => {
-    await this.fetchData(this.state.monthSelected)
+    await this.fetchData(this.state.monthSelected, this.state.weekSelected, this.props.location.state ? this.props.location.state.userId : this.props.userId)
     this.setState({
       lastUpdate: new Date()
     })
@@ -595,6 +445,35 @@ class DashboardKPIM extends Component {
     return 0;
   }
 
+  fetchOptionDateInWeek = (monthSelected, weekSelected) => {
+    let date = []
+
+    let awalMingguSekarang = new Date().getDate() - new Date().getDay() + 1
+    let selisihMinggu = weekSelected - this.getNumberOfWeek(new Date())
+
+    for (let i = 1; i <= 7; i++) {
+      let newDate = new Date(new Date().getFullYear(), new Date().getMonth(), (awalMingguSekarang + (selisihMinggu * 7)))
+
+      if (monthSelected === newDate.getMonth() + 1) {
+        date.push(newDate.getDate())
+      } else {
+        date.push(newDate.getDate())
+      }
+      awalMingguSekarang++
+    }
+
+    let day = ['Setiap hari']
+    date.forEach(el => {
+      let date = new Date(new Date().getFullYear(), monthSelected - 1, el).getDay()
+      let listDay = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+
+      day.push(listDay[date])
+    })
+    this.setState({
+      chooseWhen: day
+    })
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -610,7 +489,7 @@ class DashboardKPIM extends Component {
                 style={{ marginLeft: 10 }}
               >
                 {
-                  this.props.bawahan.map(user =>
+                  this.state.listBawahan.map(user =>
                     <MenuItem value={user.user_id} key={user.user_id}>{user.fullname}</MenuItem>
                   )
                 }
@@ -649,8 +528,16 @@ class DashboardKPIM extends Component {
         </Grid>
         <Grid container style={{ display: 'flex' }}>
           {
-            this.state.kpimSelected.map((element, index) =>
-              <CardIndicator data={element} key={index} refresh={this.refresh} weekSelected={this.state.weekSelected} />)
+            this.state.prosesKPIM ? (
+              <Grid style={{
+                display: 'flex', justifyContent: 'center', alignItems: 'center', height: 128, width: '100%'
+              }}>
+                < CircularProgress color="secondary" />
+              </Grid>
+            ) : (
+                this.state.kpimSelected.map((element, index) =>
+                  <CardIndicator data={element} key={index} refresh={this.refresh} weekSelected={this.state.weekSelected} monthSelected={this.state.monthSelected} lastUpdate={this.state.lastUpdate} />)
+              )
           }
         </Grid>
 
@@ -666,7 +553,8 @@ class DashboardKPIM extends Component {
 
           </Grid>
           <Grid style={{ display: 'flex' }}>
-            <Grid style={{ width: '18%', padding: 15, borderRight: '1px solid black' }}>
+            <Grid style={{ width: '18%', padding: 15, paddingTop: 10, borderRight: '1px solid black' }}>
+              {/* <p style={{ margin: 0, marginBottom: 10, textAlign: 'center' }}>Bobot: {this.state.kpimTAL ? this.state.kpimTAL.bobot : 0}</p> */}
               <CircularProgressbar value={this.state.persenTAL} text={`${this.state.persenTAL}%`} />
             </Grid>
             <Grid style={{ width: '90%' }}>
@@ -693,64 +581,66 @@ class DashboardKPIM extends Component {
                     </TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
-                  {
-                    this.state.talSelected.map((el, index) => (
-                      <CardItemTAL data={el} key={index} refresh={this.refresh} weekCurrent={this.state.weekNow} />
-                    ))
-                  }
-                  {
-                    this.state.statusAddNewTal && <TableRow style={{ height: 50, marginBottom: 30 }}>
-                      <TableCell align="center" style={{ padding: '0px 10px' }} >
-                        <TextField
-                          value={this.state.indicator_tal}
-                          onChange={this.handleChange('indicator_tal')}
-                          variant="outlined"
-                          InputProps={{
-                            style: { height: 35, padding: 0 }
-                          }}
-                          style={{ width: '100%' }}
-                        />
-                      </TableCell>
-                      <TableCell align="center" style={{ padding: '0px 10px' }} >
-                        <TextField
-                          type="number"
-                          value={this.state.load}
-                          onChange={this.handleChange('load')}
-                          variant="outlined"
-                          InputProps={{
-                            style: { height: 35, padding: 0 }
-                          }}
-                          error={this.state.load > 10}
-                        />
-                      </TableCell>
-                      <TableCell align="center" style={{ padding: '0px 10px' }} >
-                        <SelectOption
-                          value={this.state.when}
-                          onChange={this.handleChange('when')}
-                          disabled={this.state.proses}
-                          style={{ width: '100%' }}
-                        >
-                          {
-                            this.state.chooseWhen.map((el, index) =>
-                              (<MenuItem value={el} key={index}>{el}</MenuItem>)
-                            )
-                          }
-                        </SelectOption>
-                      </TableCell>
-                      <TableCell align="center" style={{ padding: '0px 10px' }} >
-                        <TextField
-                          type="number"
-                          value={this.state.weight}
-                          onChange={this.handleChange('weight')}
-                          variant="outlined"
-                          InputProps={{
-                            style: { height: 35, padding: 0 }
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell align="center" style={{ padding: '0px 10px' }} />
-                      {/* <TextField
+                {
+                  !this.state.prosesTAL && (
+                    <TableBody>
+                      {
+                        this.state.talSelected.map((el, index) => (
+                          <CardItemTAL data={el} key={index} refresh={this.refresh} weekCurrent={this.state.weekSelected} />
+                        ))
+                      }
+                      {
+                        this.state.statusAddNewTal && <TableRow style={{ height: 50, marginBottom: 30 }}>
+                          <TableCell align="center" style={{ padding: '0px 10px' }} >
+                            <TextField
+                              value={this.state.indicator_tal}
+                              onChange={this.handleChange('indicator_tal')}
+                              variant="outlined"
+                              InputProps={{
+                                style: { height: 35, padding: 0 }
+                              }}
+                              style={{ width: '100%' }}
+                            />
+                          </TableCell>
+                          <TableCell align="center" style={{ padding: '0px 10px' }} >
+                            <TextField
+                              type="number"
+                              value={this.state.load}
+                              onChange={this.handleChange('load')}
+                              variant="outlined"
+                              InputProps={{
+                                style: { height: 35, padding: 0 }
+                              }}
+                              error={this.state.load > 10}
+                            />
+                          </TableCell>
+                          <TableCell align="center" style={{ padding: '0px 10px' }} >
+                            <SelectOption
+                              value={this.state.when}
+                              onChange={this.handleChange('when')}
+                              disabled={this.state.proses}
+                              style={{ width: '100%' }}
+                            >
+                              {
+                                this.state.chooseWhen.map((el, index) =>
+                                  (<MenuItem value={el} key={index}>{el}</MenuItem>)
+                                )
+                              }
+                            </SelectOption>
+                          </TableCell>
+                          <TableCell align="center" style={{ padding: '0px 10px' }} >
+                            <TextField
+                              type="number"
+                              value={this.state.weight}
+                              onChange={this.handleChange('weight')}
+                              variant="outlined"
+                              InputProps={{
+                                style: { height: 35, padding: 0 }
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell align="center" style={{ padding: '0px 10px' }} />
+                          {/* <TextField
                           value={this.state.achievement}
                           onChange={this.handleChange('achievement')}
                           variant="outlined"
@@ -758,9 +648,9 @@ class DashboardKPIM extends Component {
                             style: { height: 35, padding: 0 }
                           }}
                         /> */}
-                      {/* </TableCell> */}
-                      <TableCell align="center" style={{ padding: '0px 10px' }} >
-                        {/* <TextField
+                          {/* </TableCell> */}
+                          <TableCell align="center" style={{ padding: '0px 10px' }} >
+                            {/* <TextField
                           value={this.state.link}
                           onChange={this.handleChange('link')}
                           variant="outlined"
@@ -768,19 +658,24 @@ class DashboardKPIM extends Component {
                             style: { height: 35, padding: 0 }
                           }}
                         /> */}
-                        <Grid style={{ display: 'flex', justifyContent: 'flex-end', margin: '15px' }}>
-                          <Button color="secondary" onClick={this.addNewTal} style={{ height: 40, marginRight: 15 }} disabled={this.state.proses}>batal</Button>
-                          <Button color="primary" onClick={this.saveNewTal} style={{ height: 40 }} disabled={this.state.proses}>simpan</Button>
-                        </Grid>
-                      </TableCell>
-                    </TableRow>
-                  }
-
-
-                </TableBody>
+                            <Grid style={{ display: 'flex', justifyContent: 'flex-end', margin: '15px' }}>
+                              <Button color="secondary" onClick={this.addNewTal} style={{ height: 40, marginRight: 15 }} disabled={this.state.proses}>batal</Button>
+                              <Button color="primary" onClick={this.saveNewTal} style={{ height: 40 }} disabled={this.state.proses}>simpan</Button>
+                            </Grid>
+                          </TableCell>
+                        </TableRow>
+                      }
+                    </TableBody>
+                  )
+                }
               </Table>
               {
-                this.state.kpimTAL && !this.state.statusAddNewTal && this.state.validateCreateTAL && <p style={{ margin: '10px 0px 30px 10px', fontWeight: 'bold', cursor: 'pointer', width: 70 }} onClick={this.addNewTal}>+ tal baru</p>
+                this.state.prosesTAL && <Grid style={{ width: '100%', textAlign: 'center' }}>
+                  <CircularProgress color="secondary" style={{ marginTop: 10 }} />
+                </Grid>
+              }
+              {
+                this.state.kpimTAL && this.state.validateCreateTAL && !this.state.statusAddNewTal && <p style={{ margin: '10px 0px 30px 10px', fontWeight: 'bold', cursor: 'pointer', width: 70 }} onClick={this.addNewTal}>+ tal baru</p>
               }
 
             </Grid>

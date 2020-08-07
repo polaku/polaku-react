@@ -27,21 +27,6 @@ export default class pencapaianKPIM extends Component {
     this.setState({
       pencapaian: this.props.data.pencapaian_monthly
     })
-
-    if (this.props.data.indicator_kpim) {
-      if (this.props.data.indicator_kpim.toLowerCase() === "tal team") {
-        // this.setState({
-        //   this.props.data.tal
-        // })
-        let tempScore = 0
-        this.props.data.tal.forEach(el => {
-          tempScore += el.score_tal
-        })
-        this.setState({
-          persenNow: tempScore
-        })
-      }
-    }
   }
 
   handleChange = name => event => {
@@ -91,24 +76,24 @@ export default class pencapaianKPIM extends Component {
     return (
       <Grid style={{ marginBottom: 10 }}>
         {
-          this.props.data.indicator_kpim && (
-            this.props.data.indicator_kpim.toLowerCase() === "tal" || this.props.data.indicator_kpim.toLowerCase() === "kpim team"
+          this.props.indicator && (
+            this.props.indicator.toLowerCase() === "tal" || this.props.indicator.toLowerCase() === "kpim team"
               ? <Grid style={{ display: 'flex', justifyContent: 'space-between' }} >
-                <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)}{this.props.data.year.slice(2, 4)}</p>
+                <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)} {this.props.year.slice(2, 4)}</p>
                 <p style={{ margin: 0, fontSize: 13 }}>{isNaN(this.props.data.score_kpim_monthly) ? 0 : Math.ceil(this.props.data.score_kpim_monthly)} %</p>
               </Grid>
 
-              : this.props.data.indicator_kpim.toLowerCase() === "tal team"
+              : this.props.indicator.toLowerCase() === "tal team"
                 ? <Grid style={{ display: 'flex', justifyContent: 'space-between' }} >
-                  <p style={{ margin: 0, fontSize: 13, color: 'gray', maxWidth: '75%' }}>{this.props.data.tal[0].fullname}</p>
+                  <p style={{ margin: 0, fontSize: 13, color: 'gray', maxWidth: '75%' }}>{this.props.data.fullname}</p>
                   {/* <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{this.props.data.tal[0].fullname}</p>
-                    <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)}{this.props.data.year.slice(2, 4)}</p> */}
-                  <p style={{ margin: 0, fontSize: 13 }}>{isNaN(this.state.persenNow) ? 0 : Math.ceil(this.state.persenNow)} %</p>
+                    <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)}{this.props.year.slice(2, 4)}</p> */}
+                  <p style={{ margin: 0, fontSize: 13 }}>{isNaN(this.props.data.score_tal) ? 0 : Math.round(Math.ceil(this.props.data.score_tal))} %</p>
                 </Grid>
                 : this.props.data.pencapaian_monthly
                   ? this.state.editIndicator
                     ? <Grid style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} >
-                      <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)}{this.props.data.year.slice(2, 4)}</p>
+                      <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)} {this.props.year.slice(2, 4)}</p>
                       <Grid style={{ display: 'flex', alignItems: 'center' }}>
                         <form onSubmit={this.addCapaian(this.props.data.kpim_score_id)}>
                           <TextField
@@ -124,7 +109,7 @@ export default class pencapaianKPIM extends Component {
                       </Grid>
                     </Grid>
                     : <Grid style={{ display: 'flex', justifyContent: 'space-between', cursor: this.props.index === 1 && 'pointer' }} onClick={this.editIndicator}>
-                      <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)}{this.props.data.year.slice(2, 4)}</p>
+                      <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)} {this.props.year.slice(2, 4)}</p>
                       {
                         this.props.data.unit === "Rp"
                           ? <p style={{ margin: 0, fontSize: 13 }}>{this.props.data.unit} {formatRupiah(this.props.data.pencapaian_monthly)}</p>
@@ -132,7 +117,7 @@ export default class pencapaianKPIM extends Component {
                       }
                     </Grid>
                   : <Grid style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} >
-                    <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)}{this.props.data.year.slice(2, 4)}</p>
+                    <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)} {this.props.year.slice(2, 4)}</p>
                     <form onSubmit={this.addCapaian(this.props.data.kpim_score_id)}>
                       <TextField
                         id="pencapaian"

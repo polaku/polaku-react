@@ -23,7 +23,6 @@ export default class modalCreateEditPolanews extends Component {
 
   componentDidMount() {
     if (this.props.data) {
-      console.log(this.props.data)
       this.setState({
         title: this.props.data.title,
         description: this.props.data.description || "",

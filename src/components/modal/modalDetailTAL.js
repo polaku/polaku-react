@@ -37,9 +37,12 @@ export default class modalDetailTAL extends Component {
           <Grid style={{
             backgroundColor: 'white',
             boxShadow: 5,
-            width: 600,
+            minWidth: 600,
+            maxWidth: 700,
             display: 'flex',
             flexDirection: 'column',
+            maxHeight: '80%',
+            overflowY: 'auto'
           }}>
             <Grid style={{ padding: '15px 25px', backgroundColor: '#d71149', color: 'white', fontSize: 18 }}>
               Week {this.props.data.week}
@@ -70,7 +73,7 @@ export default class modalDetailTAL extends Component {
               <TableBody>
                 {
                   this.props.data && this.props.data.map((el, index) => (
-                    <CardItemTAL data={el} key={index} refresh={this.refresh}/>
+                    <CardItemTAL data={el} key={index} refresh={this.refresh} />
                   ))
                 }
               </TableBody>

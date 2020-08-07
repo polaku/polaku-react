@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Cookies from 'js-cookie';
 
 import {
-  TableCell, TableRow, Grid, TextField
+  TableCell, TableRow, Grid, TextField, CircularProgress
 } from '@material-ui/core';
 
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
@@ -21,7 +21,10 @@ export default class cardTAL extends Component {
     link: '',
     editAchievement: false,
     editLoad: false,
-    proses: false
+    proses: false,
+    prosesLoad: false,
+    prosesAchievment: false,
+    prosesLink: false
   }
 
   componentDidMount() {
@@ -63,22 +66,37 @@ export default class cardTAL extends Component {
         proses: true
       })
 
-      if (args === 'load') newData = { load: this.state.load }
-      else if (args === 'achievement') newData = { achievement: this.state.achievement }
-      else if (args === 'link') newData = { link: this.state.link }
+      if (args === 'load') {
+        newData = { load: this.state.load }
+        this.setState({ prosesLoad: true })
+      }
+      else if (args === 'achievement') {
+        newData = { achievement: this.state.achievement }
+        this.setState({ prosesAchievment: true })
+      }
+      else if (args === 'link') {
+        newData = { link: this.state.link }
+        this.setState({ prosesLink: true })
+      }
 
       API.put(`/tal/${this.props.data.tal_score_id}`, newData, { headers: { token } })
         .then(() => {
           this.setState({
             editAchievement: false,
             editLoad: false,
-            proses: false
+            proses: false,
+            prosesLoad: false,
+            prosesAchievment: false,
+            prosesLink: false
           })
           this.props.refresh()
         })
         .catch(err => {
           this.setState({
-            proses: false
+            proses: false,
+            prosesLoad: false,
+            prosesAchievment: false,
+            prosesLink: false
           })
           console.log(err)
           swal('please try again')
@@ -111,34 +129,46 @@ export default class cardTAL extends Component {
             {
               this.props.data.load
                 ? this.state.editLoad
-                  ? <Grid style={{ display: 'flex', alignItems: 'center' }}>
-                    <form onSubmit={this.submitData('load')}>
-                      <TextField
-                        value={this.state.load}
-                        onChange={this.handleChange('load')}
-                        variant="outlined"
-                        InputProps={{
-                          style: { height: 35, padding: 0 }
-                        }}
-                        error={this.state.load > 10}
-                        disabled={this.state.proses}
-                      />
-                    </form>
-                    <CancelPresentationIcon style={{ color: 'red', cursor: 'pointer', marginLeft: 5 }} onClick={this.editLoad} />
-                  </Grid>
+                  ? this.state.prosesLoad
+                    ? <Grid style={{
+                      display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%'
+                    }}>
+                      < CircularProgress color="secondary" />
+                    </Grid>
+                    : <Grid style={{ display: 'flex', alignItems: 'center' }}>
+                      <form onSubmit={this.submitData('load')}>
+                        <TextField
+                          value={this.state.load}
+                          onChange={this.handleChange('load')}
+                          variant="outlined"
+                          InputProps={{
+                            style: { height: 35, padding: 0 }
+                          }}
+                          error={this.state.load > 10}
+                          disabled={this.state.proses}
+                        />
+                      </form>
+                      <CancelPresentationIcon style={{ color: 'red', cursor: 'pointer', marginLeft: 5 }} onClick={this.editLoad} />
+                    </Grid>
                   : <p style={{ margin: 0, cursor: 'pointer' }} onClick={this.editLoad}>{this.props.data.load}</p>
-                : <form onSubmit={this.submitData('load')}>
-                  <TextField
-                    value={this.state.load}
-                    onChange={this.handleChange('load')}
-                    variant="outlined"
-                    InputProps={{
-                      style: { height: 35, padding: 0 }
-                    }}
-                    error={this.state.load > 10}
-                    disabled={this.state.proses}
-                  />
-                </form>
+                : this.state.prosesLoad
+                  ? <Grid style={{
+                    display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%'
+                  }}>
+                    < CircularProgress color="secondary" />
+                  </Grid>
+                  : <form onSubmit={this.submitData('load')}>
+                    <TextField
+                      value={this.state.load}
+                      onChange={this.handleChange('load')}
+                      variant="outlined"
+                      InputProps={{
+                        style: { height: 35, padding: 0 }
+                      }}
+                      error={this.state.load > 10}
+                      disabled={this.state.proses}
+                    />
+                  </form>
             }
           </TableCell>
           <TableCell style={{ padding: '0px 10px' }}>
@@ -154,49 +184,67 @@ export default class cardTAL extends Component {
           <TableCell align="center" style={{ padding: '0px 10px' }} >{
             this.props.data.achievement
               ? this.state.editAchievement
-                ? <Grid style={{ display: 'flex', alignItems: 'center' }}>
-                  <form onSubmit={this.submitData('achievement')}>
-                    <TextField
-                      value={this.state.achievement}
-                      onChange={this.handleChange('achievement')}
-                      variant="outlined"
-                      InputProps={{
-                        style: { height: 35, padding: 0 }
-                      }}
-                      error={this.state.achievement > 100}
-                      disabled={this.state.proses}
-                    />
-                  </form>
-                  <CancelPresentationIcon style={{ color: 'red', cursor: 'pointer', marginLeft: 5 }} onClick={this.editAchievement} />
-                </Grid>
+                ? this.state.prosesAchievment
+                  ? <Grid style={{
+                    display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%'
+                  }}>
+                    < CircularProgress color="secondary" />
+                  </Grid>
+                  : <Grid style={{ display: 'flex', alignItems: 'center' }}>
+                    <form onSubmit={this.submitData('achievement')}>
+                      <TextField
+                        value={this.state.achievement}
+                        onChange={this.handleChange('achievement')}
+                        variant="outlined"
+                        InputProps={{
+                          style: { height: 35, padding: 0 }
+                        }}
+                        error={this.state.achievement > 100}
+                        disabled={this.state.proses}
+                      />
+                    </form>
+                    <CancelPresentationIcon style={{ color: 'red', cursor: 'pointer', marginLeft: 5 }} onClick={this.editAchievement} />
+                  </Grid>
                 : <p style={{ margin: 0, cursor: 'pointer' }} onClick={this.editAchievement}>{this.props.data.achievement}</p>
-              : <form onSubmit={this.submitData('achievement')}>
-                <TextField
-                  value={this.state.achievement}
-                  onChange={this.handleChange('achievement')}
-                  variant="outlined"
-                  InputProps={{
-                    style: { height: 35, padding: 0 }
-                  }}
-                  error={this.state.achievement > 100}
-                  disabled={this.state.proses}
-                />
-              </form>
+              : this.state.prosesAchievment
+                ? <Grid style={{
+                  display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%'
+                }}>
+                  < CircularProgress color="secondary" />
+                </Grid>
+                : <form onSubmit={this.submitData('achievement')}>
+                  <TextField
+                    value={this.state.achievement}
+                    onChange={this.handleChange('achievement')}
+                    variant="outlined"
+                    InputProps={{
+                      style: { height: 35, padding: 0 }
+                    }}
+                    error={this.state.achievement > 100}
+                    disabled={this.state.proses}
+                  />
+                </form>
           }</TableCell>
           <TableCell align="center" style={{ padding: '0px 10px' }} >{
             this.props.data.link
               ? this.props.data.link
-              : <form onSubmit={this.submitData('link')}>
-                <TextField
-                  value={this.state.link}
-                  onChange={this.handleChange('link')}
-                  variant="outlined"
-                  InputProps={{
-                    style: { height: 35, padding: 0 }
-                  }}
-                  disabled={this.state.proses}
-                />
-              </form>
+              : this.state.prosesLink
+                ? <Grid style={{
+                  display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%'
+                }}>
+                  < CircularProgress color="secondary" />
+                </Grid>
+                : <form onSubmit={this.submitData('link')}>
+                  <TextField
+                    value={this.state.link}
+                    onChange={this.handleChange('link')}
+                    variant="outlined"
+                    InputProps={{
+                      style: { height: 35, padding: 0 }
+                    }}
+                    disabled={this.state.proses}
+                  />
+                </form>
           }</TableCell>
         </TableRow>
       </>

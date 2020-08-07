@@ -267,8 +267,8 @@ class ReportIjin extends Component {
 
 
   fetchData = async () => {
-    let tempData = []
-    await this.props.fetchDataAllKPIM({ year: new Date().getFullYear(), hasConfirm: true })
+    let tempData = [], forDisplay = []
+    await this.props.fetchDataAllKPIM({ 'for-report': true, year: new Date().getFullYear(), month: new Date().getMonth() + 1 })
 
     await this.props.dataAllKPIM.sort(this.sortingUser)
 
@@ -284,8 +284,6 @@ class ReportIjin extends Component {
         tempData.push(temp)
       }
     });
-
-    let forDisplay = []
 
     tempData.forEach(async (el, index) => {
       let a = await this.fetchDataForDisplay(el)
@@ -308,14 +306,14 @@ class ReportIjin extends Component {
     })
   };
 
-  fetchDataForDisplay = async  args => {
+  fetchDataForDisplay = async args => {
     let tempDataForDisplayKPIM = [], tempDataForDisplayTAL = [], nilaiKPI = 0
 
     let kpim = await args.filter(el => el.indicator_kpim.toLowerCase() !== "tal")
     let tal = await args.find(el => el.indicator_kpim.toLowerCase() === "tal")
 
     await kpim.forEach(async element => {
-      let kpimScore = await element.kpimScore.find(el => el.month === this.state.monthSelected + 1 && el.hasConfirm === true)
+      let kpimScore = await element.tbl_kpim_scores.find(el => el.month === this.state.monthSelected + 1 && el.hasConfirm === true)
       if (kpimScore) {
         let score = {
           indicator_kpim: element.indicator_kpim,
@@ -328,7 +326,7 @@ class ReportIjin extends Component {
     });
 
     let tempTAL
-    if (tal) tempTAL = await tal.kpimScore.find(el => el.month === this.state.monthSelected + 1)
+    if (tal) tempTAL = await tal.tbl_kpim_scores.find(el => el.month === this.state.monthSelected + 1)
 
     tempTAL && tempTAL.tbl_tals.forEach(async element => {
 
@@ -364,7 +362,7 @@ class ReportIjin extends Component {
           tal: tempTAL,
           nilaiKPI: Math.round(nilaiKPI),
           nilaiTAL: Math.round(tempTAL.score_kpim_monthly),
-          userId: args[0].tbl_user.user_id,
+          userId: args[0].user_id,
           fullname: args[0].tbl_user.tbl_account_detail.fullname,
           evaluator: args[0].tbl_user.tbl_account_detail.idEvaluator1 ? args[0].tbl_user.tbl_account_detail.idEvaluator1.tbl_account_detail.fullname : '',
           ...b
@@ -375,7 +373,7 @@ class ReportIjin extends Component {
           tal: tempTAL,
           nilaiKPI: Math.round(nilaiKPI),
           nilaiTAL: 0,
-          userId: args[0].tbl_user.user_id,
+          userId: args[0].user_id,
           fullname: args[0].tbl_user.tbl_account_detail.fullname,
           evaluator: args[0].tbl_user.tbl_account_detail.idEvaluator1 ? args[0].tbl_user.tbl_account_detail.idEvaluator1.tbl_account_detail.fullname : '',
           ...b
@@ -445,10 +443,6 @@ class ReportIjin extends Component {
       }
       tempDataTAL.push(tempObj)
     })
-
-    // console.log(dataNilaiReport)
-    // console.log(tempDataKPIM)
-    // console.log(tempDataTAL)
 
     return {
       dataNilaiReport,
@@ -550,12 +544,12 @@ class ReportIjin extends Component {
     }
   };
 
-  handleClickSubMenu = event => {
+  handleClickSubMenu = async (event) => {
     this.setState({
       anchorElSubMenu: event.currentTarget,
       openSubMenu: true
     })
-    this.fetchDataForDownload()
+    await this.fetchDataForDownload()
   };
 
   handleCloseSubMenu = () => {
@@ -610,8 +604,8 @@ class ReportIjin extends Component {
 
     target.setDate(target.getDate() - dayNr + 3);
 
-    var jan4 = new Date(target.getFullYear(), 0, 4);
-    var dayDiff = (target - jan4) / 86400000;
+    var reference = new Date(target.getFullYear(), 0, 4);
+    var dayDiff = (target - reference) / 86400000;
     var weekNr = 1 + Math.ceil(dayDiff / 7);
 
     return weekNr;
@@ -784,21 +778,32 @@ class ReportIjin extends Component {
           }}
         >
           <MenuList style={{ width: 100 }} >
-            {
+            {/* {
               this.state.unduhLaporan.map((el, index) =>
                 <MenuItem key={index}>
                   <Download
-                    title={el}
+                    title="semua"
                     report="kpim"
                     labelValueReportNilai={this.state.labelValueReportNilai}
                     data={this.state.dataNilaiReport}
                     labelValueKPIM={this.state.labelValueKPIM}
                     dataKPIM={this.state.dataNilaiKPIM}
-                    labelValueTAL={this.state.labelValueTAL}
-                    dataTAL={this.state.dataNilaiTAL} />
+                  // labelValueTAL={this.state.labelValueTAL}
+                  // dataTAL={this.state.dataNilaiTAL} 
+                  />
                 </MenuItem>
               )
-            }
+            } */}
+            <MenuItem style={{height:'50px'}}>
+              <Download
+                title="semua"
+                report="kpim"
+                labelValueReportNilai={this.state.labelValueReportNilai}
+                data={this.state.dataNilaiReport}
+                labelValueKPIM={this.state.labelValueKPIM}
+                dataKPIM={this.state.dataNilaiKPIM}
+              />
+            </MenuItem>
           </MenuList>
         </Popover>
       </div >

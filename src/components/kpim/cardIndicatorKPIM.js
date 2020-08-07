@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Cookies from 'js-cookie';
 
 import {
-  Grid, Popover, Button
+  Grid, Popover, Button, CircularProgress
 } from '@material-ui/core';
 
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
@@ -20,73 +20,58 @@ export default class cardIndicator extends Component {
     anchorEl: null,
     persenBefore: 0,
     persenNow: 0,
-    persenMinggu: 0,
-    persenBulan: 0,
     editIndicator: false,
-    dataTALWeek: []
+    dataTALWeek: [],
+    proses: true,
+    bobotNow: 0
   }
-
   componentDidMount() {
     this.fetchData()
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.data !== this.props.data) {
+    if (prevProps.data !== this.props.data || prevProps.monthSelected !== this.props.monthSelected || prevProps.weekSelected !== this.props.weekSelected || prevProps.lastUpdate !== this.props.lastUpdate) {
       this.fetchData()
     }
   }
 
   fetchData = async () => {
-    let persenBefore = 0, persenNow = 0, persenMinggu = 0, persenBulan = 0
+    let persenBefore = 0, persenNow = 0, bobotNow = 0;
+    if (this.props.data.indicator_kpim.toLowerCase() !== "tal team") {
+      let dataBefore = this.props.data.tbl_kpim_scores.find(el => el.month === Number(this.props.monthSelected) - 1)
+      dataBefore = { ...this.props.data, ...dataBefore }
+      delete dataBefore.tbl_kpim_scores
+      let dataNow = this.props.data.tbl_kpim_scores.find(el => el.month === Number(this.props.monthSelected))
+      dataNow = { ...this.props.data, ...dataNow }
+      delete dataNow.tbl_kpim_scores
 
-    if (this.props.data[1].indicator_kpim.toLowerCase() === "kpim team") {
+      if (this.props.data.indicator_kpim.toLowerCase() === "kpim team") {
 
-      if (isNaN(Math.ceil(this.props.data[0].score_kpim_monthly))) persenBefore = 0
-      else persenBefore = Math.ceil(this.props.data[0].score_kpim_monthly) || 0
+        if (isNaN(Math.ceil(dataBefore.score_kpim_monthly))) persenBefore = 0
+        else persenBefore = Math.round(Math.ceil(dataBefore.score_kpim_monthly)) || 0
 
-      if (isNaN(Math.ceil(this.props.data[1].score_kpim_monthly))) persenNow = 0
-      else persenNow = Math.ceil(this.props.data[1].score_kpim_monthly) || 0
+        if (isNaN(Math.ceil(dataNow.score_kpim_monthly))) persenNow = 0
+        else persenNow = Math.round(Math.ceil(dataNow.score_kpim_monthly)) || 0
 
-    } else if (this.props.data[1].indicator_kpim.toLowerCase() === "tal team") {
-      if (isNaN(Math.ceil(this.props.data[1].score_kpim_monthly))) persenBulan = 0
-      else persenBulan = Math.ceil(this.props.data[1].score_kpim_monthly) || 0
+      } else if (this.props.data.indicator_kpim.toLowerCase() !== "tal") {
+        if (dataBefore.pencapaian_monthly && dataBefore.target_monthly !== 0) persenBefore = Math.round(Math.ceil(Number(dataBefore.pencapaian_monthly)) / Number(dataBefore.target_monthly) * 100)
 
-      if (isNaN(Math.ceil(this.props.data[1].score_kpim_monthly))) {
-        persenMinggu = 0
+        if (dataNow.target_monthly !== 0) persenNow = Math.round(Math.ceil(Number(dataNow.pencapaian_monthly) / Number(dataNow.target_monthly) * 100))
+      } else {
+        if (isNaN(Math.ceil(dataBefore.score_kpim_monthly))) persenBefore = 0
+        else persenBefore = Math.round(Math.ceil(dataBefore.score_kpim_monthly)) || 0
+
+        if (isNaN(Math.ceil(dataNow.score_kpim_monthly))) persenNow = 0
+        else persenNow = Math.round(Math.ceil(dataNow.score_kpim_monthly)) || 0
       }
-      else {
-        let nilaiMingguIni = await this.props.data[1].talPerMinggu.find(el => el.week === this.props.weekSelected)
-
-        if (nilaiMingguIni) {
-
-          persenMinggu = Math.ceil(nilaiMingguIni.scoreTALTeam) || 0
-
-          this.setState({
-            dataTALWeek: nilaiMingguIni.tal
-          })
-        } else {
-          this.setState({
-            dataTALWeek: []
-          })
-        }
-      }
-    } else if (this.props.data[1].indicator_kpim.toLowerCase() !== "tal") {
-      if (this.props.data[0].pencapaian_monthly && this.props.data[0].target_monthly !== 0) persenBefore = Math.ceil(Number(this.props.data[0].pencapaian_monthly) / Number(this.props.data[0].target_monthly) * 100)
-
-      if (this.props.data[1].target_monthly !== 0) persenNow = Math.ceil(Number(this.props.data[1].pencapaian_monthly) / Number(this.props.data[1].target_monthly) * 100)
-    } else {
-      if (isNaN(Math.ceil(this.props.data[0].score_kpim_monthly))) persenBefore = 0
-      else persenBefore = Math.ceil(this.props.data[0].score_kpim_monthly) || 0
-
-      if (isNaN(Math.ceil(this.props.data[1].score_kpim_monthly))) persenNow = 0
-      else persenNow = Math.ceil(this.props.data[1].score_kpim_monthly) || 0
+      bobotNow = dataNow.bobot
     }
 
     this.setState({
+      proses: false,
       persenBefore,
       persenNow,
-      persenMinggu,
-      persenBulan
+      bobotNow
     })
   }
 
@@ -108,7 +93,7 @@ export default class cardIndicator extends Component {
   calculateKPIMScore = () => {
     let token = Cookies.get('POLAGROUP')
 
-    API.put('/kpim/calculateKPIMTEAM', { year: new Date().getFullYear(), month: this.props.data[1].month }, { headers: { token } })
+    API.put('/kpim/calculateKPIMTEAM', { year: new Date().getFullYear(), month: this.props.monthSelected }, { headers: { token } })
       .then(() => {
         swal("Nilai sudah terbaru", "", "success")
       })
@@ -126,8 +111,8 @@ export default class cardIndicator extends Component {
 
       target.setDate(target.getDate() - dayNr + 3);
 
-      var jan4 = new Date(target.getFullYear(), 0, 4);
-      var dayDiff = (target - jan4) / 86400000;
+      var reference = new Date(target.getFullYear(), 0, 4);
+      var dayDiff = (target - reference) / 86400000;
       var weekNr = 1 + Math.ceil(dayDiff / 7);
 
       return weekNr;
@@ -136,28 +121,39 @@ export default class cardIndicator extends Component {
     return (
       <>
         <Grid item xs={3} md={2} style={{ padding: 3 }}>
-          <Grid style={{ border: '1px solid black', padding: 10, cursor: 'pointer', backgroundColor: this.props.data[1].indicator_kpim === 'TAL TEAM' ? '#ff5887' : 'white', minHeight: 120 }} onClick={this.handleClick}>
+          <Grid style={{ border: '1px solid black', padding: 10, cursor: 'pointer', backgroundColor: this.props.data.indicator_kpim === 'TAL TEAM' ? '#ff5887' : 'white', minHeight: 127.5 }} onClick={this.handleClick}>
             <Grid style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <p style={{ margin: 0, fontSize: 14 }}>{this.props.data[1].indicator_kpim}</p>
+              <p style={{ margin: 0, fontSize: 14 }}>{this.props.data.indicator_kpim}</p>
               {
                 this.state.open
                   ? <ArrowDropUpIcon />
                   : <ArrowDropDownIcon />
               }
             </Grid>
+            {
+              this.props.data.indicator_kpim !== "TAL TEAM" && <Grid>
+                <p style={{ margin: 0, fontSize: 10 }}>Bobot: {this.state.bobotNow}</p>
+              </Grid>
+            }
             <Grid>
 
             </Grid>
             {
-              this.props.data[1].indicator_kpim.toLowerCase() === "tal team"
-                ? <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
+              this.state.proses ? (
+                <Grid style={{
+                  display: 'flex', justifyContent: 'center', alignItems: 'center', height: '67px', width: '100%'
+                }}>
+                  < CircularProgress color="secondary" />
+                </Grid>
+              ) : (this.props.data.indicator_kpim.toLowerCase() === "tal team"
+                ? <Grid style={{ display: 'flex', alignItems: 'flex-end', flexWrap: 'wrap', marginTop: 7 }}>
                   <Grid style={{ marginRight: 20 }}>
-                    <p style={{ margin: 0, fontSize: 30 }}>{Math.floor(this.state.persenMinggu)}%</p>
+                    <p style={{ margin: 0, fontSize: 35 }}>{Math.floor(this.props.data.persenWeek)}%</p>
                     <p style={{ margin: 0, fontSize: 12 }}>Minggu {this.props.weekSelected === getNumberOfWeek(new Date()) ? 'ini' : this.props.weekSelected}</p>
                   </Grid>
                   <Grid>
-                    <p style={{ margin: 0, fontSize: 25 }}>{Math.floor(this.state.persenBulan)}%</p>
-                    <p style={{ margin: 0, fontSize: 12 }}>Bulan {this.props.data[1].month === new Date().getMonth() + 1 ? 'ini' : months[this.props.data[1].month - 1]}</p>
+                    <p style={{ margin: 0, fontSize: 25 }}>{Math.floor(this.props.data.persenMonth)}%</p>
+                    <p style={{ margin: 0, fontSize: 12 }}>Bulan {this.props.data.month === new Date().getMonth() + 1 ? 'ini' : months[this.props.data.month - 1]}</p>
                   </Grid>
                 </Grid>
                 : <>
@@ -173,6 +169,7 @@ export default class cardIndicator extends Component {
                     <p style={{ margin: '3px 0px 0px 0px', fontSize: 10 }}> dari periode sebelumnya</p>
                   </Grid>
                 </>
+                )
             }
 
           </Grid>
@@ -193,17 +190,17 @@ export default class cardIndicator extends Component {
         >
           <Grid style={{ width: 250, padding: 10 }}>
             {
-              this.props.data[1].indicator_kpim.toLowerCase() === "tal team"
-                ? this.state.dataTALWeek.map((tal, index) =>
-                  <PencapaianKPIM data={tal} key={index} refresh={this.refresh} index={index} />
+              this.props.data.indicator_kpim.toLowerCase() === "tal team"
+                ? this.props.data.talBawahanThisWeek.map((tal, index) =>
+                  <PencapaianKPIM data={tal} key={index} refresh={this.refresh} index={index} indicator={this.props.data.indicator_kpim} />
                 )
-                : this.props.data.map((kpim, index) =>
-                  <PencapaianKPIM data={kpim} key={index} refresh={this.refresh} index={index} />
+                : this.props.data.tbl_kpim_scores.map((kpim, index) =>
+                  <PencapaianKPIM data={kpim} key={index} refresh={this.refresh} index={index} indicator={this.props.data.indicator_kpim} year={this.props.data.year} />
                 )
             }
 
             {
-              this.props.data[1].indicator_kpim.toLowerCase() === "kpim team" &&
+              this.props.data.indicator_kpim.toLowerCase() === "kpim team" &&
               <Grid style={{ width: '100%', textAlign: 'end' }}>
                 <Button variant="contained" onClick={this.calculateKPIMScore}>
                   refresh score

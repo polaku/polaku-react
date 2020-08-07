@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 
 import {
-  Grid, LinearProgress, Select as SelectOption, MenuItem
+  Grid, LinearProgress, Select as SelectOption, MenuItem, CircularProgress
 } from '@material-ui/core';
 
 import BarChartIcon from '@material-ui/icons/BarChart';
@@ -41,22 +41,7 @@ class TAL extends Component {
         monthSelected: new Date().getMonth()
       })
 
-      await this.fetchData()
-      await this.fetchDataForDisplay()
-    }
-  }
-
-  async componentDidUpdate(prevProps, prevState) {
-    if (prevProps.userId !== this.props.userId) {
-      this.setState({
-        mingguAwalBulan: this.getNumberOfWeek(new Date(new Date().getFullYear(), new Date().getMonth(), 1)),
-        mingguAkhirBulan: this.getNumberOfWeek(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)),
-        persenanTALMonth: 0,
-        monthSelected: new Date().getMonth()
-      })
-
-      await this.fetchData()
-      await this.fetchDataForDisplay()
+      await this.fetchData(new Date().getMonth() + 1)
     }
   }
 
@@ -64,54 +49,38 @@ class TAL extends Component {
     this._isMounted = false
   }
 
+  fetchData = async (monthSelected) => {
+    await this.props.fetchDataAllTAL({ "for-dashboard": true, year: new Date().getFullYear(), month: monthSelected, week: null, 'user-id': this.props.userId })
 
-  fetchData = async () => {
-    await this.props.fetchDataAllTAL(new Date().getFullYear())
-    let allTAL = this.props.dataAllTAL, tempTAL = []
+    let tempTAL = [], isEmpty = true, tempPersenanTALMonth = 0, pembagi = 0
 
-    for (let i = 1; i <= 53; i++) { //fetch tal per minggu
-      let tempTALweek = []
-      await allTAL.forEach(async tal => {
-        let temp = await tal.talScore.find(talWeek => Number(talWeek.week) === i && Number(tal.user_id) === Number(this.props.userId))
-        let newTAL = { ...tal, ...temp }
-        delete newTAL.talScore
-        temp && tempTALweek.push(newTAL)
+    for (let week = this.state.mingguAwalBulan; week <= this.state.mingguAkhirBulan; week++) { //fetch tal per minggu
+      let tempTALweek = [], persenWeek = 0, newObj;
+      await this.props.dataAllTAL.forEach(async tal => {
+        let talScore = await tal.tbl_tal_scores.find(tal_score => tal_score.week === week)
+        if (talScore) {
+          let obj = { ...tal, ...talScore }
+          delete obj.tbl_tal_scores
+          persenWeek += talScore.score_tal
+          tempTALweek.push(obj)
+        }
       })
-      tempTAL.push(tempTALweek)
+      if (tempTALweek.length > 0) {
+        if (isEmpty) {
+          isEmpty = false
+        }
+        pembagi++
+      }
+      newObj = { week, persenWeek, TALs: tempTALweek }
+      tempPersenanTALMonth += persenWeek
+      tempTAL.push(newObj)
     }
 
+    let persenanTALMonth = Math.round(tempPersenanTALMonth / pembagi)
     this._isMounted && this.setState({
-      dataTAL: tempTAL
-    })
-  }
-
-  fetchDataForDisplay = () => {
-    let isEmpty = true
-    let allData = []
-
-    if (this.state.dataTAL && this.state.dataTAL.length > 0) allData = this.state.dataTAL.slice(this.state.mingguAwalBulan - 1, this.state.mingguAkhirBulan)
-
-
-    let counterWeek = 0, tempTotalScore = 0, tempScore = 0
-
-    allData.forEach(tal => {
-      if (tal.length > 0) {
-        isEmpty = false
-      }
-      if (tal.length > 0) counterWeek++
-      tal.forEach(talScore => {
-        tempTotalScore += talScore.score_tal
-      })
-    })
-
-    tempScore = Math.floor(tempTotalScore / counterWeek)
-
-    if (isNaN(tempScore)) tempScore = 0
-
-    this._isMounted && this.setState({
-      dataForDisplay: allData,
-      persenanTALMonth: tempScore,
-      isEmpty
+      isEmpty,
+      dataForDisplay: tempTAL,
+      persenanTALMonth
     })
   }
 
@@ -123,8 +92,8 @@ class TAL extends Component {
 
     target.setDate(target.getDate() - dayNr + 3);
 
-    var jan4 = new Date(target.getFullYear(), 0, 4);
-    var dayDiff = (target - jan4) / 86400000;
+    var reference = new Date(target.getFullYear(), 0, 4);
+    var dayDiff = (target - reference) / 86400000;
     var weekNr = 1 + Math.ceil(dayDiff / 7);
 
     return weekNr;
@@ -138,14 +107,11 @@ class TAL extends Component {
       [name]: event.target.value,
       dataForDisplay: [],
     })
-
-    await this.fetchData()
-    await this.fetchDataForDisplay()
+    await this.fetchData(event.target.value+1)
   };
 
   refresh = async () => {
-    await this.fetchData()
-    await this.fetchDataForDisplay()
+    await this.fetchData(this.state.monthSelected+1)
   }
 
   render() {
@@ -181,20 +147,27 @@ class TAL extends Component {
           </Grid>
         </Grid>
 
-        <Grid container style={{ marginTop: 10 }}>
-          {
-            this.state.dataForDisplay.length > 0 && this.state.dataForDisplay.map((el, index) =>
-              <CardTAL data={el} key={index} refresh={this.refresh} />
-            )
-          }
-
-          {
-            this.state.isEmpty && <Grid style={{ display: 'flex', margin: '50px auto 10px auto', flexDirection: 'column', textAlign: 'center' }}>
-              <img src={process.env.PUBLIC_URL + '/settingKPIM.png'} alt="Logo" style={{ width: 500, maxHeight: 500 }} />
-              <p style={{ marginTop: 10, fontFamily: 'Simonetta', fontSize: 20, textShadow: '4px 4px 4px #aaa' }} >BELUM ADA TAL</p>
+        {
+          this.state.proses
+            ? <Grid style={{
+              marginTop: 10, display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%'
+            }}>
+              < CircularProgress color="secondary" />
             </Grid>
-          }
-        </Grid>
+            : <Grid container style={{ marginTop: 10 }}>
+              {
+                this.state.isEmpty
+                  ? <Grid style={{ display: 'flex', margin: '50px auto 10px auto', flexDirection: 'column', textAlign: 'center' }}>
+                    <img src={process.env.PUBLIC_URL + '/settingKPIM.png'} alt="Logo" style={{ width: 500, maxHeight: 500 }} />
+                    <p style={{ marginTop: 10, fontFamily: 'Simonetta', fontSize: 20, textShadow: '4px 4px 4px #aaa' }} >BELUM ADA TAL</p>
+                  </Grid>
+                  : this.state.dataForDisplay.length > 0 && this.state.dataForDisplay.map((el, index) =>
+                    <CardTAL data={el} key={index} refresh={this.refresh} />
+                  )
+              }
+            </Grid>
+        }
+
 
       </Grid >
     )
@@ -219,4 +192,5 @@ const mapStateToProps = ({ loading, error, dataAllTAL, userId }) => {
     loading, error, dataAllTAL, userId
   }
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(TAL));

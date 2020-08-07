@@ -25,6 +25,7 @@ import { API } from '../../config/API';
 
 export default class cardSettingUserKPIM extends Component {
   state = {
+    proses: false,
     isVisible: true,
     user_id: null,
     openKPIM: false,
@@ -65,7 +66,8 @@ export default class cardSettingUserKPIM extends Component {
   async componentDidMount() {
     await this.fetchData()
 
-    let listDate = this.fetchOptionDateInWeek()
+    let listDate = await this.fetchOptionDateInWeek()
+    let thereDate20 = listDate.includes(20)
     let day = []
 
     listDate.forEach(el => {
@@ -80,16 +82,19 @@ export default class cardSettingUserKPIM extends Component {
 
     if ((this.state.KPIM.length === 0 && this.state.TAL.length === 0) || this.state.bobotKPIM < 100 || this.state.bobotTAL < 100 || this.state.adaBobotKPIMYangKosong || this.state.adaWeightTALYangKosong) {
       this.props.setNeedAction(this.props.data.user_id)
-      this.setState({
-        statusValid: false
-      })
-    } else {
+      // this.setState({
+      //   statusValid: false
+      // })
+    }
+    else {
       this.setState({
         isVisible: false,
       })
     }
-    if ((new Date().getDate() < 27 && (new Date().getMonth() + 1) === Number(this.props.month)) ||
-      ((new Date().getMonth() + 1) > Number(this.props.month) && this.props.lastWeekInMonth !== this.props.week)) {
+
+    // if ((new Date().getDate() < 27 && (new Date().getMonth() + 1) === Number(this.props.month)) ||
+    //   ((new Date().getMonth() + 1) > Number(this.props.month) && this.props.lastWeekInMonth !== this.props.week)) {
+    if ((new Date().getDate() <= 20 && ((new Date().getMonth() + 1) === Number(this.props.month)) && thereDate20)) {
       this.setState({
         statusValid: false
       })
@@ -115,12 +120,14 @@ export default class cardSettingUserKPIM extends Component {
 
     if (prevProps.data !== this.props.data) {
       await this.fetchData()
+      let listDate = await this.fetchOptionDateInWeek()
+      let thereDate20 = listDate.includes(20)
+
       if ((this.state.KPIM.length === 0 && this.state.TAL.length === 0) || this.state.bobotKPIM < 100 || this.state.bobotTAL < 100 || this.state.adaBobotKPIMYangKosong || this.state.adaWeightTALYangKosong) {
         this.props.setNeedAction(this.props.data.user_id)
-        this.setState({
-          statusValid: false
-        })
-
+        // this.setState({
+        //   statusValid: false
+        // })
       } else {
         this.setState({
           isVisible: false,
@@ -128,10 +135,16 @@ export default class cardSettingUserKPIM extends Component {
         })
       }
 
-      if ((new Date().getDate() < 27 && (new Date().getMonth() + 1) === Number(this.props.month)) ||
-        ((new Date().getMonth() + 1) > Number(this.props.month) && this.props.lastWeekInMonth !== this.props.week)) {
+      // if ((new Date().getDate() < 27 && (new Date().getMonth() + 1) === Number(this.props.month)) ||
+      //   ((new Date().getMonth() + 1) > Number(this.props.month) && this.props.lastWeekInMonth !== this.props.week)) {
+      if (((new Date().getDate() <= 20 || !thereDate20) && ((new Date().getMonth() + 1) === Number(this.props.month))) || ((new Date().getMonth() + 1) > Number(this.props.month) && !thereDate20) || (new Date().getMonth() + 1) < Number(this.props.month)) {
         this.setState({
           statusValid: false
+        })
+      }
+      else {
+        this.setState({
+          statusValid: true
         })
       }
     }
@@ -156,67 +169,79 @@ export default class cardSettingUserKPIM extends Component {
           optionTimeTAL: day
         })
       }
+      this.fetchData()
     }
   }
 
   fetchData = async () => {
-    let tempKPIM = [], tempTAL = [], user_id, tempBobotKPIM = 0, tempBobotTAL = 0, tempTALMonth = null, statusSudahKirimNilai = false
+    let tempKPIM = [], tempTAL = [], tempBobotKPIM = 0, tempBobotTAL = 0, tempTALMonth = null, statusSudahKirimNilai = false
     this.setState({
+      proses: true,
       statusCreateKPIM: false,
       statusCreateTAL: false,
       KPIM: [],
       adaBobotKPIMYangKosong: false,
       adaWeightTALYangKosong: false
     })
-    await this.props.data.kpim.forEach(kpim => {
-      kpim.score.forEach(element => {
+
+    await this.props.data.kpim.forEach(async (kpim) => {
+      let kpimCurrentMonth = await kpim.tbl_kpim_scores.find(el => el.month === this.props.month)
+      if (kpimCurrentMonth) {
         let newScoreKPIM = {
           kpim_id: kpim.kpim_id,
-          kpim_score_id: element.kpim_score_id,
+          kpim_score_id: kpimCurrentMonth.kpim_score_id,
           indicator_kpim: kpim.indicator_kpim,
           target: kpim.target,
           unit: kpim.unit,
           pencapaian: kpim.pencapaian,
           year: kpim.year,
-          month: element.month,
-          target_monthly: element.target_monthly,
-          pencapaian_monthly: element.pencapaian_monthly,
-          bobot: element.bobot,
-          score: element.score,
+          month: kpimCurrentMonth.month,
+          target_monthly: kpimCurrentMonth.target_monthly,
+          pencapaian_monthly: kpimCurrentMonth.pencapaian_monthly,
+          score_kpim_monthly: kpimCurrentMonth.score_kpim_monthly,
+          bobot: kpimCurrentMonth.bobot,
+          score: kpimCurrentMonth.score,
           kpimScore: kpim.kpimScore,
           user_id: kpim.user_id,
-          hasConfirm: element.hasConfirm
+          hasConfirm: kpimCurrentMonth.hasConfirm
         }
         tempKPIM.push(newScoreKPIM)
 
-        if (element.bobot) tempBobotKPIM += element.bobot
+        if (kpimCurrentMonth.bobot) tempBobotKPIM += kpimCurrentMonth.bobot
         else this.setState({ adaBobotKPIMYangKosong: true })
 
-        if (element.hasConfirm) statusSudahKirimNilai = true
-      });
+        if (kpimCurrentMonth.hasConfirm) statusSudahKirimNilai = true
+      }
     });
-    user_id = this.props.data.user_id
-    await this.props.data.tal.forEach(tal => {
-      tal.score.forEach(element => {
-        element.indicator_tal = tal.indicator_tal
-        tempTAL.push(element)
-        if (element.weight) tempBobotTAL += Number(element.weight)
-        else this.setState({ adaWeightTALYangKosong: true })
-      });
+
+    let talList = await this.props.data.kpim.find(el => el.indicator_kpim.toLowerCase() === 'tal')
+
+    await talList.tbl_kpim_scores[1].tbl_tals.forEach(element => {
+      let newTAL = {
+        indicator_tal: element.indicator_tal,
+        kpim_score_id: element.kpim_score_id,
+        tal_id: element.tal_id,
+        ...element.tbl_tal_scores[0]
+      }
+      tempTAL.push(newTAL)
+
+      if (element.tbl_tal_scores[0].weight) tempBobotTAL += Number(element.tbl_tal_scores[0].weight)
+      else this.setState({ adaWeightTALYangKosong: true })
     });
 
     tempTALMonth = await tempKPIM.find(kpim => kpim.indicator_kpim === 'TAL')
-    tempTALMonth && delete tempTALMonth.kpimScore
 
     tempKPIM = await tempKPIM.filter(kpim => kpim.indicator_kpim !== 'TAL')
+
     this.setState({
       KPIM: tempKPIM,
       TALMonth: tempTALMonth,
       TAL: tempTAL,
-      user_id,
+      user_id: this.props.data.user_id,
       bobotKPIM: tempBobotKPIM,
       bobotTAL: tempBobotTAL,
-      statusSudahKirimNilai
+      statusSudahKirimNilai,
+      proses: false
     })
 
     if (tempTALMonth) {
@@ -309,6 +334,7 @@ export default class cardSettingUserKPIM extends Component {
 
   createNewKPIM = () => {
     let token = Cookies.get('POLAGROUP')
+    this.setState({ proses: true })
     let newData = this.state.newDataKPIM
 
     if (!newData.year) newData.year = new Date().getFullYear()
@@ -317,7 +343,6 @@ export default class cardSettingUserKPIM extends Component {
       newData.user_id = this.state.user_id
       newData.indicator_kpim = this.state.newIndicatorKPIM
       newData.month = this.props.month
-
       API.post('/kpim', newData, { headers: { token } })
         .then(async data => {
           swal("Tambah indicator KPIM success", "", "success")
@@ -338,15 +363,18 @@ export default class cardSettingUserKPIM extends Component {
     } else {
       swal("Setting target terlebih dahulu")
     }
-
+    this.setState({ proses: false })
   }
 
-  createNewTAL = () => {
+  createNewTAL = async () => {
     let statusOverBobot = false
+    this.setState({ proses: true })
 
     let newWeight = Number(this.state.bobotTAL) + Number(this.state.newBobotTAL)
+    let listDate = await this.fetchOptionDateInWeek()
+    let thereDate20 = listDate.includes(20)
 
-    if (newWeight > 100) {
+    if (newWeight > 100 && !thereDate20) {
       statusOverBobot = true
     }
 
@@ -375,8 +403,6 @@ export default class cardSettingUserKPIM extends Component {
         kpim_score_id: this.state.TALMonth.kpim_score_id
       }
 
-      console.log(newData)
-
       API.post('/tal', newData, { headers: { token } })
         .then(async data => {
           swal("Tambah indicator TAL success", "", "success")
@@ -396,6 +422,7 @@ export default class cardSettingUserKPIM extends Component {
     } else {
       swal("Bobot TAL lebih dari 100", "", "warning")
     }
+    this.setState({ proses: false })
   }
 
   refresh = () => {
@@ -405,6 +432,7 @@ export default class cardSettingUserKPIM extends Component {
   updateKPIMMonthly = event => {
     event.preventDefault()
     let token = Cookies.get('POLAGROUP')
+    this.setState({ proses: true })
 
     let newData = {
       bobot: this.state.bobot,
@@ -413,8 +441,10 @@ export default class cardSettingUserKPIM extends Component {
     API.put(`/kpim/${this.state.TALMonth.kpim_score_id}?update=month`, newData, { headers: { token } })
       .then(data => {
         this.setState({
-          editBobotTAL: false
+          editBobotTAL: false,
+          proses: false
         })
+
         this.props.refresh()
       })
       .catch(err => {
@@ -429,8 +459,8 @@ export default class cardSettingUserKPIM extends Component {
 
     target.setDate(target.getDate() - dayNr + 3);
 
-    var jan4 = new Date(target.getFullYear(), 0, 4);
-    var dayDiff = (target - jan4) / 86400000;
+    var reference = new Date(target.getFullYear(), 0, 4);
+    var dayDiff = (target - reference) / 86400000;
     var weekNr = 1 + Math.ceil(dayDiff / 7);
 
     return weekNr;
@@ -446,17 +476,18 @@ export default class cardSettingUserKPIM extends Component {
     })
       .then((yesAnswer) => {
         if (yesAnswer) {
+          this.setState({ proses: true })
           let arrayKPIMScoreId = []
           let token = Cookies.get("POLAGROUP")
 
           this.props.data.kpim.forEach(kpim => {
-            kpim.score.forEach(kpimScore => {
+            kpim.tbl_kpim_scores.forEach(kpimScore => {
               arrayKPIMScoreId.push(kpimScore.kpim_score_id)
             })
           })
 
           API.put('/kpim/sendGrade', { arrayKPIMScoreId }, { headers: { token } })
-            .then(data => {
+            .then(({ data }) => {
               this.setState({
                 openModalSendGrade: false
               })
@@ -466,13 +497,9 @@ export default class cardSettingUserKPIM extends Component {
             .catch(err => {
               swal("Please try again")
             })
+          this.setState({ proses: false })
         }
       });
-
-
-
-
-
   }
 
   openModalSendGrade = () => {
@@ -512,7 +539,7 @@ export default class cardSettingUserKPIM extends Component {
               </Button>
             </Grid>
             {
-              !this.state.statusSudahKirimNilai && this.state.statusValid && <Button style={{ margin: '0px 0px 0px 30px' }} variant="contained" color="secondary" onClick={this.kirimNilai}>
+              !this.state.statusSudahKirimNilai && this.state.statusValid && <Button style={{ margin: '0px 0px 0px 30px' }} variant="contained" color="secondary" onClick={this.kirimNilai} disabled={this.state.proses}>
                 Kirim Nilai
             </Button>
             }
@@ -532,7 +559,7 @@ export default class cardSettingUserKPIM extends Component {
 
                     ) &&  */}
                   <Button onClick={this.handleCreateKPIM}
-                    style={{ borderRadius: 15, minWidth: 24, backgroundColor: '#e0e0e0', padding: 0 }} >
+                    style={{ borderRadius: 15, minWidth: 24, backgroundColor: '#e0e0e0', padding: 0 }} disabled={this.state.proses}>
                     <AddIcon />
                   </Button>
                   {/* } */}
@@ -576,7 +603,7 @@ export default class cardSettingUserKPIM extends Component {
                 {
                   (this.state.KPIM.length !== 0 || this.state.TALMonth) && <>
                     <Button onClick={this.handleOpenCloseKPIM}
-                      style={{ borderRadius: 15, minWidth: 24, padding: 0 }} >
+                      style={{ borderRadius: 15, minWidth: 24, padding: 0 }} disabled={this.state.proses} >
                       {
                         this.state.openKPIM
                           ? <ExpandLessIcon />
@@ -609,15 +636,16 @@ export default class cardSettingUserKPIM extends Component {
                       }}
                       style={{ width: '70%' }}
                       autoFocus={true}
+                      disabled={this.state.proses}
                     />
-                    <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.openModalTargetKPIM}>
+                    <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.openModalTargetKPIM} disabled={this.state.proses}>
                       setting target
                     </Button>
                     <Grid>
-                      <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.createNewKPIM}>
+                      <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.createNewKPIM} disabled={this.state.proses}>
                         <SaveOutlinedIcon />
                       </Button>
-                      <Button style={{ borderRadius: 5, minWidth: 40, color: 'red' }} onClick={this.handleCreateKPIM}>
+                      <Button style={{ borderRadius: 5, minWidth: 40, color: 'red' }} onClick={this.handleCreateKPIM} disabled={this.state.proses}>
                         <CancelPresentationOutlinedIcon />
                       </Button>
                     </Grid>
@@ -641,10 +669,11 @@ export default class cardSettingUserKPIM extends Component {
 
                       {/* (!this.state.statusCreateTAL && this.props.weekCurrent <= this.props.week && !this.state.statusSudahKirimNilai) &&  */}
                       <Button onClick={this.handleCreateTAL}
-                        style={{ borderRadius: 15, minWidth: 24, backgroundColor: '#e0e0e0', padding: 0 }} >
+                        style={{ borderRadius: 15, minWidth: 24, backgroundColor: '#e0e0e0', padding: 0 }} disabled={this.state.proses}>
                         <AddIcon />
                       </Button>
                       {/* } */}
+                      <p style={{ margin: '0px 0px 0px 20px' }}>Total bobot TAL saat ini : {this.state.bobotTAL}</p>
                     </Grid>
 
                     <Grid style={{ display: 'flex' }}>
@@ -652,7 +681,7 @@ export default class cardSettingUserKPIM extends Component {
                         ((this.state.TALMonth && this.state.TALMonth.bobot > 0) && !this.state.editBobotTAL) && <Grid style={{ display: 'flex', margin: '0px 20px 0px 0px', alignItems: 'center' }}>
                           <p style={{ margin: '0px 5px 0px 0px' }}>bobot: {this.state.TALMonth.bobot}</p>
                           <Tooltip title="Edit" aria-label="edit">
-                            <Button style={{ borderRadius: 3, minWidth: 24, padding: 3 }} onClick={this.handleEditIndicatorTAL}>
+                            <Button style={{ borderRadius: 3, minWidth: 24, padding: 3 }} onClick={this.handleEditIndicatorTAL} disabled={this.state.proses}>
                               <EditIcon />
                             </Button>
                           </Tooltip>
@@ -670,12 +699,13 @@ export default class cardSettingUserKPIM extends Component {
                               style: { height: 35, padding: 0 }
                             }}
                             style={{ width: 85, margin: '0px 5px 0px 0px' }}
+                            disabled={this.state.proses}
                           />
-                          <Button style={{ borderRadius: 5, minWidth: 40, color: 'green', marginRight: 5 }} onClick={this.updateKPIMMonthly}>
+                          <Button style={{ borderRadius: 5, minWidth: 40, color: 'green', marginRight: 5 }} onClick={this.updateKPIMMonthly} disabled={this.state.proses}>
                             <SaveOutlinedIcon />
                           </Button>
                           {
-                            this.state.editBobotTAL && <Button style={{ borderRadius: 5, minWidth: 40, color: 'red', marginRight: 10 }} onClick={this.handleEditIndicatorTAL}>
+                            this.state.editBobotTAL && <Button style={{ borderRadius: 5, minWidth: 40, color: 'red', marginRight: 10 }} onClick={this.handleEditIndicatorTAL} disabled={this.state.proses}>
                               <CancelPresentationOutlinedIcon />
                             </Button>
                           }
@@ -685,7 +715,7 @@ export default class cardSettingUserKPIM extends Component {
                       {
                         this.state.TAL.length !== 0 &&
                         <Button onClick={this.handleOpenCloseTAL}
-                          style={{ borderRadius: 15, minWidth: 24, padding: 0 }} >
+                          style={{ borderRadius: 15, minWidth: 24, padding: 0 }} disabled={this.state.proses} >
                           {
                             this.state.openTAL
                               ? <ExpandLessIcon />
@@ -721,6 +751,7 @@ export default class cardSettingUserKPIM extends Component {
                           }}
                           style={{ width: '35%' }}
                           autoFocus={true}
+                          disabled={this.state.proses}
                         />
 
                         <FormControl variant="outlined" style={{ width: '15%' }}>
@@ -728,6 +759,7 @@ export default class cardSettingUserKPIM extends Component {
                           <SelectOption
                             value={this.state.isLoopingIndicatorTAL}
                             onChange={this.handleChange('isLoopingIndicatorTAL')}
+                            disabled={this.state.proses}
                           >
                             <MenuItem value={0}>1x</MenuItem>
                             <MenuItem value={1}>Setiap</MenuItem>
@@ -739,6 +771,7 @@ export default class cardSettingUserKPIM extends Component {
                           <SelectOption
                             value={this.state.newOptionTimeTAL}
                             onChange={this.handleChange('newOptionTimeTAL')}
+                            disabled={this.state.proses}
                           >
                             <MenuItem value={0}>Tanggal</MenuItem>
                             <MenuItem value={1}>Hari</MenuItem>
@@ -750,6 +783,7 @@ export default class cardSettingUserKPIM extends Component {
                           <SelectOption
                             value={this.state.newTimeTAL}
                             onChange={this.handleChange('newTimeTAL')}
+                            disabled={this.state.proses}
                           >
                             {
                               this.state.optionTimeTAL.map((el, index) =>
@@ -768,11 +802,12 @@ export default class cardSettingUserKPIM extends Component {
                             style: { height: 35, padding: 0 }
                           }}
                           style={{ width: '10%' }}
+                          disabled={this.state.proses}
                         />
-                        <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.createNewTAL}>
+                        <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.createNewTAL} disabled={this.state.proses}>
                           <SaveOutlinedIcon />
                         </Button>
-                        <Button style={{ borderRadius: 5, minWidth: 40, color: 'red' }} onClick={this.handleCreateTAL}>
+                        <Button style={{ borderRadius: 5, minWidth: 40, color: 'red' }} onClick={this.handleCreateTAL} disabled={this.state.proses}>
                           <CancelPresentationOutlinedIcon />
                         </Button>
                       </Grid>

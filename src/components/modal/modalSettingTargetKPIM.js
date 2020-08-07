@@ -34,7 +34,7 @@ export default class modalSettingTargetKPIM extends Component {
     if (this.props.data) {
       let Jan = 0, Feb = 0, Mar = 0, Apr = 0, May = 0, Jun = 0, Jul = 0, Aug = 0, Sep = 0, Oct = 0, Nov = 0, Dec = 0
 
-      this.props.data.kpimScore.forEach(element => {
+      this.props.data.tbl_kpim_scores.forEach(element => {
         if (element.month === 1) {
           Jan = element.target_monthly
         } else if (element.month === 2) {
@@ -82,14 +82,14 @@ export default class modalSettingTargetKPIM extends Component {
 
 
     // if (firstWeekInSelectedMonth + 1 >= currentWeek || this.props.KPIMLength === 0) {
-      // if (firstWeekInSelectedMonth + 1 >= currentWeek ) {
-      this.setState({
-        batasBulan: this.props.month - 1
-      })
+    // if (firstWeekInSelectedMonth + 1 >= currentWeek ) {
+    this.setState({
+      batasBulan: this.props.month - 1
+    })
     // } else {
-      // this.setState({
-      //   batasBulan: this.props.month
-      // })
+    // this.setState({
+    //   batasBulan: this.props.month
+    // })
     // }
   }
 
@@ -119,18 +119,18 @@ export default class modalSettingTargetKPIM extends Component {
         unit: this.state.unit,
         year: this.state.tahunSelected,
         monthly: [
-          this.state.Jan || 0,
-          this.state.Feb || 0,
-          this.state.Mar || 0,
-          this.state.Apr || 0,
-          this.state.May || 0,
-          this.state.Jun || 0,
-          this.state.Jul || 0,
-          this.state.Aug || 0,
-          this.state.Sep || 0,
-          this.state.Oct || 0,
-          this.state.Nov || 0,
-          this.state.Dec || 0
+          { month: 1, target_monthly: this.state.Jan || 0 },
+          { month: 2, target_monthly: this.state.Feb || 0 },
+          { month: 3, target_monthly: this.state.Mar || 0 },
+          { month: 4, target_monthly: this.state.Apr || 0 },
+          { month: 5, target_monthly: this.state.May || 0 },
+          { month: 6, target_monthly: this.state.Jun || 0 },
+          { month: 7, target_monthly: this.state.Jul || 0 },
+          { month: 8, target_monthly: this.state.Aug || 0 },
+          { month: 9, target_monthly: this.state.Sep || 0 },
+          { month: 10, target_monthly: this.state.Oct || 0 },
+          { month: 11, target_monthly: this.state.Nov || 0 },
+          { month: 12, target_monthly: this.state.Dec || 0 }
         ]
       }
       this.props.submitForm(newData)
@@ -164,8 +164,8 @@ export default class modalSettingTargetKPIM extends Component {
 
     target.setDate(target.getDate() - dayNr + 3);
 
-    var jan4 = new Date(target.getFullYear(), 0, 4);
-    var dayDiff = (target - jan4) / 86400000;
+    var reference = new Date(target.getFullYear(), 0, 4);
+    var dayDiff = (target - reference) / 86400000;
     var weekNr = 1 + Math.ceil(dayDiff / 7);
 
     return weekNr;

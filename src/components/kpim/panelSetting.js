@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import {
-  Grid, Badge, Avatar, MenuItem, FormControl, InputLabel, Select as SelectOption
+  Grid, Badge, Avatar, MenuItem, FormControl, InputLabel, Select as SelectOption, CircularProgress
 } from '@material-ui/core';
 
 import CardSettingUserKPIM from './cardSettingUserKPIM';
@@ -17,6 +17,7 @@ class panelSetting extends Component {
     super(props)
     this._isMounted = false
     this.state = {
+      proses: true,
       value: 1,
       data: [],
       bulan: new Date().getMonth() + 1,
@@ -53,9 +54,12 @@ class panelSetting extends Component {
       }
 
       this.setState({
-        optionMinggu: loopingWeek
+        optionMinggu: loopingWeek,
       })
-      this.fetchData(this.state.bulan)
+      this.fetchData(this.state.bulan, this.getNumberOfWeek(new Date()))
+      this.setState({
+        proses: false
+      })
     }
   }
 
@@ -79,7 +83,7 @@ class panelSetting extends Component {
         optionMinggu: loopingWeek,
         minggu: batasBawah,
       })
-      await this.fetchData(this.state.bulan)
+      await this.fetchData(this.state.bulan, batasBawah)
     }
   }
 
@@ -87,10 +91,9 @@ class panelSetting extends Component {
     this._isMounted = false
   }
 
-  fetchData = async (month) => {
+  fetchData = async (month, week) => {
     let temp = [], tempForDisplay = []
-    await this.props.fetchDataAllKPIM({ year: new Date().getFullYear() })
-    await this.props.fetchDataAllTAL(new Date().getFullYear())
+    await this.props.fetchDataAllKPIM({ "for-setting": true, year: new Date().getFullYear(), month, week })
     await this.props.fetchDataRewardKPIM(this.props.userId)
 
     //filter kpim per-user bawahan
@@ -103,46 +106,24 @@ class panelSetting extends Component {
       }
 
       newData.kpim = await this.props.dataAllKPIM.filter(el => el.user_id === element.user_id)
-      temp.push(newData)
+      tempForDisplay.push(newData)
     });
 
-    //filter tal bawahan
-    await temp.forEach(async user => {
-      user.tal = await this.props.dataAllTAL.filter(element => user.user_id === element.user_id)
-    })
-
-    await temp.forEach(async user => {
+    await tempForDisplay.forEach(async user => {
       user.rewardKPIM = await this.props.dataAllRewardKPIM.filter(element => user.user_id === element.user_id)
     })
-
-    tempForDisplay = temp
 
     await tempForDisplay.forEach(async user => {
       let tempScoreKPIMBefore = 0, tempPembagi = 0
       await user.kpim.forEach(async kpim => {
-        let filteredKPIMScore = await kpim.kpimScore.filter(kpimScore => Number(kpimScore.month) === Number(month))
-
-        // For Score KPIM month before
-        let tes = kpim.kpimScore.filter(kpimScore => Number(kpimScore.month) === (Number(month) - 1))
-
-        tes.forEach(kpim => {
-          tempScoreKPIMBefore += kpim.score_kpim_monthly
-          tempPembagi += 1
-        })
-
-        kpim.score = filteredKPIMScore
+        tempScoreKPIMBefore += kpim.tbl_kpim_scores[0].score_kpim_monthly
+        tempPembagi += 1
       })
       if (tempPembagi !== 0) user.scoreKPIMBefore = tempScoreKPIMBefore / tempPembagi
       else user.scoreKPIMBefore = 0
-
-      await user.tal.forEach(async tal => {
-        let filteredTALScore = await tal.talScore.filter(talScore => Number(talScore.week) === Number(this.state.minggu) && Number(talScore.month) === Number(month))
-        if(filteredTALScore) console.log(filteredTALScore)
-        tal.score = filteredTALScore
-      })
     })
 
-    this._isMounted && this.setState({ data: temp, dataForDisplay: tempForDisplay, needAction: 0 })
+    this._isMounted && this.setState({ data: temp, dataForDisplay: tempForDisplay, needAction: 0, proses: false })
   }
 
   fetchWeek = () => {
@@ -155,44 +136,15 @@ class panelSetting extends Component {
   }
 
   handleChange = name => async event => {
-    //     if (name === 'bulan') {
-    //       let batasAtas, batasBawah, loopingWeek = []
-    //       console.log(event.target.value)
-    //       if (event.target.value === "" || event.target.value === 0) {
-    //         this.fetchWeek()
-    //         this.fetchData(new Date().getMonth() + 1)
-    //       } else {
-    //         batasAtas = this.getNumberOfWeek(new Date(new Date().getFullYear(), event.target.value, 0))
-    //         batasBawah = this.getNumberOfWeek(new Date(new Date().getFullYear(), event.target.value - 1, 1))
-
-    //         // batasAtas = Math.ceil(event.target.value * 4.345)
-    //         // batasBawah = batasAtas - 4
-
-    //         for (batasBawah; batasBawah <= batasAtas; batasBawah++) {
-    //           loopingWeek.push(batasBawah)
-    //         }
-
-    //         if (batasAtas === 53) {
-    //           loopingWeek[loopingWeek.length - 1] = 1
-    //         }
-    // console.log("batasBawah",batasBawah)
-    //         this.setState({
-    //           optionMinggu: loopingWeek,
-    //           minggu: batasBawah,
-    //         })
-    //         await this.fetchData(event.target.value)
-    //       }
-    //     }
-
     this.setState({ [name]: event.target.value });
 
     if (name === 'minggu') {
-      await this.fetchData(this.state.bulan)
+      await this.fetchData(this.state.bulan, event.target.value)
     }
   };
 
   refresh = () => {
-    this.fetchData(this.state.bulan)
+    this.fetchData(this.state.bulan, this.state.minggu)
   }
 
   getNumberOfWeek = date => {
@@ -202,8 +154,8 @@ class panelSetting extends Component {
 
     target.setDate(target.getDate() - dayNr + 3);
 
-    var jan4 = new Date(target.getFullYear(), 0, 4);
-    var dayDiff = (target - jan4) / 86400000;
+    var reference = new Date(target.getFullYear(), 0, 4);
+    var dayDiff = (target - reference) / 86400000;
     var weekNr = 1 + Math.ceil(dayDiff / 7);
 
     return weekNr;
@@ -239,9 +191,9 @@ class panelSetting extends Component {
                       vertical: 'bottom',
                       horizontal: 'right',
                     }}
-                    badgeContent={<div style={{ backgroundColor: '#b4b4b4', borderRadius: 15, height: 30, width: 30, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>{el.scoreKPIMBefore}</div>}
+                    badgeContent={<div style={{ backgroundColor: '#b4b4b4', borderRadius: 15, height: 30, width: 30, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>{Math.round(el.scoreKPIMBefore)}</div>}
                   >
-                    <Avatar alt="Travis Howard" src="http://api.polagroup.co.id/uploads/icon_user.png" style={{ width: 80, height: 80 }} />
+                    <Avatar alt={`${el.fullname}'s avatar`} src={el.avatar || "http://api.polagroup.co.id/uploads/icon_user.png"} style={{ width: 80, height: 80 }} />
                   </Badge>
                   <p style={{ margin: 0, textAlign: 'center' }}>{el.fullname}</p>
                 </Grid>
@@ -252,9 +204,9 @@ class panelSetting extends Component {
                       vertical: 'bottom',
                       horizontal: 'right',
                     }}
-                    badgeContent={<div style={{ backgroundColor: '#b4b4b4', borderRadius: 15, height: 30, width: 30, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>{el.scoreKPIMBefore}</div>}
+                    badgeContent={<div style={{ backgroundColor: '#b4b4b4', borderRadius: 15, height: 30, width: 30, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>{Math.round(el.scoreKPIMBefore)}</div>}
                   >
-                    <Avatar alt="Travis Howard" src="http://api.polagroup.co.id/uploads/icon_user.png" style={{ width: 80, height: 80 }} />
+                    <Avatar alt={`${el.fullname}'s avatar`} src={el.avatar || "http://api.polagroup.co.id/uploads/icon_user.png"} style={{ width: 80, height: 80 }} />
                   </Badge>
                   <p style={{ margin: 0, marginTop: 10, textAlign: 'center' }}>{el.fullname}</p>
                 </Grid>
@@ -271,6 +223,7 @@ class panelSetting extends Component {
               value={this.state.bulan}
               onChange={this.handleChange('bulan')}
               style={{ width: 150, marginRight: 10 }}
+              disabled={this.state.proses}
             >
               <MenuItem value="">
                 <em>None</em>
@@ -293,6 +246,7 @@ class panelSetting extends Component {
               value={this.state.minggu}
               onChange={this.handleChange('minggu')}
               style={{ width: 150, marginRight: 10 }}
+              disabled={this.state.proses}
             >
               <MenuItem value="">
                 <em>None</em>
@@ -312,9 +266,11 @@ class panelSetting extends Component {
         <Grid id="main" style={{ marginTop: 20, textAlign: 'center' }}>
           {/* CARD */}
           {
-            this.state.dataForDisplay.map((el, index) =>
-              <CardSettingUserKPIM data={el} key={index} refresh={this.refresh} firstDateInWeek={this.state.firstDateInWeek} week={this.state.minggu} month={this.state.bulan} weekCurrent={this.state.weekCurrent} setNeedAction={this.setNeedAction} status={this.props.status} lastWeekInMonth={this.state.optionMinggu[this.state.optionMinggu.length-1]}/>
-            )
+            this.state.proses
+              ? <CircularProgress color="secondary" />
+              : this.state.dataForDisplay.map((el, index) =>
+                <CardSettingUserKPIM data={el} key={index} refresh={this.refresh} firstDateInWeek={this.state.firstDateInWeek} week={this.state.minggu} month={this.state.bulan} weekCurrent={this.state.weekCurrent} setNeedAction={this.setNeedAction} status={this.props.status} lastWeekInMonth={this.state.optionMinggu[this.state.optionMinggu.length - 1]} />
+              )
           }
           {
             this.state.needAction === 0 && this.props.status !== "all" && <>

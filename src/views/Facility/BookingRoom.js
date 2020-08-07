@@ -32,7 +32,7 @@ class BookingRoom extends Component {
     await this.props.fetchDataRooms()
 
     let datas = this.props.dataRooms
-    console.log(datas)
+
     await datas.forEach(async room => {
       let temp = await this.props.dataBookingRooms.filter(el => el.room_id === room.room_id)
       room.tbl_booking_rooms = temp

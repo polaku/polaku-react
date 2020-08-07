@@ -27,6 +27,7 @@ import { API } from '../../config/API';
 
 export default class cardSettingIndicator extends Component {
   state = {
+    proses: false,
     open: false,
     anchorEl: null,
     persenTahun: 0,
@@ -74,12 +75,23 @@ export default class cardSettingIndicator extends Component {
   }
 
   fetchData = () => {
+    this.setState({ proses: true })
     if (this.props.status !== "TAL") {
       this.setState({
         persenTahun: 0
       })
-      let persenTahun = Math.floor((this.props.data.pencapaian / this.props.data.target) * 100)
-      let persenBulan = Math.floor((this.props.data.pencapaian_monthly / this.props.data.target_monthly) * 100)
+      let persenTahun, persenBulan
+
+      if (this.props.data.unit.toLowerCase() === "keluhan" || this.props.data.unit.toLowerCase() === "komplen" || this.props.data.unit.toLowerCase() === "complain" || this.props.data.unit.toLowerCase() === "reject") {
+        persenTahun = Math.floor(((this.props.data.target - this.props.data.pencapaian) / this.props.data.target) * 100)
+        if (this.props.data.score_kpim_monthly) {
+          persenBulan = Math.floor(((this.props.data.target_monthly - this.props.data.pencapaian_monthly) / this.props.data.target_monthly) * 100)
+        }
+
+      } else {
+        persenTahun = Math.floor((this.props.data.pencapaian / this.props.data.target) * 100)
+        persenBulan = Math.floor((this.props.data.pencapaian_monthly / this.props.data.target_monthly) * 100)
+      }
 
       if (isNaN(persenBulan)) persenBulan = 0
       if (isNaN(persenTahun)) persenTahun = 0
@@ -99,12 +111,6 @@ export default class cardSettingIndicator extends Component {
         indicatorKPIM: this.props.data.indicator_kpim,
         capaian: this.props.data.pencapaian_monthly,
         bobot: this.props.data.bobot,
-        dataForEdit: {
-          target: this.props.data.target,
-          unit: this.props.data.unit,
-          year: this.props.data.year,
-          kpimScore: this.props.data.kpimScore
-        },
         persenTahun,
         persenBulan
       })
@@ -114,6 +120,7 @@ export default class cardSettingIndicator extends Component {
         achievement: this.props.data.achievement || 0
       })
     }
+    this.setState({ proses: false })
   }
 
   formatRupiah = args => {
@@ -149,8 +156,27 @@ export default class cardSettingIndicator extends Component {
     this.setState({ statusEdit: !this.state.statusEdit, open: false })
   }
 
-  openModalTargetKPIM = () => {
-    this.setState({ openModalTargetKPIM: true })
+  openModalTargetKPIM = async () => {
+    try {
+      if (this.state.dataForEdit.tbl_kpim_scores) {
+        this.setState({ openModalTargetKPIM: true })
+      } else {
+        let token = Cookies.get('POLAGROUP')
+        let allKPIM = await API.get(`/kpim/${this.props.data.kpim_id}`, { headers: { token } })
+
+        this.setState({
+          dataForEdit: {
+            target: allKPIM.data.data.target,
+            unit: allKPIM.data.data.unit,
+            year: allKPIM.data.data.year,
+            tbl_kpim_scores: allKPIM.data.data.kpimScore,
+          },
+          openModalTargetKPIM: true
+        })
+      }
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   closeModalTargetKPIM = () => {
@@ -163,21 +189,23 @@ export default class cardSettingIndicator extends Component {
 
     let newTarget = [], tempScoreKPIM = data
 
-    this.props.data.kpimScore.forEach((el, index) => {
+    await this.state.dataForEdit.tbl_kpim_scores.forEach((el, index) => {
       let tempNewTarget = {
         kpim_score_id: el.kpim_score_id,
-        target_monthly: data.monthly[el.month - 1]
+        target_monthly: data.monthly[el.month - 1].target_monthly,
+        month: data.monthly[el.month - 1].month
       }
       newTarget.push(tempNewTarget)
     })
-
     delete tempScoreKPIM.monthly
-    tempScoreKPIM.kpimScore = newTarget
+    tempScoreKPIM.tbl_kpim_scores = newTarget
+
     this.setState({ openModalTargetKPIM: false, dataForEdit: tempScoreKPIM })
   }
 
-  updateKPIM = () => {
+  updateKPIM = async () => {
     let statusOverBobot = false
+    this.setState({ proses: true })
     if (!this.props.data.bobot || this.props.data.bobot === 0 || this.props.data.bobot === null) {
       if ((Number(this.props.bobotKPIM) + Number(this.state.bobot)) > 100) {
         statusOverBobot = true
@@ -192,12 +220,24 @@ export default class cardSettingIndicator extends Component {
 
     if (!statusOverBobot) {
       let token = Cookies.get('POLAGROUP')
+      let newData
+      if (!this.state.dataForEdit.tbl_kpim_scores) {
+        let allKPIM = await API.get(`/kpim/${this.props.data.kpim_id}`, { headers: { token } })
 
-      let newData = { ...this.state.dataForEdit }
+        newData = {
+          target: allKPIM.data.data.target,
+          unit: allKPIM.data.data.unit,
+          year: allKPIM.data.data.year,
+          tbl_kpim_scores: allKPIM.data.data.kpimScore
+        }
+      } else {
+        newData = { ...this.state.dataForEdit }
+      }
+
       newData.indicator_kpim = this.state.indicatorKPIM
-      newData.monthly = newData.kpimScore
+      newData.monthly = newData.tbl_kpim_scores
       newData.month = this.props.data.month
-      delete newData.kpimScore
+      delete newData.tbl_kpim_scores
 
       newData.monthly.forEach(el => {
         if (Number(el.month) === Number(this.props.data.month)) {
@@ -205,7 +245,6 @@ export default class cardSettingIndicator extends Component {
           el.pencapaian_monthly = this.state.capaian
         }
       })
-
 
       API.put(`/kpim/${this.props.data.kpim_id}`, newData, { headers: { token } })
         .then((data) => {
@@ -221,6 +260,7 @@ export default class cardSettingIndicator extends Component {
     } else {
       swal("Bobot kpim lebih dari 100", "", "warning")
     }
+    this.setState({ proses: false })
   }
 
   openModalCopyIndicatorKPIM = () => {
@@ -269,18 +309,24 @@ export default class cardSettingIndicator extends Component {
     }
   }
 
-  updateTAL = event => {
+  updateTAL = async event => {
     event.preventDefault()
+    this.setState({ proses: true })
     let statusOverWeight = false
-    if (!this.props.data.weight || Number(this.props.data.weight) === 0) {
-      if ((Number(this.props.bobotTAL) + Number(this.state.weight)) > 100) {
-        statusOverWeight = true
-      }
-    } else {
-      let newWeight = Number(this.props.bobotTAL) - Number(this.props.data.weight) + Number(this.state.weight)
+    let listDate = await this.fetchOptionDateInWeek()
+    let thereDate20 = listDate.includes(20)
 
-      if (newWeight > 100) {
-        statusOverWeight = true
+    if (!thereDate20) {
+      if (!this.props.data.weight || Number(this.props.data.weight) === 0) {
+        if ((Number(this.props.bobotTAL) + Number(this.state.weight)) > 100) {
+          statusOverWeight = true
+        }
+      } else {
+        let newWeight = Number(this.props.bobotTAL) - Number(this.props.data.weight) + Number(this.state.weight)
+
+        if (newWeight > 100) {
+          statusOverWeight = true
+        }
       }
     }
 
@@ -308,6 +354,7 @@ export default class cardSettingIndicator extends Component {
     } else {
       swal("Weight tal lebih dari 100", "", "warning")
     }
+    this.setState({ proses: false })
   }
 
   deleteIndicator = () => {
@@ -349,11 +396,11 @@ export default class cardSettingIndicator extends Component {
 
     let awalMingguSekarang = new Date().getDate() - new Date().getDay() + 1
     let selisihMinggu = this.props.week - this.getNumberOfWeek(new Date())
+
     for (let i = 1; i <= 7; i++) {
       let newDate = new Date(new Date().getFullYear(), new Date().getMonth(), (awalMingguSekarang + (selisihMinggu * 7)))
 
       if (this.props.month === newDate.getMonth() + 1) {
-        console.log(this.props.month === newDate.getMonth() + 1)
         date.push(newDate.getDate())
       }
       awalMingguSekarang++
@@ -371,13 +418,29 @@ export default class cardSettingIndicator extends Component {
 
     target.setDate(target.getDate() - dayNr + 3);
 
-    var jan4 = new Date(target.getFullYear(), 0, 4);
-    var dayDiff = (target - jan4) / 86400000;
+    var reference = new Date(target.getFullYear(), 0, 4);
+    var dayDiff = (target - reference) / 86400000;
     var weekNr = 1 + Math.ceil(dayDiff / 7);
 
     return weekNr;
   }
 
+  fetchOptionDateInWeek = () => {
+    let date = []
+
+    let awalMingguSekarang = new Date().getDate() - new Date().getDay() + 1
+    let selisihMinggu = this.props.week - this.getNumberOfWeek(new Date())
+    for (let i = 1; i <= 7; i++) {
+      let newDate = new Date(new Date().getFullYear(), new Date().getMonth(), (awalMingguSekarang + (selisihMinggu * 7)))
+
+      if (this.props.month === newDate.getMonth() + 1) {
+        date.push(newDate.getDate())
+      }
+      awalMingguSekarang++
+    }
+
+    return date
+  }
 
   render() {
     function getMonth(args) {
@@ -402,6 +465,7 @@ export default class cardSettingIndicator extends Component {
                     <SelectOption
                       value={this.state.newOptionTimeTAL}
                       onChange={this.handleChange('newOptionTimeTAL')}
+                      disabled={this.state.proses}
                     >
                       <MenuItem value={0}>Tanggal</MenuItem>
                       <MenuItem value={1}>Hari</MenuItem>
@@ -413,6 +477,7 @@ export default class cardSettingIndicator extends Component {
                     <SelectOption
                       value={this.state.newTimeTAL}
                       onChange={this.handleChange('newTimeTAL')}
+                      disabled={this.state.proses}
                     >
                       {
                         this.state.optionTimeTAL.map((el, index) =>
@@ -431,6 +496,7 @@ export default class cardSettingIndicator extends Component {
                       style: { height: 40, padding: 0 }
                     }}
                     style={{ width: '15%', margin: '0px 10px 0px 0px' }}
+                    disabled={this.state.proses}
                   />
                   <TextField
                     label="Achievement"
@@ -441,12 +507,13 @@ export default class cardSettingIndicator extends Component {
                       style: { height: 40, padding: 0 }
                     }}
                     style={{ width: '18%', margin: '0px 10px 0px 0px' }}
+                    disabled={this.state.proses}
                   />
-                  <Grid>
-                    <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.updateTAL}>
+                  <Grid style={{ display: 'flex' }}>
+                    <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.updateTAL} disabled={this.state.proses}>
                       <SaveOutlinedIcon />
                     </Button>
-                    <Button style={{ borderRadius: 5, minWidth: 40, color: 'red' }} onClick={this.editIndicator}>
+                    <Button style={{ borderRadius: 5, minWidth: 40, color: 'red' }} onClick={this.editIndicator} disabled={this.state.proses}>
                       <CancelPresentationOutlinedIcon />
                     </Button>
                   </Grid>
@@ -475,8 +542,9 @@ export default class cardSettingIndicator extends Component {
                                 style: { height: 35, padding: 0 }
                               }}
                               style={{ width: '100%', margin: '0px 10px 0px 0px' }}
+                              disabled={this.state.proses}
                             />
-                            <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.updateTAL}>
+                            <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.updateTAL} disabled={this.state.proses}>
                               <SaveOutlinedIcon />
                             </Button>
                           </form>
@@ -503,8 +571,9 @@ export default class cardSettingIndicator extends Component {
                                     style: { height: 35, padding: 0 }
                                   }}
                                   style={{ width: '100%', margin: '0px 10px 0px 0px' }}
+                                  disabled={this.state.proses}
                                 />
-                                <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.updateTAL}>
+                                <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.updateTAL} disabled={this.state.proses}>
                                   <SaveOutlinedIcon />
                                 </Button>
                               </form>
@@ -515,12 +584,12 @@ export default class cardSettingIndicator extends Component {
                           }
                         </>
                       }
-                      {/* {
-                        !this.props.data.hasConfirm &&  */}
-                      <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick}>
-                        <MoreHorizIcon />
-                      </Button>
-                      {/* } */}
+                      {
+                        !this.props.data.hasConfirm &&
+                        <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick} disabled={this.state.proses}>
+                          <MoreHorizIcon />
+                        </Button>
+                      }
                     </Grid>
                   </Grid>
                 </Paper>
@@ -558,20 +627,24 @@ export default class cardSettingIndicator extends Component {
                       }}
                       style={{ width: 85, margin: '0px 10px 0px 0px' }}
                     />
-                    <TextField
-                      type="number"
-                      label="Capaian"
-                      value={this.state.capaian}
-                      onChange={this.handleChange('capaian')}
-                      variant="outlined"
-                      InputProps={{
-                        style: { height: 35, padding: 0 }
-                      }}
-                      style={{ width: 85, margin: '0px 10px 0px 0px' }}
-                    />
-                    <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.openModalTargetKPIM}>
-                      setting target
+                    {
+                      this.props.data.indicator_kpim.toLowerCase() !== 'kpim team' && <>
+                        <TextField
+                          type="number"
+                          label="Capaian"
+                          value={this.state.capaian}
+                          onChange={this.handleChange('capaian')}
+                          variant="outlined"
+                          InputProps={{
+                            style: { height: 35, padding: 0 }
+                          }}
+                          style={{ width: 85, margin: '0px 10px 0px 0px' }}
+                        />
+                        <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.openModalTargetKPIM}>
+                          setting target
                     </Button>
+                      </>
+                    }
                     <Grid>
                       <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.updateKPIM}>
                         <SaveOutlinedIcon />
@@ -624,7 +697,8 @@ export default class cardSettingIndicator extends Component {
                         {
                           (this.props.data.bobot !== 0 && this.props.data.bobot !== null)
                           && (
-                            (this.props.data.pencapaian_monthly === 0 || this.props.data.pencapaian_monthly === null)
+                            ((this.props.data.pencapaian_monthly === 0 || this.props.data.pencapaian_monthly === null) && (this.props.data.score_kpim_monthly === 0 || this.props.data.score_kpim_monthly === null)) &&
+                              this.props.data.indicator_kpim.toLowerCase() !== 'kpim team'
                               ? <form onSubmit={this.updateKPIMMonthly} style={{ display: 'flex' }}>
                                 <TextField
                                   type="number"
@@ -645,16 +719,16 @@ export default class cardSettingIndicator extends Component {
                           )
                         }
                         {
-                          (this.props.data.bobot !== 0 && this.props.data.bobot !== null) &&
+                          (this.props.data.bobot !== 0 && this.props.data.bobot !== null && this.props.data.indicator_kpim.toLowerCase() !== 'kpim team') &&
                           <p style={{ margin: '0px 10px 4px 0px', fontSize: 10 }}>/ {this.state.target_monthly}</p>
                         }
                       </Grid>
-                      {/* {
-                        !this.props.data.hasConfirm &&  */}
-                      <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick}>
-                        <MoreHorizIcon />
-                      </Button>
-                      {/* } */}
+                      {
+                        !this.props.data.hasConfirm &&
+                        <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick}>
+                          <MoreHorizIcon />
+                        </Button>
+                      }
                     </Grid>
                   </>
               }

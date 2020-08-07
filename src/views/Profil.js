@@ -68,7 +68,6 @@ class Profil extends Component {
 
     API.put('/users/editProfil', { username: this.state.username }, { headers: { token } })
       .then(async data => {
-        console.log(data)
         swal("Username berhasil diubah")
         await this.props.fetchDataUserDetail(this.props.userId)
         this.handleChangeUsername()

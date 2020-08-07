@@ -4,11 +4,7 @@ import Cookies from 'js-cookie';
 
 import {
   Modal, Fade, Grid, Backdrop, Select, Button, TextField, MenuItem,
-  // Typography, OutlinedInput, IconButton, InputAdornment, 
 } from '@material-ui/core';
-
-// import AddIcon from '@material-ui/icons/Add';
-// import CloseIcon from '@material-ui/icons/Close';
 
 import { API } from '../../config/API';
 
@@ -20,6 +16,8 @@ class modalDetailUser extends Component {
     companyName: '',
     fullname: '',
     username: '',
+    confirPassword: '',
+    password: '',
     initial: '',
     nik: '',
     idEvaluator1: 0,
@@ -30,10 +28,11 @@ class modalDetailUser extends Component {
     dataUser: [],
 
     isEdit: false,
+    isError: false,
   }
 
   async componentDidMount() {
-    let filterUser = await this.props.dataUsers.filter(user => user.tbl_account_detail.company_id === this.props.data.rawData.tbl_account_detail.company_id)
+    // let filterUser = await this.props.dataUsers.filter(user => user.tbl_account_detail.company_id === this.props.data.rawData.tbl_account_detail.company_id)
 
     this.setState({
       companyId: this.props.data.rawData.tbl_account_detail.company_id,
@@ -47,8 +46,23 @@ class modalDetailUser extends Component {
       evaluator2: this.props.data.evaluator2,
       idEvaluator2: this.props.data.rawData.tbl_account_detail.name_evaluator_2,
       isActive: this.props.data.isActive,
-      dataUser: filterUser
+      // dataUser: filterUser
+      dataUser: this.props.dataUsers
     })
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.confirPassword !== this.state.confirPassword) {
+      if (this.state.confirPassword !== this.state.password && !this.state.isError) {
+        this.setState({
+          isError: true
+        })
+      } else if (this.state.confirPassword === this.state.password && this.state.isError) {
+        this.setState({
+          isError: false
+        })
+      }
+    }
   }
 
   closeModal = () => {
@@ -58,9 +72,10 @@ class modalDetailUser extends Component {
   handleChange = name => async event => {
     if (name === 'companyId') {
       let company = this.props.dataCompanies.find(company => company.company_id === event.target.value)
-      let filterUser = await this.props.dataUsers.filter(user => user.tbl_account_detail.company_id === event.target.value)
+      // let filterUser = await this.props.dataUsers.filter(user => user.tbl_account_detail.company_id === event.target.value)
 
-      this.setState({ [name]: event.target.value, companyName: company.company_name, dataUser: filterUser });
+      // this.setState({ [name]: event.target.value, companyName: company.company_name, dataUser: filterUser });
+      this.setState({ [name]: event.target.value, companyName: company.company_name });
     } else if (name === 'idEvaluator1') {
       if (event.target.value !== "") {
         let userSelected = this.state.dataUser.find(user => user.user_id === event.target.value)
@@ -91,27 +106,34 @@ class modalDetailUser extends Component {
   }
 
   saveDataUser = () => {
-    let token = Cookies.get('POLAGROUP')
+    if (this.state.password === '' || (this.state.confirPassword && !this.state.isError)) {
+      let token = Cookies.get('POLAGROUP')
 
-    let newData = {
-      fullname: this.state.fullname,
-      company_id: this.state.companyId,
-      username: this.state.username,
-      initial: this.state.initial,
-      nik: this.state.nik,
-      evaluator1: this.state.idEvaluator1,
-      evaluator2: this.state.idEvaluator2,
+      let newData = {
+        fullname: this.state.fullname,
+        company_id: this.state.companyId,
+        username: this.state.username,
+        initial: this.state.initial,
+        nik: this.state.nik,
+        evaluator1: this.state.idEvaluator1,
+        evaluator2: this.state.idEvaluator2,
+      }
+
+      if (this.state.password !== '') newData.password = this.state.password
+
+      API.put(`/users/editUser/${this.props.data.userId}`, newData, { headers: { token } })
+        .then(data => {
+          this.setState({ isEdit: false })
+          swal('Edit data user success', '', 'success')
+          this.props.refresh()
+          this.closeModal()
+        })
+        .catch(err => {
+          swal('please try again')
+        })
+    } else if (this.state.isError) {
+      swal("konfirmasi password salah")
     }
-
-
-    API.put(`/users/editUser/${this.props.data.userId}`, newData, { headers: { token } })
-      .then(data => {
-        this.setState({ isEdit: false })
-        this.props.refresh()
-      })
-      .catch(err => {
-        swal('please try again')
-      })
   }
 
   cancelEdit = () => {
@@ -211,6 +233,33 @@ class modalDetailUser extends Component {
                           style: { height: 35, padding: 0, width: '100%' }
                         }}
                         style={{ width: 250 }}
+                      />
+                    </Grid>
+                    <Grid style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
+                      <p style={{ margin: 0, width: 90 }}>Password</p>
+                      <TextField
+                        value={this.state.password}
+                        onChange={this.handleChange('password')}
+                        variant="outlined"
+                        type="password"
+                        InputProps={{
+                          style: { height: 35, padding: 0, width: '100%' }
+                        }}
+                        style={{ width: 250 }}
+                      />
+                    </Grid>
+                    <Grid style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
+                      <p style={{ margin: 0, width: 90 }}>Confirmation Password</p>
+                      <TextField
+                        value={this.state.confirPassword}
+                        onChange={this.handleChange('confirPassword')}
+                        variant="outlined"
+                        type="password"
+                        InputProps={{
+                          style: { height: 35, padding: 0, width: '100%' }
+                        }}
+                        style={{ width: 250 }}
+                        error={this.state.isError}
                       />
                     </Grid>
                   </Grid>

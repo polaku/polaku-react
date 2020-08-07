@@ -43,13 +43,13 @@ export default class exportToExcel extends React.Component {
                 ))
               }
             </ExcelSheet>
-            <ExcelSheet data={this.props.dataTAL} name="report TAL">
+            {/* <ExcelSheet data={this.props.dataTAL} name="report TAL">
               {
                 this.props.labelValueTAL.length > 0 && this.props.labelValueTAL.map((el, index) => (
                   <ExcelColumn label={el.label} value={el.value} key={index} />
                 ))
               }
-            </ExcelSheet>
+            </ExcelSheet> */}
           </ExcelFile>
         )
       } else if (this.props.title === "KPIM") {
@@ -64,19 +64,20 @@ export default class exportToExcel extends React.Component {
             </ExcelSheet>
           </ExcelFile>
         );
-      } else if (this.props.title === "TAL") {
-        return (
-          <ExcelFile element={<p style={{ cursor: 'pointer', marign: 0 }}>{this.props.title}</p>}>
-            <ExcelSheet data={this.props.dataTAL} name="report TAL">
-              {
-                this.props.labelValueTAL.length > 0 && this.props.labelValueTAL.map((el, index) => (
-                  <ExcelColumn label={el.label} value={el.value} key={index} />
-                ))
-              }
-            </ExcelSheet>
-          </ExcelFile>
-        );
-      }
+      } 
+      // else if (this.props.title === "TAL") {
+      //   return (
+      //     <ExcelFile element={<p style={{ cursor: 'pointer', marign: 0 }}>{this.props.title}</p>}>
+      //       <ExcelSheet data={this.props.dataTAL} name="report TAL">
+      //         {
+      //           this.props.labelValueTAL.length > 0 && this.props.labelValueTAL.map((el, index) => (
+      //             <ExcelColumn label={el.label} value={el.value} key={index} />
+      //           ))
+      //         }
+      //       </ExcelSheet>
+      //     </ExcelFile>
+      //   );
+      // }
     }
     
     

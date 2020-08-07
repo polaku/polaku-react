@@ -251,7 +251,7 @@ export default class cardReport extends Component {
                         }
                         { //KHUSUS TAL
                           this.props.data.tal && this.props.data.tal.dataTAL.length > 0 && <TableRow>
-                            {
+                            {/* {
                               this.props.data.tal.dataTAL.length > 0
                                 ? <TableCell component="th" scope="row" style={{ display: 'flex', alignItems: 'center', width: '40%', cursor: 'pointer' }} onClick={this.handleOpenCloseTAL}>
                                   TAL
@@ -264,7 +264,10 @@ export default class cardReport extends Component {
                                 : <TableCell component="th" scope="row" style={{ display: 'flex', alignItems: 'center', width: '40%' }}>
                                   TAL
                             </TableCell>
-                            }
+                            } */}
+                            <TableCell component="th" scope="row" style={{ display: 'flex', alignItems: 'center', width: '40%' }}>
+                              TAL
+                            </TableCell>
 
                             <TableCell style={{ width: '15%' }} />
                             <TableCell style={{ width: '15%' }} />
@@ -389,7 +392,7 @@ export default class cardReport extends Component {
           }}
         >
           <MenuList style={{ width: 100 }} >
-            {
+            {/* {
               this.state.unduhLaporan.map((el, index) =>
                 <MenuItem key={index}>
                   <Download
@@ -403,7 +406,18 @@ export default class cardReport extends Component {
                     dataTAL={this.props.data.dataNilaiTAL} />
                 </MenuItem>
               )
-            }
+            } */}
+            <MenuItem>
+              <Download
+                title="semua"
+                report="kpim"
+                labelValueReportNilai={this.state.labelValueReportNilai}
+                data={this.props.data.dataNilaiReport}
+                labelValueKPIM={this.state.labelValueKPIM}
+                dataKPIM={this.props.data.dataNilaiKPIM}
+                labelValueTAL={this.state.labelValueTAL}
+                dataTAL={this.props.data.dataNilaiTAL} />
+            </MenuItem>
           </MenuList>
         </Popover>
 

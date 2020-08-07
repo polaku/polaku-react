@@ -21,6 +21,8 @@ const api = store => next => async action => {
 
       let newData = await getData.data.data.filter(user => user.tbl_account_detail)
 
+      await newData.sort(compare)
+
       next({
         type: 'FETCH_DATA_USERS_SUCCESS',
         payload: newData
@@ -137,7 +139,7 @@ const api = store => next => async action => {
     let getData
     try {
       getData = await API.get('/bookingRoom', { headers: { token } })
-      console.log(getData.data.data)
+
       next({
         type: 'FETCH_DATA_BOOKING_ROOMS_SUCCESS',
         payload: getData.data.data
@@ -400,7 +402,9 @@ const api = store => next => async action => {
 
     let getDataKPIM
     try {
-      if (action.payload) getDataKPIM = await API.get(`/kpim?year=${action.payload.year}`, { headers: { token } })
+      if (action.payload["for-setting"]) getDataKPIM = await API.get(`/kpim?for-setting=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}`, { headers: { token } })
+      else if (action.payload["for-dashboard"]) getDataKPIM = await API.get(`/kpim?for-dashboard=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}&user-id=${action.payload.userId}`, { headers: { token } })
+      else if (action.payload["for-report"]) getDataKPIM = await API.get(`/kpim?for-report=true&year=${action.payload.year}&month=${action.payload.month}`, { headers: { token } })
       else getDataKPIM = await API.get(`/kpim`, { headers: { token } })
 
       next({
@@ -422,7 +426,10 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get(`/tal?year=${action.payload}`, { headers: { token } })
+      if (action.payload["for-setting"]) getData = await API.get(`/tal?for-setting=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}`, { headers: { token } })
+      else if (action.payload["for-dashboard"]) getData = await API.get(`/tal?for-dashboard=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}&user-id=${action.payload.userId}`, { headers: { token } })
+      else if (action.payload["for-tal-team"]) getData = await API.get(`/tal?for-tal-team=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}&user-id=${action.payload.userId}`, { headers: { token } })
+      else getData = await API.get(`/tal?year=${action.payload}`, { headers: { token } })
 
       next({
         type: 'FETCH_DATA_ALL_TAL_SUCCESS',
@@ -525,6 +532,16 @@ const api = store => next => async action => {
   else {
     next(action)
   }
+}
+
+const compare = (a, b) => {
+  if (a.tbl_account_detail.fullname < b.tbl_account_detail.fullname) {
+    return -1;
+  }
+  if (a.tbl_account_detail.fullname > b.tbl_account_detail.fullname) {
+    return 1;
+  }
+  return 0;
 }
 
 const store = createStore(reducer, applyMiddleware(api))
