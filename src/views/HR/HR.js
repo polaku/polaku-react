@@ -23,6 +23,12 @@ class HR extends Component {
     openModal: false,
   }
 
+  componentDidMount() {
+    if(this.props.userId){
+      this.fetchData()
+    }
+  }
+  
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.userId !== this.props.userId) {
       this.fetchData()

@@ -180,6 +180,7 @@ class DashboardKPIM extends Component {
     await this.props.fetchDataAllKPIM({ "for-dashboard": true, year: new Date().getFullYear(), month: monthSelected, week: weekSelected, userId })
 
     // ===== HANDLE TAL ===== //
+    console.log(userId)
     let dataTAL = await this.props.dataAllKPIM.find(kpim => kpim.user_id === userId && kpim.indicator_kpim.toLowerCase() === "tal")
     await dataTAL.tbl_kpim_scores[1].tbl_tals.forEach(tal => {
       let newTAL = { ...tal, ...tal.tbl_tal_scores[0] }
