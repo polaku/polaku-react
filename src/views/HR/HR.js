@@ -36,6 +36,13 @@ class HR extends Component {
   }
 
   fetchData = async () => {
+    this.setState({
+      dataIjinSayaPengajuan: [],
+      dataIjinSayaDisetujui: [],
+      dataIjinPengajuanStaff: [],
+      dataIjinStaffSedangIjin: [],
+    })
+    
     await this.props.fetchDataContactUs(this.props.userId)
 
     let tempData = await this.props.dataContactUs.filter(el => el.date_ijin_absen_start !== null || el.date_imp !== null || el.leave_date !== null)
