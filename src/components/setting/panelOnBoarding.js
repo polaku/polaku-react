@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Cookies from 'js-cookie';
 
 import {
-  ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Checkbox, FormControlLabel, Typography, Grid, Button, Popover, Paper, ClickAwayListener, MenuItem, MenuList, Divider
+  ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Checkbox, FormControlLabel, Typography, Grid, Button, Popover, Paper, ClickAwayListener, MenuItem, MenuList, Divider, CircularProgress
 } from '@material-ui/core';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -14,32 +15,22 @@ import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import SeCreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
 
-import { fetchDataUsers } from '../../store/action';
+import { fetchDataUsers, fetchDataPIC, fetchDataAddress } from '../../store/action';
+
+import { API } from '../../config/API';
+
+import swal from 'sweetalert';
 
 const animatedComponents = makeAnimated();
 
 class panelOnBoarding extends Component {
   state = {
+    loading: true,
     expanded: false,
     openPopOver: false,
     anchorEl: null,
-    data: [
-      {
-        pt: 'PIP',
-        pic: 'Febri',
-        statusIcon1: true,
-        statusIcon2: true,
-        statusIcon3: true,
-        statusIcon4: true,
-      }, {
-        pt: 'BPW',
-        pic: 'Steven',
-        statusIcon1: false,
-        statusIcon2: true,
-        statusIcon3: false,
-        statusIcon4: false,
-      }
-    ]
+    data: [],
+    pic: []
   }
 
   async componentDidMount() {
@@ -48,6 +39,7 @@ class panelOnBoarding extends Component {
     this.props.dataUsers.forEach(element => {
       let newData = {
         user_id: element.user_id,
+        nik: element.tbl_account_detail.nik
       }
       if (element.tbl_account_detail) newData.fullname = element.tbl_account_detail.fullname
       temp.push(newData)
@@ -56,6 +48,69 @@ class panelOnBoarding extends Component {
     this.setState({
       users: temp,
     })
+    await this.props.fetchDataPIC()
+  }
+
+  async componentDidUpdate(prevProps, prevState) {
+    if (this.props.dataPIC !== prevProps.dataPIC) {
+      await this.fetchData()
+    }
+  }
+
+  fetchData = async () => {
+    this.setState({ loading: true })
+    await this.props.fetchDataAddress()
+    console.log(this.props.dataAddress)
+    console.log(this.props.dataPIC)
+
+    let data = this.props.dataPIC
+
+    data.forEach(async (element) => {
+      let notComplete = 0
+      let address = await this.props.dataAddress.filter(el => el.company_id === element.company_id)
+
+      if (address.length > 0) {
+        let firstCreate = address[0].createdAt, lastUpdate = address[0].updatedAt
+
+        await address.forEach((el) => {
+          if (firstCreate > el.createdAt) firstCreate = el.createdAt
+          if (lastUpdate < el.updatedAt) firstCreate = el.updatedAt
+
+          if (!el.acronym ||
+            !el.address ||
+            !el.fax ||
+            !el.phone ||
+            !el.operationDay ||
+            el.tbl_operation_hours.length === 0 ||
+            el.tbl_photo_addresses.length === 0 ||
+            el.tbl_recesses.length === 0
+          ) {
+            notComplete++
+          }
+        })
+
+        element.firstCreate = firstCreate
+        element.lastUpdate = lastUpdate
+      }
+      element.totalAddress = address.length
+      element.notComplete = notComplete
+    })
+
+    await this.props.dataPIC.forEach(async (company) => {
+      let listPICSelected = []
+
+      await company.tbl_PICs.forEach(pic => {
+        let newData = {
+          user_id: pic.user_id,
+          nik: pic.tbl_user.tbl_account_detail.nik
+        }
+        if (pic.tbl_user.tbl_account_detail) newData.fullname = pic.tbl_user.tbl_account_detail.fullname
+        listPICSelected.push(newData)
+      })
+      company.pic = listPICSelected
+    })
+
+    this.setState({ data, loading: false })
   }
 
   handleClick = event => {
@@ -66,10 +121,16 @@ class panelOnBoarding extends Component {
     this.setState({ anchorEl: null, openPopOver: false })
   };
 
-  handleChangeSelect = (name, newValue, actionMeta) => {
-    this.setState({
-      [name]: newValue
-    })
+  handleChangeSelect = async (idCompany, newValue, actionMeta) => {
+    try {
+      let token = Cookies.get('POLAGROUP')
+      console.log(idCompany)
+      await API.put(`/pic/${idCompany}`, { pic: newValue }, { headers: { token } })
+      await this.props.fetchDataPIC()
+    } catch (err) {
+      swal("Edit PIC gagal", "", "warning")
+    }
+    console.log(newValue)
   };
 
   handleChange = panel => (event, isExpanded) => {
@@ -87,102 +148,138 @@ class panelOnBoarding extends Component {
     return (
       <div style={{ width: '100%' }}>
         {
-          this.state.data.map((el, index) =>
-            <ExpansionPanel square expanded={this.state.expanded === el.pt} onChange={this.handleChange(el.pt)} key={index}>
-              <ExpansionPanelSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-label="Expand"
-                aria-controls="additional-actions1-content"
-                id="additional-actions1-header"
-              >
-                <FormControlLabel
-                  onClick={event => event.stopPropagation()}
-                  onFocus={event => event.stopPropagation()}
-                  control={<Checkbox />}
-                />
-                <Grid style={{ display: 'flex', alignItems: 'center' }}>
-                  <Grid style={{ display: 'flex', width: 150 }}>
-                    <BusinessOutlinedIcon style={{ color: el.statusIcon1 ? '#d71149' : '#b4b4b4', minWidth: 40, height: 40, marginRight: 10 }} />
-                    <Typography style={{ fontWeight: 'bold', fontSize: 21 }}>{el.pt}</Typography>
+          this.state.loading
+            ? <div style={{ textAlign: 'center' }}>
+              <CircularProgress color="secondary" style={{ marginTop: 20 }} />
+            </div>
+            : this.state.data.map((el, index) =>
+              <ExpansionPanel square expanded={this.state.expanded === el.acronym} onChange={this.handleChange(el.acronym)} key={index}>
+                <ExpansionPanelSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-label="Expand"
+                  aria-controls="additional-actions1-content"
+                  id="additional-actions1-header"
+                >
+                  <FormControlLabel
+                    onClick={event => event.stopPropagation()}
+                    onFocus={event => event.stopPropagation()}
+                    control={<Checkbox />}
+                  />
+                  <Grid style={{ display: 'flex', alignItems: 'center' }}>
+                    <Grid style={{ display: 'flex', width: 150 }}>
+                      <BusinessOutlinedIcon style={{ color: el.statusIcon1 ? '#d71149' : '#b4b4b4', minWidth: 40, height: 40, marginRight: 10 }} />
+                      <Typography style={{ fontWeight: 'bold', fontSize: 21 }}>{el.acronym}</Typography>
+                    </Grid>
+                    <Grid style={{ display: 'flex', width: 160 }}>
+                      <AssignmentIndIcon style={{ color: el.tbl_PICs.length > 0 ? '#d71149' : '#b4b4b4', minWidth: 40, height: 40, marginRight: 10 }} />
+                      <Grid style={{ display: 'flex', flexWrap: 'wrap' }}>
+                        {
+                          el.tbl_PICs.map((pic, index) => <Typography key={'pic' + index} style={{ fontWeight: 'bold', fontSize: 21 }}>{pic.tbl_user.tbl_account_detail.initial || pic.tbl_user.tbl_account_detail.nik}{(el.tbl_PICs.length > 1 && index !== el.tbl_PICs.length - 1) && ','}</Typography>)
+                        }
+                      </Grid>
+                    </Grid>
+                    <Grid style={{ display: 'flex', width: 100 }}>
+                      <PowerInputIcon style={{ color: el.statusIcon3 ? '#d71149' : '#b4b4b4', minWidth: 40, height: 40 }} />
+                    </Grid>
+                    <Grid style={{ display: 'flex', width: 100 }}>
+                      <PeopleOutlineIcon style={{ color: el.statusIcon4 ? '#d71149' : '#b4b4b4', minWidth: 40, height: 40 }} />
+                    </Grid>
                   </Grid>
-                  <Grid style={{ display: 'flex', width: 150 }}>
-                    <AssignmentIndIcon style={{ color: el.statusIcon2 ? '#d71149' : '#b4b4b4', minWidth: 40, height: 40, marginRight: 10 }} />
-                    <Typography style={{ fontWeight: 'bold', fontSize: 21 }}>{el.pic}</Typography>
-                  </Grid>
-                  <Grid style={{ display: 'flex', width: 100 }}>
-                    <PowerInputIcon style={{ color: el.statusIcon3 ? '#d71149' : '#b4b4b4', minWidth: 40, height: 40 }} />
-                  </Grid>
-                  <Grid style={{ display: 'flex', width: 100 }}>
-                    <PeopleOutlineIcon style={{ color: el.statusIcon4 ? '#d71149' : '#b4b4b4', minWidth: 40, height: 40 }} />
-                  </Grid>
-                </Grid>
-              </ExpansionPanelSummary>
-              <Divider />
-              <ExpansionPanelDetails style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#f2f2f2', padding: 20 }}>
-                <div style={{ display: 'flex', width: '100%', marginBottom: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <div style={{ width: '100%', paddingRight: 20 }}>
-                    <SeCreatableSelect
-                      isMulti
-                      components={animatedComponents}
-                      options={this.state.users}
-                      onChange={value => this.handleChangeSelect('user', value)}
-                      getOptionLabel={(option) => option.fullname}
-                      getOptionValue={(option) => option.user_id}
-                      placeholder="tambah PIC"
-                      style={{ width: '90%' }}
-                    />
-                  </div>
-                  <Button variant="contained" onClick={this.handleClick}>
-                    Pengaturan
+                </ExpansionPanelSummary>
+                <Divider />
+                <ExpansionPanelDetails style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#f2f2f2', padding: 20 }}>
+                  <div style={{ display: 'flex', width: '100%', marginBottom: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <div style={{ width: '100%', paddingRight: 20 }}>
+                      <SeCreatableSelect
+                        isMulti
+                        components={animatedComponents}
+                        options={this.state.users}
+                        value={el.pic}
+                        onChange={value => this.handleChangeSelect(el.company_id, value)}
+                        getOptionLabel={(option) => option.nik + ' - ' + option.fullname}
+                        getOptionValue={(option) => option.user_id}
+                        placeholder="tambah PIC"
+                        style={{ width: '90%' }}
+                      />
+                    </div>
+                    <Button variant="contained" onClick={this.handleClick}>
+                      Pengaturan
                   </Button>
 
-                  <Popover
-                    open={this.state.openPopOver}
-                    anchorEl={this.state.anchorEl}
-                    onClose={this.handleClose}
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'right',
-                    }}
-                    transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'right',
-                    }}
-                  >
-                    <Paper style={{ width: 200 }}>
-                      <ClickAwayListener onClickAway={this.handleClose}>
-                        <MenuList autoFocusItem={this.state.openPopOver} id="menu-list-grow" onKeyDown={this.handleListKeyDown}>
-                          <MenuItem onClick={this.handleClose}>Ubah data</MenuItem>
-                          <MenuItem onClick={this.handleClose}>Ubah PIC</MenuItem>
-                          <MenuItem onClick={this.handleClose}>Non-aktifkan</MenuItem>
-                          <MenuItem onClick={this.handleClose}>Hapus</MenuItem>
-                        </MenuList>
-                      </ClickAwayListener>
-                    </Paper>
-                  </Popover>
-                </div>
-                <Grid container>
-                  <Grid item sm={3} style={{ paddingRight: 5 }}>
-                    <Grid style={{ backgroundColor: 'white', width: '100%', border: '1px solid #e3e3e3', }}>
-                      Status Alamat
-                  </Grid>
-                  </Grid>
-                  <Grid item sm={3} style={{ backgroundColor: 'white', border: '1px solid #e3e3e3' }}>
-                    Status Struktur
-                  </Grid>
-                  <Grid item sm={3} style={{ backgroundColor: 'white', border: '1px solid #e3e3e3' }}>
-                    Status Karyawan
-                  </Grid>
-                  <Grid item sm={3} style={{ backgroundColor: 'white', border: '1px solid #e3e3e3' }}>
-                    Status Admin
-                  </Grid>
-                </Grid>
-                <Typography color="textSecondary">
-                  isi test
-                </Typography>
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
-          )
+                    <Popover
+                      open={this.state.openPopOver}
+                      anchorEl={this.state.anchorEl}
+                      onClose={this.handleClose}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                      }}
+                    >
+                      <Paper style={{ width: 200 }}>
+                        <ClickAwayListener onClickAway={this.handleClose}>
+                          <MenuList autoFocusItem={this.state.openPopOver} id="menu-list-grow" onKeyDown={this.handleListKeyDown}>
+                            <MenuItem onClick={this.handleClose}>Ubah data</MenuItem>
+                            {/* <MenuItem onClick={this.handleClose}>Ubah PIC</MenuItem> */}
+                            <MenuItem onClick={this.handleClose}>Non-aktifkan</MenuItem>
+                            <MenuItem onClick={this.handleClose}>Hapus</MenuItem>
+                          </MenuList>
+                        </ClickAwayListener>
+                      </Paper>
+                    </Popover>
+                  </div>
+                  <Grid container>
+                    <Grid item sm={3} style={{ padding: 5 }}>
+                      <Grid style={{ backgroundColor: 'white', border: '1px solid #e3e3e3', padding: 10, minHeight: 138 }}>
+                        <b style={{ margin: 0 }}>Status Alamat</b>
+                        <Grid style={{ display: "flex", flexWrap: 'wrap' }}>
+                          <p style={{ margin: 0, fontSize: 12, width: 84 }}>Diisi tanggal</p>
+                          <p style={{ margin: 0, fontSize: 12 }}>: {el.firstCreate && el.firstCreate.slice(0, 10)}</p>
+                        </Grid>
+                        <Grid style={{ display: "flex", flexWrap: 'wrap' }}>
+                          <p style={{ margin: 0, fontSize: 12, width: 84 }}>Diubah terakhir</p>
+                          <p style={{ margin: 0, fontSize: 12 }}>: {el.lastUpdate && el.lastUpdate.slice(0, 10)}</p>
+                        </Grid>
+                        <p style={{ margin: 0, fontSize: 12 }}>{el.totalAddress} alamat terdaftar</p>
+                        {
+                          el.notComplete !== 0 && <p style={{ margin: 0, fontSize: 12 }}>{el.notComplete} Alamat tidak lengkap</p>
+                        }
+                      </Grid>
+                    </Grid>
+                    <Grid item sm={3} style={{ padding: 5 }}>
+                      <Grid style={{ backgroundColor: 'white', border: '1px solid #e3e3e3', padding: 10, minHeight: 138 }}>
+                        <b style={{ margin: 0 }}>Status Struktur</b>
+                        <p style={{ margin: 0, fontSize: 12 }}>Surat Keputusan SO:</p>
+                        <p style={{ margin: 0, fontSize: 12 }}>Diubah terakhir</p>
+                        <p style={{ margin: 0, fontSize: 12 }}>Ubah data struktur</p>
+                        <p style={{ margin: 0, fontSize: 12 }}>3 Peran kosong</p>
+                      </Grid>
+                    </Grid>
+                    <Grid item sm={3} style={{ padding: 5 }}>
+                      <Grid style={{ backgroundColor: 'white', border: '1px solid #e3e3e3', padding: 10, minHeight: 138 }}>
+                        <b style={{ margin: 0 }}>Status Karyawan</b>
+                        <p style={{ margin: 0, fontSize: 12 }}>Diubah terakhir</p>
+                        <p style={{ margin: 0, fontSize: 12 }}>Ubah data karyawan</p>
+                        <p style={{ margin: 0, fontSize: 12 }}>20 Data karyawan tidak lengkap</p>
+                      </Grid>
+                    </Grid>
+                    <Grid item sm={3} style={{ padding: 5 }}>
+                      <Grid style={{ backgroundColor: 'white', border: '1px solid #e3e3e3', padding: 10, minHeight: 138 }}>
+                        <b style={{ margin: 0 }}>Status Admin</b>
+                        <p style={{ margin: 0, fontSize: 12 }}>Alamat</p>
+                        <p style={{ margin: 0, fontSize: 12 }}>Struktur</p>
+                        <p style={{ margin: 0, fontSize: 12 }}>Karyawan</p>
+                        <p style={{ margin: 0, fontSize: 12 }}>Ubah data admin</p>
+                        <p style={{ margin: 0, fontSize: 12 }}>2 Admin belum log in</p>
+                      </Grid>
+                    </Grid>
+                  </Grid >
+                </ExpansionPanelDetails >
+              </ExpansionPanel >
+            )
         }
       </div>
     )
@@ -190,13 +287,17 @@ class panelOnBoarding extends Component {
 }
 
 const mapDispatchToProps = {
-  fetchDataUsers
+  fetchDataUsers,
+  fetchDataPIC,
+  fetchDataAddress
 }
 
-const mapStateToProps = ({ loading, dataUsers, }) => {
+const mapStateToProps = ({ loading, dataUsers, dataPIC, dataAddress }) => {
   return {
     loading,
     dataUsers,
+    dataPIC,
+    dataAddress
   }
 }
 

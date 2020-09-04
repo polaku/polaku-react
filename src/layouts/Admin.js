@@ -14,7 +14,7 @@ import MeetingRoomOutlinedIcon from '@material-ui/icons/MeetingRoomOutlined';
 import EventOutlinedIcon from '@material-ui/icons/EventOutlined';
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
 
-// import BookingRoom from '../views/BookingRoom';
+// import BookingRoom from '../views/booking-room';
 // import CreateBookingRoom from '../views/CreateBookingRoom';
 
 const drawerWidth = 240;

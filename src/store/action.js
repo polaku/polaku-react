@@ -23,7 +23,7 @@ export function fetchDataRooms() {
   }
 }
 
-export function fetchDataRoomMaster() {  
+export function fetchDataRoomMaster() {
   return {
     type: 'FETCH_DATA_ROOM_MASTER'
   }
@@ -121,6 +121,18 @@ export function fetchDataUserDetail(payload) {
   return {
     type: 'FETCH_DATA_USER_DETAIL',
     payload
+  }
+}
+
+export function fetchDataPIC() {
+  return {
+    type: 'FETCH_DATA_PIC'
+  }
+}
+
+export function fetchDataAddress() {
+  return {
+    type: 'FETCH_DATA_ADDRESS'
   }
 }
 

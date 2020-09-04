@@ -36,7 +36,7 @@ class RoomMaster extends Component {
   render() {
     return (
       <div>
-        <Link to="/bookingRoom/roomMaster/assignRoomMaster">
+        <Link to="/booking-room/room-master/assign-room-master">
           Assign Room Master</Link>
 
         <Paper style={{

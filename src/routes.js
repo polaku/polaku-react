@@ -16,7 +16,9 @@ import CreatorMasterAndAssistant from "./views/Event/CreatorMasterAndAssistant";
 import DetailEvent from "./views/Event/DetailEvent";
 import Setting from './views/Setting/Setting';
 import SettingPerusahaan from './views/Setting/SettingPerusahaan';
+import StepperOnboarding from './views/Setting/StepperOnboarding';
 import SettingUser from './views/Setting/SettingUser';
+import TambahAlamat from './views/Setting/TambahAlamat';
 import HR from './views/HR/HR';
 import ReportIjin from './views/HR/ReportIjin';
 import KPIM from './views/KPIM/DashboardKPIM';
@@ -48,18 +50,20 @@ function Routes() {
       <div className={classes.toolbar} />
       <Switch>
         <Route path="/login" component={Login} />
-        <AuthenticatedRoute path="/bookingRoom/roomMaster/assignRoomMaster" component={AssignRoomMaster} />
-        <AuthenticatedRoute path="/bookingRoom/roomMaster" component={RoomMaster} />
-        <AuthenticatedRoute path="/bookingRoom/roomAssistant" component={AssignRoomAssistant} />
-        <AuthenticatedRoute path="/bookingRoom/createbookingRoom" component={CreateBookingRoom} />
-        <AuthenticatedRoute path="/bookingRoom/rooms" component={Rooms} />
-        <AuthenticatedRoute path="/bookingRoom" component={BookingRoom} />
-        <AuthenticatedRoute path="/event/detailEvent/:id" component={DetailEvent} />
-        <AuthenticatedRoute path="/event/creatorMasterAndAssistant" component={CreatorMasterAndAssistant} />
-        <AuthenticatedRoute path="/event/approvalEvent" component={ApprovalEvent} />
+        <AuthenticatedRoute path="/booking-room/room-master/assign-room-master" component={AssignRoomMaster} />
+        <AuthenticatedRoute path="/booking-room/room-master" component={RoomMaster} />
+        <AuthenticatedRoute path="/booking-room/room-assistant" component={AssignRoomAssistant} />
+        <AuthenticatedRoute path="/booking-room/create-booking-room" component={CreateBookingRoom} />
+        <AuthenticatedRoute path="/booking-room/rooms" component={Rooms} />
+        <AuthenticatedRoute path="/booking-room" component={BookingRoom} />
+        <AuthenticatedRoute path="/event/detail-event/:id" component={DetailEvent} />
+        <AuthenticatedRoute path="/event/creator-master-and-assistant" component={CreatorMasterAndAssistant} />
+        <AuthenticatedRoute path="/event/approval-event" component={ApprovalEvent} />
         <AuthenticatedRoute path="/event" component={Event} />
-        <AuthenticatedRoute path="/setting/settingPerusahaan" component={SettingPerusahaan} />
-        <AuthenticatedRoute path="/setting/settingUser" component={SettingUser} />
+        <AuthenticatedRoute path="/setting/setting-perusahaan/stepper-onboarding" component={StepperOnboarding} />
+        <AuthenticatedRoute path="/setting/setting-perusahaan/add-address" component={TambahAlamat} />
+        <AuthenticatedRoute path="/setting/setting-perusahaan" component={SettingPerusahaan} />
+        <AuthenticatedRoute path="/setting/setting-user" component={SettingUser} />
         <AuthenticatedRoute path="/setting" component={Setting} />
         <AuthenticatedRoute path="/hr/report" component={ReportIjin} />
         <AuthenticatedRoute path="/hr" component={HR} />

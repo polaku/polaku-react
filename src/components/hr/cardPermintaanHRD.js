@@ -194,9 +194,6 @@ export default class cardPermintaanHRD extends Component {
             })
         }
       });
-
-
-
   }
 
   handleOpenModal = () => {

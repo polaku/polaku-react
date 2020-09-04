@@ -34,7 +34,9 @@ const defaultState = {
   dataAllRewardKPIM: [],
   myRewardKPIM: [],
   dataPositions: [],
-  dataPolanews: []
+  dataPolanews: [],
+  dataPIC: [],
+  dataAddress: []
 }
 
 function reducer(state = defaultState, action) {
@@ -206,6 +208,18 @@ function reducer(state = defaultState, action) {
       return {
         ...state,
         dataPolanews: action.payload.dataPolanews
+      }
+    }
+    case 'FETCH_DATA_PIC_SUCCESS': {
+      return {
+        ...state,
+        dataPIC: action.payload.dataPIC
+      }
+    }
+    case 'FETCH_DATA_ADDRESS_SUCCESS': {
+      return {
+        ...state,
+        dataAddress: action.payload.dataAddress
       }
     }
     case 'FETCH_DATA_ERROR': {

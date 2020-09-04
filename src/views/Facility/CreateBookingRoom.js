@@ -150,7 +150,7 @@ class CreateBookingRoom extends Component {
             proses: true,
             editableInput: true
           })
-          this.props.history.push('/bookingRoom');
+          this.props.history.push('/booking-room');
         })
         .catch((err) => {
           if (err.message === 'Request failed with status code 400') {

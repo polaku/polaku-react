@@ -3,12 +3,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Paper, Tabs, Tab, Typography, Box, Divider
+  Paper, Tabs, Tab, Typography, Box, Divider, Button
 } from '@material-ui/core';
 
 import SwipeableViews from 'react-swipeable-views';
 
-import PanelOnboarding from '../../components/setting/panelOnBoarding'
+import PanelOnBoarding from '../../components/setting/panelOnBoarding';
+import PanelAddress from '../../components/setting/panelAddress';
+
+import ModalOnBoarding from '../../components/modal/modalOnBoarding';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -35,9 +38,11 @@ TabPanel.propTypes = {
 
 export default class SettingPerusahaan extends Component {
   state = {
-    labelTab: ['OnBoarding', 'Alamat', 'Struktur', 'Karyawan', 'Admin'],
+    // labelTab: ['OnBoarding', 'Alamat', 'Struktur', 'Karyawan', 'Admin'],
+    labelTab: ['OnBoarding', 'Alamat'],
     value: 0,
-    index: 0
+    index: 0,
+    openModalOnBoarding: false,
   }
 
   handleChange = (event, newValue) => {
@@ -48,10 +53,14 @@ export default class SettingPerusahaan extends Component {
     this.setState({ index: index })
   };
 
+  handleModalOnBoarding = () => {
+    this.setState({ openModalOnBoarding: !this.state.openModalOnBoarding })
+  }
+
   render() {
     return (
       <div>
-        <Paper square style={{ padding: 10, paddingLeft: 20, paddingBottom: 20 }}>
+        <Paper square style={{ padding: 10, paddingLeft: 20 }}>
           <Tabs
             value={this.state.value}
             indicatorColor="secondary"
@@ -60,9 +69,9 @@ export default class SettingPerusahaan extends Component {
           >
             <Tab label="OnBoarding" style={{ marginRight: 30 }} />
             <Tab label="Alamat" style={{ marginRight: 30 }} />
-            <Tab label="Struktur" style={{ marginRight: 30 }} />
+            {/* <Tab label="Struktur" style={{ marginRight: 30 }} />
             <Tab label="Karyawan" style={{ marginRight: 30 }} />
-            <Tab label="Admin" style={{ marginRight: 30 }} />
+            <Tab label="Admin" style={{ marginRight: 30 }} /> */}
           </Tabs>
           <Divider />
         </Paper>
@@ -75,13 +84,14 @@ export default class SettingPerusahaan extends Component {
           <TabPanel value={this.state.value} index={0} style={{ height: '85vh' }}>
             <Paper style={{ padding: 10, paddingLeft: 20, marginBottom: 5 }}>
               pilih untuk lakukan aksi
+              <Button variant="outlined" style={{ marginLeft: '10px' }} onClick={this.handleModalOnBoarding}>onboarding baru</Button>
             </Paper>
-            <PanelOnboarding />
+            <PanelOnBoarding />
           </TabPanel>
 
           {/* Alamat */}
           <TabPanel value={this.state.value} index={1}>
-            Alamat
+            <PanelAddress />
           </TabPanel>
 
           {/* Struktur */}
@@ -99,6 +109,10 @@ export default class SettingPerusahaan extends Component {
             Admin
           </TabPanel>
         </SwipeableViews>
+
+        {
+          this.state.openModalOnBoarding && <ModalOnBoarding status={this.state.openModalOnBoarding} close={this.handleModalOnBoarding} />
+        }
       </div>
     )
   }

@@ -529,6 +529,48 @@ const api = store => next => async action => {
       })
     }
   }
+  else if (action.type === 'FETCH_DATA_PIC') {
+    next({
+      type: 'FETCH_DATA_LOADING'
+    })
+
+    let getData
+    try {
+      getData = await API.get('/pic', { headers: { token } })
+
+      next({
+        type: 'FETCH_DATA_PIC_SUCCESS',
+        payload: { dataPIC: getData.data.data }
+      })
+
+    } catch (err) {
+      next({
+        type: 'FETCH_DATA_ERROR',
+        payload: err
+      })
+    }
+  }
+  else if (action.type === 'FETCH_DATA_ADDRESS') {
+    next({
+      type: 'FETCH_DATA_LOADING'
+    })
+
+    let getData
+    try {
+      getData = await API.get('/address', { headers: { token } })
+
+      next({
+        type: 'FETCH_DATA_ADDRESS_SUCCESS',
+        payload: { dataAddress: getData.data.data }
+      })
+
+    } catch (err) {
+      next({
+        type: 'FETCH_DATA_ERROR',
+        payload: err
+      })
+    }
+  }
   else {
     next(action)
   }

@@ -84,7 +84,7 @@ class Profil extends Component {
       <div>
         {
           this.props.dataUserDetail && <>
-            <Paper style={{ padding: '40px 30px 20px 30px', backgroundColor: 'white', borderRadius: 0, width: 400, margin: '50px auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <Paper style={{ padding: '40px 30px 20px 30px', backgroundColor: 'white', borderRadius: 0, maxWidth: 400, width: '95%', margin: '50px auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
               {
                 this.props.dataUserDetail.tbl_account_detail && <>
                   <img src={this.props.dataUserDetail.tbl_account_detail.avatar} alt="avatar_user" style={{ width: 150, height: 150, borderRadius: 5, marginBottom: 15 }} />
