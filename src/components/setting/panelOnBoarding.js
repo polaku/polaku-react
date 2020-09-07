@@ -122,13 +122,11 @@ class panelOnBoarding extends Component {
   handleChangeSelect = async (idCompany, newValue, actionMeta) => {
     try {
       let token = Cookies.get('POLAGROUP')
-      console.log(idCompany)
       await API.put(`/pic/${idCompany}`, { pic: newValue }, { headers: { token } })
       await this.props.fetchDataPIC()
     } catch (err) {
       swal("Edit PIC gagal", "", "warning")
     }
-    console.log(newValue)
   };
 
   handleChange = panel => (event, isExpanded) => {

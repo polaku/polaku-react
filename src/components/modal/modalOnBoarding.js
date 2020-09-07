@@ -103,8 +103,6 @@ class modalOnBoarding extends Component {
   }
 
   checkValidateCompany = () => {
-    console.log("------------")
-    console.log(this.props.dataCompanies)
     let checkName = this.props.dataCompanies.find(company =>
       company.company_name.toLowerCase() === this.state.companyName.toLowerCase()
     )

@@ -77,8 +77,8 @@ class TambahAlamat extends Component {
       if (newData.length === this.state.dataForEdit.length) {
         this.setState({ proses: true })
         newData.forEach((data, index) => {
-          if (this.state.isMainAddress) {
-            if (index === this.state.isMainAddress) {
+          if (this.state.indexMainAddress !== null) {
+            if (index === this.state.indexMainAddress) {
               data.append('isMainAddress', true)
             } else {
               data.append('isMainAddress', false)
@@ -108,8 +108,8 @@ class TambahAlamat extends Component {
 
       if (newData.length === this.state.alamat.length) {
         newData.forEach((data, index) => {
-          if (this.state.isMainAddress) {
-            if (index === this.state.isMainAddress) {
+          if (this.state.indexMainAddress !== null) {
+            if (index === this.state.indexMainAddress) {
               data.append('isMainAddress', true)
             } else {
               data.append('isMainAddress', false)
@@ -141,7 +141,7 @@ class TambahAlamat extends Component {
     newAlamat[index] = event.target.checked
 
     this.setState({
-      isMainAddress: index,
+      indexMainAddress: index,
       alamat: newAlamat
     })
   }
@@ -190,7 +190,7 @@ class TambahAlamat extends Component {
                   label={<p style={{ margin: 0, fontSize: 13 }}>Jadikan alamat pusat</p>}
                 />
               </Grid>
-              <AddAddress statusSubmit={this.state.statusSubmit} companyId={this.state.companyId} sendData={this.sendData} data={this.state.dataForEdit[index]} proses={this.state.proses}/>
+              <AddAddress statusSubmit={this.state.statusSubmit} companyId={this.state.companyId} sendData={this.sendData} data={this.state.dataForEdit[index]} proses={this.state.proses} />
             </Grid>
           )
         }
@@ -199,7 +199,7 @@ class TambahAlamat extends Component {
         }
 
         <Button variant="outlined" color="secondary" style={{ width: 150, margin: 10 }} onClick={() => this.props.history.goBack()} disabled={this.state.proses}>batalkan</Button>
-        <Button variant="contained" color="secondary" style={{ width: 150, margin: 10 }} onClick={this.submit} disabled={this.state.proses}>tambahkan</Button>
+        <Button variant="contained" color="secondary" style={{ width: 150, margin: 10 }} onClick={this.submit} disabled={this.state.proses}>simpan</Button>
       </Grid>
     )
   }

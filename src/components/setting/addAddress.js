@@ -56,7 +56,6 @@ class addAddress extends Component {
         listAddress.push({ value: address.address, label: address.address })
       }
     })
-    console.log(listAddress)
     this.setState({ listAddress })
   }
 
@@ -328,7 +327,6 @@ class addAddress extends Component {
 
   handleChangeAddress = (newValue, actionMeta) => {
     if (newValue !== null) {
-      console.log(newValue)
       this.setState({
         newAddress: newValue.value
       })

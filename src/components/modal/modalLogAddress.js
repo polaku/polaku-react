@@ -46,7 +46,6 @@ export default class modalLogAddress extends Component {
       date = `${year}-${month}-01`
       let token = Cookies.get('POLAGROUP')
       let { data } = await API.get(`/address/log?date=${date}`, { headers: { token } })
-      console.log(data.data)
       this.setState({ data: data.data })
     } catch (err) {
       console.log(err)
@@ -62,7 +61,6 @@ export default class modalLogAddress extends Component {
     this.setState({
       page: newPage
     })
-    console.log(newPage)
   }
 
   handleChangeRowsPerPage = event => {
