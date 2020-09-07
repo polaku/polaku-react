@@ -26,7 +26,8 @@ class modalOnBoarding extends Component {
     companyName: '',
     akronim: '',
     pic: [],
-    people: []
+    people: [],
+    proses: false
   }
 
   async componentDidMount() {
@@ -69,7 +70,7 @@ class modalOnBoarding extends Component {
 
   saveOnboarding = async () => {
     let check = this.checkValidateCompany()
-
+    this.setState({ proses: true })
     if (check === "name invalid" ||
       check === "acronym invalid") {
       if (check === "name invalid") {
@@ -87,15 +88,15 @@ class modalOnBoarding extends Component {
       }
 
       API.post('/pic', newData, { headers: { token } })
-        .then(async ({data}) => {
-          console.log(data)
-          console.log(data.data.company_id)
+        .then(async ({ data }) => {
           await this.props.fetchDataPIC()
           swal("Tambah PIC sukses", "", "success")
           // this.props.history.push('/setting/setting-perusahaan/stepper-onboarding', { company_id: data.data.company_id })
+          this.setState({ proses: false })
           this.props.history.push('/setting/setting-perusahaan/add-address', { company_id: data.data.company_id })
         })
         .catch(err => {
+          this.setState({ proses: false })
           swal('please try again')
         })
     }
@@ -210,7 +211,7 @@ class modalOnBoarding extends Component {
 
 
             {/* <Grid style={{width:'100%'}} > */}
-            <Button variant="outlined" color="secondary" style={{ margin: '30px auto 0px auto' }} onClick={this.saveOnboarding}>
+            <Button variant="outlined" color="secondary" style={{ margin: '30px auto 0px auto' }} onClick={this.saveOnboarding} disabled={this.state.proses}>
               Simpan
               </Button>
             {/* </Grid> */}

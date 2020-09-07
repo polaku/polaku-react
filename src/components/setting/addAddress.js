@@ -120,6 +120,10 @@ class addAddress extends Component {
         this.setState({ initial: "" })
       }
     }
+
+    if (this.props.proses !== prevProps.proses) {
+      this.setState({ proses: this.props.proses })
+    }
   }
 
   handleChange = name => event => {
@@ -360,7 +364,7 @@ class addAddress extends Component {
 
         {/* ALAMAT */}
         <Grid style={{ margin: '10px 0px' }}>
-          <b style={{ fontSize: 14 }}>Alamat</b> 
+          <b style={{ fontSize: 14 }}>Alamat</b>
           <Grid style={{ display: 'flex' }}>
             <Grid style={{ width: '20%', minWidth: '200px', marginRight: 10 }}>
               <b style={{ fontSize: 12, marginBottom: 5 }}>lokasi alamat</b>
@@ -392,6 +396,7 @@ class addAddress extends Component {
                       fontSize: 14
                     }
                   }}
+                  disabled={this.state.proses}
                 />
               </Grid>
 
@@ -412,11 +417,12 @@ class addAddress extends Component {
                               fontSize: 14
                             }
                           }}
+                          disabled={this.state.proses}
                         />
                         {
                           index === this.state.phone.length - 1
-                            ? <Button variant="outlined" style={{ minWidth: '20%' }} onClick={() => this.addPhone(index)}>+</Button>
-                            : <Button variant="outlined" style={{ backgroundColor: '#ff1919', minWidth: '20%', color: 'white', }} size='small' onClick={() => this.deletePhone(index)}>X</Button>
+                            ? <Button variant="outlined" style={{ minWidth: '20%' }} onClick={() => this.addPhone(index)} disabled={this.state.proses}>+</Button>
+                            : <Button variant="outlined" style={{ backgroundColor: '#ff1919', minWidth: '20%', color: 'white', }} size='small' onClick={() => this.deletePhone(index)} disabled={this.state.proses}>X</Button>
                         }
                       </Grid>
                     )
@@ -439,11 +445,12 @@ class addAddress extends Component {
                               fontSize: 14
                             }
                           }}
+                          disabled={this.state.proses}
                         />
                         {
                           index === this.state.fax.length - 1
-                            ? <Button variant="outlined" style={{ minWidth: '20%' }} onClick={() => this.addFax(index)}>+</Button>
-                            : <Button variant="outlined" style={{ backgroundColor: '#ff1919', minWidth: '20%', color: 'white', }} size='small' onClick={() => this.deleteFax(index)}>X</Button>
+                            ? <Button variant="outlined" style={{ minWidth: '20%' }} onClick={() => this.addFax(index)} disabled={this.state.proses}>+</Button>
+                            : <Button variant="outlined" style={{ backgroundColor: '#ff1919', minWidth: '20%', color: 'white', }} size='small' onClick={() => this.deleteFax(index)} disabled={this.state.proses}>X</Button>
                         }
                       </Grid>
                     )
@@ -465,35 +472,35 @@ class addAddress extends Component {
             </Grid>
             <Grid>
               <FormControlLabel
-                control={<Checkbox checked={this.state.operationSemua} onChange={this.handleOperationalDay} size="small" name="operationSemua" />}
+                control={<Checkbox checked={this.state.operationSemua} onChange={this.handleOperationalDay} size="small" name="operationSemua" disabled={this.state.proses} />}
                 label={<p style={{ margin: 0, fontSize: 13 }}>Setiap hari</p>}
               />
               <FormControlLabel
-                control={<Checkbox checked={this.state.operationSenin} onChange={this.handleOperationalDay} size="small" name="operationSenin" />}
+                control={<Checkbox checked={this.state.operationSenin} onChange={this.handleOperationalDay} size="small" name="operationSenin" disabled={this.state.proses} />}
                 label={<p style={{ margin: 0, fontSize: 13 }}>Senin</p>}
               />
               <FormControlLabel
-                control={<Checkbox checked={this.state.operationSelasa} onChange={this.handleOperationalDay} size="small" name="operationSelasa" />}
+                control={<Checkbox checked={this.state.operationSelasa} onChange={this.handleOperationalDay} size="small" name="operationSelasa" disabled={this.state.proses} />}
                 label={<p style={{ margin: 0, fontSize: 13 }}>Selasa</p>}
               />
               <FormControlLabel
-                control={<Checkbox checked={this.state.operationRabu} onChange={this.handleOperationalDay} size="small" name="operationRabu" />}
+                control={<Checkbox checked={this.state.operationRabu} onChange={this.handleOperationalDay} size="small" name="operationRabu" disabled={this.state.proses} />}
                 label={<p style={{ margin: 0, fontSize: 13 }}>Rabu</p>}
               />
               <FormControlLabel
-                control={<Checkbox checked={this.state.operationKamis} onChange={this.handleOperationalDay} size="small" name="operationKamis" />}
+                control={<Checkbox checked={this.state.operationKamis} onChange={this.handleOperationalDay} size="small" name="operationKamis" disabled={this.state.proses} />}
                 label={<p style={{ margin: 0, fontSize: 13 }}>Kamis</p>}
               />
               <FormControlLabel
-                control={<Checkbox checked={this.state.operationJumat} onChange={this.handleOperationalDay} size="small" name="operationJumat" />}
+                control={<Checkbox checked={this.state.operationJumat} onChange={this.handleOperationalDay} size="small" name="operationJumat" disabled={this.state.proses} />}
                 label={<p style={{ margin: 0, fontSize: 13 }}>Jumat</p>}
               />
               <FormControlLabel
-                control={<Checkbox checked={this.state.operationSabtu} onChange={this.handleOperationalDay} size="small" name="operationSabtu" />}
+                control={<Checkbox checked={this.state.operationSabtu} onChange={this.handleOperationalDay} size="small" name="operationSabtu" disabled={this.state.proses} />}
                 label={<p style={{ margin: 0, fontSize: 13 }}>Sabtu</p>}
               />
               <FormControlLabel
-                control={<Checkbox checked={this.state.operationMinggu} onChange={this.handleOperationalDay} size="small" name="operationMinggu" />}
+                control={<Checkbox checked={this.state.operationMinggu} onChange={this.handleOperationalDay} size="small" name="operationMinggu" disabled={this.state.proses} />}
                 label={<p style={{ margin: 0, fontSize: 13 }}>Minggu</p>}
               />
             </Grid>
@@ -516,6 +523,7 @@ class addAddress extends Component {
                           value={element.day}
                           onChange={this.handleChangeOperationHour('day', index)}
                           style={{ width: 80, marginRight: 10 }}
+                          disabled={this.state.proses}
                         >
                           {(this.state.operationSenin || this.state.operationSemua) && <MenuItem value="Senin">Senin</MenuItem>}
                           {(this.state.operationSelasa || this.state.operationSemua) && <MenuItem value="Selasa">Selasa</MenuItem>}
@@ -530,14 +538,14 @@ class addAddress extends Component {
                       value={element.startHour}
                       onChange={this.handleChangeOperationHour('startHour', index)}
                       style={{ width: 80 }}
-                      disabled={!this.state.operationSemua &&
+                      disabled={(!this.state.operationSemua &&
                         !this.state.operationSenin &&
                         !this.state.operationSelasa &&
                         !this.state.operationRabu &&
                         !this.state.operationKamis &&
                         !this.state.operationJumat &&
                         !this.state.operationSabtu &&
-                        !this.state.operationMinggu}
+                        !this.state.operationMinggu) || this.state.proses}
                     >
                       {
                         this.state.optionHours.map((hours, index) =>
@@ -550,7 +558,7 @@ class addAddress extends Component {
                       value={element.endHour}
                       onChange={this.handleChangeOperationHour('endHour', index)}
                       style={{ width: 80 }}
-                      disabled={!element.startHour}
+                      disabled={!element.startHour || this.state.proses}
                     >
                       {
                         this.state.optionHours.map((hours, index) =>
@@ -560,7 +568,7 @@ class addAddress extends Component {
                       }
                     </Select>
                     {
-                      index !== 0 && <Button style={{ backgroundColor: '#ff1919', borderRadius: 30, minWidth: 30, color: 'white', marginLeft: '10px' }} size='small' onClick={() => this.deleteOperationHour(index)}>X</Button>
+                      index !== 0 && <Button style={{ backgroundColor: '#ff1919', borderRadius: 30, minWidth: 30, color: 'white', marginLeft: '10px' }} size='small' onClick={() => this.deleteOperationHour(index)} disabled={this.state.proses}>X</Button>
                     }
 
                   </Grid>
@@ -568,7 +576,7 @@ class addAddress extends Component {
               }
 
               {
-                this.state.operationHours[0].startHour && this.state.operationHours[0].endHour && <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addOperationHour}>+ atur jam operasi berbeda</p>
+                this.state.operationHours[0].startHour && this.state.operationHours[0].endHour && <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addOperationHour} disabled={this.state.proses}>+ atur jam operasi berbeda</p>
               }
 
             </Grid>
@@ -590,6 +598,7 @@ class addAddress extends Component {
                           value={element.day}
                           onChange={this.handleChangeOperationRestHour('day', index)}
                           style={{ width: 80, marginRight: 10 }}
+                          disabled={this.state.proses}
                         >
                           {(this.state.operationSenin || this.state.operationSemua) && <MenuItem value="Senin">Senin</MenuItem>}
                           {(this.state.operationSelasa || this.state.operationSemua) && <MenuItem value="Selasa">Selasa</MenuItem>}
@@ -604,14 +613,14 @@ class addAddress extends Component {
                       value={element.startRestHour}
                       onChange={this.handleChangeOperationRestHour('startRestHour', index)}
                       style={{ width: 80 }}
-                      disabled={!this.state.operationSemua &&
+                      disabled={(!this.state.operationSemua &&
                         !this.state.operationSenin &&
                         !this.state.operationSelasa &&
                         !this.state.operationRabu &&
                         !this.state.operationKamis &&
                         !this.state.operationJumat &&
                         !this.state.operationSabtu &&
-                        !this.state.operationMinggu}
+                        !this.state.operationMinggu) || this.state.proses}
                     >
                       {
                         this.state.optionRestHours.map((hours, index) =>
@@ -624,7 +633,7 @@ class addAddress extends Component {
                       value={element.endRestHour}
                       onChange={this.handleChangeOperationRestHour('endRestHour', index)}
                       style={{ width: 80 }}
-                      disabled={!element.startRestHour}
+                      disabled={!element.startRestHour || this.state.proses}
                     >
                       {
                         this.state.optionRestHours.map((hours, index) =>
@@ -635,14 +644,14 @@ class addAddress extends Component {
 
                     </Select>
                     {
-                      index !== 0 && <Button style={{ backgroundColor: '#ff1919', borderRadius: 30, minWidth: 30, color: 'white', marginLeft: '10px' }} size='small' onClick={() => this.deleteOperationRestHour(index)}>X</Button>
+                      index !== 0 && <Button style={{ backgroundColor: '#ff1919', borderRadius: 30, minWidth: 30, color: 'white', marginLeft: '10px' }} size='small' onClick={() => this.deleteOperationRestHour(index)} disabled={this.state.proses}>X</Button>
                     }
                   </Grid>
                 )
               }
 
               {
-                this.state.operationRestHours[0].startRestHour && this.state.operationRestHours[0].endRestHour && <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addOperationRestHour}>+ tambah jam istirahat baru</p>
+                this.state.operationRestHours[0].startRestHour && this.state.operationRestHours[0].endRestHour && <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addOperationRestHour} disabled={this.state.proses}>+ tambah jam istirahat baru</p>
               }
             </Grid>
           </Grid>

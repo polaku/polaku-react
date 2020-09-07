@@ -24,11 +24,10 @@ class TambahAlamat extends Component {
     indexMainAddress: null,
     dataForEdit: [],
     tempDataForEdit: [],
+    proses: false
   }
 
   async componentDidMount() {
-    await this.props.fetchDataCompanies()
-
     if (this.props.location.state) {
       if (this.props.location.state.data) {
         let data = [this.props.location.state.data]
@@ -38,6 +37,8 @@ class TambahAlamat extends Component {
         this.setState({ companyId: this.props.location.state.company_id, disableCompanyId: true })
       }
     }
+
+    await this.props.fetchDataCompanies()
   }
 
   handleChange = name => event => {
@@ -74,6 +75,7 @@ class TambahAlamat extends Component {
       let token = Cookies.get('POLAGROUP'), promises = []
 
       if (newData.length === this.state.dataForEdit.length) {
+        this.setState({ proses: true })
         newData.forEach((data, index) => {
           if (this.state.isMainAddress) {
             if (index === this.state.isMainAddress) {
@@ -86,13 +88,13 @@ class TambahAlamat extends Component {
         })
         Promise.all(promises)
           .then(async ({ data }) => {
-            this.setState({ data: [] })
+            this.setState({ data: [], proses: false })
             await this.props.fetchDataAddress()
             swal('Ubah alamat sukses', '', 'success')
             this.props.history.goBack()
           })
           .catch(err => {
-            console.log(err)
+            this.setState({ proses: false })
             swal('Ubah alamat gagal', '', 'error')
           })
       } else {
@@ -101,6 +103,7 @@ class TambahAlamat extends Component {
     } else {
       let newData = this.state.data
       newData.push(args)
+      this.setState({ proses: true })
       let token = Cookies.get('POLAGROUP'), promises = []
 
       if (newData.length === this.state.alamat.length) {
@@ -116,13 +119,13 @@ class TambahAlamat extends Component {
         })
         Promise.all(promises)
           .then(async ({ data }) => {
-            this.setState({ data: [] })
+            this.setState({ data: [], proses: false })
             await this.props.fetchDataAddress()
             swal('Tambah alamat sukses', '', 'success')
             this.props.history.goBack()
           })
           .catch(err => {
-            console.log(err)
+            this.setState({ proses: false })
             swal('Tambah alamat gagal', '', 'error')
           })
       } else {
@@ -187,16 +190,16 @@ class TambahAlamat extends Component {
                   label={<p style={{ margin: 0, fontSize: 13 }}>Jadikan alamat pusat</p>}
                 />
               </Grid>
-              <AddAddress statusSubmit={this.state.statusSubmit} companyId={this.state.companyId} sendData={this.sendData} data={this.state.dataForEdit[index]} />
+              <AddAddress statusSubmit={this.state.statusSubmit} companyId={this.state.companyId} sendData={this.sendData} data={this.state.dataForEdit[index]} proses={this.state.proses}/>
             </Grid>
           )
         }
         {
-          this.state.dataForEdit.length === 0 && <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addAlamat}>+ tambah alamat baru</p>
+          this.state.dataForEdit.length === 0 && <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addAlamat} disabled={this.state.proses}>+ tambah alamat baru</p>
         }
-        {/* disabled={this.state.statusSubmit} */}
-        <Button variant="outlined" color="secondary" style={{ width: 150, margin: 10 }} onClick={() => this.props.history.goBack()}>batalkan</Button>
-        <Button variant="contained" color="secondary" style={{ width: 150, margin: 10 }} onClick={this.submit}>tambahkan</Button>
+
+        <Button variant="outlined" color="secondary" style={{ width: 150, margin: 10 }} onClick={() => this.props.history.goBack()} disabled={this.state.proses}>batalkan</Button>
+        <Button variant="contained" color="secondary" style={{ width: 150, margin: 10 }} onClick={this.submit} disabled={this.state.proses}>tambahkan</Button>
       </Grid>
     )
   }

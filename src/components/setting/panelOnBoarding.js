@@ -60,12 +60,10 @@ class panelOnBoarding extends Component {
   fetchData = async () => {
     this.setState({ loading: true })
     await this.props.fetchDataAddress()
-    console.log(this.props.dataAddress)
-    console.log(this.props.dataPIC)
 
     let data = this.props.dataPIC
 
-    data.forEach(async (element) => {
+    data.length > 0 && data.forEach(async (element) => {
       let notComplete = 0
       let address = await this.props.dataAddress.filter(el => el.company_id === element.company_id)
 
@@ -96,7 +94,7 @@ class panelOnBoarding extends Component {
       element.notComplete = notComplete
     })
 
-    await this.props.dataPIC.forEach(async (company) => {
+    this.props.dataPIC.length > 0 && await this.props.dataPIC.forEach(async (company) => {
       let listPICSelected = []
 
       await company.tbl_PICs.forEach(pic => {
@@ -249,7 +247,7 @@ class panelOnBoarding extends Component {
                         }
                       </Grid>
                     </Grid>
-                    <Grid item sm={3} style={{ padding: 5 }}>
+                    {/* <Grid item sm={3} style={{ padding: 5 }}>
                       <Grid style={{ backgroundColor: 'white', border: '1px solid #e3e3e3', padding: 10, minHeight: 138 }}>
                         <b style={{ margin: 0 }}>Status Struktur</b>
                         <p style={{ margin: 0, fontSize: 12 }}>Surat Keputusan SO:</p>
@@ -275,7 +273,7 @@ class panelOnBoarding extends Component {
                         <p style={{ margin: 0, fontSize: 12 }}>Ubah data admin</p>
                         <p style={{ margin: 0, fontSize: 12 }}>2 Admin belum log in</p>
                       </Grid>
-                    </Grid>
+                    </Grid> */}
                   </Grid >
                 </ExpansionPanelDetails >
               </ExpansionPanel >

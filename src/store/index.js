@@ -93,11 +93,11 @@ const api = store => next => async action => {
     next({
       type: 'FETCH_DATA_LOADING'
     })
-
+    console.log("MASUK KEPANGGIL")
     let getData
     try {
       getData = await API.get('/company', { headers: { token } })
-
+console.log(getData.data.data)
       next({
         type: 'FETCH_DATA_COMPANIES_SUCCESS',
         payload: getData.data.data
