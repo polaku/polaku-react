@@ -18,7 +18,10 @@ import Setting from './views/Setting/Setting';
 import SettingPerusahaan from './views/Setting/SettingPerusahaan';
 import StepperOnboarding from './views/Setting/StepperOnboarding';
 import SettingUser from './views/Setting/SettingUser';
-import TambahAlamat from './views/Setting/TambahAlamat';
+import AddAddress from './views/Setting/AddAddress';
+import AddDepartment from './views/Setting/AddDepartment';
+import AddEmployee from './views/Setting/AddEmployee';
+import AddService from './views/Setting/AddService';
 import HR from './views/HR/HR';
 import ReportIjin from './views/HR/ReportIjin';
 import KPIM from './views/KPIM/DashboardKPIM';
@@ -61,7 +64,10 @@ function Routes() {
         <AuthenticatedRoute path="/event/approval-event" component={ApprovalEvent} />
         <AuthenticatedRoute path="/event" component={Event} />
         <AuthenticatedRoute path="/setting/setting-perusahaan/stepper-onboarding" component={StepperOnboarding} />
-        <AuthenticatedRoute path="/setting/setting-perusahaan/add-address" component={TambahAlamat} />
+        <AuthenticatedRoute path="/setting/setting-perusahaan/add-address" component={AddAddress} />
+        <AuthenticatedRoute path="/setting/setting-perusahaan/add-department" component={AddDepartment} />
+        <AuthenticatedRoute path="/setting/setting-perusahaan/add-employee" component={AddEmployee} />
+        <AuthenticatedRoute path="/setting/setting-perusahaan/add-service" component={AddService} />
         <AuthenticatedRoute path="/setting/setting-perusahaan" component={SettingPerusahaan} />
         <AuthenticatedRoute path="/setting/setting-user" component={SettingUser} />
         <AuthenticatedRoute path="/setting" component={Setting} />
@@ -82,7 +88,7 @@ function Routes() {
 const AuthenticatedRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
-    render={ props =>
+    render={props =>
       Cookies.get('POLAGROUP') ? (
         <Component {...props} />
       ) : (

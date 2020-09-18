@@ -571,6 +571,27 @@ const api = store => next => async action => {
       })
     }
   }
+  else if (action.type === 'FETCH_DATA_STRUCTURE') {
+    next({
+      type: 'FETCH_DATA_LOADING'
+    })
+
+    let getData
+    try {
+      getData = await API.get('/structure', { headers: { token } })
+
+      next({
+        type: 'FETCH_DATA_STRUCTURE_SUCCESS',
+        payload: { dataStructure: getData.data.data }
+      })
+
+    } catch (err) {
+      next({
+        type: 'FETCH_DATA_ERROR',
+        payload: err
+      })
+    }
+  }
   else {
     next(action)
   }

@@ -10,7 +10,7 @@ import DragAndDrop from '../DragAndDrop';
 
 const animatedComponents = makeAnimated();
 
-class addAddress extends Component {
+class cardAddAddress extends Component {
   state = {
     newAddress: '',
     initial: '',
@@ -666,4 +666,4 @@ const mapStateToProps = ({ dataAddress }) => {
   }
 }
 
-export default connect(mapStateToProps)(addAddress)
+export default connect(mapStateToProps)(cardAddAddress)

@@ -17,23 +17,23 @@ import { API } from '../../config/API';
 
 import swal from 'sweetalert';
 
-class cardAddress extends Component {
+class cardEmployee extends Component {
   state = {
     notComplete: false
   }
 
   componentDidMount() {
-    if (!this.props.data.acronym ||
-      !this.props.data.address ||
-      !this.props.data.fax ||
-      !this.props.data.phone ||
-      !this.props.data.operationDay ||
-      this.props.data.tbl_operation_hours.length === 0 ||
-      this.props.data.tbl_photo_addresses.length === 0 ||
-      this.props.data.tbl_recesses.length === 0
-    ) {
-      this.setState({ notComplete: true })
-    }
+    // if (!this.props.data.acronym ||
+    //   !this.props.data.address ||
+    //   !this.props.data.fax ||
+    //   !this.props.data.phone ||
+    //   !this.props.data.operationDay ||
+    //   this.props.data.tbl_operation_hours.length === 0 ||
+    //   this.props.data.tbl_photo_addresses.length === 0 ||
+    //   this.props.data.tbl_recesses.length === 0
+    // ) {
+    //   this.setState({ notComplete: true })
+    // }
   }
 
   handleChangeCheck = event => {
@@ -45,7 +45,7 @@ class cardAddress extends Component {
 
   delete = () => {
     swal({
-      title: "Apa anda yakin ingin menghapusnya?",
+      title: "Apa anda yakin ingin menyetujuinya?",
       icon: "warning",
       buttons: true,
       dangerMode: true,
@@ -69,25 +69,16 @@ class cardAddress extends Component {
   render() {
     return (
       <Paper style={{ display: 'flex', padding: '15px 20px', margin: 1, borderRadius: 0, alignItems: 'center' }}>
-        <Grid style={{ display: 'flex', alignItems: 'center', width: '40%' }}>
-          <Grid style={{ display: 'flex', flexWrap: 'wrap' }}>
-            <img src={process.env.PUBLIC_URL + '/building.png'} alt="Logo" style={{ width: 40, maxHeight: 40, alignSelf: 'center', marginRight: 10 }} />
-            <Grid style={{ maxWidth: '80%' }}>
-              <Grid style={{ display: 'flex', alignItems: 'center' }}>
-                <b style={{ margin: 0, fontSize: 15 }}>{this.props.data.acronym}</b>
-                {
-                  this.props.data.is_main_address && <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#d71149', color: 'white', borderRadius: 15, width: 50, height: 20, marginLeft: 8 }}>
-                    <b style={{ fontSize: 10 }}>utama</b>
-                  </Grid>
-                }
-              </Grid>
-              <p style={{ margin: 0, fontSize: 13 }}>{this.props.data.address}</p>
-            </Grid>
-          </Grid>
+        <Grid style={{ width: '25%', display:'flex' }}>
+        <img src={process.env.PUBLIC_URL + '/add-much-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
+
+          <p style={{ margin: 0, }}>Ardi</p>
         </Grid>
-        <b style={{ margin: 0, width: '20%' }}>{this.props.data.tbl_company.acronym}</b>
-        <p style={{ margin: 0, width: '20%' }}>????</p>
-        <Grid style={{ width: '20%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <b style={{ margin: 0, width: '10%' }}>Business Development</b>
+        <p style={{ margin: 0, width: '15%' }}>HI</p>
+        <p style={{ margin: 0, width: '10%' }}>ADH</p>
+        <p style={{ margin: 0, width: '10%' }}>Aktif</p>
+        <Grid style={{ width: '25%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Grid style={{ width: '120px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
             {
               this.state.notComplete
@@ -113,4 +104,4 @@ const mapDispatchToProps = {
   fetchDataAddress
 }
 
-export default connect(null, mapDispatchToProps)(withRouter(cardAddress))
+export default connect(null, mapDispatchToProps)(withRouter(cardEmployee))

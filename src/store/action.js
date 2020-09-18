@@ -136,6 +136,12 @@ export function fetchDataAddress() {
   }
 }
 
+export function fetchDataStructure() {
+  return {
+    type: 'FETCH_DATA_STRUCTURE'
+  }
+}
+
 export function userLogout() {
   return {
     type: 'USER_LOGOUT'

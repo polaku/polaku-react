@@ -64,6 +64,7 @@ export default class cardSettingUserKPIM extends Component {
   }
 
   async componentDidMount() {
+    console.log(this.props.data)
     await this.fetchData()
 
     let listDate = await this.fetchOptionDateInWeek()
@@ -215,19 +216,20 @@ export default class cardSettingUserKPIM extends Component {
     });
 
     let talList = await this.props.data.kpim.find(el => el.indicator_kpim.toLowerCase() === 'tal')
+    console.log(talList.tbl_kpim_scores.length)
+    talList && talList.tbl_kpim_scores[talList.tbl_kpim_scores.length - 1] && talList.tbl_kpim_scores[talList.tbl_kpim_scores.length - 1].tbl_tals &&
+      await talList.tbl_kpim_scores[talList.tbl_kpim_scores.length - 1].tbl_tals.forEach(element => {
+        let newTAL = {
+          indicator_tal: element.indicator_tal,
+          kpim_score_id: element.kpim_score_id,
+          tal_id: element.tal_id,
+          ...element.tbl_tal_scores[0]
+        }
+        tempTAL.push(newTAL)
 
-    await talList.tbl_kpim_scores[1].tbl_tals.forEach(element => {
-      let newTAL = {
-        indicator_tal: element.indicator_tal,
-        kpim_score_id: element.kpim_score_id,
-        tal_id: element.tal_id,
-        ...element.tbl_tal_scores[0]
-      }
-      tempTAL.push(newTAL)
-
-      if (element.tbl_tal_scores[0].weight) tempBobotTAL += Number(element.tbl_tal_scores[0].weight)
-      else this.setState({ adaWeightTALYangKosong: true })
-    });
+        if (element.tbl_tal_scores[0].weight) tempBobotTAL += Number(element.tbl_tal_scores[0].weight)
+        else this.setState({ adaWeightTALYangKosong: true })
+      });
 
     tempTALMonth = await tempKPIM.find(kpim => kpim.indicator_kpim === 'TAL')
 

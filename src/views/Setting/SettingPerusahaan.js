@@ -10,6 +10,8 @@ import SwipeableViews from 'react-swipeable-views';
 
 import PanelOnBoarding from '../../components/setting/panelOnBoarding';
 import PanelAddress from '../../components/setting/panelAddress';
+import PanelStructure from '../../components/setting/panelStructure';
+import PanelEmployee from '../../components/setting/panelEmployee';
 
 import ModalOnBoarding from '../../components/modal/modalOnBoarding';
 
@@ -39,10 +41,16 @@ TabPanel.propTypes = {
 export default class SettingPerusahaan extends Component {
   state = {
     // labelTab: ['OnBoarding', 'Alamat', 'Struktur', 'Karyawan', 'Admin'],
-    labelTab: ['OnBoarding', 'Alamat'],
-    value: 0,
+    labelTab: ['OnBoarding', 'Alamat', 'Struktur'],
+    value: this.props.location.state ? this.props.location.state.index : 0,
     index: 0,
     openModalOnBoarding: false,
+  }
+
+  componentDidMount() {
+    // if (this.props.location.state) {
+    //   this.setState({ value: this.props.location.state.index })
+    // }
   }
 
   handleChange = (event, newValue) => {
@@ -69,9 +77,9 @@ export default class SettingPerusahaan extends Component {
           >
             <Tab label="OnBoarding" style={{ marginRight: 30 }} />
             <Tab label="Alamat" style={{ marginRight: 30 }} />
-            {/* <Tab label="Struktur" style={{ marginRight: 30 }} />
-            <Tab label="Karyawan" style={{ marginRight: 30 }} />
-            <Tab label="Admin" style={{ marginRight: 30 }} /> */}
+            <Tab label="Struktur" style={{ marginRight: 30 }} />
+            {/* <Tab label="Karyawan" style={{ marginRight: 30 }} /> */}
+            {/* <Tab label="Admin" style={{ marginRight: 30 }} /> */}
           </Tabs>
           <Divider />
         </Paper>
@@ -96,12 +104,12 @@ export default class SettingPerusahaan extends Component {
 
           {/* Struktur */}
           <TabPanel value={this.state.value} index={2}>
-            Struktur
+            <PanelStructure />
           </TabPanel>
 
           {/* Karyawan */}
           <TabPanel value={this.state.value} index={3}>
-            Karyawan
+            <PanelEmployee />
           </TabPanel>
 
           {/* Admin */}

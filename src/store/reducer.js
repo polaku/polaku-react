@@ -36,7 +36,8 @@ const defaultState = {
   dataPositions: [],
   dataPolanews: [],
   dataPIC: [],
-  dataAddress: []
+  dataAddress: [],
+  dataStructure: []
 }
 
 function reducer(state = defaultState, action) {
@@ -220,6 +221,12 @@ function reducer(state = defaultState, action) {
       return {
         ...state,
         dataAddress: action.payload.dataAddress
+      }
+    }
+    case 'FETCH_DATA_STRUCTURE_SUCCESS': {
+      return {
+        ...state,
+        dataStructure: action.payload.dataStructure
       }
     }
     case 'FETCH_DATA_ERROR': {

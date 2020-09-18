@@ -4,36 +4,50 @@ import { withRouter } from 'react-router-dom';
 // import Cookies from 'js-cookie';
 
 import {
-  Grid, CircularProgress, Paper, Tabs, Tab, Divider, TextField, Button,
+  Grid, CircularProgress, Paper, Tabs, Tab, Divider, TextField, Button, TableCell
   // Checkbox
 } from '@material-ui/core';
 
-import CardAddress from './cardAddress';
+import orderBy from 'lodash/orderBy';
+
+import CardDepartment from './cardDepartment';
 // import SeCreatableSelect from 'react-select/creatable';
 // import makeAnimated from 'react-select/animated';
+import ArrowDropUpOutlinedIcon from '@material-ui/icons/ArrowDropUpOutlined';
+import ArrowDropDownOutlinedIcon from '@material-ui/icons/ArrowDropDownOutlined';
 
-import { fetchDataUsers, fetchDataAddress } from '../../store/action';
+import { fetchDataUsers, fetchDataStructure } from '../../store/action';
 
 import ModalLogAddress from '../modal/modalLogAddress';
 
-class panelAddress extends Component {
+const invertDirection = {
+  asc: "desc",
+  desc: "asc"
+}
+
+
+class panelStructure extends Component {
   state = {
     labelTab: ['Semua'],
     search: '',
-    value: 0,
+    valueA: 0,
+    valueB: 0,
     index: 0,
     selectAll: false,
     check: false,
     data: [],
     dataForDisplay: [],
     dataForEdit: [],
-    proses: true,
-    openModalLogAddress: false
+
+    openModalLogAddress: false,
+    columnToSort: "",
+    sortDirection: "desc",
   }
 
   async componentDidMount() {
-    await this.props.fetchDataAddress()
+    await this.props.fetchDataStructure()
     await this.fetchData()
+    console.log(this.props.dataStructure)
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -57,20 +71,23 @@ class panelAddress extends Component {
   }
 
   fetchData = () => {
-    this.setState({ proses: true })
     let label = this.state.labelTab
 
-    this.props.dataAddress.forEach(element => {
+    this.props.dataStructure.forEach(element => {
       if (label.indexOf(element.tbl_company.acronym) < 0) {
         label.push(element.tbl_company.acronym)
       }
     });
 
-    this.setState({ data: this.props.dataAddress, dataForDisplay: this.props.dataAddress, label, proses: false })
+    this.setState({ data: this.props.dataStructure, dataForDisplay: this.props.dataStructure, label })
   }
 
-  handleChangeTab = (event, newValue) => {
-    this.setState({ value: newValue })
+  handleChangeTabA = (event, newValue) => {
+    this.setState({ valueA: newValue })
+  };
+
+  handleChangeTabB = (event, newValue) => {
+    this.setState({ valueB: newValue })
   };
 
   handleChange = name => event => {
@@ -89,7 +106,7 @@ class panelAddress extends Component {
   }
 
   handleSearch = async () => {
-    let hasilSearch = await this.state.data.filter(el => el.address.toLowerCase().match(new RegExp(this.state.search.toLowerCase())))
+    let hasilSearch = await this.state.data.filter(el => el.department.deptname.toLowerCase().match(new RegExp(this.state.search.toLowerCase())))
     this.setState({ dataForDisplay: hasilSearch })
   }
 
@@ -97,6 +114,15 @@ class panelAddress extends Component {
     this.setState({
       openModalLogAddress: !this.state.openModalLogAddress
     })
+  }
+
+  handleSort = columnName => {
+    this.setState(state => ({
+      columnToSort: columnName,
+      sortDirection: state.columnToSort === columnName
+        ? invertDirection[state.sortDirection]
+        : 'asc'
+    }))
   }
 
   // handleCheck = async (addressId) => {
@@ -127,7 +153,21 @@ class panelAddress extends Component {
               <CircularProgress color="secondary" style={{ marginTop: 20 }} />
             </div>
             : <Grid>
-              <Grid style={{ display: 'flex', margin: 10 }}>
+              {/* <Paper square style={{ padding: 10, paddingLeft: 20 }}>
+                <Tabs
+                  value={this.state.valueA}
+                  indicatorColor="secondary"
+                  textColor="secondary"
+                  onChange={this.handleChangeTabA}
+                >
+                  <Tab label="Struktur organisasi" style={{ marginRight: 30 }} />
+                  <Tab label="Peran" style={{ marginRight: 30 }} />
+                </Tabs>
+                <Divider />
+              </Paper> */}
+
+
+              <Grid style={{ display: 'flex', margin: '20px 15px' }}>
                 {/* <Grid style={{ display: 'flex', alignItems: 'center' }}>
                   <img src={process.env.PUBLIC_URL + '/edit-address.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                   <p style={{ margin: '0px 0px 0px 5px' }}>Ubah banyak</p>
@@ -136,19 +176,18 @@ class panelAddress extends Component {
                   <img src={process.env.PUBLIC_URL + '/add-address.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                   <p style={{ margin: '0px 0px 0px 5px' }}>Tambah banyak</p>
                 </Grid> */}
-                <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-address')}>
+                <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-department')}>
                   <img src={process.env.PUBLIC_URL + '/add-address.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
-                  <p style={{ margin: '0px 0px 0px 5px' }}>Tambah alamat</p>
+                  <p style={{ margin: '0px 0px 0px 5px' }}>Tambah divisi</p>
                 </Grid>
-                <p style={{ color: '#d71149', margin: 0 }} onClick={this.handleModalLogAddress}>Lihat riwayat perubahan</p>
               </Grid>
 
               <Paper id="search" style={{ padding: 10, paddingLeft: 20, paddingBottom: 20, marginBottom: 20 }}>
                 <Tabs
-                  value={this.state.value}
+                  value={this.state.valueB}
                   indicatorColor="secondary"
                   textColor="secondary"
-                  onChange={this.handleChangeTab}
+                  onChange={this.handleChangeTabB}
                 >
                   {
                     this.state.labelTab.map((el, index) =>
@@ -161,7 +200,7 @@ class panelAddress extends Component {
                   {/* <form style={{ width: '100%', marginRight: 15, marginTop: 3 }}> */}
                   <TextField
                     id="pencarian"
-                    placeholder="cari berdasarkan nama jalan"
+                    placeholder="Cari berdasarkan nama divisi"
                     variant="outlined"
                     value={this.state.search}
                     onChange={this.handleChange('search')}
@@ -181,24 +220,61 @@ class panelAddress extends Component {
               </Paper>
 
               <Paper id="header" style={{ display: 'flex', padding: '15px 20px', margin: 3, borderRadius: 0, alignItems: 'center' }}>
-                <Grid style={{ display: 'flex', alignItems: 'center', width: '40%' }}>
-                  {/* <Checkbox
+                <TableCell style={{ padding: 13, width: '30%', border: 'none' }} align="center" onClick={() => this.handleSort('department.deptname')}>
+                  <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} >
+                    {/* <Checkbox
                     checked={this.state.check}
                     onChange={this.handleChangeCheck}
                     value="secondary"
                     color="secondary"
                     size="small"
                   /><p style={{ margin: 0 }}>pilih untuk lakukan aksi</p> */}
-                  <p style={{ margin: 0 }}>Alamat</p>
-                </Grid>
-                <p style={{ margin: 0, width: '20%' }}>Perusahaan</p>
-                <p style={{ margin: 0, width: '20%' }}>Karyawan</p>
-                <p style={{ margin: 0, width: '20%', textAlign: 'center' }}>Aksi</p>
-              </Paper>
+                    Divisi
+                        {
+                      this.state.columnToSort === 'department.deptname' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
+                    }
+                  </Grid>
+                </TableCell>
+                <TableCell style={{ padding: 13, width: '10%', border: 'none' }} align="center" onClick={() => this.handleSort('hierarchy')}>
+                  <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }} >
+                    Level
+                        {
+                      this.state.columnToSort === 'hierarchy' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
+                    }
+                  </Grid>
+                </TableCell>
+                <TableCell style={{ padding: 13, width: '15%', border: 'none' }} align="center" onClick={() => this.handleSort('section.deptname')}>
+                  <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }} >
+                    Lapor ke
+                        {
+                      this.state.columnToSort === 'section.deptname' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
+                    }
+                  </Grid>
+                </TableCell>
+                <TableCell style={{ padding: 13, width: '10%', border: 'none' }} align="center" onClick={() => this.handleSort('tbl_department_positions.length')}>
+                  <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }} >
+                    Peran
+                        {
+                      this.state.columnToSort === 'tbl_department_positions.length' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
+                    }
+                  </Grid>
+                </TableCell>
+                <TableCell style={{ padding: 13, width: '10%', border: 'none' }} align="center" onClick={() => this.handleSort('tbl_department_teams.length')}>
+                  <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }} >
+                    Tim
+                        {
+                      this.state.columnToSort === 'tbl_department_teams.length' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
+                    }
+                  </Grid>
+                </TableCell>
+                <TableCell style={{ padding: 13, width: '25%', textAlign: 'center', border: 'none' }} align="center">
+                  <p style={{ margin: 0 }}>Aksi</p>
+                </TableCell>
 
+              </Paper>
               {
-                this.state.dataForDisplay.map((address, index) =>
-                  <CardAddress key={index} data={address} selectAll={this.state.selectAll} handleCheck={this.handleCheck} fetchData={this.fetchData} />
+                orderBy(this.state.dataForDisplay, this.state.columnToSort, this.state.sortDirection).map((department, index) =>
+                  <CardDepartment key={"department" + index} data={department} selectAll={this.state.selectAll} handleCheck={this.handleCheck} fetchData={this.fetchData} />
                 )
               }
 
@@ -214,16 +290,15 @@ class panelAddress extends Component {
 
 const mapDispatchToProps = {
   fetchDataUsers,
-  fetchDataAddress,
-
+  fetchDataStructure
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataAddress }) => {
+const mapStateToProps = ({ loading, dataUsers, dataStructure }) => {
   return {
     loading,
     dataUsers,
-    dataAddress
+    dataStructure
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(panelAddress))
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(panelStructure))

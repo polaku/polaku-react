@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
 import {
-  ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Checkbox, FormControlLabel, Typography, Grid, Button, Popover, Paper, ClickAwayListener, MenuItem, MenuList, Divider, CircularProgress
+  Accordion, AccordionSummary, AccordionDetails, Checkbox, FormControlLabel, Typography, Grid, Button, Popover, Paper, ClickAwayListener, MenuItem, MenuList, Divider, CircularProgress
 } from '@material-ui/core';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -149,8 +149,8 @@ class panelOnBoarding extends Component {
               <CircularProgress color="secondary" style={{ marginTop: 20 }} />
             </div>
             : this.state.data.map((el, index) =>
-              <ExpansionPanel square expanded={this.state.expanded === el.acronym} onChange={this.handleChange(el.acronym)} key={index}>
-                <ExpansionPanelSummary
+              <Accordion square expanded={this.state.expanded === el.acronym} onChange={this.handleChange(el.acronym)} key={index}>
+                <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-label="Expand"
                   aria-controls="additional-actions1-content"
@@ -181,9 +181,9 @@ class panelOnBoarding extends Component {
                       <PeopleOutlineIcon style={{ color: el.statusIcon4 ? '#d71149' : '#b4b4b4', minWidth: 40, height: 40 }} />
                     </Grid>
                   </Grid>
-                </ExpansionPanelSummary>
+                </AccordionSummary>
                 <Divider />
-                <ExpansionPanelDetails style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#f2f2f2', padding: 20 }}>
+                <AccordionDetails style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#f2f2f2', padding: 20 }}>
                   <div style={{ display: 'flex', width: '100%', marginBottom: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
                     <div style={{ width: '100%', paddingRight: 20 }}>
                       <SeCreatableSelect
@@ -273,8 +273,8 @@ class panelOnBoarding extends Component {
                       </Grid>
                     </Grid> */}
                   </Grid >
-                </ExpansionPanelDetails >
-              </ExpansionPanel >
+                </AccordionDetails >
+              </Accordion >
             )
         }
       </div>

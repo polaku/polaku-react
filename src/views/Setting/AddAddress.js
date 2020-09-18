@@ -6,7 +6,7 @@ import { Grid, Button, Select, MenuItem, FormControl, FormControlLabel, Checkbox
 
 import CloseIcon from '@material-ui/icons/Close';
 
-import AddAddress from '../../components/setting/addAddress';
+import CardAddAddress from '../../components/setting/cardAddAddress';
 
 import swal from 'sweetalert';
 
@@ -14,7 +14,7 @@ import { fetchDataCompanies, fetchDataAddress } from '../../store/action';
 
 import { API } from '../../config/API';
 
-class TambahAlamat extends Component {
+class AddAddress extends Component {
   state = {
     alamat: [false],
     statusSubmit: false,
@@ -46,7 +46,7 @@ class TambahAlamat extends Component {
   };
 
   navigateBack = () => {
-    this.props.history.push('/setting/setting-perusahaan')
+    this.props.history.push('/setting/setting-perusahaan', { index: 1 })
   }
 
   addAlamat = () => {
@@ -69,68 +69,72 @@ class TambahAlamat extends Component {
   }
 
   sendData = (args) => {
-    if (this.props.location.state && this.props.location.state.data) {
-      let newData = this.state.tempDataForEdit
-      newData.push(args)
-      let token = Cookies.get('POLAGROUP'), promises = []
+    if (this.state.companyId !== '') {
+      if (this.props.location.state && this.props.location.state.data) {
+        let newData = this.state.tempDataForEdit
+        newData.push(args)
+        let token = Cookies.get('POLAGROUP'), promises = []
 
-      if (newData.length === this.state.dataForEdit.length) {
-        this.setState({ proses: true })
-        newData.forEach((data, index) => {
-          if (this.state.indexMainAddress !== null) {
-            if (index === this.state.indexMainAddress) {
-              data.append('isMainAddress', true)
-            } else {
-              data.append('isMainAddress', false)
+        if (newData.length === this.state.dataForEdit.length) {
+          this.setState({ proses: true })
+          newData.forEach((data, index) => {
+            if (this.state.indexMainAddress !== null) {
+              if (index === this.state.indexMainAddress) {
+                data.append('isMainAddress', true)
+              } else {
+                data.append('isMainAddress', false)
+              }
             }
-          }
-          promises.push(API.put(`/address/${data.get('addressId')}`, data, { headers: { token } }))
-        })
-        Promise.all(promises)
-          .then(async ({ data }) => {
-            this.setState({ data: [], proses: false })
-            await this.props.fetchDataAddress()
-            swal('Ubah alamat sukses', '', 'success')
-            this.props.history.goBack()
+            promises.push(API.put(`/address/${data.get('addressId')}`, data, { headers: { token } }))
           })
-          .catch(err => {
-            this.setState({ proses: false })
-            swal('Ubah alamat gagal', '', 'error')
-          })
+          Promise.all(promises)
+            .then(async ({ data }) => {
+              this.setState({ data: [], proses: false })
+              await this.props.fetchDataAddress()
+              swal('Ubah alamat sukses', '', 'success')
+              this.props.history.push('/setting/setting-perusahaan', { index: 1 })
+            })
+            .catch(err => {
+              this.setState({ proses: false })
+              swal('Ubah alamat gagal', '', 'error')
+            })
+        } else {
+          this.setState({ tempDataForEdit: newData })
+        }
       } else {
-        this.setState({ tempDataForEdit: newData })
+        let newData = this.state.data
+        newData.push(args)
+        this.setState({ proses: true })
+        let token = Cookies.get('POLAGROUP'), promises = []
+
+        if (newData.length === this.state.alamat.length) {
+          newData.forEach((data, index) => {
+            if (this.state.indexMainAddress !== null) {
+              if (index === this.state.indexMainAddress) {
+                data.append('isMainAddress', true)
+              } else {
+                data.append('isMainAddress', false)
+              }
+            }
+            promises.push(API.post('/address', data, { headers: { token } }))
+          })
+          Promise.all(promises)
+            .then(async ({ data }) => {
+              this.setState({ data: [], proses: false })
+              await this.props.fetchDataAddress()
+              swal('Tambah alamat sukses', '', 'success')
+              this.props.history.push('/setting/setting-perusahaan', { index: 1 })
+            })
+            .catch(err => {
+              this.setState({ proses: false })
+              swal('Tambah alamat gagal', '', 'error')
+            })
+        } else {
+          this.setState({ data: newData })
+        }
       }
     } else {
-      let newData = this.state.data
-      newData.push(args)
-      this.setState({ proses: true })
-      let token = Cookies.get('POLAGROUP'), promises = []
-
-      if (newData.length === this.state.alamat.length) {
-        newData.forEach((data, index) => {
-          if (this.state.indexMainAddress !== null) {
-            if (index === this.state.indexMainAddress) {
-              data.append('isMainAddress', true)
-            } else {
-              data.append('isMainAddress', false)
-            }
-          }
-          promises.push(API.post('/address', data, { headers: { token } }))
-        })
-        Promise.all(promises)
-          .then(async ({ data }) => {
-            this.setState({ data: [], proses: false })
-            await this.props.fetchDataAddress()
-            swal('Tambah alamat sukses', '', 'success')
-            this.props.history.goBack()
-          })
-          .catch(err => {
-            this.setState({ proses: false })
-            swal('Tambah alamat gagal', '', 'error')
-          })
-      } else {
-        this.setState({ data: newData })
-      }
+      swal('Perusahaan belum dipilih', '', 'warning')
     }
   }
 
@@ -181,7 +185,7 @@ class TambahAlamat extends Component {
                 {
                   this.state.alamat.length > 1 && <>
                     <b style={{ margin: 0, fontSize: 16 }}>Alamat {index + 1}</b>
-                    <CloseIcon style={{ backgroundColor: 'red', color: 'white', borderRadius: 15, marginLeft: 10 }} onClick={() => this.deleteAddress(index)} />
+                    <CloseIcon style={{ backgroundColor: 'red', color: 'white', borderRadius: 15, marginLeft: 5, marginRight: 15, cursor: 'pointer' }} onClick={() => this.deleteAddress(index)} />
                   </>
                 }
                 {/*  */}
@@ -190,7 +194,7 @@ class TambahAlamat extends Component {
                   label={<p style={{ margin: 0, fontSize: 13 }}>Jadikan alamat pusat</p>}
                 />
               </Grid>
-              <AddAddress statusSubmit={this.state.statusSubmit} companyId={this.state.companyId} sendData={this.sendData} data={this.state.dataForEdit[index]} proses={this.state.proses} />
+              <CardAddAddress statusSubmit={this.state.statusSubmit} companyId={this.state.companyId} sendData={this.sendData} data={this.state.dataForEdit[index]} proses={this.state.proses} />
             </Grid>
           )
         }
@@ -198,7 +202,7 @@ class TambahAlamat extends Component {
           this.state.dataForEdit.length === 0 && <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addAlamat} disabled={this.state.proses}>+ tambah alamat baru</p>
         }
 
-        <Button variant="outlined" color="secondary" style={{ width: 150, margin: 10 }} onClick={() => this.props.history.goBack()} disabled={this.state.proses}>batalkan</Button>
+        <Button variant="outlined" color="secondary" style={{ width: 150, margin: 10 }} onClick={() => this.props.history.push('/setting/setting-perusahaan', { index: 1 })} disabled={this.state.proses}>batalkan</Button>
         <Button variant="contained" color="secondary" style={{ width: 150, margin: 10 }} onClick={this.submit} disabled={this.state.proses}>simpan</Button>
       </Grid>
     )
@@ -218,4 +222,4 @@ const mapStateToProps = ({ dataCompanies }) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TambahAlamat)
+export default connect(mapStateToProps, mapDispatchToProps)(AddAddress)

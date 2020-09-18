@@ -27,7 +27,9 @@ class modalOnBoarding extends Component {
     akronim: '',
     pic: [],
     people: [],
-    proses: false
+    proses: false,
+    listCompanies: [],
+    disabledAkronim: false
   }
 
   async componentDidMount() {
@@ -36,7 +38,7 @@ class modalOnBoarding extends Component {
       await this.props.fetchDataCompanies()
       await this.props.fetchDataUsers()
 
-      this.props.dataUsers.forEach(element => {
+      await this.props.dataUsers.forEach(element => {
         let newData = {
           user_id: element.user_id,
           nik: element.tbl_account_detail.nik
@@ -44,9 +46,16 @@ class modalOnBoarding extends Component {
         if (element.tbl_account_detail) newData.fullname = element.tbl_account_detail.fullname
         temp.push(newData)
       });
+      console.log(this.props.dataCompanies)
+
+      let listCompanies = []
+      await this.props.dataCompanies.forEach(el => {
+        listCompanies.push({ value: el.company_name, label: el.company_name, acronym: el.acronym })
+      })
 
       this.setState({
         people: temp,
+        listCompanies
       })
 
     } catch (err) {
@@ -55,7 +64,7 @@ class modalOnBoarding extends Component {
   }
 
   closeModal = () => {
-    this.props.closeModal()
+    this.props.close()
   }
 
   handleChange = name => event => {
@@ -69,48 +78,64 @@ class modalOnBoarding extends Component {
   };
 
   saveOnboarding = async () => {
-    let check = this.checkValidateCompany()
     this.setState({ proses: true })
-    if (check === "name invalid" ||
-      check === "acronym invalid") {
-      if (check === "name invalid") {
-        swal("Nama perusahaan sudah ada", "", "warning")
+    let token = Cookies.get('POLAGROUP')
+
+    let newData = {
+      companyName: this.state.companyName,
+      akronim: this.state.akronim,
+      pic: this.state.pic,
+    }
+
+    API.post('/pic', newData, { headers: { token } })
+      .then(async ({ data }) => {
+        await this.props.fetchDataPIC()
+        swal("Tambah PIC sukses", "", "success")
+        // this.props.history.push('/setting/setting-perusahaan/stepper-onboarding', { company_id: data.data.company_id })
+        this.setState({ proses: false })
+        this.props.close()
+        // this.props.history.push('/setting/setting-perusahaan/add-address', { company_id: data.data.company_id })
+      })
+      .catch(err => {
+        console.log(err)
+        this.setState({ proses: false })
+        swal('please try again')
+      })
+  }
+
+  handleChangeAddress = (newValue, actionMeta) => {
+    if (newValue !== null) {
+      if (newValue.acronym) {
+        this.setState({
+          companyName: newValue.value,
+          akronim: newValue.acronym,
+          disabledAkronim: true
+        })
       } else {
-        swal("Akronim perusahaan sudah ada", "", "warning")
+        this.setState({
+          companyName: newValue.value,
+          akronim: "",
+          disabledAkronim: false
+        })
       }
     } else {
-      let token = Cookies.get('POLAGROUP')
-
-      let newData = {
-        companyName: this.state.companyName,
-        akronim: this.state.akronim,
-        pic: this.state.pic,
-      }
-
-      API.post('/pic', newData, { headers: { token } })
-        .then(async ({ data }) => {
-          await this.props.fetchDataPIC()
-          swal("Tambah PIC sukses", "", "success")
-          // this.props.history.push('/setting/setting-perusahaan/stepper-onboarding', { company_id: data.data.company_id })
-          this.setState({ proses: false })
-          this.props.history.push('/setting/setting-perusahaan/add-address', { company_id: data.data.company_id })
-        })
-        .catch(err => {
-          this.setState({ proses: false })
-          swal('please try again')
-        })
+      this.setState({
+        companyName: '',
+        akronim: '',
+        disabledAkronim: false
+      })
     }
-  }
+  };
 
-  checkValidateCompany = () => {
-    let checkName = this.props.dataCompanies.find(company =>
-      company.company_name.toLowerCase() === this.state.companyName.toLowerCase()
-    )
-    let checkAcronym = this.props.dataCompanies.find(company =>
-      company.acronym.toLowerCase() === this.state.akronim.toLowerCase()
-    )
-    return checkName ? "name invalid" : (checkAcronym ? "acronym invalid" : true)
-  }
+  handleInputChange = (inputValue, actionMeta) => {
+    if (inputValue) {
+      this.setState({
+        companyName: inputValue,
+        akronim: '',
+        disabledAkronim: false
+      })
+    }
+  };
 
   render() {
     return (
@@ -136,7 +161,7 @@ class modalOnBoarding extends Component {
             boxShadow: 5,
             width: '90%',
             maxWidth: 500,
-            maxHeight: '80%',
+            maxHeight: '90%',
             display: 'flex',
             flexDirection: 'column',
             padding: '20px',
@@ -152,7 +177,17 @@ class modalOnBoarding extends Component {
 
             <Grid style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: '20px' }}>
               <b style={{ width: '35%' }}>Nama perusahaan</b>
-              <OutlinedInput
+              <FormControl style={{ width: '65%' }}>
+                <SeCreatableSelect
+                  isClearable
+                  components={animatedComponents}
+                  options={this.state.listCompanies}
+                  onChange={this.handleChangeAddress}
+                  onInputChange={this.handleInputChange}
+                  disabled={this.state.proses}
+                />
+              </FormControl>
+              {/* <OutlinedInput
                 value={this.state.companyName}
                 onChange={this.handleChange('companyName')}
                 variant="outlined"
@@ -162,7 +197,7 @@ class modalOnBoarding extends Component {
                     padding: '10px 15px'
                   }
                 }}
-              />
+              /> */}
             </Grid>
             <Grid style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: '20px' }}>
               <b style={{ width: '35%' }}>Akronim</b>
@@ -176,6 +211,7 @@ class modalOnBoarding extends Component {
                     padding: '10px 15px'
                   }
                 }}
+                disabled={this.state.disabledAkronim}
               />
             </Grid>
             <Grid style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: '20px' }}>

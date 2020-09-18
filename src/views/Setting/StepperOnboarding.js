@@ -13,7 +13,15 @@ export default class StepperOnboarding extends Component {
   navigateAddAddress = () => {
     this.props.history.push('/setting/setting-perusahaan/add-address')
   }
-  
+
+  navigateAddStucture = () => {
+    this.props.history.push('/setting/setting-perusahaan/add-department')
+  }
+
+  navigateAddEmployee = () => {
+    this.props.history.push('/setting/setting-perusahaan/add-employee')
+  }
+
   render() {
     return (
       <Grid style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -41,9 +49,21 @@ export default class StepperOnboarding extends Component {
               <img src={process.env.PUBLIC_URL + '/onboardingAlamat.png'} alt="Logo" style={{ width: 'auto', maxHeight: 200, margin: '20px 0px' }} />
               <Button variant="contained" color="secondary" onClick={this.navigateAddAddress}>lanjut</Button>
             </Grid>
+          ) : this.state.activeStep === 1 ? (
+            <Grid style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 20 }}>
+              <b>Isi struktur dalam perusahaan</b>
+              <img src={process.env.PUBLIC_URL + '/onboardingAlamat.png'} alt="Logo" style={{ width: 'auto', maxHeight: 200, margin: '20px 0px' }} />
+              <Button variant="contained" color="secondary" onClick={this.navigateAddStucture}>lanjut</Button>
+            </Grid>
+          ) : this.state.activeStep === 2 ? (
+            <Grid style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 20 }}>
+              <b>Isi karyawan perusahaan</b>
+              <img src={process.env.PUBLIC_URL + '/onboardingAlamat.png'} alt="Logo" style={{ width: 'auto', maxHeight: 200, margin: '20px 0px' }} />
+              <Button variant="contained" color="secondary" onClick={this.navigateAddEmployee}>lanjut</Button>
+            </Grid>
           ) : (
-              <p>ELSE</p>
-            )
+                  <p>ELSE</p>
+                )
         }
       </Grid>
     )

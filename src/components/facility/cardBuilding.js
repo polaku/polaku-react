@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
 import {
-  Button, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, ExpansionPanelActions, Divider, Typography, List
+  Button, Accordion, AccordionDetails, AccordionSummary, AccordionActions, Divider, Typography, List
 } from '@material-ui/core';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -61,8 +61,8 @@ class cardBuilding extends Component {
 
   render() {
     return (
-      <ExpansionPanel expanded={this.state.expanded === this.props.data.building} onChange={this.handleChange(this.props.data.building)}>
-        <ExpansionPanelSummary
+      <Accordion expanded={this.state.expanded === this.props.data.building} onChange={this.handleChange(this.props.data.building)}>
+        <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1bh-content"
           id="panel1bh-header"
@@ -75,8 +75,8 @@ class cardBuilding extends Component {
             flexBasis: '33.33%',
             flexShrink: 0,
           }}>{this.props.data.building}</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
+        </AccordionSummary>
+        <AccordionDetails>
           <List component="nav" style={{ width: '100%' }}>
             {
               this.props.data.tbl_rooms.length !== 0
@@ -86,9 +86,9 @@ class cardBuilding extends Component {
                 : 'Belum ada ruangan'
             }
           </List>
-        </ExpansionPanelDetails>
+        </AccordionDetails>
         <Divider />
-        <ExpansionPanelActions>
+        <AccordionActions>
           <Button size="small" onClick={this.openModalBuilding}>
             Edit Building
             </Button>
@@ -98,7 +98,7 @@ class cardBuilding extends Component {
           <Button size="small" color="primary" onClick={this.openModalRoom}>
             Create Room
             </Button>
-        </ExpansionPanelActions>
+        </AccordionActions>
         {
           this.state.openModalBuilding && <ModalCreateEditBuilding status={this.state.openModalBuilding} closeModal={this.closeModalBuilding} data={this.props.data} companies={this.props.dataCompanies} statusCreate={false} />
         }
@@ -107,7 +107,7 @@ class cardBuilding extends Component {
         }
         
         
-      </ExpansionPanel>
+      </Accordion>
     )
   }
 }
