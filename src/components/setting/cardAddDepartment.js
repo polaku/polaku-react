@@ -5,7 +5,6 @@ import {
   Grid, OutlinedInput, Button, Select, MenuItem, Paper,
   // Divider, FormControlLabel, Checkbox,  FormControl, InputLabel
 } from '@material-ui/core';
-// import SeCreatableSelect from 'react-select/creatable';
 import CreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
 import CloseIcon from '@material-ui/icons/Close';
@@ -27,6 +26,9 @@ class cardAddDepartment extends Component {
     team: [{
       nameTeam: '',
       teamPosition: [''],
+      selectedTeamPosition: [''],
+      user: [''],
+      userSelected: [''],
       reportTo: '',
     }],
     listDepartment: [],
@@ -42,6 +44,12 @@ class cardAddDepartment extends Component {
 
   async componentDidMount() {
     await this.fetchOptionDepartment()
+    await this.fetchOptionPosition()
+    await this.fetchOptionUser()
+
+    if (this.props.data) {
+      await this.fetchDataForEdit()
+    }
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -63,6 +71,12 @@ class cardAddDepartment extends Component {
     if (this.props.dataPositions !== prevProps.dataPositions) {
       await this.fetchOptionPosition()
       if (this.props.dataDepartments.length > 0 && this.props.dataPositions.length > 0 && this.props.data) {
+        await this.fetchDataForEdit()
+      }
+    }
+
+    if (this.props.data !== prevProps.data) {
+      if (this.props.dataDepartments.length > 0 && this.props.dataPositions.length > 0) {
         await this.fetchDataForEdit()
       }
     }
@@ -97,7 +111,7 @@ class cardAddDepartment extends Component {
   }
 
   fetchDataForEdit = async () => {
-    // console.log(this.props.data)
+    console.log(this.props.data)
     this.setState({ loading: true })
     let position = [], selectedPosition = [], teams = [], selectedUserPosition = []
 
@@ -105,7 +119,7 @@ class cardAddDepartment extends Component {
       let selected = this.state.listPosition.find(el => el.value === element.position_id)
       let userSelect = this.state.listUser.find(el => el.value === element.user_id)
 
-      selectedUserPosition.push(userSelect)
+      selectedUserPosition.push(userSelect) //user in position
       position.push({ position: element.position_id, user: element.user_id })
       selectedPosition.push(selected)
     })
@@ -172,9 +186,7 @@ class cardAddDepartment extends Component {
 
   // HANDLE POSITION (START)
   handleChangePosition = (newValue, actionMeta) => {
-    console.log(newValue)
     let newPosition = this.state.position
-    console.log(newPosition[newValue.index])
     newPosition[newValue.index][newValue.name] = newValue.value
     if (newValue !== null) {
       this.setState({
@@ -195,9 +207,7 @@ class cardAddDepartment extends Component {
 
   deletePosition = index => {
     let newArray = this.state.position;
-    console.log(index)
     newArray.splice(index, 1);
-    console.log(newArray)
     this.setState({
       position: newArray
     });
@@ -334,7 +344,6 @@ class cardAddDepartment extends Component {
   };
 
   handleChangePartOfPosition = (newValue, actionMeta) => {
-    console.log(newValue)
     let arrTeam = this.state.team
     arrTeam[newValue.index].teamPosition[newValue.indexPosition] = newValue.value
     arrTeam[newValue.index].selectedTeamPosition[newValue.indexPosition] = newValue
@@ -351,7 +360,6 @@ class cardAddDepartment extends Component {
   };
 
   handleChangePartUserOfPosition = (newValue, actionMeta) => {
-    console.log(newValue)
     let arrTeam = this.state.team
     arrTeam[newValue.index].user[newValue.indexPosition] = newValue.value
     arrTeam[newValue.index].userSelected[newValue.indexPosition] = newValue

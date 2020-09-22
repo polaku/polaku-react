@@ -64,7 +64,6 @@ export default class cardSettingUserKPIM extends Component {
   }
 
   async componentDidMount() {
-    console.log(this.props.data)
     await this.fetchData()
 
     let listDate = await this.fetchOptionDateInWeek()
@@ -216,7 +215,7 @@ export default class cardSettingUserKPIM extends Component {
     });
 
     let talList = await this.props.data.kpim.find(el => el.indicator_kpim.toLowerCase() === 'tal')
-    console.log(talList.tbl_kpim_scores.length)
+
     talList && talList.tbl_kpim_scores[talList.tbl_kpim_scores.length - 1] && talList.tbl_kpim_scores[talList.tbl_kpim_scores.length - 1].tbl_tals &&
       await talList.tbl_kpim_scores[talList.tbl_kpim_scores.length - 1].tbl_tals.forEach(element => {
         let newTAL = {

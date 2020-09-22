@@ -225,9 +225,14 @@ function Navsidebar(props) {
       setSelectedIndex(4.2)
     } else if (props.location.pathname === '/kpim/setting') {
       setSelectedIndex(4.3)
-    } else if (props.location.pathname === '/setting' || 
-    // props.location.pathname === '/setting/setting-perusahaan' ||
-    props.location.pathname === '/setting/setting-user' || props.location.pathname === '/setting/setting-perusahaan/stepper-onboarding'  || props.location.pathname === '/setting/setting-perusahaan/add-address') {
+    } else if (props.location.pathname === '/setting' ||
+      props.location.pathname === '/setting/setting-user' ||
+      props.location.pathname === '/setting/setting-perusahaan' ||
+      props.location.pathname === '/setting/setting-perusahaan/stepper-onboarding' ||
+      props.location.pathname === '/setting/setting-perusahaan/add-department' ||
+      props.location.pathname === '/setting/setting-perusahaan/add-employee' ||
+      props.location.pathname === '/setting/setting-perusahaan/add-service' ||
+      props.location.pathname === '/setting/setting-perusahaan/add-address') {
       if (props.isAdmin || props.userId === 30 || props.userId === 33 || Number(props.adminContactCategori) === 4) {
         setSelectedIndex(99)
       } else {
