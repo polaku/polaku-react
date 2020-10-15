@@ -102,74 +102,86 @@ function reducer(state = defaultState, action) {
     case 'FETCH_DATA_USERS_SUCCESS': {
       return {
         ...state,
-        dataUsers: action.payload
+        dataUsers: action.payload,
+        loading: false
       }
     }
     case 'FETCH_DATA_ROOMS_SUCCESS': {
       return {
         ...state,
-        dataRooms: action.payload
+        dataRooms: action.payload,
+        loading: false
       }
     }
     case 'FETCH_DATA_ROOM_MASTER_SUCCESS': {
       return {
         ...state,
-        dataRoomMaster: action.payload
+        dataRoomMaster: action.payload,
+        loading: false
       }
     }
     case 'FETCH_DATA_COMPANIES_SUCCESS': {
       return {
         ...state,
-        dataCompanies: action.payload
+        dataCompanies: action.payload,
+        loading: false
       }
     }
     case 'FETCH_DATA_BUILDINGS_SUCCESS': {
       return {
         ...state,
-        dataBuildings: action.payload
+        dataBuildings: action.payload,
+        loading: false
       }
     }
     case 'FETCH_DATA_BOOKING_ROOMS_SUCCESS': {
       return {
         ...state,
-        dataBookingRooms: action.payload
+        dataBookingRooms: action.payload,
+        loading: false
       }
     }
     case 'FETCH_DATA_MY_BOOKING_ROOMS_SUCCESS': {
       return {
         ...state,
-        dataMyBookingRooms: action.payload
+        dataMyBookingRooms: action.payload,
+        loading: false
       }
     }
     case 'FETCH_DATA_EVENT_SUCCESS': {
       return {
         ...state,
-        dataEvents: action.payload
+        dataEvents: action.payload,
+        loading: false
       }
     }
     case 'FETCH_DATA_EVENT_NEED_APPROVAL_SUCCESS': {
       return {
         ...state,
-        dataEventNeedApproval: action.payload
+        dataEventNeedApproval: action.payload,
+        loading: false
       }
     }
     case 'FETCH_DATA_CREATOR_MASTER_AND_ASSISTANT_SUCCESS': {
       return {
         ...state,
-        dataCreatorMasterAndAssistant: action.payload
+        dataCreatorMasterAndAssistant: action.payload,
+        loading: false
       }
     }
     case 'FETCH_DATA_DEPARTMENT_SUCCESS': {
       return {
         ...state,
-        dataDepartments: action.payload
+        dataDepartments: action.payload,
+        loading: false
       }
     }
     case 'FETCH_DATA_NOTIFICATION_SUCCESS': {
       return {
         ...state,
         dataNewNotif: action.payload.newNotif,
-        dataNotification: action.payload.notif
+        dataNotification: action.payload.notif,
+        loading: false
       }
     }
     case 'FETCH_DATA_CONTACT_US_SUCCESS': {
@@ -177,62 +189,87 @@ function reducer(state = defaultState, action) {
         ...state,
         dataContactUs: action.payload.dataContactUs,
         dataContactUsStaff: action.payload.dataContactUsStaff,
-        dataAllContactUs: action.payload.dataAllContactUs
+        dataAllContactUs: action.payload.dataAllContactUs,
+        loading: false
       }
     }
     case 'FETCH_DATA_ALL_KPIM_SUCCESS': {
       return {
         ...state,
-        dataAllKPIM: action.payload.dataAllKPIM
+        dataAllKPIM: action.payload.dataAllKPIM,
+        loading: false
       }
     }
     case 'FETCH_DATA_ALL_TAL_SUCCESS': {
       return {
         ...state,
-        dataAllTAL: action.payload.dataAllTAL
+        dataAllTAL: action.payload.dataAllTAL,
+        loading: false
       }
     }
     case 'FETCH_DATA_REWARD_KPIM_SUCCESS': {
       return {
         ...state,
         dataAllRewardKPIM: action.payload.dataAllRewardKPIM,
-        myRewardKPIM: action.payload.myRewardKPIM
+        myRewardKPIM: action.payload.myRewardKPIM,
+        loading: false
       }
     }
     case 'FETCH_DATA_POSITION_SUCCESS': {
       return {
         ...state,
-        dataPositions: action.payload.dataPositions
+        dataPositions: action.payload.dataPositions,
+        loading: false
       }
     }
     case 'FETCH_DATA_POLANEWS_SUCCESS': {
       return {
         ...state,
-        dataPolanews: action.payload.dataPolanews
+        dataPolanews: action.payload.dataPolanews,
+        loading: false
       }
     }
     case 'FETCH_DATA_PIC_SUCCESS': {
       return {
         ...state,
-        dataPIC: action.payload.dataPIC
+        dataPIC: action.payload.dataPIC,
+        loading: false
       }
     }
     case 'FETCH_DATA_ADDRESS_SUCCESS': {
       return {
         ...state,
-        dataAddress: action.payload.dataAddress
+        dataAddress: action.payload.dataAddress,
+        loading: false
       }
     }
     case 'FETCH_DATA_STRUCTURE_SUCCESS': {
       return {
         ...state,
-        dataStructure: action.payload.dataStructure
+        dataStructure: action.payload.dataStructure,
+        loading: false
+      }
+    }
+    case 'FETCH_DATA_LOADING_CONTACT_US': {
+      return {
+        ...state,
+        loading: true,
+        dataContactUs: [],
+        dataContactUsStaff: [],
+        dataAllContactUs: []
+      }
+    }
+    case 'FETCH_DATA_LOADING': {
+      return {
+        ...state,
+        loading: true
       }
     }
     case 'FETCH_DATA_ERROR': {
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
+        loading: false
       }
     }
     default:

@@ -181,7 +181,7 @@ class modalCreateEditPermintaanHRD extends Component {
 
       newData.type = 'request'
       newData.contactCategoriesId = 4
-
+console.log(newData)
       API.post('/contactUs', newData, {
         headers: {
           token
@@ -238,6 +238,7 @@ class modalCreateEditPermintaanHRD extends Component {
         leave_date: this.state.start_date ||
           `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
         leave_request: this.state.lamaCuti,
+        leave_date_in: this.state.end_date,
         message: this.state.textarea,
         categoriId: 6
       }
@@ -328,6 +329,8 @@ class modalCreateEditPermintaanHRD extends Component {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            maxHeight: '80%',
+            overflowX: 'auto'
           }}>
             <Typography style={{ margin: 10, fontSize: 17 }}>Pengajuan ijin</Typography>
             {

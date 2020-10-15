@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
 import {
@@ -11,7 +12,7 @@ import swal from 'sweetalert';
 
 import { API } from '../../config/API';
 
-export default class cardPermintaanHRD extends Component {
+class cardPermintaanHRD extends Component {
   state = {
     isCuti: false,
     status: '',
@@ -21,6 +22,7 @@ export default class cardPermintaanHRD extends Component {
     category: '',
     proses: false,
     openModal: false,
+    hasPassed: false
     // status: 0
   }
 
@@ -32,7 +34,8 @@ export default class cardPermintaanHRD extends Component {
         category: 'IA',
         keterangan: `${selisih} hari`,
         waktu1: `${this.props.data.date_ijin_absen_start}`,
-        waktu2: `${this.props.data.date_ijin_absen_end}`
+        waktu2: `${this.props.data.date_ijin_absen_end}`,
+        hasPassed: new Date(this.props.data.date_ijin_absen_start) < new Date() ? true : false
       })
     } else if (this.props.data.leave_request) {
       let tempWaktu = this.props.data.leave_date.split(',')
@@ -63,19 +66,27 @@ export default class cardPermintaanHRD extends Component {
         })
 
       }
-
       this.setState({
         isCuti: true,
         keterangan: `${this.props.data.leave_request} hari`,
-        category: 'Cuti'
+        category: 'Cuti',
+        hasPassed: new Date(this.props.data.leave_date) < new Date() ? true : false
       })
     } else if (this.props.data.date_imp) {
-      let selisih = this.props.data.end_time_imp.split(':')[0] - this.props.data.start_time_imp.split(':')[0]
+      let selisih = this.props.data.end_time_imp.split(':')[0] - this.props.data.start_time_imp.split(':')[0], hasPassed = false
+
+      if (new Date(new Date(this.props.data.date_imp).getFullYear(), new Date(this.props.data.date_imp).getMonth(), new Date(this.props.data.date_imp).getDate()) <= new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())) {
+        if (+this.props.data.start_time_imp.slice(0, 2) <= new Date().getHours()) {
+          hasPassed = true
+        }
+      }
+
       this.setState({
         category: 'IMP',
         keterangan: `${selisih} jam`,
         waktu1: this.props.data.start_time_imp.slice(0, 5),
-        waktu2: this.props.data.end_time_imp.slice(0, 5)
+        waktu2: this.props.data.end_time_imp.slice(0, 5),
+        hasPassed
       })
     }
 
@@ -280,26 +291,32 @@ export default class cardPermintaanHRD extends Component {
           </Grid>
 
           {
-            this.props.ijinTabs === 1 && (
-              this.props.ijinTab === 2
-                ? <Grid style={{ textAlign: 'right', margin: 10, marginBottom: 15 }}>
-                  <Button color="secondary" onClick={this.handleOpenModal}>
-                    ubah
+            this.props.data.status === 'cancel'
+              ? <Grid style={{ textAlign: 'right', margin: '0px 10px 15px' }}>
+                <Button color="secondary" disabled>
+                  canceled
                 </Button>
-                  <Button variant="contained" color="secondary" onClick={this.cancelPermintaan}>
-                    batal
+              </Grid>
+              : !this.state.hasPassed && (this.props.ijinTabs === 1 && (
+                this.props.ijinTab === 2
+                  ? <Grid style={{ textAlign: 'right', margin: 10, marginBottom: 15 }}>
+                    <Button color="secondary" onClick={this.handleOpenModal}>
+                      ubah
                 </Button>
-                </Grid>
-                : <Grid style={{ textAlign: 'right', margin: 10, marginBottom: 15 }}>
-                  <Button variant="contained" color="secondary" onClick={this.cancelPermintaan}>
-                    batal
+                    <Button variant="contained" color="secondary" onClick={this.cancelPermintaan}>
+                      batal
                 </Button>
-                </Grid>
-            )
+                  </Grid>
+                  : <Grid style={{ textAlign: 'right', margin: '0px 10px 15px' }}>
+                    <Button variant="contained" color="secondary" onClick={this.cancelPermintaan}>
+                      batal
+                </Button>
+                  </Grid>)
+              )
           }
           {
-            this.props.ijinTabs === 0 && this.props.ijinTab === 0
-            && <Grid style={{ textAlign: 'right', margin: 10, marginBottom: 15 }}>
+            this.props.ijinTabs === 0 && this.props.ijinTab === 0 && ((this.props.data.status === 'new' && this.props.data.evaluator_1 === this.props.userId) || (this.props.data.status === 'new2' && this.props.data.evaluator_2 === this.props.userId))
+            && <Grid style={{ textAlign: 'right', margin: '0px 10px 15px' }}>
               <Button color="secondary" onClick={this.rejected}>
                 tolak
             </Button>
@@ -320,3 +337,11 @@ export default class cardPermintaanHRD extends Component {
     )
   }
 }
+
+const mapStateToProps = ({ userId }) => {
+  return {
+    userId
+  }
+}
+
+export default connect(mapStateToProps)(cardPermintaanHRD)

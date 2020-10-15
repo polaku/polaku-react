@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import {
   Paper, Button, Grid, Tabs, Tab
 } from '@material-ui/core';
+import Loading from '../../components/Loading';
 
 import CardPermintaanHRD from '../../components/hr/cardPermintaanHRD';
 import ModalCreateEditPermintaanHRD from '../../components/modal/modalCreateEditPermintaanHRD';
@@ -12,6 +13,7 @@ import { fetchDataContactUs } from '../../store/action';
 
 class HR extends Component {
   state = {
+    proses: true,
     dataIjinSaya: [],
     dataIjinSayaPengajuan: [],
     dataIjinSayaDisetujui: [],
@@ -24,25 +26,36 @@ class HR extends Component {
   }
 
   componentDidMount() {
-    if(this.props.userId){
+    if (this.props.userId) {
       this.fetchData()
     }
+
+    if (this.props.bawahan.length === 0) {
+      // this.setState({ ijinTabs: 1 })
+    }
   }
-  
+
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.userId !== this.props.userId) {
       this.fetchData()
+    }
+
+    if (prevProps.bawahan !== this.props.bawahan) {
+      if (this.props.bawahan.length === 0) {
+        this.setState({ ijinTab: 2 })
+      }
     }
   }
 
   fetchData = async () => {
     this.setState({
+      proses: true,
       dataIjinSayaPengajuan: [],
       dataIjinSayaDisetujui: [],
       dataIjinPengajuanStaff: [],
       dataIjinStaffSedangIjin: [],
     })
-    
+
     await this.props.fetchDataContactUs(this.props.userId)
 
     let tempData = await this.props.dataContactUs.filter(el => el.date_ijin_absen_start !== null || el.date_imp !== null || el.leave_date !== null)
@@ -102,6 +115,7 @@ class HR extends Component {
     })
 
     this.setState({
+      proses: false,
       dataIjinSayaPengajuan: tempDataPengajuan,
       dataIjinSayaDisetujui: tempDataDisetujui,
       dataIjinPengajuanStaff: tempDataPengajuanStaff,
@@ -132,6 +146,8 @@ class HR extends Component {
   }
 
   render() {
+    if (this.state.proses) return <Loading loading={this.state.proses} />;
+
     return (
       <>
         <Paper square style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
@@ -269,8 +285,9 @@ const mapDispatchToProps = {
   fetchDataContactUs,
 }
 
-const mapStateToProps = ({ userId, dataContactUs, dataContactUsStaff, evaluator1, evaluator2, bawahan }) => {
+const mapStateToProps = ({ loading, userId, dataContactUs, dataContactUsStaff, evaluator1, evaluator2, bawahan }) => {
   return {
+    loading,
     userId,
     dataContactUs,
     dataContactUsStaff,

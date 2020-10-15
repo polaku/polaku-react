@@ -109,7 +109,7 @@ class ReportIjin extends Component {
     this._isMounted = true
 
     if (this._isMounted) {
-      await this.props.fetchDataContactUs()
+      await this.props.fetchDataContactUs({ startDate: this.state.monthStart, endDate: this.state.monthEnd })
       await this.fetchData()
     }
   }
@@ -220,7 +220,7 @@ class ReportIjin extends Component {
   };
 
   filterData = async () => {
-    await this.setState({
+    this.setState({
       anchorEl: null,
       openFilter: false,
       monthStart: this.state.newMonthStart,
@@ -228,7 +228,8 @@ class ReportIjin extends Component {
       dataForDisplay: [],
       data: [],
     })
-    this.fetchData()
+    await this.props.fetchDataContactUs({ startDate: this.state.newMonthStart, endDate: this.state.newMonthEnd })
+    await this.fetchData()
   }
 
   handleChangePage = (event, newPage) => {
@@ -286,7 +287,7 @@ class ReportIjin extends Component {
         {
           this.state.dataForDisplay.length !== 0 && <Grid style={{ display: 'flex', alignItems: 'center' }}>
             <ArchiveIcon />
-            <Download nameSheet="Pengajuan_Ijin" labelValue={this.state.labelValue} data={this.state.dataForDisplay} title="download report" report="ijin" />
+            <Download nameSheet="Pengajuan_Ijin" labelValue={this.state.labelValue} data={this.state.dataForDisplay} title="download report" report="ijin" startDate={this.state.monthStart} monthEnd={this.state.monthEnd} />
           </Grid>
         }
 

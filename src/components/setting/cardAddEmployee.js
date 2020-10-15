@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { Grid, OutlinedInput, Button, Divider, FormControlLabel, Checkbox, Select, MenuItem, Paper, FormControl, TextField } from '@material-ui/core';
+import { Grid, OutlinedInput, 
+  // Button, Divider, 
+  FormControlLabel, Checkbox, Select, MenuItem, Paper, FormControl, TextField } from '@material-ui/core';
 // import SeCreatableSelect from 'react-select/creatable';
 import CreatableSelect from 'react-select/creatable';
 
 import makeAnimated from 'react-select/animated';
-import DragAndDrop from '../DragAndDrop';
+// import DragAndDrop from '../DragAndDrop';
 
 import { fetchDataCompanies, fetchDataDepartment, fetchDataPosition, fetchDataUsers, fetchDataAddress } from '../../store/action';
 

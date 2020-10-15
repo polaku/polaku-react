@@ -13,7 +13,7 @@ export default class exportToExcel extends React.Component {
   render() {
     if (this.props.report === "ijin") {
       return (
-        <ExcelFile element={<p style={{ cursor: 'pointer', fontWeight: 'bold', marign: 0 }}>{this.props.title}</p>}>
+        <ExcelFile filename={`Report-HR-${('' + this.props.startDate).slice(4, 15)}-${('' + this.props.monthEnd).slice(4, 15)}`} element={<p style={{ cursor: 'pointer', fontWeight: 'bold', marign: 0 }}>{this.props.title}</p>}>
           <ExcelSheet data={this.props.data} name={this.props.nameSheet}>
             {
               this.props.labelValue.length > 0 && this.props.labelValue.map((el, index) => (
@@ -23,8 +23,8 @@ export default class exportToExcel extends React.Component {
           </ExcelSheet>
         </ExcelFile>
       );
-    } 
-    
+    }
+
     else if (this.props.report === "kpim") {
       if (this.props.title === "semua") {
         return (
@@ -64,7 +64,7 @@ export default class exportToExcel extends React.Component {
             </ExcelSheet>
           </ExcelFile>
         );
-      } 
+      }
       // else if (this.props.title === "TAL") {
       //   return (
       //     <ExcelFile element={<p style={{ cursor: 'pointer', marign: 0 }}>{this.props.title}</p>}>
@@ -79,9 +79,9 @@ export default class exportToExcel extends React.Component {
       //   );
       // }
     }
-    
-    
-    
+
+
+
     else {
       return (
         <ExcelFile element={<p style={{ cursor: 'pointer', fontWeight: 'bold', marign: 0 }}>{this.props.title}</p>}>

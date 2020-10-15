@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
-import { Grid, Button, Select, MenuItem, FormControl } from '@material-ui/core';
+import { Grid, Button, 
+  // Select, MenuItem, FormControl 
+} from '@material-ui/core';
 
 import CloseIcon from '@material-ui/icons/Close';
 

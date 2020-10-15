@@ -181,7 +181,8 @@ class DashboardKPIM extends Component {
 
     // ===== HANDLE TAL ===== //
     let dataTAL = await this.props.dataAllKPIM.find(kpim => kpim.user_id === userId && kpim.indicator_kpim.toLowerCase() === "tal")
-    dataTAL && await dataTAL.tbl_kpim_scores[1].tbl_tals.forEach(tal => {
+console.log(dataTAL)
+    dataTAL && dataTAL.tbl_kpim_scores[dataTAL.tbl_kpim_scores.length - 1].tbl_tals && await dataTAL.tbl_kpim_scores[dataTAL.tbl_kpim_scores.length - 1].tbl_tals.forEach(tal => {
       let newTAL = { ...tal, ...tal.tbl_tal_scores[0] }
       delete newTAL.tbl_tal_scores
       tempTAL.push(newTAL)
@@ -250,7 +251,7 @@ class DashboardKPIM extends Component {
   fetchKPIMSelected = async (data, monthSelected) => {
     let kpimSelected = data, persenKPIM = 0, kpimTAL = null
 
-    await kpimSelected.forEach(async (kpim) => {
+    kpimSelected.length > 0 && await kpimSelected.forEach(async (kpim) => {
       if (kpim.indicator_kpim.toLowerCase() !== "tal team") {
         let kpimNow = await kpim.tbl_kpim_scores.find(kpim_score => kpim_score.month === monthSelected)
         persenKPIM += Number(kpimNow.score_kpim_monthly) * (Number(kpimNow.bobot) / 100)

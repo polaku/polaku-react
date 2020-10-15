@@ -26,7 +26,7 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import ImportContactsRoundedIcon from '@material-ui/icons/ImportContactsRounded';
 
-import { setUser, fetchDataNotification } from '../store/action';
+import { setUser, fetchDataNotification, userLogout } from '../store/action';
 import { API } from '../config/API';
 
 import TimeAgo from 'react-timeago'
@@ -150,9 +150,9 @@ function Navsidebar(props) {
   }
 
   useEffect(() => {
+    let token = Cookies.get('POLAGROUP')
 
-    if (Cookies.get('POLAGROUP')) {
-      let token = Cookies.get('POLAGROUP')
+    if (token) {
       API.get('/users/checkToken', { headers: { token } })
         .then(async ({ data }) => {
           let newData = {
@@ -177,6 +177,11 @@ function Navsidebar(props) {
 
           await props.setUser(newData)
           await props.fetchDataNotification()
+        })
+        .catch(err => {
+          Cookies.remove('POLAGROUP')
+          props.userLogout()
+          props.history.push('/login')
         })
     } else {
       props.history.push('/login')
@@ -696,7 +701,8 @@ function Navsidebar(props) {
 
 const mapDispatchToProps = {
   setUser,
-  fetchDataNotification
+  fetchDataNotification,
+  userLogout
 }
 
 const mapStateToProps = ({ isAdmin, isRoomMaster, isCreatorMaster, isCreatorAssistant, dataNotification, userId, dataNewNotif, bawahan, adminContactCategori }) => {
