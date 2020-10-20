@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
 import { Grid, OutlinedInput, Button, Divider, FormControlLabel, Checkbox, Select, MenuItem, Paper } from '@material-ui/core';
 // import SeCreatableSelect from 'react-select/creatable';
@@ -10,10 +9,10 @@ import DragAndDrop from '../DragAndDrop';
 
 const animatedComponents = makeAnimated();
 
-class cardAddAddress extends Component {
+export default class cardAddAddress extends Component {
   state = {
-    newAddress: '',
-    initial: '',
+    building: '',
+    address: '',
     phone: [''],
     fax: [''],
     files: [],
@@ -43,20 +42,17 @@ class cardAddAddress extends Component {
       }
     ],
     optionCompanies: [],
-    addressId: null,
-    listAddress: [],
-    selectedItem: ''
+    buildingId: null,
+    listBuilding: [],
+    selectedItem: '',
+    disableAddress: false,
+    hasEdit: false
   }
 
   async componentDidMount() {
-    let listAddress = []
-
-    await this.props.dataAddress.forEach(address => {
-      if (listAddress.indexOf(address.address) < 0) {
-        listAddress.push({ value: address.address, label: address.address })
-      }
-    })
-    this.setState({ listAddress })
+    if (this.props.dataBuilding) {
+      await this.fetchListBuilding()
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -88,13 +84,13 @@ class cardAddAddress extends Component {
         }
       })
 
-      let selected = this.state.listAddress.find(el => el.value === this.props.data.address)
-
+      let selected = this.state.listBuilding.find(el => el.value === this.props.data.building_id)
+      console.log(selected)
       this.setState({
         selectedItem: selected,
         addressId: this.props.data.id,
-        newAddress: this.props.data.address,
-        initial: this.props.data.acronym,
+        building: this.props.data.building_id,
+        address: this.props.data.address,
         phone: this.props.data.phone.split(','),
         fax: this.props.data.fax.split(','),
         operationSemua: operationDay.indexOf('Setiap Hari') >= 0 || operationDay.indexOf('Setiap hari') >= 0 || operationDay.indexOf('setiap hari') >= 0 ? true : false,
@@ -110,19 +106,32 @@ class cardAddAddress extends Component {
       })
     }
 
-    if (this.state.newAddress !== prevState.newAddress) {
-      let data = this.props.dataAddress.find(el => el.address === this.state.newAddress)
-
+    if (this.state.building !== prevState.building) {
+      console.log("MASUK", this.state.building)
+      let data = this.props.dataBuilding.find(el => el.building_id === this.state.building)
+      console.log(data)
       if (data) {
-        this.setState({ initial: data.acronym })
+        this.setState({ address: data.address, disableAddress: true, buildingId: this.state.building })
       } else {
-        this.setState({ initial: "" })
+        this.setState({ address: "", disableAddress: false })
       }
     }
 
     if (this.props.proses !== prevProps.proses) {
       this.setState({ proses: this.props.proses })
     }
+
+    if (this.props.dataBuilding !== prevProps.dataBuilding) {
+      this.fetchListBuilding()
+    }
+  }
+
+  fetchListBuilding = async () => {
+    let listBuilding = []
+    await this.props.dataBuilding.forEach(building => {
+      listBuilding.push({ value: building.building_id, label: building.building })
+    })
+    this.setState({ listBuilding })
   }
 
   handleChange = name => event => {
@@ -305,9 +314,10 @@ class cardAddAddress extends Component {
     let newData = new FormData()
 
     newData.append("addressId", this.state.addressId)
+    newData.append("building_id", this.state.buildingId)
     newData.append("companyId", this.props.companyId)
-    newData.append("address", this.state.newAddress)
-    newData.append("initial", this.state.initial)
+    newData.append("building", this.state.building)
+    newData.append("address", this.state.address)
     newData.append("phone", this.state.phone.join(','))
     newData.append("fax", this.state.fax.join(','))
     newData.append("operationalDay", operationalDay.join(','))
@@ -325,14 +335,18 @@ class cardAddAddress extends Component {
     this.props.sendData(newData)
   }
 
-  handleChangeAddress = (newValue, actionMeta) => {
+  handleChangeBuilding = (newValue, actionMeta) => {
     if (newValue !== null) {
       this.setState({
-        newAddress: newValue.value
+        building: newValue.value
       })
+      if (this.props.data) {
+        let selected = this.state.listBuilding.find(el => el.value === newValue.value)
+        this.setState({ selectedItem: selected })
+      }
     } else {
       this.setState({
-        newAddress: ""
+        building: "", selectedItem: null
       })
     }
   };
@@ -340,7 +354,7 @@ class cardAddAddress extends Component {
   handleInputChange = (inputValue, actionMeta) => {
     if (inputValue) {
       this.setState({
-        newAddress: inputValue
+        building: inputValue
       })
     }
   };
@@ -370,33 +384,32 @@ class cardAddAddress extends Component {
             </Grid>
 
             <Grid style={{ width: '80%' }}>
-              <Grid style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center', flexWrap: 'wrap' }}>
-                <Grid style={{ width: '65%', height: 40, margin: 5, minWidth: 300 }}>
-                  <CreatableSelect
-                    isClearable
-                    value={this.props.data && this.state.selectedItem}
-                    components={animatedComponents}
-                    options={this.state.listAddress}
-                    onChange={this.handleChangeAddress}
-                    onInputChange={this.handleInputChange}
-                    disabled={this.state.proses}
-                  />
-                </Grid>
-                <OutlinedInput
-                  placeholder="nama pendek"
-                  value={this.state.initial}
-                  onChange={this.handleChange('initial')}
-                  variant="outlined"
-                  style={{ width: '30%', height: 40, margin: 5, minWidth: 150 }}
-                  inputProps={{
-                    style: {
-                      padding: '5px 8px',
-                      fontSize: 14
-                    }
-                  }}
+              <Grid style={{ width: '30%', height: 40, margin: 5, minWidth: 200 }}>
+                <CreatableSelect
+                  isClearable
+                  value={this.props.data && this.state.selectedItem}
+                  // value={this.props.data && !this.state.hasEdit && this.state.selectedItem}
+                  components={animatedComponents}
+                  options={this.state.listBuilding}
+                  onChange={this.handleChangeBuilding}
+                  onInputChange={this.handleInputChange}
                   disabled={this.state.proses}
                 />
               </Grid>
+              <OutlinedInput
+                placeholder="alamat"
+                value={this.state.address}
+                onChange={this.handleChange('address')}
+                variant="outlined"
+                style={{ width: '60%', height: 40, margin: 5, minWidth: 400 }}
+                inputProps={{
+                  style: {
+                    padding: '5px 8px',
+                    fontSize: 14
+                  }
+                }}
+                disabled={this.state.proses || this.state.disableAddress}
+              />
 
               <Grid style={{ display: 'flex', width: '100%', alignItems: 'start', margin: '10px 0px', flexWrap: 'wrap' }}>
                 <Grid style={{ margin: 5 }}>
@@ -659,11 +672,3 @@ class cardAddAddress extends Component {
     )
   }
 }
-
-const mapStateToProps = ({ dataAddress }) => {
-  return {
-    dataAddress
-  }
-}
-
-export default connect(mapStateToProps)(cardAddAddress)

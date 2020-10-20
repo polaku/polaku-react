@@ -162,11 +162,11 @@ class panelOnBoarding extends Component {
                     control={<Checkbox />}
                   />
                   <Grid style={{ display: 'flex', alignItems: 'center' }}>
-                    <Grid style={{ display: 'flex', width: 150 }}>
+                    <Grid style={{ display: 'flex', width: 150, marginRight: 10 }}>
                       <BusinessOutlinedIcon style={{ color: el.statusIcon1 ? '#d71149' : '#b4b4b4', minWidth: 40, height: 40, marginRight: 10 }} />
                       <Typography style={{ fontWeight: 'bold', fontSize: 21 }}>{el.acronym}</Typography>
                     </Grid>
-                    <Grid style={{ display: 'flex', width: 160 }}>
+                    <Grid style={{ display: 'flex', width: 200, marginRight: 10 }}>
                       <AssignmentIndIcon style={{ color: el.tbl_PICs.length > 0 ? '#d71149' : '#b4b4b4', minWidth: 40, height: 40, marginRight: 10 }} />
                       <Grid style={{ display: 'flex', flexWrap: 'wrap' }}>
                         {
@@ -174,7 +174,7 @@ class panelOnBoarding extends Component {
                         }
                       </Grid>
                     </Grid>
-                    <Grid style={{ display: 'flex', width: 100 }}>
+                    <Grid style={{ display: 'flex', width: 100, marginRight: 10 }}>
                       <PowerInputIcon style={{ color: el.statusIcon3 ? '#d71149' : '#b4b4b4', minWidth: 40, height: 40 }} />
                     </Grid>
                     <Grid style={{ display: 'flex', width: 100 }}>

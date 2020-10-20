@@ -166,9 +166,8 @@ class cardAddDepartment extends Component {
       selectedPosition,
       selectedUserPosition,
       team: teams,
-      nameTeam: this.props.data.tbl_department_teams[0].name,
-      reportTo: this.props.data.tbl_department_teams[0].report_to,
-
+      nameTeam: this.props.data.tbl_department_teams[0] ? this.props.data.tbl_department_teams[0].name : '',
+      reportTo: this.props.data.tbl_department_teams[0] ? this.props.data.tbl_department_teams[0].report_to : ''
     })
     this.setState({ loading: false })
   }
@@ -243,7 +242,10 @@ class cardAddDepartment extends Component {
     newArray.push({
       nameTeam: '',
       teamPosition: [''],
-      reportTo: ''
+      selectedTeamPosition: [''],
+      user: [''],
+      userSelected: [''],
+      reportTo: '',
     });
     this.setState({
       team: newArray
@@ -280,21 +282,45 @@ class cardAddDepartment extends Component {
   }
   // HANDLE TEAM POSITION (END)
 
-  submit = () => {
-    if (this.state.nameDepartment === '' || this.state.levelHirarki === '' || this.state.partOfDepartment === '') {
+  submit = async () => {
+    if (this.state.nameDepartment === '' || this.state.levelHirarki === '') {
       swal("Data belum lengkap", "", "warning")
     } else {
       let newData = {
         nameDepartment: this.state.nameDepartment,
         levelHirarki: this.state.levelHirarki,
         partOfDepartment: this.state.partOfDepartment,
-        position: this.state.position,
-        team: this.state.team,
+        position: await this.validatePosition(),
+        team: await this.validateTeam(),
       }
 
       if (this.props.data) newData.id = this.props.data.id
       this.props.sendData(newData)
     }
+  }
+
+  validatePosition = async () => {
+    let tempPosition = []
+
+    await this.state.position.forEach(position => {
+      if (position.position || position.user) {
+        tempPosition.push(position)
+      }
+    })
+
+    return tempPosition
+  }
+
+  validateTeam = async () => {
+    let tempTeam = []
+
+    await this.state.team.forEach(team => {
+      if (team.nameTeam || team.teamPosition[0] || team.user[0] || team.reportTo) {
+        tempTeam.push(team)
+      }
+    })
+
+    return tempTeam
   }
 
   handleChangeDepartment = (newValue, actionMeta) => {
@@ -345,6 +371,7 @@ class cardAddDepartment extends Component {
 
   handleChangePartOfPosition = (newValue, actionMeta) => {
     let arrTeam = this.state.team
+    console.log(arrTeam[newValue.index])
     arrTeam[newValue.index].teamPosition[newValue.indexPosition] = newValue.value
     arrTeam[newValue.index].selectedTeamPosition[newValue.indexPosition] = newValue
 

@@ -89,12 +89,12 @@ class cardBuilding extends Component {
         </AccordionDetails>
         <Divider />
         <AccordionActions>
-          <Button size="small" onClick={this.openModalBuilding}>
+          {/* <Button size="small" onClick={this.openModalBuilding}>
             Edit Building
-            </Button>
-          <Button size="small" color="secondary" onClick={this.deleteBuilding}>
+            </Button> */}
+          {/* <Button size="small" color="secondary" onClick={this.deleteBuilding}>
             Delete Building
-            </Button>
+            </Button> */}
           <Button size="small" color="primary" onClick={this.openModalRoom}>
             Create Room
             </Button>

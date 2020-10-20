@@ -132,7 +132,9 @@ class modalCreateEditPermintaanHRD extends Component {
 
   createPengajuan = async e => {
     e.preventDefault()
-    
+
+    let valid = true;
+
     if (this.state.isEdit) {
       this.editPengajuan()
     } else {
@@ -160,6 +162,11 @@ class modalCreateEditPermintaanHRD extends Component {
           categoriId: 7
         }
       } else if (this.state.jenisIjin === 6) {
+        if (!this.state.lamaCuti) {
+          valid = false
+          swal("Form lama cuti masih kosong !", "", "warning")
+          this.setState({ proses: false })
+        }
         newData = {
           leave_date: this.state.start_date ||
             `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
@@ -181,31 +188,33 @@ class modalCreateEditPermintaanHRD extends Component {
 
       newData.type = 'request'
       newData.contactCategoriesId = 4
-console.log(newData)
-      API.post('/contactUs', newData, {
-        headers: {
-          token
-        }
-      })
-        .then(data => {
-          swal("Terima kasih. Mohon menunggu untuk direspon", "", "success");
 
-          this.props.handleCloseModal()
-          this.props.fetchData()
-          this.reset()
+      if (valid) {
+        API.post('/contactUs', newData, {
+          headers: {
+            token
+          }
+        })
+          .then(data => {
+            swal("Terima kasih. Mohon menunggu untuk direspon", "", "success");
 
-          this.setState({
-            proses: false,
-            editableInput: true
+            this.props.handleCloseModal()
+            this.props.fetchData()
+            this.reset()
+
+            this.setState({
+              proses: false,
+              editableInput: true
+            })
           })
-        })
-        .catch(err => {
-          this.setState({
-            proses: false,
-            editableInput: true
+          .catch(err => {
+            this.setState({
+              proses: false,
+              editableInput: true
+            })
+            swal('please try again')
           })
-          swal('please try again')
-        })
+      }
     }
   }
 
@@ -336,7 +345,7 @@ console.log(newData)
             {
               this.state.jenisIjin === 6 && <p style={{ fontWeight: 'bold', marginTop: 0, fontSize: 24 }}>Sisa cuti anda {this.props.sisaCuti} hari</p>
             }
-            <img src={process.env.PUBLIC_URL + '/ijin.jpeg'} alt="Logo" style={{ width: 200 }}/>
+            <img src={process.env.PUBLIC_URL + '/ijin.jpeg'} alt="Logo" style={{ width: 200 }} />
             <p style={{ fontWeight: 'bold' }}>Ajukan ijin dengan mengisi beberapa detail dibawah ini</p>
             <form noValidate autoComplete="off" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
               {/* <MultipleDatePicker

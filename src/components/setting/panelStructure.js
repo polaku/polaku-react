@@ -220,52 +220,43 @@ class panelStructure extends Component {
               </Paper>
 
               <Paper id="header" style={{ display: 'flex', padding: '15px 20px', margin: 3, borderRadius: 0, alignItems: 'center' }}>
-                <TableCell style={{ padding: 13, width: '30%', border: 'none' }} align="center" onClick={() => this.handleSort('department.deptname')}>
-                  <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} >
-                    {/* <Checkbox
+                <TableCell style={{ padding: 13, width: '30%', border: 'none', textAlign: 'center', cursor: 'pointer' }} onClick={() => this.handleSort('department.deptname')}>
+
+                  {/* <Checkbox display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center'
                     checked={this.state.check}
                     onChange={this.handleChangeCheck}
                     value="secondary"
                     color="secondary"
                     size="small"
                   /><p style={{ margin: 0 }}>pilih untuk lakukan aksi</p> */}
-                    Divisi
-                        {
-                      this.state.columnToSort === 'department.deptname' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
-                    }
-                  </Grid>
+                  Divisi
+                  {
+                    this.state.columnToSort === 'department.deptname' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
+                  }
                 </TableCell>
-                <TableCell style={{ padding: 13, width: '10%', border: 'none' }} align="center" onClick={() => this.handleSort('hierarchy')}>
-                  <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }} >
-                    Level
-                        {
-                      this.state.columnToSort === 'hierarchy' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
-                    }
-                  </Grid>
+                <TableCell style={{ padding: 13, width: '10%', border: 'none', display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }} align="center" onClick={() => this.handleSort('hierarchy')}>
+                  Level
+                  {
+                    this.state.columnToSort === 'hierarchy' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
+                  }
                 </TableCell>
-                <TableCell style={{ padding: 13, width: '15%', border: 'none' }} align="center" onClick={() => this.handleSort('section.deptname')}>
-                  <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }} >
-                    Lapor ke
-                        {
-                      this.state.columnToSort === 'section.deptname' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
-                    }
-                  </Grid>
+                <TableCell style={{ padding: 13, width: '15%', border: 'none', display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }} align="center" onClick={() => this.handleSort('section.deptname')}>
+                  Lapor ke
+                  {
+                    this.state.columnToSort === 'section.deptname' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
+                  }
                 </TableCell>
-                <TableCell style={{ padding: 13, width: '10%', border: 'none' }} align="center" onClick={() => this.handleSort('tbl_department_positions.length')}>
-                  <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }} >
-                    Peran
-                        {
-                      this.state.columnToSort === 'tbl_department_positions.length' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
-                    }
-                  </Grid>
+                <TableCell style={{ padding: 13, width: '10%', border: 'none', display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }} align="center" onClick={() => this.handleSort('tbl_department_positions.length')}>
+                  Peran
+                  {
+                    this.state.columnToSort === 'tbl_department_positions.length' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
+                  }
                 </TableCell>
-                <TableCell style={{ padding: 13, width: '10%', border: 'none' }} align="center" onClick={() => this.handleSort('tbl_department_teams.length')}>
-                  <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }} >
-                    Tim
-                        {
-                      this.state.columnToSort === 'tbl_department_teams.length' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
-                    }
-                  </Grid>
+                <TableCell style={{ padding: 13, width: '10%', border: 'none', display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }} align="center" onClick={() => this.handleSort('tbl_department_teams.length')}>
+                  Tim
+                  {
+                    this.state.columnToSort === 'tbl_department_teams.length' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
+                  }
                 </TableCell>
                 <TableCell style={{ padding: 13, width: '25%', textAlign: 'center', border: 'none' }} align="center">
                   <p style={{ margin: 0 }}>Aksi</p>

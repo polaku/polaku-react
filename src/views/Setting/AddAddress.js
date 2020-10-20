@@ -24,10 +24,12 @@ class AddAddress extends Component {
     indexMainAddress: null,
     dataForEdit: [],
     tempDataForEdit: [],
-    proses: false
+    proses: false,
+    dataBuilding: []
   }
 
   async componentDidMount() {
+    await this.fetchBuilding()
     if (this.props.location.state) {
       if (this.props.location.state.data) {
         let data = [this.props.location.state.data]
@@ -39,6 +41,16 @@ class AddAddress extends Component {
     }
 
     await this.props.fetchDataCompanies()
+  }
+
+  fetchBuilding = async () => {
+    try {
+      let { data } = await API.get('/building')
+      this.setState({ dataBuilding: data.data })
+      console.log(data.data)
+    } catch (err) {
+      swal('please refresh this page !')
+    }
   }
 
   handleChange = name => event => {
@@ -194,7 +206,7 @@ class AddAddress extends Component {
                   label={<p style={{ margin: 0, fontSize: 13 }}>Jadikan alamat pusat</p>}
                 />
               </Grid>
-              <CardAddAddress statusSubmit={this.state.statusSubmit} companyId={this.state.companyId} sendData={this.sendData} data={this.state.dataForEdit[index]} proses={this.state.proses} />
+              <CardAddAddress statusSubmit={this.state.statusSubmit} companyId={this.state.companyId} sendData={this.sendData} data={this.state.dataForEdit[index]} proses={this.state.proses} dataBuilding={this.state.dataBuilding} />
             </Grid>
           )
         }

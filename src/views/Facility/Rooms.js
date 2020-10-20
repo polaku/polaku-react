@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { Button } from '@material-ui/core';
-
 import CardBuilding from '../../components/facility/cardBuilding';
 import ModalCreateEditBuilding from '../../components/modal/modalCreateEditBuilding';
 
@@ -72,9 +70,7 @@ class Rooms extends Component {
   render() {
     return (
       <div style={{ width: '70%', margin: '30px auto' }}>
-        <Button size="small" color="primary" onClick={this.openModal} style={{ marginBottom: 10 }}>
-          Create Building
-        </Button>
+        <h2>List Gedung</h2>
         {
           this.state.dataBuildings.map((building, index) => (
             <CardBuilding data={building} key={index} fetchData={this.fetchData} />
@@ -82,7 +78,7 @@ class Rooms extends Component {
         }
         {
           this.state.openModal && <ModalCreateEditBuilding status={this.state.openModal} closeModal={this.closeModal} companies={this.props.dataCompanies} statusCreate={true} fetchData={this.fetchData} />
-        }        
+        }
       </div>
     )
   }

@@ -563,7 +563,7 @@ const api = store => next => async action => {
     let getData
     try {
       getData = await API.get('/address', { headers: { token } })
-
+      console.log(getData.data.data)
       next({
         type: 'FETCH_DATA_ADDRESS_SUCCESS',
         payload: { dataAddress: getData.data.data }
