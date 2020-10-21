@@ -111,18 +111,24 @@ class cardAddDepartment extends Component {
   }
 
   fetchDataForEdit = async () => {
-    console.log(this.props.data)
     this.setState({ loading: true })
     let position = [], selectedPosition = [], teams = [], selectedUserPosition = []
 
-    await this.props.data.tbl_department_positions.forEach(element => {
-      let selected = this.state.listPosition.find(el => el.value === element.position_id)
-      let userSelect = this.state.listUser.find(el => el.value === element.user_id)
+    if (this.props.data.tbl_department_positions.length > 0) {
+      await this.props.data.tbl_department_positions.forEach(element => {
+        let selected = this.state.listPosition.find(el => el.value === element.position_id)
+        let userSelect = this.state.listUser.find(el => el.value === element.user_id)
 
-      selectedUserPosition.push(userSelect) //user in position
-      position.push({ position: element.position_id, user: element.user_id })
-      selectedPosition.push(selected)
-    })
+        selectedUserPosition.push(userSelect) //user in position
+        position.push({ position: element.position_id, user: element.user_id })
+        selectedPosition.push(selected)
+      })
+    } else {
+      position = [{
+        position: '',
+        user: ''
+      }]
+    }
 
     // await this.props.data.tbl_department_teams[0].tbl_team_positions.forEach(element => {
     //   let selected = this.state.listPosition.find(el => el.value === element.position_id)
@@ -131,30 +137,41 @@ class cardAddDepartment extends Component {
     // })
 
     // TEAM
-    await this.props.data.tbl_department_teams.forEach(async (team) => {
-      let teamPosition = [], selectedTeamPosition = [], userTeam = [], userSelectedTeam = []
+    if (this.props.data.tbl_department_teams.length > 0) {
+      await this.props.data.tbl_department_teams.forEach(async (team) => {
+        let teamPosition = [], selectedTeamPosition = [], userTeam = [], userSelectedTeam = []
 
-      await team.tbl_team_positions.forEach(element => {
-        let selected = this.state.listPosition.find(el => el.value === element.position_id)
-        let userSelect = this.state.listUser.find(el => el.value === element.user_id)
+        await team.tbl_team_positions.forEach(element => {
+          let selected = this.state.listPosition.find(el => el.value === element.position_id)
+          let userSelect = this.state.listUser.find(el => el.value === element.user_id)
 
-        teamPosition.push(element.position_id)
-        userTeam.push(element.user_id)
-        selectedTeamPosition.push(selected)
-        userSelectedTeam.push(userSelect)
+          teamPosition.push(element.position_id)
+          userTeam.push(element.user_id)
+          selectedTeamPosition.push(selected)
+          userSelectedTeam.push(userSelect)
+        })
+
+        let data = {
+          nameTeam: team.name,
+          teamPosition,
+          selectedTeamPosition,
+          user: userTeam,
+          userSelected: userSelectedTeam,
+          reportTo: team.report_to,
+          selectedReportTo: this.state.listUser.find(el => el.value === team.report_to)
+        }
+        teams.push(data)
       })
-
-      let data = {
-        nameTeam: team.name,
-        teamPosition,
-        selectedTeamPosition,
-        user: userTeam,
-        userSelected: userSelectedTeam,
-        reportTo: team.report_to,
-        selectedReportTo: this.state.listUser.find(el => el.value === team.report_to)
-      }
-      teams.push(data)
-    })
+    } else {
+      teams = [{
+        nameTeam: '',
+        teamPosition: [''],
+        selectedTeamPosition: [''],
+        user: [''],
+        userSelected: [''],
+        reportTo: '',
+      }]
+    }
 
     this.setState({
       nameDepartment: this.props.data.departments_id,
@@ -371,7 +388,7 @@ class cardAddDepartment extends Component {
 
   handleChangePartOfPosition = (newValue, actionMeta) => {
     let arrTeam = this.state.team
-    console.log(arrTeam[newValue.index])
+
     arrTeam[newValue.index].teamPosition[newValue.indexPosition] = newValue.value
     arrTeam[newValue.index].selectedTeamPosition[newValue.indexPosition] = newValue
 
@@ -553,12 +570,12 @@ class cardAddDepartment extends Component {
         {
           this.state.team.map((team, index) =>
             <Grid key={"team" + index}>
-              {
-                this.state.team.length > 1 && <Grid style={{ display: 'flex', alignItems: 'center' }}>
-                  <b>Team {index + 1}</b>
-                  <CloseIcon style={{ backgroundColor: 'red', color: 'white', borderRadius: 15, marginLeft: 5, marginRight: 15, cursor: 'pointer', width: 15, height: 15 }} onClick={() => this.deleteTeam(index)} />
-                </Grid>
-              }
+
+              <Grid style={{ display: 'flex', alignItems: 'center' }}>
+                <b>Team {index + 1}</b>
+                <CloseIcon style={{ backgroundColor: 'red', color: 'white', borderRadius: 15, marginLeft: 5, marginRight: 15, cursor: 'pointer', width: 15, height: 15 }} onClick={() => this.deleteTeam(index)} />
+              </Grid>
+
               <Grid id="name-team" style={{ margin: '0px 0px 10px 0px', display: 'flex', alignItems: 'center' }}>
                 <Grid style={{ width: '20%', minWidth: '200px', marginRight: 10 }}>
                   <b style={{ fontSize: 12, marginBottom: 5 }}>Nama Tim</b>

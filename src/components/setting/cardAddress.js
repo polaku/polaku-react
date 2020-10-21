@@ -74,7 +74,7 @@ class cardAddress extends Component {
             <img src={process.env.PUBLIC_URL + '/building.png'} alt="Logo" style={{ width: 40, maxHeight: 40, alignSelf: 'center', marginRight: 10 }} />
             <Grid style={{ maxWidth: '80%' }}>
               <Grid style={{ display: 'flex', alignItems: 'center' }}>
-                <b style={{ margin: 0, fontSize: 15 }}>{this.props.data.tbl_building.building}</b>
+                <b style={{ margin: 0, fontSize: 15 }}>{this.props.data.tbl_building && this.props.data.tbl_building.building}</b>
                 {
                   this.props.data.is_main_address && <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#d71149', color: 'white', borderRadius: 15, width: 50, height: 20, marginLeft: 8 }}>
                     <b style={{ fontSize: 10 }}>utama</b>

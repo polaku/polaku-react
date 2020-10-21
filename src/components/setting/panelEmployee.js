@@ -53,9 +53,9 @@ class panelEmployee extends Component {
       }
     }
 
-    if (this.state.dataForEdit !== prevState.dataForEdit) {
-      console.log(this.state.dataForEdit)
-    }
+    // if (this.state.dataForEdit !== prevState.dataForEdit) {
+    //   console.log(this.state.dataForEdit)
+    // }
   }
 
   fetchData = () => {

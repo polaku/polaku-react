@@ -52,7 +52,7 @@ class panelAddress extends Component {
     }
 
     if (this.state.dataForEdit !== prevState.dataForEdit) {
-      console.log(this.state.dataForEdit)
+      // console.log(this.state.dataForEdit)
     }
   }
 

@@ -47,7 +47,7 @@ class panelStructure extends Component {
   async componentDidMount() {
     await this.props.fetchDataStructure()
     await this.fetchData()
-    console.log(this.props.dataStructure)
+    // console.log(this.props.dataStructure)
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -65,9 +65,9 @@ class panelStructure extends Component {
       }
     }
 
-    if (this.state.dataForEdit !== prevState.dataForEdit) {
-      console.log(this.state.dataForEdit)
-    }
+    // if (this.state.dataForEdit !== prevState.dataForEdit) {
+    //   console.log(this.state.dataForEdit)
+    // }
   }
 
   fetchData = () => {

@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { Grid, OutlinedInput, 
+import {
+  Grid, OutlinedInput,
   // Button, Divider, 
-  FormControlLabel, Checkbox, Select, MenuItem, Paper, FormControl, TextField } from '@material-ui/core';
-// import SeCreatableSelect from 'react-select/creatable';
-import CreatableSelect from 'react-select/creatable';
+  FormControlLabel, Checkbox, Select, MenuItem, Paper, FormControl, TextField, Avatar
+} from '@material-ui/core';
+// import SeReactSelect from 'react-select/creatable';
+import ReactSelect from 'react-select';
 
 import makeAnimated from 'react-select/animated';
 // import DragAndDrop from '../DragAndDrop';
@@ -16,7 +18,8 @@ const animatedComponents = makeAnimated();
 
 class cardAddEmployee extends Component {
   state = {
-    image: '',
+    avatar: null,
+    pathAvatar: '',
     name: '',
     nickName: '',
     initial: '',
@@ -35,8 +38,8 @@ class cardAddEmployee extends Component {
     nextFrame: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
     nextLensa: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
 
-    companyService: '',
-    companyServiceAddress: '',
+    companyDinas: '',
+    companyDinasAddress: '',
 
     emailPribadi: '',
     emailKantor: '',
@@ -45,6 +48,7 @@ class cardAddEmployee extends Component {
 
     listUser: [],
     dataAddress: [],
+    dataAddressDinas: [],
     isDinas: false,
 
 
@@ -154,10 +158,33 @@ class cardAddEmployee extends Component {
     }
 
     if (this.state.company !== prevState.company) {
-      console.log(this.state.company, "MASUK")
-      console.log(this.props.dataAddress)
-      let dataAddress = await this.props.dataAddress.filter(address => address.company_id === this.state.company)
+      let dataAddress = [], idBuilding = []
+
+      await this.props.dataAddress.forEach(address => {
+        if (address.company_id === this.state.company) {
+          if (idBuilding.indexOf(address.building_id) < 0) {
+            idBuilding.push(address.building_id)
+            dataAddress.push(address.tbl_building)
+          }
+        }
+      });
+
       this.setState({ dataAddress })
+    }
+
+    if (this.state.companyDinas !== prevState.companyDinas) {
+      let dataAddressDinas = [], idBuilding = []
+
+      await this.props.dataAddress.forEach(address => {
+        if (address.company_id === this.state.companyDinas) {
+          if (idBuilding.indexOf(address.building_id) < 0) {
+            idBuilding.push(address.building_id)
+            dataAddressDinas.push(address.tbl_building)
+          }
+        }
+      });
+
+      this.setState({ dataAddressDinas })
     }
   }
 
@@ -325,40 +352,67 @@ class cardAddEmployee extends Component {
   }
 
   submit = () => {
-    let operationalDay = []
+    // avatar: null,
+    // pathAvatar: '',
+    // : '',
+    // nickName: '',
+    // : '',
+    // : '',
+    // : '',
+    // : '',
+    // divisi: '',
+    // peran: '',
+    // : '',
+    // evaluator2: '',
+    // tanggalGabung: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
+    // statusKaryawan: '',
+    // sisaCuti: '',
+    // tanggalMulaiCuti: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
+    // sisaCutiBesar: '',
+    // nextFrame: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
+    // nextLensa: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
 
-    if (this.state.operationSemua) operationalDay.push('Setiap hari')
-    else {
-      if (this.state.operationSenin) operationalDay.push('Senin')
-      if (this.state.operationSelasa) operationalDay.push('Selasa')
-      if (this.state.operationRabu) operationalDay.push('Rabu')
-      if (this.state.operationKamis) operationalDay.push('Kamis')
-      if (this.state.operationJumat) operationalDay.push('Jumat')
-      if (this.state.operationSabtu) operationalDay.push('Sabtu')
-      if (this.state.operationMinggu) operationalDay.push('Minggu')
-    }
+    // companyDinas: '',
+    // companyDinasAddress: '',
 
-    let newData = new FormData()
+    // : '',
+    // emailKantor: '',
+    // : '',
+    // : '',
+    
+    // let newData = {
+    //   username: this.state.nik,
+    //   password,
+    //   email: this.state.emailPribadi,
 
-    newData.append("addressId", this.state.addressId)
-    newData.append("companyId", this.props.companyId)
-    newData.append("address", this.state.newAddress)
-    newData.append("initial", this.state.initial)
-    newData.append("phone", this.state.phone.join(','))
-    newData.append("fax", this.state.fax.join(','))
-    newData.append("operationalDay", operationalDay.join(','))
+    //   fullname: this.state.name,
+    //   initial: this.state.initial,
+    //   nik: this.state.nik,
+    //   address: this.state.alamat,
+    //   dateOfBirth,
+    //   leave,
+    //   building_id: this.state.companyAddress,
+    //   company_id: this.state.company,
+    //   position_id,
+    //   designations_id,
+    //   phone: this.state.telepon,
+    //   name_evaluator_1: this.state.evaluator1,
+    //   name_evaluator_2: this.state.evaluator2,
+    // }
 
-    if (this.state.files.length > 0) this.state.files.forEach(file => {
-      newData.append("files", file)
-    })
-    this.state.operationHours.forEach(operationHour => {
-      newData.append("operationHours", JSON.stringify(operationHour))
-    })
-    this.state.operationRestHours.forEach(operationRestHour => {
-      newData.append("operationRestHours", JSON.stringify(operationRestHour))
-    })
+    // let newData = new FormData()
 
-    this.props.sendData(newData)
+    // newData.append("addressId", this.state.addressId)
+    // newData.append("companyId", this.props.companyId)
+    // newData.append("address", this.state.newAddress)
+    // newData.append("initial", this.state.initial)
+    // newData.append("phone", this.state.phone.join(','))
+    // newData.append("fax", this.state.fax.join(','))
+    // newData.append("operationalDay", operationalDay.join(','))
+
+    // newData.append("avatar", this.state.avatar)
+
+    // this.props.sendData(newData)
   }
 
   handleChangeAddress = (newValue, actionMeta) => {
@@ -411,6 +465,19 @@ class cardAddEmployee extends Component {
     })
   }
 
+  handleFileSelect = (e, name) => {
+    let file = e.target.files[0]
+
+    if (file.size < 5000000) {
+      let pathAvatar = URL.createObjectURL(file)
+      this.setState({ pathAvatar })
+      this.setState({ avatar: file, pathAvatar });
+    } else {
+      e.target.value = null;
+      //   swal("Unggah File Gagal!", "Ukuran file lebih dari 5MB", "warning")
+    }
+  };
+
   render() {
     return (
       <>
@@ -424,21 +491,12 @@ class cardAddEmployee extends Component {
               <b style={{ marginBottom: 5 }}>Foto Karyawan</b>
             </Grid>
 
-            <Grid style={{ width: '80%' }}>
-              <OutlinedInput
-                placeholder="tambah foto baru"
-                value={this.state.initial}
-                onChange={this.handleChange('initial')}
-                variant="outlined"
-                style={{ width: '30%', height: 40, margin: '5px 0px', minWidth: 150 }}
-                inputProps={{
-                  style: {
-                    padding: '5px 8px',
-                    fontSize: 14
-                  }
-                }}
-                disabled={this.state.proses}
+            <Grid style={{ width: '80%', display: 'flex', alignItems: 'center' }}>
+              <input type="file" label="avatar" onChange={(e) => this.handleFileSelect(e)} disabled={this.state.proses}
+                accept="image/png,image/jpeg"
+                style={{ border: this.state.newImageIsError ? '1px solid red' : null }}
               />
+              <Avatar alt="Avatar" src={this.state.pathAvatar} />
             </Grid>
           </Grid>
 
@@ -589,7 +647,7 @@ class cardAddEmployee extends Component {
               <b style={{ marginBottom: 5 }}>Evaluator 1</b>
             </Grid>
             <Grid style={{ width: '28%', height: 40, margin: '5px 0px' }}>
-              <CreatableSelect
+              <ReactSelect
                 isClearable
                 // placeholder="bagian dari divisi"
                 // value={this.props.data && this.state.selectedPartDept}
@@ -607,7 +665,7 @@ class cardAddEmployee extends Component {
             </Grid>
 
             <Grid style={{ width: '28%', height: 40, margin: '5px 0px' }}>
-              <CreatableSelect
+              <ReactSelect
                 isClearable
                 // placeholder="bagian dari divisi"
                 // value={this.props.data && this.state.selectedPartDept}
@@ -793,8 +851,8 @@ class cardAddEmployee extends Component {
 
             <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
               <Select
-                value={this.state.companyService}
-                onChange={this.handleChange('companyService')}
+                value={this.state.companyDinas}
+                onChange={this.handleChange('companyDinas')}
                 disabled={this.state.proses || !this.state.isDinas}
                 style={{ width: '100%' }}
               >
@@ -814,14 +872,14 @@ class cardAddEmployee extends Component {
 
             <FormControl variant="outlined" size="small" style={{ width: '50%', height: 40, margin: '5px 0px' }}>
               <Select
-                value={this.state.companyServiceAddress}
-                onChange={this.handleChange('companyServiceAddress')}
-                disabled={this.state.proses || !this.state.isDinas}
+                value={this.state.companyDinasAddress}
+                onChange={this.handleChange('companyDinasAddress')}
+                disabled={this.state.proses || !this.state.isDinas || !this.state.companyDinas}
                 style={{ width: '100%' }}
               >
                 {
-                  this.props.dataAddress.map((address, index) =>
-                    address.company_id === this.state.companyService && <MenuItem value={address.id} key={"companyServiceAddress" + index}>{address.address}</MenuItem>
+                  this.state.dataAddressDinas.map((address, index) =>
+                    <MenuItem value={address.building_id} key={"companyDinasAddress" + index}>{address.building}</MenuItem>
                   )
                 }
               </Select>
@@ -841,12 +899,12 @@ class cardAddEmployee extends Component {
               <Select
                 value={this.state.companyAddress}
                 onChange={this.handleChange('companyAddress')}
-                disabled={this.state.proses}
+                disabled={this.state.proses || !this.state.company}
                 style={{ width: '100%' }}
               >
                 {
                   this.state.dataAddress.map((address, index) =>
-                    <MenuItem value={address.id} key={"companyAddress" + index}>{address.address}</MenuItem>
+                    <MenuItem value={address.building_id} key={"companyAddress" + index}>{address.building}</MenuItem>
                   )
                 }
               </Select>

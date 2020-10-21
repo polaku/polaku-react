@@ -155,7 +155,7 @@ class AddEmployee extends Component {
 
         {
           this.state.department.map((alamat, index) =>
-            <Grid style={{ margin: '10px 0px' }} key={index}>
+            <Grid style={{ margin: '10px 0px 20px' }} key={index}>
               <Grid style={{ margin: '10px 0px 0px 10px', display: 'flex', alignItems: 'center' }}>
                 {
                   this.state.department.length > 1 && <>

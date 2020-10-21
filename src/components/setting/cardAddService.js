@@ -19,7 +19,6 @@ class cardAddService extends Component {
   async componentDidMount() {
     await this.props.fetchDataCompanies()
     await this.props.fetchDataAddress()
-    console.log(this.props.dataCompanies)
   }
 
   async componentDidUpdate(prevProps, prevState) {

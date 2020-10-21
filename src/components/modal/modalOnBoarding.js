@@ -46,7 +46,6 @@ class modalOnBoarding extends Component {
         if (element.tbl_account_detail) newData.fullname = element.tbl_account_detail.fullname
         temp.push(newData)
       });
-      console.log(this.props.dataCompanies)
 
       let listCompanies = []
       await this.props.dataCompanies.forEach(el => {

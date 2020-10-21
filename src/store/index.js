@@ -301,14 +301,12 @@ const api = store => next => async action => {
     let getData
     try {
       if (action.payload && action.payload.startDate) {
-        console.log("MASUK 1", action.payload)
         // startDate: Date Thu Oct 01 2020 00:00:00 GMT+0700 (Western Indonesia Time), endDate: 
         let startDate, endDate
         startDate = `${action.payload.startDate.getFullYear()}-${action.payload.startDate.getMonth() + 1 < 10 ? `0${action.payload.startDate.getMonth() + 1}` : action.payload.startDate.getMonth() + 1}-${action.payload.startDate.getDate() < 10 ? `0${action.payload.startDate.getDate()}` : action.payload.startDate.getDate()}`
         endDate = `${action.payload.endDate.getFullYear()}-${action.payload.endDate.getMonth() + 1 < 10 ? `0${action.payload.endDate.getMonth() + 1}` : action.payload.endDate.getMonth() + 1}-${action.payload.endDate.getDate() < 10 ? `0${action.payload.endDate.getDate()}` : action.payload.endDate.getDate()}`
         getData = await API.get(`/contactUs/allContactUs?for-report-hr=true&after-date=${startDate}&before-date=${endDate}`, { headers: { token } })
       } else if (action.payload) {
-        console.log("MASUK 2")
         getData = await API.get('/contactUs/allContactUs?for-hr=true', { headers: { token } })
       } else {
         getData = await API.get('/contactUs/allContactUs', { headers: { token } })
@@ -563,7 +561,7 @@ const api = store => next => async action => {
     let getData
     try {
       getData = await API.get('/address', { headers: { token } })
-      console.log(getData.data.data)
+
       next({
         type: 'FETCH_DATA_ADDRESS_SUCCESS',
         payload: { dataAddress: getData.data.data }

@@ -47,7 +47,6 @@ class AddAddress extends Component {
     try {
       let { data } = await API.get('/building')
       this.setState({ dataBuilding: data.data })
-      console.log(data.data)
     } catch (err) {
       swal('please refresh this page !')
     }

@@ -181,7 +181,7 @@ class DashboardKPIM extends Component {
 
     // ===== HANDLE TAL ===== //
     let dataTAL = await this.props.dataAllKPIM.find(kpim => kpim.user_id === userId && kpim.indicator_kpim.toLowerCase() === "tal")
-console.log(dataTAL)
+
     dataTAL && dataTAL.tbl_kpim_scores[dataTAL.tbl_kpim_scores.length - 1].tbl_tals && await dataTAL.tbl_kpim_scores[dataTAL.tbl_kpim_scores.length - 1].tbl_tals.forEach(tal => {
       let newTAL = { ...tal, ...tal.tbl_tal_scores[0] }
       delete newTAL.tbl_tal_scores

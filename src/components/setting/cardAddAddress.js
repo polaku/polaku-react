@@ -85,14 +85,14 @@ export default class cardAddAddress extends Component {
       })
 
       let selected = this.state.listBuilding.find(el => el.value === this.props.data.building_id)
-      console.log(selected)
+
       this.setState({
         selectedItem: selected,
         addressId: this.props.data.id,
         building: this.props.data.building_id,
         address: this.props.data.address,
-        phone: this.props.data.phone.split(','),
-        fax: this.props.data.fax.split(','),
+        phone: this.props.data.phone ? this.props.data.phone.split(',') : [],
+        fax: this.props.data.fax ? this.props.data.fax.split(',') : [],
         operationSemua: operationDay.indexOf('Setiap Hari') >= 0 || operationDay.indexOf('Setiap hari') >= 0 || operationDay.indexOf('setiap hari') >= 0 ? true : false,
         operationSenin: operationDay.indexOf('Senin') >= 0 || operationDay.indexOf('senin') >= 0 ? true : false,
         operationSelasa: operationDay.indexOf('Selasa') >= 0 || operationDay.indexOf('selasa') >= 0 ? true : false,
@@ -107,9 +107,7 @@ export default class cardAddAddress extends Component {
     }
 
     if (this.state.building !== prevState.building) {
-      console.log("MASUK", this.state.building)
       let data = this.props.dataBuilding.find(el => el.building_id === this.state.building)
-      console.log(data)
       if (data) {
         this.setState({ address: data.address, disableAddress: true, buildingId: this.state.building })
       } else {

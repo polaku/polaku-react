@@ -38,6 +38,11 @@ class cardDepartment extends Component {
         })
       });
     }
+
+    if (this.props.data.tbl_department_positions.length === 0) counterPosition++
+
+    if (this.props.data.tbl_department_teams.length === 0) counterTeamPosition++
+
     this.setState({ emptyPositionInDept: counterPosition, emptyPositionInTeam: counterTeamPosition })
   }
 

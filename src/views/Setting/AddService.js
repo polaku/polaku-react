@@ -56,7 +56,6 @@ class AddService extends Component {
 
   deleteServise = (index) => {
     let listDinas = this.state.service;
-console.log(index)
     listDinas.splice(index, 1);
     this.setState({
       service: listDinas
