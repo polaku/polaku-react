@@ -71,62 +71,63 @@ class AddDepartment extends Component {
   }
 
   submit = () => {
-    this.setState({ statusSubmit: true })
+    if (this.state.companyId !== '') {
+      this.setState({ statusSubmit: true })
+    } else {
+      this.setState({ statusSubmit: false })
+      swal('Perusahaan belum dipilih', '', 'warning')
+    }
   }
 
   sendData = (args) => {
-    if (this.state.companyId !== '') {
-      if (this.props.location.state && this.props.location.state.data) {
-        let newData = this.state.tempDataForEdit
-        newData.push(args)
-        let token = Cookies.get('POLAGROUP'), promises = []
+    if (this.props.location.state && this.props.location.state.data) {
+      let newData = this.state.tempDataForEdit
+      newData.push(args)
+      let token = Cookies.get('POLAGROUP'), promises = []
 
-        if (newData.length === this.state.dataForEdit.length) {
-          this.setState({ proses: true })
-          newData.forEach((data, index) => {
-            promises.push(API.put(`/structure/${data.id}`, data, { headers: { token } }))
-          })
-          Promise.all(promises)
-            .then(async ({ data }) => {
-              this.setState({ data: [], proses: false })
-              await this.props.fetchDataStructure()
-              swal('Ubah divisi sukses', '', 'success')
-              this.props.history.push('/setting/setting-perusahaan', { index: 2 })
-            })
-            .catch(err => {
-              this.setState({ proses: false })
-              swal('Ubah divisi gagal', '', 'error')
-            })
-        } else {
-          this.setState({ tempDataForEdit: newData })
-        }
-      } else {
-        let newData = this.state.data
-        newData.push(args)
+      if (newData.length === this.state.dataForEdit.length) {
         this.setState({ proses: true })
-        let token = Cookies.get('POLAGROUP'), promises = []
-
-        if (newData.length === this.state.department.length) {
-          newData.forEach((data, index) => {
-            data.companyId = this.state.companyId
-            promises.push(API.post('/structure', data, { headers: { token } }))
+        newData.forEach((data, index) => {
+          promises.push(API.put(`/structure/${data.id}`, data, { headers: { token } }))
+        })
+        Promise.all(promises)
+          .then(async ({ data }) => {
+            this.setState({ data: [], proses: false })
+            await this.props.fetchDataStructure()
+            swal('Ubah divisi sukses', '', 'success')
+            this.props.history.push('/setting/setting-perusahaan', { index: 2 })
           })
-          Promise.all(promises)
-            .then(async ({ data }) => {
-              this.setState({ data: [], proses: false })
-              swal('Tambah divisi sukses', '', 'success')
-              this.props.history.push('/setting/setting-perusahaan', { index: 2 })
-            })
-            .catch(err => {
-              this.setState({ proses: false })
-              swal('Tambah divisi gagal', '', 'error')
-            })
-        } else {
-          this.setState({ data: newData })
-        }
+          .catch(err => {
+            this.setState({ proses: false })
+            swal('Ubah divisi gagal', '', 'error')
+          })
+      } else {
+        this.setState({ tempDataForEdit: newData })
       }
     } else {
-      swal('Perusahaan belum dipilih', '', 'warning')
+      let newData = this.state.data
+      newData.push(args)
+      this.setState({ proses: true })
+      let token = Cookies.get('POLAGROUP'), promises = []
+
+      if (newData.length === this.state.department.length) {
+        newData.forEach((data, index) => {
+          data.companyId = this.state.companyId
+          promises.push(API.post('/structure', data, { headers: { token } }))
+        })
+        Promise.all(promises)
+          .then(async ({ data }) => {
+            this.setState({ data: [], proses: false })
+            swal('Tambah divisi sukses', '', 'success')
+            this.props.history.push('/setting/setting-perusahaan', { index: 2 })
+          })
+          .catch(err => {
+            this.setState({ proses: false })
+            swal('Tambah divisi gagal', '', 'error')
+          })
+      } else {
+        this.setState({ data: newData })
+      }
     }
   }
 
@@ -178,7 +179,7 @@ class AddDepartment extends Component {
                   </>
                 }
               </Grid>
-              <CardAddDepartment statusSubmit={this.state.statusSubmit} companyId={this.state.companyId} sendData={this.sendData} data={this.state.dataForEdit[index]} proses={this.state.proses} />
+              <CardAddDepartment statusSubmit={this.state.statusSubmit} companyId={this.state.companyId} sendData={this.sendData} data={this.state.dataForEdit[index]} proses={this.state.proses} cancelSubmit={() => this.setState({ statusSubmit: false })} />
             </Grid>
           )
         }

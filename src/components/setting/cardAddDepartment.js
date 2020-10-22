@@ -96,7 +96,8 @@ class cardAddDepartment extends Component {
 
   fetchOptionPosition = async () => {
     let listPosition = []
-    await this.props.dataPositions.forEach(position => {
+
+    this.props.dataPositions.length > 0 && await this.props.dataPositions.forEach(position => {
       listPosition.push({ value: position.position_id, label: position.position })
     })
     this.setState({ listPosition })
@@ -302,6 +303,7 @@ class cardAddDepartment extends Component {
   submit = async () => {
     if (this.state.nameDepartment === '' || this.state.levelHirarki === '') {
       swal("Data belum lengkap", "", "warning")
+      this.props.cancelSubmit()
     } else {
       let newData = {
         nameDepartment: this.state.nameDepartment,
@@ -506,7 +508,7 @@ class cardAddDepartment extends Component {
             <Grid style={{ width: '50%' }}>
               <CreatableSelect
                 isClearable
-                placeholder="bagian dari divisi"
+                placeholder="lapor kepada"
                 value={this.props.data && this.state.selectedPartDept}
                 components={animatedComponents}
                 options={this.state.listDepartment}
@@ -611,7 +613,7 @@ class cardAddDepartment extends Component {
                         <Grid style={{ width: 400, height: 40 }}>
                           <CreatableSelect
                             isClearable
-                            placeholder="bagian dari divisi"
+                            placeholder="posisi"
                             value={this.props.data && team.selectedTeamPosition && team.selectedTeamPosition[indexPosition]}
                             components={animatedComponents}
                             options={this.state.listPosition}
