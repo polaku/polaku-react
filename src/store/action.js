@@ -5,9 +5,10 @@ export function setUser(payload) {
   }
 }
 
-export function fetchDataUsers() {
+export function fetchDataUsers(payload) {
   return {
-    type: 'FETCH_DATA_USERS'
+    type: 'FETCH_DATA_USERS',
+    payload
   }
 }
 

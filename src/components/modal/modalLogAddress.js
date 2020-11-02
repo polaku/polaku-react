@@ -65,7 +65,7 @@ export default class modalLogAddress extends Component {
 
   handleChangeRowsPerPage = event => {
     this.setState({
-      rowsPerPage: this.state.rowsPerPage + event.target.value,
+      rowsPerPage: event.target.value,
       page: 0
     })
   }

@@ -4,12 +4,12 @@ import { withRouter } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import {
-  Paper, Grid, Tooltip
-  // Checkbox, 
+  Paper, Grid, Tooltip, Checkbox
 } from '@material-ui/core';
 
 import ErrorOutlinedIcon from '@material-ui/icons/ErrorOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { fetchDataAddress } from '../../store/action';
 
@@ -19,29 +19,47 @@ import swal from 'sweetalert';
 
 class cardEmployee extends Component {
   state = {
-    notComplete: false
+    notComplete: false,
+    isActive: false
   }
 
   componentDidMount() {
-    // if (!this.props.data.acronym ||
-    //   !this.props.data.address ||
-    //   !this.props.data.fax ||
-    //   !this.props.data.phone ||
-    //   !this.props.data.operationDay ||
-    //   this.props.data.tbl_operation_hours.length === 0 ||
-    //   this.props.data.tbl_photo_addresses.length === 0 ||
-    //   this.props.data.tbl_recesses.length === 0
-    // ) {
-    //   this.setState({ notComplete: true })
-    // }
+    this.setState({
+      isActive: this.props.data.isActive === 1 ? true : false
+    })
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.data.nik !== this.props.data.nik) {
+      this.setState({
+        isActive: this.props.data.isActive
+      })
+    }
   }
 
   handleChangeCheck = event => {
     this.setState({
-      check: event.target.checked
+      isActive: event.target.checked
     })
-    this.props.handleCheck(this.props.data.id)
+
+    let token = Cookies.get('POLAGROUP')
+
+    API.put(`/users/editUser/${this.props.data.userId}`, { isActive: event.target.checked }, { headers: { token } })
+      .then(() => {
+        this.props.refresh()
+      })
+      .catch(err => {
+        console.log(err)
+        swal('please try again')
+      })
   }
+
+  // handleChangeCheck = event => {
+  //   this.setState({
+  //     check: event.target.checked
+  //   })
+  //   this.props.handleCheck(this.props.data.id)
+  // }
 
   delete = () => {
     swal({
@@ -63,34 +81,44 @@ class cardEmployee extends Component {
           }
         }
       });
-
   }
 
   render() {
     return (
       <Paper style={{ display: 'flex', padding: '15px 20px', margin: 1, borderRadius: 0, alignItems: 'center' }}>
-        <Grid style={{ width: '25%', display:'flex' }}>
-        <img src={process.env.PUBLIC_URL + '/add-much-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
-
-          <p style={{ margin: 0, }}>Ardi</p>
+        <Grid style={{ width: '25%', display: 'flex' }}>
+          {/* <img src={process.env.PUBLIC_URL + '/add-much-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} /> */}
+          <AccountCircleIcon style={{ color: '#d71149', width: 40, height: 40, marginRight: 10 }} />
+          <Grid >
+            <p style={{ margin: 0, }}>{this.props.data.name}</p>
+            <p style={{ margin: 0, color: 'gray', fontSize: 13 }}>{this.props.data.position}</p>
+          </Grid>
         </Grid>
-        <b style={{ margin: 0, width: '10%' }}>Business Development</b>
-        <p style={{ margin: 0, width: '15%' }}>HI</p>
-        <p style={{ margin: 0, width: '10%' }}>ADH</p>
-        <p style={{ margin: 0, width: '10%' }}>Aktif</p>
-        <Grid style={{ width: '25%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Grid style={{ width: '120px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+        <p style={{ margin: 0, width: '25%' }}>{this.props.data.department}</p>
+        <p style={{ margin: 0, width: '15%' }}>{this.props.data.evaluator1}</p>
+        <p style={{ margin: 0, width: '15%' }}>{this.props.data.evaluator2}</p>
+        <p style={{ margin: 0, width: '10%' }}>
+          <Tooltip title={this.state.isActive ? "Jadikan non aktif" : "Jadikan aktif"} placement="top-end">
+            <Checkbox
+              checked={this.state.isActive}
+              onChange={this.handleChangeCheck}
+              value="secondary"
+              color="secondary"
+            />
+          </Tooltip>
+        </p>
+        <Grid style={{ width: '10%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Grid style={{ minWidth: '100px', display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexWrap: 'wrap' }}>
             {
               this.state.notComplete
-                ? <Tooltip title="Lengkapi data" aria-label="lengkapi-data">
-                  <ErrorOutlinedIcon style={{ color: 'red' }} />
-                </Tooltip>
-                : <Grid style={{ width: 24 }} />
+              && <Tooltip title="Lengkapi data" aria-label="lengkapi-data">
+                <ErrorOutlinedIcon style={{ color: 'red' }} />
+              </Tooltip>
             }
-            <Tooltip title="Edit alamat" aria-label="edit-data">
-              <img src={process.env.PUBLIC_URL + '/edit.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-address', { data: this.props.data })} />
+            <Tooltip title="Edit karyawan" aria-label="edit-data">
+              <img src={process.env.PUBLIC_URL + '/edit.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-employee', { data: this.props.data })} />
             </Tooltip>
-            <Tooltip title="Hapus alamat" aria-label="delete-data">
+            <Tooltip title="Hapus karyawan" aria-label="delete-data">
               <DeleteIcon style={{ color: 'red', cursor: 'pointer' }} onClick={this.delete} />
             </Tooltip>
           </Grid>

@@ -235,7 +235,7 @@ function Navsidebar(props) {
       props.location.pathname === '/setting/setting-perusahaan' ||
       props.location.pathname === '/setting/setting-perusahaan/stepper-onboarding' ||
       props.location.pathname === '/setting/setting-perusahaan/add-department' ||
-      props.location.pathname === '/setting/setting-perusahaan/add-employee' ||
+      // props.location.pathname === '/setting/setting-perusahaan/add-employee' ||
       props.location.pathname === '/setting/setting-perusahaan/add-service' ||
       props.location.pathname === '/setting/setting-perusahaan/add-address') {
       if (props.isAdmin || props.userId === 30 || props.userId === 33 || Number(props.adminContactCategori) === 4) {

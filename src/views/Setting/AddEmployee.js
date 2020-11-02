@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
-import { Grid, Button, 
+import {
+  Grid, Button,
   // Select, MenuItem, FormControl 
 } from '@material-ui/core';
 
@@ -12,7 +13,7 @@ import CardAddEmployee from '../../components/setting/cardAddEmployee';
 
 import swal from 'sweetalert';
 
-import { fetchDataCompanies, fetchDataAddress } from '../../store/action';
+import { fetchDataCompanies, fetchDataUsers, fetchDataAddress } from '../../store/action';
 
 import { API } from '../../config/API';
 
@@ -25,15 +26,14 @@ class AddEmployee extends Component {
     data: [],
     dataForEdit: [],
     tempDataForEdit: [],
-    proses: false
+    proses: false,
   }
 
   async componentDidMount() {
     if (this.props.location.state) {
       if (this.props.location.state.data) {
         let data = [this.props.location.state.data]
-        data.push()
-        this.setState({ companyId: this.props.location.state.data.company_id, disableCompanyId: true, dataForEdit: data })
+        this.setState({ dataForEdit: data })
       } else {
         this.setState({ companyId: this.props.location.state.company_id, disableCompanyId: true })
       }
@@ -47,7 +47,7 @@ class AddEmployee extends Component {
   };
 
   navigateBack = () => {
-    this.props.history.push('/setting/setting-perusahaan')
+    this.props.history.push('/setting/setting-perusahaan', { index: 3 })
   }
 
   AddEmployee = () => {
@@ -56,7 +56,7 @@ class AddEmployee extends Component {
     this.setState({ alamat: listDivisi })
   }
 
-  deleteAddress = (index) => {
+  deleteEmployee = (index) => {
     let listDivisi = this.state.department;
 
     listDivisi.splice(index, 1);
@@ -70,72 +70,54 @@ class AddEmployee extends Component {
   }
 
   sendData = (args) => {
-    if (this.state.companyId !== '') {
-      if (this.props.location.state && this.props.location.state.data) {
-        let newData = this.state.tempDataForEdit
-        newData.push(args)
-        let token = Cookies.get('POLAGROUP'), promises = []
+    if (this.props.location.state && this.props.location.state.data) {
+      let newData = this.state.tempDataForEdit
+      newData.push(args)
+      let token = Cookies.get('POLAGROUP'), promises = []
 
-        if (newData.length === this.state.dataForEdit.length) {
-          this.setState({ proses: true })
-          newData.forEach((data, index) => {
-            if (this.state.indexMainAddress !== null) {
-              if (index === this.state.indexMainAddress) {
-                data.append('isMainAddress', true)
-              } else {
-                data.append('isMainAddress', false)
-              }
-            }
-            promises.push(API.put(`/address/${data.get('addressId')}`, data, { headers: { token } }))
-          })
-          Promise.all(promises)
-            .then(async ({ data }) => {
-              this.setState({ data: [], proses: false })
-              await this.props.fetchDataAddress()
-              swal('Ubah alamat sukses', '', 'success')
-              this.props.history.goBack()
-            })
-            .catch(err => {
-              this.setState({ proses: false })
-              swal('Ubah alamat gagal', '', 'error')
-            })
-        } else {
-          this.setState({ tempDataForEdit: newData })
-        }
-      } else {
-        let newData = this.state.data
-        newData.push(args)
+      if (newData.length === this.state.dataForEdit.length) {
         this.setState({ proses: true })
-        let token = Cookies.get('POLAGROUP'), promises = []
-
-        if (newData.length === this.state.department.length) {
-          newData.forEach((data, index) => {
-            if (this.state.indexMainAddress !== null) {
-              if (index === this.state.indexMainAddress) {
-                data.append('isMainAddress', true)
-              } else {
-                data.append('isMainAddress', false)
-              }
-            }
-            promises.push(API.post('/address', data, { headers: { token } }))
+        newData.forEach((data, index) => {
+          promises.push(API.put(`/users/${data.get('userId')}`, data, { headers: { token } }))
+        })
+        Promise.all(promises)
+          .then(async ({ data }) => {
+            this.setState({ data: [], proses: false, statusSubmit: false })
+            await this.props.fetchDataUsers()
+            swal('Ubah karyawan sukses', '', 'success')
+            this.props.history.push('/setting/setting-perusahaan', { index: 3 })
           })
-          Promise.all(promises)
-            .then(async ({ data }) => {
-              this.setState({ data: [], proses: false })
-              await this.props.fetchDataAddress()
-              swal('Tambah alamat sukses', '', 'success')
-              this.props.history.goBack()
-            })
-            .catch(err => {
-              this.setState({ proses: false })
-              swal('Tambah alamat gagal', '', 'error')
-            })
-        } else {
-          this.setState({ data: newData })
-        }
+          .catch(err => {
+            this.setState({ proses: false, statusSubmit: false })
+            swal('Ubah karyawan gagal', '', 'error')
+          })
+      } else {
+        this.setState({ tempDataForEdit: newData })
       }
     } else {
-      swal('Perusahaan belum dipilih', '', 'warning')
+      let newData = this.state.data
+      newData.push(args)
+      this.setState({ proses: true })
+      let promises = []
+
+      if (newData.length === this.state.department.length) {
+        newData.forEach((data, index) => {
+          promises.push(API.post(`/users/signup`, data))
+        })
+        Promise.all(promises)
+          .then(async ({ data }) => {
+            this.setState({ data: [], proses: false, statusSubmit: false })
+            await this.props.fetchDataUsers()
+            swal('Tambah karyawan sukses', '', 'success')
+            this.props.history.push('/setting/setting-perusahaan', { index: 3 })
+          })
+          .catch(err => {
+            this.setState({ proses: false, statusSubmit: false })
+            swal('Tambah karyawan gagal', '', 'error')
+          })
+      } else {
+        this.setState({ data: newData })
+      }
     }
   }
 
@@ -160,7 +142,7 @@ class AddEmployee extends Component {
                 {
                   this.state.department.length > 1 && <>
                     <b style={{ margin: 0, fontSize: 16 }}>Karyawan {index + 1}</b>
-                    <CloseIcon style={{ backgroundColor: 'red', color: 'white', borderRadius: 15, marginLeft: 5, marginRight: 15, cursor: 'pointer' }} onClick={() => this.deleteAddress(index)} />
+                    <CloseIcon style={{ backgroundColor: 'red', color: 'white', borderRadius: 15, marginLeft: 5, marginRight: 15, cursor: 'pointer' }} onClick={() => this.deleteEmployee(index)} />
                   </>
                 }
               </Grid>
@@ -183,7 +165,8 @@ class AddEmployee extends Component {
 
 const mapDispatchToProps = {
   fetchDataCompanies,
-  fetchDataAddress
+  fetchDataAddress,
+  fetchDataUsers
 }
 
 const mapStateToProps = ({ dataCompanies }) => {

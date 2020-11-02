@@ -14,6 +14,7 @@ const defaultState = {
   error: {},
   isLogin: false,
   dataUsers: [],
+  lengthAllDataUsers: 0,
   dataRooms: [],
   dataRoomMaster: [],
   dataCompanies: [],
@@ -102,7 +103,8 @@ function reducer(state = defaultState, action) {
     case 'FETCH_DATA_USERS_SUCCESS': {
       return {
         ...state,
-        dataUsers: action.payload,
+        dataUsers: action.payload.dataUsers,
+        lengthAllDataUsers: action.payload.lengthAllDataUsers,
         loading: false
       }
     }

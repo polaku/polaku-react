@@ -21,7 +21,7 @@ class cardAddEmployee extends Component {
     avatar: null,
     pathAvatar: '',
     name: '',
-    nickName: '',
+    nickname: '',
     initial: '',
     company: '',
     companyAddress: '',
@@ -29,11 +29,14 @@ class cardAddEmployee extends Component {
     divisi: '',
     peran: '',
     evaluator1: '',
+    evaluator1Selected: null,
     evaluator2: '',
+    evaluator2Selected: null,
     tanggalGabung: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
+    dateOfBirth: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
     statusKaryawan: '',
     sisaCuti: '',
-    tanggalMulaiCuti: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
+    tanggalMulaiCutiBesar: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
     sisaCutiBesar: '',
     nextFrame: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
     nextLensa: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
@@ -51,95 +54,22 @@ class cardAddEmployee extends Component {
     dataAddressDinas: [],
     isDinas: false,
 
-
-    phone: [''],
-    fax: [''],
-    files: [],
-    operationSemua: false,
-    operationSenin: false,
-    operationSelasa: false,
-    operationRabu: false,
-    operationKamis: false,
-    operationJumat: false,
-    operationSabtu: false,
-    operationMinggu: false,
-
-    optionHours: ['06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00'],
-    operationHours: [
-      {
-        day: 'Setiap Hari',
-        startHour: '',
-        endHour: '',
-      }
-    ],
-    optionRestHours: ['11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30'],
-    operationRestHours: [
-      {
-        day: 'Setiap Hari',
-        startRestHour: '',
-        endRestHour: '',
-      }
-    ],
-    optionCompanies: [],
-    addressId: null,
-    listAddress: [],
-    selectedItem: ''
+    password: ''
   }
 
   async componentDidMount() {
+    await this.props.fetchDataUsers()
     await this.props.fetchDataCompanies()
     await this.props.fetchDataDepartment()
     await this.props.fetchDataPosition()
-    await this.props.fetchDataUsers()
     await this.props.fetchDataAddress()
+    if (this.props.data) {
+      console.log(this.props.data)
+      await this.fetchDataEdit()
+    }
   }
 
   async componentDidUpdate(prevProps, prevState) {
-    if (this.props.data !== prevProps.data) {
-      let operationDay = this.props.data.operationDay.split(',')
-      let operationHours = this.props.data.tbl_operation_hours, tempOperationHours = []
-      operationHours.forEach(el => {
-        el.endHour = el.end.slice(0, 5)
-        el.startHour = el.start.slice(0, 5)
-        if (el.day === "Setiap Hari") {
-          tempOperationHours.unshift(el)
-        } else {
-          tempOperationHours.push(el)
-        }
-      })
-
-      let restHour = this.props.data.tbl_recesses, tempRestHour = []
-      restHour.forEach(el => {
-        el.endRestHour = el.end.slice(0, 5)
-        el.startRestHour = el.start.slice(0, 5)
-        if (el.day === "Setiap Hari") {
-          tempRestHour.unshift(el)
-        } else {
-          tempRestHour.push(el)
-        }
-      })
-
-      let selected = this.state.listAddress.find(el => el.value === this.props.data.address)
-
-      this.setState({
-        selectedItem: selected,
-        addressId: this.props.data.id,
-        newAddress: this.props.data.address,
-        initial: this.props.data.acronym,
-        phone: this.props.data.phone.split(','),
-        fax: this.props.data.fax.split(','),
-        operationSemua: operationDay.indexOf('Setiap Hari') >= 0 || operationDay.indexOf('Setiap hari') >= 0 || operationDay.indexOf('setiap hari') >= 0 ? true : false,
-        operationSenin: operationDay.indexOf('Senin') >= 0 || operationDay.indexOf('senin') >= 0 ? true : false,
-        operationSelasa: operationDay.indexOf('Selasa') >= 0 || operationDay.indexOf('selasa') >= 0 ? true : false,
-        operationRabu: operationDay.indexOf('Rabu') >= 0 || operationDay.indexOf('rabu') >= 0 ? true : false,
-        operationKamis: operationDay.indexOf('Kamis') >= 0 || operationDay.indexOf('kamis') >= 0 ? true : false,
-        operationJumat: operationDay.indexOf('Jumat') >= 0 || operationDay.indexOf('jumat') >= 0 ? true : false,
-        operationSabtu: operationDay.indexOf('Sabtu') >= 0 || operationDay.indexOf('sabtu') >= 0 ? true : false,
-        operationMinggu: operationDay.indexOf('Minggu') >= 0 || operationDay.indexOf('minggu') >= 0 ? true : false,
-        operationHours: tempOperationHours,
-        operationRestHours: tempRestHour
-      })
-    }
 
     if (this.props.proses !== prevProps.proses) {
       this.setState({ proses: this.props.proses })
@@ -186,6 +116,44 @@ class cardAddEmployee extends Component {
 
       this.setState({ dataAddressDinas })
     }
+
+    if (this.props.statusSubmit !== prevProps.statusSubmit && this.props.statusSubmit) {
+      this.submit()
+    }
+  }
+
+  fetchDataEdit = async () => {
+    this.setState({
+      pathAvatar: this.props.data.rawData.tbl_account_detail.avatar,
+      name: this.props.data.rawData.tbl_account_detail.fullname,
+      nickname: this.props.data.rawData.tbl_account_detail.nickname,
+      initial: this.props.data.rawData.tbl_account_detail.initial,
+      company: this.props.data.rawData.tbl_account_detail.company_id,
+      companyAddress: this.props.data.rawData.tbl_account_detail.building_id,
+      nik: this.props.data.rawData.tbl_account_detail.nik,
+      divisi: this.props.data.rawData.tbl_account_detail.departments_id,
+      peran: this.props.data.rawData.tbl_account_detail.position_id,
+      evaluator1: this.props.data.rawData.tbl_account_detail.name_evaluator_1,
+      evaluator1Selected: this.props.data.rawData.tbl_account_detail.name_evaluator_1 && this.state.listUser.find(user => user.value === +this.props.data.rawData.tbl_account_detail.name_evaluator_1),
+      evaluator2: this.props.data.rawData.tbl_account_detail.name_evaluator_2,
+      evaluator2Selected: this.props.data.rawData.tbl_account_detail.name_evaluator_2 && this.state.listUser.find(user => user.value === this.props.data.rawData.tbl_account_detail.name_evaluator_2),
+      tanggalGabung: this.props.data.rawData.tbl_account_detail.join_date || null,
+      dateOfBirth: this.props.data.rawData.tbl_account_detail.date_of_birth || null,
+      statusKaryawan: this.props.data.rawData.tbl_account_detail.status_employee,
+      sisaCuti: this.props.data.rawData.tbl_account_detail.leave,
+      tanggalMulaiCutiBesar: this.props.data.rawData.tbl_account_detail.start_leave_big || null,
+      sisaCutiBesar: this.props.data.rawData.tbl_account_detail.leave_big,
+      nextFrame: this.props.data.rawData.tbl_account_detail.next_frame_date || null,
+      nextLensa: this.props.data.rawData.tbl_account_detail.next_lensa_date || null,
+
+      emailPribadi: this.props.data.rawData.email,
+      emailKantor: this.props.data.rawData.tbl_account_detail.office_email,
+      telepon: this.props.data.rawData.tbl_account_detail.phone,
+      alamat: this.props.data.rawData.tbl_account_detail.address,
+
+      isDinas: this.props.data.rawData.dinas.length > 0 ? true : false,
+    })
+
   }
 
   handleChange = name => event => {
@@ -352,67 +320,40 @@ class cardAddEmployee extends Component {
   }
 
   submit = () => {
-    // avatar: null,
-    // pathAvatar: '',
-    // : '',
-    // nickName: '',
-    // : '',
-    // : '',
-    // : '',
-    // : '',
-    // divisi: '',
-    // peran: '',
-    // : '',
-    // evaluator2: '',
-    // tanggalGabung: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
-    // statusKaryawan: '',
-    // sisaCuti: '',
-    // tanggalMulaiCuti: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
-    // sisaCutiBesar: '',
-    // nextFrame: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
-    // nextLensa: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
+    let newData = new FormData()
 
-    // companyDinas: '',
-    // companyDinasAddress: '',
+    newData.append("userId", this.props.data.userId)
+    newData.append("username", this.state.nik)
+    if (!this.props.data) newData.append("password", this.state.dateOfBirth.split('-').reverse().join(''))
+    if (this.props.data && this.state.password) newData.append("password", this.state.password)
+    newData.append("email", this.state.emailPribadi)
+    newData.append("fullname", this.state.name)
+    newData.append("initial", this.state.initial)
+    newData.append("nik", this.state.nik)
+    newData.append("address", this.state.alamat)
+    if (this.state.dateOfBirth) newData.append("dateOfBirth", this.state.dateOfBirth)
+    newData.append("leave", this.state.sisaCuti)
+    newData.append("building_id", this.state.companyAddress)
+    newData.append("company_id", this.state.company)
+    newData.append("position_id", this.state.peran)
+    newData.append("phone", this.state.telepon)
+    newData.append("name_evaluator_1", this.state.evaluator1)
+    newData.append("name_evaluator_2", this.state.evaluator2)
+    newData.append("nickname", this.state.nickname)
+    newData.append("departments_id", this.state.divisi)
+    newData.append("statusEmployee", this.state.statusKaryawan)
+    if (this.state.tanggalGabung) newData.append("joinDate", this.state.tanggalGabung)
+    if (this.state.tanggalMulaiCutiBesar) newData.append("startLeaveBig", this.state.tanggalMulaiCutiBesar)
+    newData.append("leaveBig", this.state.sisaCutiBesar)
+    if (this.state.nextFrame) newData.append("nextFrameDate", this.state.nextFrame)
+    if (this.state.nextLensa) newData.append("nextLensaDate", this.state.nextLensa)
+    if (!this.props.data) newData.append("dinasId", this.state.isDinas ? this.state.companyDinas : '')
+    if (!this.props.data) newData.append("dinasBuildingId", this.state.isDinas ? this.state.companyDinasAddress : '')
+    newData.append("officeEmail", this.state.emailKantor)
 
-    // : '',
-    // emailKantor: '',
-    // : '',
-    // : '',
-    
-    // let newData = {
-    //   username: this.state.nik,
-    //   password,
-    //   email: this.state.emailPribadi,
+    if (this.state.avatar) newData.append("avatar", this.state.avatar)
 
-    //   fullname: this.state.name,
-    //   initial: this.state.initial,
-    //   nik: this.state.nik,
-    //   address: this.state.alamat,
-    //   dateOfBirth,
-    //   leave,
-    //   building_id: this.state.companyAddress,
-    //   company_id: this.state.company,
-    //   position_id,
-    //   designations_id,
-    //   phone: this.state.telepon,
-    //   name_evaluator_1: this.state.evaluator1,
-    //   name_evaluator_2: this.state.evaluator2,
-    // }
-
-    // let newData = new FormData()
-
-    // newData.append("addressId", this.state.addressId)
-    // newData.append("companyId", this.props.companyId)
-    // newData.append("address", this.state.newAddress)
-    // newData.append("initial", this.state.initial)
-    // newData.append("phone", this.state.phone.join(','))
-    // newData.append("fax", this.state.fax.join(','))
-    // newData.append("operationalDay", operationalDay.join(','))
-
-    // newData.append("avatar", this.state.avatar)
-
-    // this.props.sendData(newData)
+    this.props.sendData(newData)
   }
 
   handleChangeAddress = (newValue, actionMeta) => {
@@ -492,7 +433,7 @@ class cardAddEmployee extends Component {
             </Grid>
 
             <Grid style={{ width: '80%', display: 'flex', alignItems: 'center' }}>
-              <input type="file" label="avatar" onChange={(e) => this.handleFileSelect(e)} disabled={this.state.proses}
+              <input type="file" label="avatar" onChange={(e) => this.handleFileSelect(e)} disabled={this.props.proses}
                 accept="image/png,image/jpeg"
                 style={{ border: this.state.newImageIsError ? '1px solid red' : null }}
               />
@@ -517,7 +458,7 @@ class cardAddEmployee extends Component {
                   fontSize: 14
                 }
               }}
-              disabled={this.state.proses}
+              disabled={this.props.proses}
             />
           </Grid>
 
@@ -527,8 +468,8 @@ class cardAddEmployee extends Component {
             </Grid>
 
             <OutlinedInput
-              value={this.state.nickName}
-              onChange={this.handleChange('nickName')}
+              value={this.state.nickname}
+              onChange={this.handleChange('nickname')}
               variant="outlined"
               style={{ width: '28%', height: 40, margin: '5px 0px' }}
               inputProps={{
@@ -537,7 +478,7 @@ class cardAddEmployee extends Component {
                   fontSize: 14
                 }
               }}
-              disabled={this.state.proses}
+              disabled={this.props.proses}
             />
             <Grid style={{ width: '2%' }} />
             <Grid style={{ width: '20%', marginRight: 10 }}>
@@ -555,7 +496,30 @@ class cardAddEmployee extends Component {
                   fontSize: 14
                 }
               }}
-              disabled={this.state.proses}
+              disabled={this.props.proses}
+            />
+          </Grid>
+
+          <Grid id="tanggal-lahir" style={{ display: 'flex', alignItems: 'center' }}>
+            <Grid style={{ width: '20%', marginRight: 10 }}>
+              <b style={{ marginBottom: 5 }}>tanggal lahir</b>
+            </Grid>
+            <TextField
+              id="date"
+              type="date"
+              margin="normal"
+              variant="outlined"
+              format="dd/MM/yyyy"
+              style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
+              InputLabelProps={{
+                shrink: true,
+                required: true
+              }}
+              size="small"
+              onChange={this.handleChange('dateOfBirth')}
+              value={this.state.dateOfBirth}
+              required
+              disabled={this.props.proses}
             />
           </Grid>
 
@@ -568,7 +532,7 @@ class cardAddEmployee extends Component {
               <Select
                 value={this.state.company}
                 onChange={this.handleChange('company')}
-                disabled={this.state.proses || this.state.disableCompanyId}
+                disabled={this.props.proses || this.state.disableCompanyId}
                 style={{ width: '100%' }}
               >
                 {
@@ -596,7 +560,7 @@ class cardAddEmployee extends Component {
                   fontSize: 14
                 }
               }}
-              disabled={this.state.proses}
+              disabled={this.props.proses}
             />
           </Grid>
 
@@ -609,7 +573,7 @@ class cardAddEmployee extends Component {
               <Select
                 value={this.state.divisi}
                 onChange={this.handleChange('divisi')}
-                disabled={this.state.proses}
+                disabled={this.props.proses}
                 style={{ width: '100%' }}
               >
                 {
@@ -630,11 +594,11 @@ class cardAddEmployee extends Component {
               <Select
                 value={this.state.peran}
                 onChange={this.handleChange('peran')}
-                disabled={this.state.proses}
+                disabled={this.props.proses}
                 style={{ width: '100%' }}
               >
                 {
-                  this.props.dataPositions.map((position, index) =>
+                  this.props.dataPositions.length > 0 && this.props.dataPositions.map((position, index) =>
                     <MenuItem value={position.position_id} key={"department" + index}>{position.position}</MenuItem>
                   )
                 }
@@ -649,12 +613,11 @@ class cardAddEmployee extends Component {
             <Grid style={{ width: '28%', height: 40, margin: '5px 0px' }}>
               <ReactSelect
                 isClearable
-                // placeholder="bagian dari divisi"
-                // value={this.props.data && this.state.selectedPartDept}
+                value={this.props.data && this.state.evaluator1Selected}
                 components={animatedComponents}
                 options={this.state.listUser}
                 onChange={(newValue) => this.handleChangeEvaluator({ ...newValue, eva1: true })}
-                disabled={this.state.proses}
+                disabled={this.props.proses}
               />
             </Grid>
 
@@ -667,12 +630,11 @@ class cardAddEmployee extends Component {
             <Grid style={{ width: '28%', height: 40, margin: '5px 0px' }}>
               <ReactSelect
                 isClearable
-                // placeholder="bagian dari divisi"
-                // value={this.props.data && this.state.selectedPartDept}
+                value={this.props.data && this.state.evaluator2Selected}
                 components={animatedComponents}
                 options={this.state.listUser}
                 onChange={(newValue) => this.handleChangeEvaluator({ ...newValue, eva1: false })}
-                disabled={this.state.proses}
+                disabled={this.props.proses}
               />
             </Grid>
           </Grid>
@@ -701,7 +663,7 @@ class cardAddEmployee extends Component {
               onChange={this.handleChange('tanggalGabung')}
               value={this.state.tanggalGabung}
               required
-              disabled={this.state.proses}
+              disabled={this.props.proses}
             />
           </Grid>
 
@@ -714,7 +676,7 @@ class cardAddEmployee extends Component {
               <Select
                 value={this.state.statusKaryawan}
                 onChange={this.handleChange('statusKaryawan')}
-                disabled={this.state.proses}
+                disabled={this.props.proses}
                 style={{ width: '100%' }}
               >
                 <MenuItem value="Tetap" >Tetap</MenuItem>
@@ -740,7 +702,7 @@ class cardAddEmployee extends Component {
                   fontSize: 14
                 }
               }}
-              disabled={this.state.proses}
+              disabled={this.props.proses}
             />
           </Grid>
 
@@ -760,10 +722,10 @@ class cardAddEmployee extends Component {
                 required: true
               }}
               size="small"
-              onChange={this.handleChange('tanggalMulaiCuti')}
-              value={this.state.tanggalMulaiCuti}
+              onChange={this.handleChange('tanggalMulaiCutiBesar')}
+              value={this.state.tanggalMulaiCutiBesar}
               required
-              disabled={this.state.proses}
+              disabled={this.props.proses}
             />
           </Grid>
 
@@ -783,7 +745,7 @@ class cardAddEmployee extends Component {
                   fontSize: 14
                 }
               }}
-              disabled={this.state.proses}
+              disabled={this.props.proses}
             />
           </Grid>
 
@@ -806,7 +768,7 @@ class cardAddEmployee extends Component {
               onChange={this.handleChange('nextFrame')}
               value={this.state.nextFrame}
               required
-              disabled={this.state.proses}
+              disabled={this.props.proses}
             />
           </Grid>
 
@@ -829,63 +791,65 @@ class cardAddEmployee extends Component {
               onChange={this.handleChange('nextLensa')}
               value={this.state.nextLensa}
               required
-              disabled={this.state.proses}
+              disabled={this.props.proses}
             />
           </Grid>
         </Paper>
 
         {/* 3 */}
-        <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
-          <Grid style={{ display: 'flex', alignItems: 'center' }}>
-            <FormControlLabel
-              control={<Checkbox checked={this.state.isDinas} onChange={this.handleChecked} size="small" name="dinas" disabled={this.state.proses} />}
-              label={<b style={{ margin: 0 }}>Dinas</b>}
-            />
-            <p style={{ margin: 0 }}>diabaikan apabila dak dinas</p>
-          </Grid>
-
-          <Grid id="pt-dinas" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>PT</b>
+        {
+          !this.props.data && <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
+            <Grid style={{ display: 'flex', alignItems: 'center' }}>
+              <FormControlLabel
+                control={<Checkbox checked={this.state.isDinas} onChange={this.handleChecked} size="small" name="dinas" disabled={this.props.proses} />}
+                label={<b style={{ margin: 0 }}>Dinas</b>}
+              />
+              <p style={{ margin: 0 }}>diabaikan apabila dak dinas</p>
             </Grid>
 
-            <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
-              <Select
-                value={this.state.companyDinas}
-                onChange={this.handleChange('companyDinas')}
-                disabled={this.state.proses || !this.state.isDinas}
-                style={{ width: '100%' }}
-              >
-                {
-                  this.props.dataCompanies.map((company, index) =>
-                    <MenuItem value={company.company_id} key={index}>{company.company_name}</MenuItem>
-                  )
-                }
-              </Select>
-            </FormControl>
-          </Grid>
+            <Grid id="pt-dinas" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10 }}>
+                <b style={{ marginBottom: 5 }}>PT</b>
+              </Grid>
 
-          <Grid id="alamat-pt-dinas" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Alamat</b>
+              <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
+                <Select
+                  value={this.state.companyDinas}
+                  onChange={this.handleChange('companyDinas')}
+                  disabled={this.props.proses || !this.state.isDinas}
+                  style={{ width: '100%' }}
+                >
+                  {
+                    this.props.dataCompanies.map((company, index) =>
+                      <MenuItem value={company.company_id} key={index}>{company.company_name}</MenuItem>
+                    )
+                  }
+                </Select>
+              </FormControl>
             </Grid>
 
-            <FormControl variant="outlined" size="small" style={{ width: '50%', height: 40, margin: '5px 0px' }}>
-              <Select
-                value={this.state.companyDinasAddress}
-                onChange={this.handleChange('companyDinasAddress')}
-                disabled={this.state.proses || !this.state.isDinas || !this.state.companyDinas}
-                style={{ width: '100%' }}
-              >
-                {
-                  this.state.dataAddressDinas.map((address, index) =>
-                    <MenuItem value={address.building_id} key={"companyDinasAddress" + index}>{address.building}</MenuItem>
-                  )
-                }
-              </Select>
-            </FormControl>
-          </Grid>
-        </Paper>
+            <Grid id="alamat-pt-dinas" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10 }}>
+                <b style={{ marginBottom: 5 }}>Alamat</b>
+              </Grid>
+
+              <FormControl variant="outlined" size="small" style={{ width: '50%', height: 40, margin: '5px 0px' }}>
+                <Select
+                  value={this.state.companyDinasAddress}
+                  onChange={this.handleChange('companyDinasAddress')}
+                  disabled={this.props.proses || !this.state.isDinas || !this.state.companyDinas}
+                  style={{ width: '100%' }}
+                >
+                  {
+                    this.state.dataAddressDinas.map((address, index) =>
+                      <MenuItem value={address.building_id} key={"companyDinasAddress" + index}>{address.building}</MenuItem>
+                    )
+                  }
+                </Select>
+              </FormControl>
+            </Grid>
+          </Paper>
+        }
 
         {/* 4 */}
         <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
@@ -899,7 +863,7 @@ class cardAddEmployee extends Component {
               <Select
                 value={this.state.companyAddress}
                 onChange={this.handleChange('companyAddress')}
-                disabled={this.state.proses || !this.state.company}
+                disabled={this.props.proses || !this.state.company}
                 style={{ width: '100%' }}
               >
                 {
@@ -916,6 +880,29 @@ class cardAddEmployee extends Component {
         {/* 5 */}
         <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
 
+          {
+            this.props.data &&
+            <Grid id="password" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10 }}>
+                <b style={{ marginBottom: 5 }}>Kata Sandi Baru</b>
+              </Grid>
+
+              <OutlinedInput
+                type="password"
+                value={this.state.password}
+                onChange={this.handleChange('password')}
+                variant="outlined"
+                style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
+                inputProps={{
+                  style: {
+                    padding: '5px 8px',
+                    fontSize: 14
+                  }
+                }}
+                disabled={this.props.proses}
+              />
+            </Grid>
+          }
           <Grid id="email-pribadi" style={{ display: 'flex', alignItems: 'center' }}>
             <Grid style={{ width: '20%', marginRight: 10 }}>
               <b style={{ marginBottom: 5 }}>Email Pribadi</b>
@@ -933,7 +920,7 @@ class cardAddEmployee extends Component {
                   fontSize: 14
                 }
               }}
-              disabled={this.state.proses}
+              disabled={this.props.proses}
             />
           </Grid>
 
@@ -954,7 +941,7 @@ class cardAddEmployee extends Component {
                   fontSize: 14
                 }
               }}
-              disabled={this.state.proses}
+              disabled={this.props.proses}
             />
           </Grid>
 
@@ -974,7 +961,7 @@ class cardAddEmployee extends Component {
                   fontSize: 14
                 }
               }}
-              disabled={this.state.proses}
+              disabled={this.props.proses}
             />
           </Grid>
 
@@ -994,7 +981,7 @@ class cardAddEmployee extends Component {
                   fontSize: 14
                 }
               }}
-              disabled={this.state.proses}
+              disabled={this.props.proses}
             />
           </Grid>
         </Paper>

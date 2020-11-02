@@ -78,7 +78,7 @@ export default class SettingPerusahaan extends Component {
             <Tab label="OnBoarding" style={{ marginRight: 30 }} />
             <Tab label="Alamat" style={{ marginRight: 30 }} />
             <Tab label="Struktur" style={{ marginRight: 30 }} />
-            {/* <Tab label="Karyawan" style={{ marginRight: 30 }} /> */}
+            <Tab label="Karyawan" style={{ marginRight: 30 }} />
             {/* <Tab label="Admin" style={{ marginRight: 30 }} /> */}
           </Tabs>
           <Divider />

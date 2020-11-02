@@ -17,7 +17,27 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get('/users', { headers: { token } })
+      if (action.payload) {
+        if (action.payload.company) {
+          if (action.payload.keyword) {
+            getData = await API.get(
+              `/users?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}&search=${action.payload.keyword}`,
+              { headers: { token } })
+          } else {
+            getData = await API.get(
+              `/users?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}`,
+              { headers: { token } })
+          }
+        } else {
+          if (action.payload.keyword) {
+            getData = await API.get(`/users?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, { headers: { token } })
+          } else {
+            getData = await API.get(`/users?limit=${action.payload.limit}&page=${action.payload.page}`, { headers: { token } })
+          }
+        }
+      } else {
+        getData = await API.get('/users', { headers: { token } })
+      }
 
       let newData = await getData.data.data.filter(user => user.tbl_account_detail)
 
@@ -25,7 +45,10 @@ const api = store => next => async action => {
 
       next({
         type: 'FETCH_DATA_USERS_SUCCESS',
-        payload: newData
+        payload: {
+          dataUsers: newData,
+          lengthAllDataUsers: getData.data.totalRecord,
+        }
       })
 
     } catch (err) {
