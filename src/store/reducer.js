@@ -38,7 +38,13 @@ const defaultState = {
   dataPolanews: [],
   dataPIC: [],
   dataAddress: [],
-  dataStructure: []
+  dataStructure: [],
+  dataDinas: [],
+  allUser: 0,
+  counterEmployeeTetap: 0,
+  counterEmployeeKontrak: 0,
+  counterEmployeeProbation: 0,
+  counterEmployeeBerhenti: 0
 }
 
 function reducer(state = defaultState, action) {
@@ -250,6 +256,19 @@ function reducer(state = defaultState, action) {
         ...state,
         dataStructure: action.payload.dataStructure,
         loading: false
+      }
+    }
+    case 'FETCH_DATA_DINAS_SUCCESS': {
+      return {
+        ...state,
+        loading: false,
+        dataDinas: action.payload.dataDinas,
+        lengthAllDataUsers: action.payload.lengthAllDataUsers,
+        allUser: action.payload.allUser,
+        counterEmployeeTetap: action.payload.counterEmployeeTetap,
+        counterEmployeeKontrak: action.payload.counterEmployeeKontrak,
+        counterEmployeeProbation: action.payload.counterEmployeeProbation,
+        counterEmployeeBerhenti: action.payload.counterEmployeeBerhenti
       }
     }
     case 'FETCH_DATA_LOADING_CONTACT_US': {

@@ -618,6 +618,55 @@ const api = store => next => async action => {
       })
     }
   }
+  else if (action.type === 'FETCH_DATA_DINAS') {
+    next({
+      type: 'FETCH_DATA_LOADING'
+    })
+
+    let getData
+    try {
+      if (action.payload) {
+        if (action.payload.status) {
+          if (action.payload.keyword) {
+            getData = await API.get(
+              `/dinas?limit=${action.payload.limit}&page=${action.payload.page}&status=${action.payload.status}&search=${action.payload.keyword}`,
+              { headers: { token } })
+          } else {
+            getData = await API.get(
+              `/dinas?limit=${action.payload.limit}&page=${action.payload.page}&status=${action.payload.status}`,
+              { headers: { token } })
+          }
+        } else {
+          if (action.payload.keyword) {
+            getData = await API.get(`/dinas?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, { headers: { token } })
+          } else {
+            getData = await API.get(`/dinas?limit=${action.payload.limit}&page=${action.payload.page}`, { headers: { token } })
+          }
+        }
+      } else {
+        getData = await API.get('/dinas', { headers: { token } })
+      }
+console.log(getData.data)
+      next({
+        type: 'FETCH_DATA_DINAS_SUCCESS',
+        payload: {
+          dataDinas: getData.data.data,
+          allUser: getData.data.allUser,
+          lengthAllDataUsers: getData.data.totalRecord,
+          counterEmployeeTetap: getData.data.tetap,
+          counterEmployeeKontrak: getData.data.kontrak,
+          counterEmployeeProbation: getData.data.probation,
+          counterEmployeeBerhenti: getData.data.berhenti,
+        }
+      })
+
+    } catch (err) {
+      next({
+        type: 'FETCH_DATA_ERROR',
+        payload: err
+      })
+    }
+  }
   else {
     next(action)
   }

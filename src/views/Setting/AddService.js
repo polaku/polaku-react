@@ -10,7 +10,7 @@ import CardAddService from '../../components/setting/cardAddService';
 
 import swal from 'sweetalert';
 
-import { fetchDataCompanies, fetchDataAddress } from '../../store/action';
+import { fetchDataCompanies, fetchDataUsers, fetchDataAddress, fetchDataDinas } from '../../store/action';
 
 import { API } from '../../config/API';
 
@@ -29,15 +29,17 @@ class AddService extends Component {
   async componentDidMount() {
     if (this.props.location.state) {
       if (this.props.location.state.data) {
-        let data = [this.props.location.state.data]
-        data.push()
-        this.setState({ companyId: this.props.location.state.data.company_id, disableCompanyId: true, dataForEdit: data })
-      } else {
-        this.setState({ companyId: this.props.location.state.company_id, disableCompanyId: true })
+        let temp = []
+        let data = this.props.location.state.data.dinas
+        console.log(data)
+        await data.forEach(el => temp.push(true))
+        this.setState({ dataForEdit: data, service: temp })
       }
     }
 
     await this.props.fetchDataCompanies()
+    await this.props.fetchDataUsers()
+    await this.props.fetchDataAddress()
   }
 
   handleChange = name => event => {
@@ -54,7 +56,7 @@ class AddService extends Component {
     this.setState({ service: listDinas })
   }
 
-  deleteServise = (index) => {
+  deleteService = (index) => {
     let listDinas = this.state.service;
     listDinas.splice(index, 1);
     this.setState({
@@ -66,73 +68,62 @@ class AddService extends Component {
     this.setState({ statusSubmit: true })
   }
 
-  sendData = (args) => {
-    if (this.state.companyId !== '') {
-      if (this.props.location.state && this.props.location.state.data) {
-        let newData = this.state.tempDataForEdit
-        newData.push(args)
-        let token = Cookies.get('POLAGROUP'), promises = []
+  sendData = async (args) => {
+    if (this.props.location.state && this.props.location.state.data) {
+      let newData = this.state.tempDataForEdit
+      newData.push(args)
+      let token = Cookies.get('POLAGROUP'), promises = []
 
-        if (newData.length === this.state.dataForEdit.length) {
-          this.setState({ proses: true })
-          newData.forEach((data, index) => {
-            if (this.state.indexMainAddress !== null) {
-              if (index === this.state.indexMainAddress) {
-                data.append('isMainAddress', true)
-              } else {
-                data.append('isMainAddress', false)
-              }
-            }
-            promises.push(API.put(`/address/${data.get('addressId')}`, data, { headers: { token } }))
-          })
-          Promise.all(promises)
-            .then(async ({ data }) => {
-              this.setState({ data: [], proses: false })
-              await this.props.fetchDataAddress()
-              swal('Ubah dinas sukses', '', 'success')
-              this.props.history.goBack()
-            })
-            .catch(err => {
-              this.setState({ proses: false })
-              swal('Ubah dinas gagal', '', 'error')
-            })
-        } else {
-          this.setState({ tempDataForEdit: newData })
-        }
-      } else {
-        let newData = this.state.data
-        newData.push(args)
+      if (newData.length === this.state.service.length) {
         this.setState({ proses: true })
-        let token = Cookies.get('POLAGROUP'), promises = []
 
-        if (newData.length === this.state.service.length) {
-          newData.forEach((data, index) => {
-            if (this.state.indexMainAddress !== null) {
-              if (index === this.state.indexMainAddress) {
-                data.append('isMainAddress', true)
-              } else {
-                data.append('isMainAddress', false)
-              }
-            }
-            promises.push(API.post('/address', data, { headers: { token } }))
+        await this.state.dataForEdit.forEach(async (el) => {
+          let check = newData.find(element => element.dinasId === el.id)
+          if (!check) await API.delete(`/dinas/${el.id}`, { headers: { token } })
+        })
+
+        newData.forEach((data, index) => {
+          promises.push(API.put(`/dinas/${data.dinasId}`, data, { headers: { token } }))
+        })
+        Promise.all(promises)
+          .then(async ({ data }) => {
+            this.setState({ data: [], proses: false })
+            await this.props.fetchDataDinas()
+            swal('Ubah dinas sukses', '', 'success')
+            this.props.history.push('/setting/setting-perusahaan', { index: 3 })
           })
-          Promise.all(promises)
-            .then(async ({ data }) => {
-              this.setState({ data: [], proses: false })
-              await this.props.fetchDataAddress()
-              swal('Tambah dinas sukses', '', 'success')
-              this.props.history.goBack()
-            })
-            .catch(err => {
-              this.setState({ proses: false })
-              swal('Tambah dinas gagal', '', 'error')
-            })
-        } else {
-          this.setState({ data: newData })
-        }
+          .catch(err => {
+            console.log(err.response)
+            this.setState({ proses: false, statusSubmit: false })
+            swal('Ubah dinas gagal', '', 'error')
+          })
+      } else {
+        this.setState({ tempDataForEdit: newData })
       }
     } else {
-      swal('Perusahaan belum dipilih', '', 'warning')
+      let newData = this.state.data
+      newData.push(args)
+      this.setState({ proses: true })
+      let token = Cookies.get('POLAGROUP'), promises = []
+
+      if (newData.length === this.state.service.length) {
+        newData.forEach((data, index) => {
+          promises.push(API.post('/dinas', data, { headers: { token } }))
+        })
+        Promise.all(promises)
+          .then(async ({ data }) => {
+            this.setState({ data: [], proses: false })
+            await this.props.fetchDataDinas()
+            swal('Tambah dinas sukses', '', 'success')
+            this.props.history.push('/setting/setting-perusahaan', { index: 3 })
+          })
+          .catch(err => {
+            this.setState({ proses: false, statusSubmit: false })
+            swal('Tambah dinas gagal', '', 'error')
+          })
+      } else {
+        this.setState({ data: newData })
+      }
     }
   }
 
@@ -148,12 +139,12 @@ class AddService extends Component {
 
         {
           this.state.service.map((dinas, index) =>
-            <Grid style={{ margin: '10px 0px' }} key={index}>
+            <Grid style={{ margin: '10px 0px 20px' }} key={index}>
               <Grid style={{ margin: '10px 0px 0px 10px', display: 'flex', alignItems: 'center' }}>
                 {
                   this.state.service.length > 1 && <>
                     <b style={{ margin: 0, fontSize: 16 }}>Dinas {index + 1}</b>
-                    <CloseIcon style={{ backgroundColor: 'red', color: 'white', borderRadius: 15, marginLeft: 5, marginRight: 15, cursor: 'pointer' }} onClick={() => this.deleteServise(index)} />
+                    <CloseIcon style={{ backgroundColor: 'red', color: 'white', borderRadius: 15, marginLeft: 5, marginRight: 15, cursor: 'pointer' }} onClick={() => this.deleteService(index)} />
                   </>
                 }
               </Grid>
@@ -176,12 +167,15 @@ class AddService extends Component {
 
 const mapDispatchToProps = {
   fetchDataCompanies,
-  fetchDataAddress
+  fetchDataUsers,
+  fetchDataAddress,
+  fetchDataDinas
 }
 
-const mapStateToProps = ({ dataCompanies }) => {
+const mapStateToProps = ({ dataCompanies, dataAddress }) => {
   return {
-    dataCompanies
+    dataCompanies,
+    dataAddress
   }
 }
 

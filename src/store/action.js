@@ -148,3 +148,10 @@ export function userLogout() {
     type: 'USER_LOGOUT'
   }
 }
+
+export function fetchDataDinas(payload) {
+  return {
+    type: 'FETCH_DATA_DINAS',
+    payload
+  }
+}
