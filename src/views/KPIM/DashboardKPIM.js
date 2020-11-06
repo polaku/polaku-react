@@ -26,7 +26,7 @@ class DashboardKPIM extends Component {
     this._isMounted = false
     this.state = {
       proses: false,
-      months: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+      months: ['', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
       statusAddNewTal: false,
       chooseWhen: [],
       firstDateInWeek: new Date().getDate() - (new Date().getDay() - 1),
@@ -66,7 +66,7 @@ class DashboardKPIM extends Component {
 
   async componentDidMount() {
     this._isMounted = true
-
+    console.log(new Date().getMonth() + 1)
     if (this._isMounted) {
       if (this.props.location.state) {
         this.setState({

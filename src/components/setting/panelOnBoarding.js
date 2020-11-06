@@ -61,7 +61,7 @@ class panelOnBoarding extends Component {
     this.setState({ loading: true })
     await this.props.fetchDataAddress()
 
-    let data = this.props.dataPIC
+    let data = this.props.dataPIC || []
 
     data.length > 0 && data.forEach(async (element) => {
       let notComplete = 0

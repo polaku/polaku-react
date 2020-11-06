@@ -12,6 +12,7 @@ import PanelOnBoarding from '../../components/setting/panelOnBoarding';
 import PanelAddress from '../../components/setting/panelAddress';
 import PanelStructure from '../../components/setting/panelStructure';
 import PanelEmployee from '../../components/setting/panelEmployee';
+import PanelAdmin from '../../components/setting/panelAdmin';
 
 import ModalOnBoarding from '../../components/modal/modalOnBoarding';
 
@@ -40,8 +41,6 @@ TabPanel.propTypes = {
 
 export default class SettingPerusahaan extends Component {
   state = {
-    // labelTab: ['OnBoarding', 'Alamat', 'Struktur', 'Karyawan', 'Admin'],
-    labelTab: ['OnBoarding', 'Alamat', 'Struktur'],
     value: this.props.location.state ? this.props.location.state.index : 0,
     index: 0,
     openModalOnBoarding: false,
@@ -79,7 +78,7 @@ export default class SettingPerusahaan extends Component {
             <Tab label="Alamat" style={{ marginRight: 30 }} />
             <Tab label="Struktur" style={{ marginRight: 30 }} />
             <Tab label="Karyawan" style={{ marginRight: 30 }} />
-            {/* <Tab label="Admin" style={{ marginRight: 30 }} /> */}
+            <Tab label="Admin" style={{ marginRight: 30 }} />
           </Tabs>
           <Divider />
         </Paper>
@@ -114,7 +113,7 @@ export default class SettingPerusahaan extends Component {
 
           {/* Admin */}
           <TabPanel value={this.state.value} index={4}>
-            Admin
+            <PanelAdmin />
           </TabPanel>
         </SwipeableViews>
 

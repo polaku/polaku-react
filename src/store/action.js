@@ -155,3 +155,10 @@ export function fetchDataDinas(payload) {
     payload
   }
 }
+
+export function fetchDataDesignation(payload) {
+  return {
+    type: 'FETCH_DATA_DESIGNATION',
+    payload
+  }
+}

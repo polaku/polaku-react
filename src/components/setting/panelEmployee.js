@@ -159,10 +159,6 @@ class panelEmployee extends Component {
     this.setState({ [name]: event.target.value });
   };
 
-  handleClose = () => {
-    this.setState({ anchorEl: null, openPopOver: false })
-  };
-
   handleChangeCheck = event => {
     this.setState({
       selectAll: event.target.checked,

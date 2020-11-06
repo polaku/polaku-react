@@ -646,7 +646,7 @@ const api = store => next => async action => {
       } else {
         getData = await API.get('/dinas', { headers: { token } })
       }
-console.log(getData.data)
+
       next({
         type: 'FETCH_DATA_DINAS_SUCCESS',
         payload: {
@@ -657,6 +657,51 @@ console.log(getData.data)
           counterEmployeeKontrak: getData.data.kontrak,
           counterEmployeeProbation: getData.data.probation,
           counterEmployeeBerhenti: getData.data.berhenti,
+        }
+      })
+
+    } catch (err) {
+      next({
+        type: 'FETCH_DATA_ERROR',
+        payload: err
+      })
+    }
+  }
+  else if (action.type === 'FETCH_DATA_DESIGNATION') {
+    next({
+      type: 'FETCH_DATA_LOADING'
+    })
+
+    let getData
+    try {
+      if (action.payload) {
+        if (action.payload.status) {
+          if (action.payload.keyword) {
+            getData = await API.get(
+              `/designation?limit=${action.payload.limit}&page=${action.payload.page}&status=${action.payload.status}&search=${action.payload.keyword}`,
+              { headers: { token } })
+          } else {
+            getData = await API.get(
+              `/designation?limit=${action.payload.limit}&page=${action.payload.page}&status=${action.payload.status}`,
+              { headers: { token } })
+          }
+        } else {
+          if (action.payload.keyword) {
+            getData = await API.get(`/designation?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, { headers: { token } })
+          } else {
+            getData = await API.get(`/designation?limit=${action.payload.limit}&page=${action.payload.page}`, { headers: { token } })
+          }
+        }
+      } else {
+        console.log("MASUK SINI")
+        getData = await API.get('/designation', { headers: { token } })
+      }
+
+      next({
+        type: 'FETCH_DATA_DESIGNATION_SUCCESS',
+        payload: {
+          dataDesignation: getData.data.data,
+          lengthAllDataDesignation: getData.data.totalRecord,
         }
       })
 

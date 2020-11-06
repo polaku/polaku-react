@@ -4,12 +4,11 @@ import { withRouter } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import {
-  Paper, Grid, Tooltip, Checkbox
+  Paper, Grid, Tooltip
 } from '@material-ui/core';
 
 import ErrorOutlinedIcon from '@material-ui/icons/ErrorOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { fetchDataAddress } from '../../store/action';
 
@@ -53,13 +52,9 @@ class cardService extends Component {
   render() {
     return (
       <Paper style={{ display: 'flex', padding: '15px 20px', margin: 1, borderRadius: 0, alignItems: 'center' }}>
-        <Grid style={{ width: '30%', display: 'flex' }}>
-          {/* <img src={process.env.PUBLIC_URL + '/add-much-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} /> */}
-          <AccountCircleIcon style={{ color: '#d71149', width: 40, height: 40, marginRight: 10 }} />
-          <Grid >
-            <p style={{ margin: 0, color: 'gray', fontSize: 13 }}>NIK : {this.props.data.nik}</p>
-            <p style={{ margin: 0 }}>{this.props.data.name}</p>
-          </Grid>
+        <Grid style={{ width: '25%', display: 'flex', flexDirection: 'column' }}>
+          <p style={{ margin: 0, color: 'gray', fontSize: 13 }}>NIK : {this.props.data.nik}</p>
+          <p style={{ margin: 0 }}>{this.props.data.name}</p>
         </Grid>
         <p style={{ margin: 0, width: '25%' }}>{this.props.data.totalDinas} lokasi</p>
         <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

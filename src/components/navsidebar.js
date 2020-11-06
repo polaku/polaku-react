@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
 import {
-  Drawer, AppBar, Toolbar, List, CssBaseline, Typography, Divider, IconButton, ListItem, ListItemIcon, ListItemText, Collapse, Badge, Menu, MenuItem
+  Drawer, AppBar, Toolbar, List, CssBaseline, Typography, Divider, IconButton, ListItem, ListItemIcon, ListItemText, Collapse, Badge, Menu, MenuItem, 
+  // Icon
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -107,6 +108,14 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center'
   },
 }));
+
+const MaterialIcon = ({ icon }) => {
+  switch (icon) {
+    case 'PersonOutlineOutlinedIcon': return <PersonOutlineOutlinedIcon />
+    default: return null
+  }
+}
+
 
 function Navsidebar(props) {
   // const history = useHistory();
@@ -684,7 +693,8 @@ function Navsidebar(props) {
                   : <List><Link to="/profil" onClick={event => handleListItemClick(event, 100)} style={{ textDecoration: 'none', color: 'black' }}>
                     <ListItem button key="Profil" selected={selectedIndex === 100} >
                       <ListItemIcon style={{ marginLeft: 8 }}>
-                        <PersonOutlineOutlinedIcon />
+                        <MaterialIcon icon="PersonOutlineOutlinedIcon" />
+                        {/* <PersonOutlineOutlinedIcon /> */}
                       </ListItemIcon>
                     </ListItem>
                   </Link>

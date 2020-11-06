@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import {
-  Grid, OutlinedInput, Select, MenuItem, Paper,
+  Grid, Select, MenuItem, Paper,
 } from '@material-ui/core';
 import ReactSelect from 'react-select';
 import makeAnimated from 'react-select/animated';

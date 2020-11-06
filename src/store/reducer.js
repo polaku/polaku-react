@@ -44,7 +44,9 @@ const defaultState = {
   counterEmployeeTetap: 0,
   counterEmployeeKontrak: 0,
   counterEmployeeProbation: 0,
-  counterEmployeeBerhenti: 0
+  counterEmployeeBerhenti: 0,
+  dataDesignation: [],
+  lengthAllDataDesignation: 0
 }
 
 function reducer(state = defaultState, action) {
@@ -269,6 +271,14 @@ function reducer(state = defaultState, action) {
         counterEmployeeKontrak: action.payload.counterEmployeeKontrak,
         counterEmployeeProbation: action.payload.counterEmployeeProbation,
         counterEmployeeBerhenti: action.payload.counterEmployeeBerhenti
+      }
+    }
+    case 'FETCH_DATA_DESIGNATION_SUCCESS': {
+      return {
+        ...state,
+        loading: false,
+        dataDesignation: action.payload.dataDesignation,
+        lengthAllDataDesignation: action.payload.lengthAllDataDesignation,
       }
     }
     case 'FETCH_DATA_LOADING_CONTACT_US': {

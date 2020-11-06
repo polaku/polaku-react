@@ -22,6 +22,7 @@ import AddAddress from './views/Setting/AddAddress';
 import AddDepartment from './views/Setting/AddDepartment';
 import AddEmployee from './views/Setting/AddEmployee';
 import AddService from './views/Setting/AddService';
+import AddAdmin from './views/Setting/AddAdmin';
 import HR from './views/HR/HR';
 import ReportIjin from './views/HR/ReportIjin';
 import KPIM from './views/KPIM/DashboardKPIM';
@@ -68,6 +69,7 @@ function Routes() {
         <AuthenticatedRoute path="/setting/setting-perusahaan/add-department" component={AddDepartment} />
         <AuthenticatedRoute path="/setting/setting-perusahaan/add-employee" component={AddEmployee} />
         <AuthenticatedRoute path="/setting/setting-perusahaan/add-service" component={AddService} />
+        <AuthenticatedRoute path="/setting/setting-perusahaan/add-admin" component={AddAdmin} />
         <AuthenticatedRoute path="/setting/setting-perusahaan" component={SettingPerusahaan} />
         <AuthenticatedRoute path="/setting/setting-user" component={SettingUser} />
         <AuthenticatedRoute path="/setting" component={Setting} />
