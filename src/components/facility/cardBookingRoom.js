@@ -12,13 +12,16 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import ModalCreateEditBookingRoom from '../modal/modalCreateEditBookingRoom';
 import { API } from '../../config/API';
 
+import swal from 'sweetalert';
+
 class cardBookingRoom extends Component {
   constructor(props) {
     super(props);
     this.state = {
       owner: false,
       proses: false,
-      openModal: false
+      openModal: false,
+      admin: false
     }
   }
 
@@ -27,31 +30,68 @@ class cardBookingRoom extends Component {
       this.setState({
         owner: true
       })
+      console.log("OWNER")
+    }
+    console.log(this.props.designation)
+
+    if (this.props.designation) {
+      let checkAdmin = this.props.designation.find(menu => menu.menu_id === 6)
+      if (checkAdmin) {
+        this.setState({ admin: true })
+      }
+      console.log("ADMIN")
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.userId !== prevProps.userId) {
+      this.setState({
+        owner: true
+      })
+    }
+
+    if (this.props.designation !== prevProps.designation) {
+      let checkAdmin = this.props.designation.find(menu => menu.menu_id === 6)
+      if (checkAdmin) {
+        this.setState({ admin: true })
+      }
     }
   }
 
   delete = async () => {
-
-    this.setState({
-      proses: true
+    swal({
+      title: "Apa anda yakin ingin menghapus pesanan ruangan ini?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
     })
-    let token = Cookies.get('POLAGROUP')
+      .then((yesAnswer) => {
+        if (yesAnswer) {
+          this.setState({
+            proses: true
+          })
+          let token = Cookies.get('POLAGROUP')
 
-    API.delete(`/bookingRoom/${this.props.data.room_booking_id}`,
-      {
-        headers: { token }
-      })
-      .then(() => {
-        this.props.refresh()
-        this.setState({
-          proses: false
-        })
-      })
-      .catch(err => {
-        this.setState({
-          proses: false
-        })
-      })
+          API.delete(`/bookingRoom/${this.props.data.room_booking_id}`,
+            {
+              headers: { token }
+            })
+            .then(() => {
+              swal("Pesanan berhasil dihapus !", "", "success")
+              this.props.refresh()
+              this.setState({
+                proses: false
+              })
+            })
+            .catch(err => {
+              swal("Pesanan gagal dihapus !", "", "error")
+              this.setState({
+                proses: false
+              })
+            })
+        }
+      });
+
   }
 
   openModal = () => {
@@ -96,7 +136,7 @@ class cardBookingRoom extends Component {
             <p style={{ margin: 0, marginLeft: 5 }}>{this.props.data.tbl_user.tbl_account_detail.fullname}</p>
           </div>
           {
-            this.state.owner &&
+            (this.state.owner || this.state.admin) &&
             <div style={{ alignSelf: 'end' }}>
               <IconButton aria-label="delete" onClick={this.delete}>
                 <Tooltip title="Hapus Pesanan" placement="top-end">
@@ -119,11 +159,12 @@ class cardBookingRoom extends Component {
   }
 }
 
-const mapStateToProps = ({ loading, userId, error }) => {
+const mapStateToProps = ({ loading, userId, error, designation }) => {
   return {
     loading,
     userId,
-    error
+    error,
+    designation
   }
 }
 export default connect(mapStateToProps)(cardBookingRoom)
