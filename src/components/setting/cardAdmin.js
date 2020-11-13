@@ -31,7 +31,8 @@ class cardAdmin extends Component {
     // 6=Meeting Room, 
     // 7=KPIM&TAL, 
     // 8=HR
-    let checkBeritaPola = this.props.data.tbl_designation.tbl_user_roles.find(el => el.menu_id === 1)
+
+    // let checkBeritaPola = this.props.data.tbl_designation.tbl_user_roles.find(el => el.menu_id === 1)
     let checkAlamat = this.props.data.tbl_designation.tbl_user_roles.find(el => el.menu_id === 2)
     let checkStruktur = this.props.data.tbl_designation.tbl_user_roles.find(el => el.menu_id === 3)
     let checkKaryawan = this.props.data.tbl_designation.tbl_user_roles.find(el => el.menu_id === 4)
@@ -41,10 +42,10 @@ class cardAdmin extends Component {
     let checkHR = this.props.data.tbl_designation.tbl_user_roles.find(el => el.menu_id === 8)
     let statusAdmin = []
 
-    if (checkBeritaPola && checkAlamat && checkStruktur && checkKaryawan && checkAdmin && checkMeetingRoom && checkKPIM && checkHR) {
+    if (checkAlamat && checkStruktur && checkKaryawan && checkAdmin && checkMeetingRoom && checkKPIM && checkHR) {
       statusAdmin.push('Semua')
     } else {
-      if (checkBeritaPola) statusAdmin.push('Berita')
+      // if (checkBeritaPola) statusAdmin.push('Berita')
       if (checkAlamat) statusAdmin.push('Alamat')
       if (checkStruktur) statusAdmin.push('Struktur')
       if (checkKaryawan) statusAdmin.push('Karyawan')

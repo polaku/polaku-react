@@ -1,7 +1,7 @@
 const defaultState = {
   userId: null,
   dataUserDetail: {},
-  isAdmin: false,
+  isAdminsuper: false,
   isRoomMaster: false,
   isCreatorMaster: false,
   isCreatorAssistant: false,
@@ -10,6 +10,8 @@ const defaultState = {
   evaluator1: null,
   evaluator2: null,
   bawahan: [],
+  designation: [],
+  dinas: [],
   loading: false,
   error: {},
   isLogin: false,
@@ -38,7 +40,9 @@ const defaultState = {
   dataPolanews: [],
   dataPIC: [],
   dataAddress: [],
+  totalDataAddress: 0,
   dataStructure: [],
+  totalDataStructure: 0,
   dataDinas: [],
   allUser: 0,
   counterEmployeeTetap: 0,
@@ -55,7 +59,7 @@ function reducer(state = defaultState, action) {
       return {
         ...state,
         userId: action.payload.user_id,
-        isAdmin: action.payload.isAdmin,
+        isAdminsuper: action.payload.isAdminsuper,
         isRoomMaster: action.payload.isRoomMaster,
         isCreatorMaster: action.payload.isCreatorMaster,
         isCreatorAssistant: action.payload.isCreatorAssistant,
@@ -63,7 +67,9 @@ function reducer(state = defaultState, action) {
         evaluator1: action.payload.evaluator1,
         evaluator2: action.payload.evaluator2,
         bawahan: action.payload.bawahan,
-        adminContactCategori: action.payload.adminContactCategori
+        adminContactCategori: action.payload.adminContactCategori,
+        designation: action.payload.designation,
+        dinas: action.payload.dinas
       }
     }
     case 'FETCH_DATA_USER_DETAIL_SUCCESS': {
@@ -75,7 +81,7 @@ function reducer(state = defaultState, action) {
     case 'USER_LOGOUT': {
       return {
         userId: null,
-        isAdmin: false,
+        isAdminsuper: false,
         isRoomMaster: false,
         isCreatorMaster: false,
         isCreatorAssistant: false,
@@ -250,6 +256,7 @@ function reducer(state = defaultState, action) {
       return {
         ...state,
         dataAddress: action.payload.dataAddress,
+        totalDataAddress: action.payload.totalDataAddress,
         loading: false
       }
     }
@@ -257,6 +264,7 @@ function reducer(state = defaultState, action) {
       return {
         ...state,
         dataStructure: action.payload.dataStructure,
+        totalDataStructure: action.payload.totalDataStructure,
         loading: false
       }
     }

@@ -72,12 +72,14 @@ class Login extends Component {
           evaluator1: data.data.evaluator1,
           evaluator2: data.data.evaluator2,
           bawahan: data.data.bawahan,
+          designation: data.data.designation,
+          dinas: data.data.dinas
         }
         
         if (data.data.role_id === 1) {
-          newData.isAdmin = true
+          newData.isAdminsuper = true
         } else {
-          newData.isAdmin = false
+          newData.isAdminsuper = false
         }
 
         if (data.data.adminContactCategori) {

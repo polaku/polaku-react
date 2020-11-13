@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 // import Cookies from 'js-cookie';
 
 import {
-  Grid, CircularProgress, Paper, Tabs, Tab, Divider, TextField, Button,
+  Grid, CircularProgress, Paper, Tabs, Tab, Divider, TextField, Button, TablePagination
   // Checkbox
 } from '@material-ui/core';
 
@@ -12,9 +12,9 @@ import CardAddress from './cardAddress';
 // import SeCreatableSelect from 'react-select/creatable';
 // import makeAnimated from 'react-select/animated';
 
-import { fetchDataUsers, fetchDataAddress } from '../../store/action';
+import { fetchDataUsers, fetchDataAddress, fetchDataCompanies } from '../../store/action';
 
-import ModalLogAddress from '../modal/modalLogAddress';
+import ModalLogSetting from '../modal/modalLogSetting';
 
 class panelAddress extends Component {
   state = {
@@ -28,12 +28,20 @@ class panelAddress extends Component {
     dataForDisplay: [],
     dataForEdit: [],
     proses: true,
-    openModalLogAddress: false
+    openModalLogSetting: false,
+    page: 0,
+    rowsPerPage: 10,
+    optionCompany: []
   }
 
   async componentDidMount() {
-    await this.props.fetchDataAddress()
+    await this.props.fetchDataCompanies()
+    await this.props.fetchDataAddress({ limit: this.state.rowsPerPage, page: this.state.page })
     await this.fetchData()
+
+    if (this.props.dataCompanies && this.props.dinas) {
+      this.fetchOptionCompany()
+    }
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -54,6 +62,10 @@ class panelAddress extends Component {
     if (this.state.dataForEdit !== prevState.dataForEdit) {
       // console.log(this.state.dataForEdit)
     }
+
+    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.dinas !== prevProps.dinas) {
+      this.fetchOptionCompany()
+    }
   }
 
   fetchData = () => {
@@ -69,8 +81,30 @@ class panelAddress extends Component {
     this.setState({ data: this.props.dataAddress, dataForDisplay: this.props.dataAddress, label, proses: false })
   }
 
-  handleChangeTab = (event, newValue) => {
-    this.setState({ value: newValue })
+  fetchOptionCompany = () => {
+    let optionCompany = [{ acronym: 'Semua' }]
+    console.log(this.props.dinas)
+    console.log(this.props.dataCompanies)
+    this.props.dinas.forEach(el => {
+      let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+      if (check) optionCompany.push(check)
+    })
+    console.log(optionCompany)
+    this.setState({ optionCompany })
+  }
+
+  handleChangeTab = async (event, newValue) => {
+    console.log(newValue)
+    this.setState({ value: newValue, search: '', page: 0 })
+
+    let companySelected = this.state.optionCompany[newValue]
+    if (newValue === 0) {
+      await this.props.fetchDataAddress({ limit: this.state.rowsPerPage, page: 0 })
+      await this.fetchData()
+    } else {
+      await this.props.fetchDataAddress({ limit: this.state.rowsPerPage, page: 0, company: companySelected.company_id })
+      await this.fetchData()
+    }
   };
 
   handleChange = name => event => {
@@ -89,13 +123,20 @@ class panelAddress extends Component {
   }
 
   handleSearch = async () => {
-    let hasilSearch = await this.state.data.filter(el => el.address.toLowerCase().match(new RegExp(this.state.search.toLowerCase())))
-    this.setState({ dataForDisplay: hasilSearch })
+    this.setState({ page: 0 })
+    if (this.state.value !== 0) {
+      let companySelected = this.state.optionCompany[this.state.value]
+      await this.props.fetchDataAddress({ limit: this.state.rowsPerPage, page: 0, company: companySelected.company_id, keyword: this.state.search })
+      await this.fetchData()
+    } else {
+      await this.props.fetchDataAddress({ limit: this.state.rowsPerPage, page: 0, keyword: this.state.search })
+      await this.fetchData()
+    }
   }
 
-  handleModalLogAddress = () => {
+  handleModalLogSetting = () => {
     this.setState({
-      openModalLogAddress: !this.state.openModalLogAddress
+      openModalLogSetting: !this.state.openModalLogSetting
     })
   }
 
@@ -118,6 +159,40 @@ class panelAddress extends Component {
   //   }
   // }
 
+  handleChangePage = async (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
+    this.setState({ proses: true })
+
+    let query = {}
+    if (this.state.search) query.keyword = this.state.search
+    if (this.state.value !== 0) {
+      let companySelected = this.state.optionCompany[this.state.value]
+      if (companySelected) query.company = companySelected.company_id
+    }
+    await this.props.fetchDataAddress({ limit: this.state.rowsPerPage, page: newPage, ...query })
+    await this.fetchData()
+    this.setState({ proses: false })
+  }
+
+  handleChangeRowsPerPage = async (event) => {
+    this.setState({
+      rowsPerPage: event.target.value,
+      page: 0
+    })
+    this.setState({ proses: true })
+    let query = {}
+    if (this.state.search) query.keyword = this.state.search
+    if (this.state.value !== 0) {
+      let companySelected = this.state.optionCompany[this.state.value]
+      if (companySelected) query.company = companySelected.company_id
+    }
+    await this.props.fetchDataAddress({ limit: this.state.rowsPerPage + event.target.value, page: 0, ...query })
+    await this.fetchData()
+    this.setState({ proses: false })
+  }
+
   render() {
     return (
       <div style={{ width: '100%', paddingTop: 0 }}>
@@ -136,11 +211,11 @@ class panelAddress extends Component {
                   <img src={process.env.PUBLIC_URL + '/add-address.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                   <p style={{ margin: '0px 0px 0px 5px' }}>Tambah banyak</p>
                 </Grid> */}
-                <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-address')}>
+                <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-address', { index: this.props.index })}>
                   <img src={process.env.PUBLIC_URL + '/add-address.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                   <p style={{ margin: '0px 0px 0px 5px' }}>Tambah alamat</p>
                 </Grid>
-                <p style={{ color: '#d71149', margin: 0 }} onClick={this.handleModalLogAddress}>Lihat riwayat perubahan</p>
+                <p style={{ color: '#d71149', margin: 0, cursor: 'pointer' }} onClick={this.handleModalLogSetting}>Lihat riwayat perubahan</p>
               </Grid>
 
               <Paper id="search" style={{ padding: 10, paddingLeft: 20, paddingBottom: 20, marginBottom: 20 }}>
@@ -151,8 +226,8 @@ class panelAddress extends Component {
                   onChange={this.handleChangeTab}
                 >
                   {
-                    this.state.labelTab.map((el, index) =>
-                      <Tab key={index} label={el} style={{ marginRight: 10, minWidth: 80 }} />
+                    this.state.optionCompany.map((el, index) =>
+                      <Tab key={index} label={el.acronym} style={{ marginRight: 10, minWidth: 80 }} />
                     )
                   }
                 </Tabs>
@@ -198,14 +273,28 @@ class panelAddress extends Component {
 
               {
                 this.state.dataForDisplay.map((address, index) =>
-                  <CardAddress key={index} data={address} selectAll={this.state.selectAll} handleCheck={this.handleCheck} fetchData={this.fetchData} />
+                  <CardAddress key={index} data={address} selectAll={this.state.selectAll} handleCheck={this.handleCheck} fetchData={this.fetchData} index={this.props.index} />
                 )
               }
-
+              <TablePagination
+                rowsPerPageOptions={1}
+                component="div"
+                count={this.props.totalDataAddress}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                backIconButtonProps={{
+                  'aria-label': 'previous page',
+                }}
+                nextIconButtonProps={{
+                  'aria-label': 'next page',
+                }}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
             </Grid>
         }
         {
-          this.state.openModalLogAddress && <ModalLogAddress status={this.state.openModalLogAddress} close={this.handleModalLogAddress} />
+          this.state.openModalLogSetting && <ModalLogSetting status={this.state.openModalLogSetting} close={this.handleModalLogSetting} type="address" />
         }
       </div>
     )
@@ -215,14 +304,17 @@ class panelAddress extends Component {
 const mapDispatchToProps = {
   fetchDataUsers,
   fetchDataAddress,
-
+  fetchDataCompanies
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataAddress }) => {
+const mapStateToProps = ({ loading, dataUsers, dataAddress, totalDataAddress, dataCompanies, dinas }) => {
   return {
     loading,
     dataUsers,
-    dataAddress
+    dataAddress,
+    totalDataAddress,
+    dataCompanies,
+    dinas
   }
 }
 

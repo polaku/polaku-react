@@ -109,7 +109,7 @@ class modalCreatorMasterAndAssistant extends Component {
             alignItems: 'center',
           }}>
             {
-              this.props.isAdmin
+              this.props.isAdminsuper
                 ? <Typography variant="h5" style={{ textAlign: 'center' }}>Assign Creator Master</Typography>
                 : <Typography variant="h5" style={{ textAlign: 'center' }}>Assign Creator Assistant</Typography>
             }

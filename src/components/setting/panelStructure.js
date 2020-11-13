@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 // import Cookies from 'js-cookie';
 
 import {
-  Grid, CircularProgress, Paper, Tabs, Tab, Divider, TextField, Button, TableCell
+  Grid, CircularProgress, Paper, Tabs, Tab, Divider, TextField, Button, TableCell, TablePagination
   // Checkbox
 } from '@material-ui/core';
 
@@ -16,9 +16,9 @@ import CardDepartment from './cardDepartment';
 import ArrowDropUpOutlinedIcon from '@material-ui/icons/ArrowDropUpOutlined';
 import ArrowDropDownOutlinedIcon from '@material-ui/icons/ArrowDropDownOutlined';
 
-import { fetchDataUsers, fetchDataStructure } from '../../store/action';
+import { fetchDataUsers, fetchDataStructure, fetchDataCompanies } from '../../store/action';
 
-import ModalLogAddress from '../modal/modalLogAddress';
+import ModalLogSetting from '../modal/modalLogSetting';
 
 const invertDirection = {
   asc: "desc",
@@ -30,7 +30,7 @@ class panelStructure extends Component {
   state = {
     labelTab: ['Semua'],
     search: '',
-    valueA: 0,
+    // valueA: 0,
     valueB: 0,
     index: 0,
     selectAll: false,
@@ -39,15 +39,22 @@ class panelStructure extends Component {
     dataForDisplay: [],
     dataForEdit: [],
 
-    openModalLogAddress: false,
+    openModalLogSetting: false,
     columnToSort: "",
     sortDirection: "desc",
+    page: 0,
+    rowsPerPage: 10,
+    optionCompany: [],
   }
 
   async componentDidMount() {
-    await this.props.fetchDataStructure()
+    await this.props.fetchDataCompanies()
+    await this.props.fetchDataStructure({ limit: this.state.rowsPerPage, page: this.state.page })
     await this.fetchData()
-    // console.log(this.props.dataStructure)
+
+    if (this.props.dataCompanies && this.props.dinas) {
+      this.fetchOptionCompany()
+    }
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -65,9 +72,9 @@ class panelStructure extends Component {
       }
     }
 
-    // if (this.state.dataForEdit !== prevState.dataForEdit) {
-    //   console.log(this.state.dataForEdit)
-    // }
+    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.dinas !== prevProps.dinas) {
+      this.fetchOptionCompany()
+    }
   }
 
   fetchData = () => {
@@ -79,15 +86,34 @@ class panelStructure extends Component {
       }
     });
 
-    this.setState({ data: this.props.dataStructure, dataForDisplay: this.props.dataStructure, label })
+    this.setState({ data: this.props.dataStructure, dataForDisplay: this.props.dataStructure, label, page: 0, valueB: 0 })
   }
 
-  handleChangeTabA = (event, newValue) => {
-    this.setState({ valueA: newValue })
-  };
+  fetchOptionCompany = () => {
+    let optionCompany = [{ acronym: 'Semua' }]
+    this.props.dinas.forEach(el => {
+      let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+      if (check) optionCompany.push(check)
+    })
+    this.setState({ optionCompany })
+  }
 
-  handleChangeTabB = (event, newValue) => {
-    this.setState({ valueB: newValue })
+  // handleChangeTabA = (event, newValue) => {
+  //   this.setState({ valueA: newValue })
+  // };
+
+  handleChangeTabB = async (event, newValue) => {
+    this.setState({ valueB: newValue, search: '', page: 0 })
+
+    let companySelected = this.state.optionCompany[newValue]
+    if (newValue === 0) {
+      await this.props.fetchDataStructure({ limit: this.state.rowsPerPage, page: 0 })
+      await this.fetchData()
+    } else {
+      console.log("MASUK")
+      await this.props.fetchDataStructure({ limit: this.state.rowsPerPage, page: 0, company: companySelected.company_id })
+      await this.fetchData()
+    }
   };
 
   handleChange = name => event => {
@@ -106,13 +132,20 @@ class panelStructure extends Component {
   }
 
   handleSearch = async () => {
-    let hasilSearch = await this.state.data.filter(el => el.department.deptname.toLowerCase().match(new RegExp(this.state.search.toLowerCase())))
-    this.setState({ dataForDisplay: hasilSearch })
+    this.setState({ page: 0 })
+    if (this.state.valueB !== 0) {
+      let companySelected = this.state.optionCompany[this.state.valueB]
+      await this.props.fetchDataStructure({ limit: this.state.rowsPerPage, page: 0, company: companySelected.company_id, keyword: this.state.search })
+      await this.fetchData()
+    } else {
+      await this.props.fetchDataStructure({ limit: this.state.rowsPerPage, page: 0, keyword: this.state.search })
+      await this.fetchData()
+    }
   }
 
-  handleModalLogAddress = () => {
+  handleModalLogSetting = () => {
     this.setState({
-      openModalLogAddress: !this.state.openModalLogAddress
+      openModalLogSetting: !this.state.openModalLogSetting
     })
   }
 
@@ -143,6 +176,40 @@ class panelStructure extends Component {
   //     }
   //   }
   // }
+
+  handleChangePage = async (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
+    this.setState({ proses: true })
+    let query = {}
+    if (this.state.search) query.keyword = this.state.search
+    if (this.state.valueB !== 0) {
+      let companySelected = this.state.optionCompany[this.state.valueB]
+      if (companySelected) query.company = companySelected.company_id
+    }
+    await this.props.fetchDataStructure({ limit: this.state.rowsPerPage, page: newPage, ...query })
+    await this.fetchData()
+    this.setState({ proses: false })
+  }
+
+  handleChangeRowsPerPage = async (event) => {
+    this.setState({
+      rowsPerPage: event.target.value,
+      page: 0
+    })
+    this.setState({ proses: true })
+    let query = {}
+    if (this.state.search) query.keyword = this.state.search
+    if (this.state.valueB !== 0) {
+      let companySelected = this.state.optionCompany[this.state.valueB]
+      if (companySelected) query.company = companySelected.company_id
+    }
+    await this.props.fetchDataStructure({ limit: this.state.rowsPerPage + event.target.value, page: 0, ...query })
+
+    await this.fetchData()
+    this.setState({ proses: false })
+  }
 
   render() {
     return (
@@ -176,10 +243,11 @@ class panelStructure extends Component {
                   <img src={process.env.PUBLIC_URL + '/add-address.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                   <p style={{ margin: '0px 0px 0px 5px' }}>Tambah banyak</p>
                 </Grid> */}
-                <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-department')}>
+                <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-department', { index: this.props.index })}>
                   <img src={process.env.PUBLIC_URL + '/add-address.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                   <p style={{ margin: '0px 0px 0px 5px' }}>Tambah divisi</p>
                 </Grid>
+                <p style={{ color: '#d71149', margin: 0, cursor: 'pointer' }} onClick={this.handleModalLogSetting}>Lihat riwayat perubahan</p>
               </Grid>
 
               <Paper id="search" style={{ padding: 10, paddingLeft: 20, paddingBottom: 20, marginBottom: 20 }}>
@@ -190,8 +258,8 @@ class panelStructure extends Component {
                   onChange={this.handleChangeTabB}
                 >
                   {
-                    this.state.labelTab.map((el, index) =>
-                      <Tab key={index} label={el} style={{ marginRight: 10, minWidth: 80 }} />
+                    this.state.optionCompany.map((el, index) =>
+                      <Tab key={index} label={el.acronym} style={{ marginRight: 10, minWidth: 80 }} />
                     )
                   }
                 </Tabs>
@@ -265,14 +333,28 @@ class panelStructure extends Component {
               </Paper>
               {
                 orderBy(this.state.dataForDisplay, this.state.columnToSort, this.state.sortDirection).map((department, index) =>
-                  <CardDepartment key={"department" + index} data={department} selectAll={this.state.selectAll} handleCheck={this.handleCheck} fetchData={this.fetchData} />
+                  <CardDepartment key={"department" + index} data={department} selectAll={this.state.selectAll} handleCheck={this.handleCheck} fetchData={this.fetchData} index={this.props.index} />
                 )
               }
-
+              <TablePagination
+                rowsPerPageOptions={1}
+                component="div"
+                count={this.props.totalDataStructure}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                backIconButtonProps={{
+                  'aria-label': 'previous page',
+                }}
+                nextIconButtonProps={{
+                  'aria-label': 'next page',
+                }}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
             </Grid>
         }
         {
-          this.state.openModalLogAddress && <ModalLogAddress status={this.state.openModalLogAddress} close={this.handleModalLogAddress} />
+          this.state.openModalLogSetting && <ModalLogSetting status={this.state.openModalLogSetting} close={this.handleModalLogSetting} type="structure" />
         }
       </div>
     )
@@ -281,14 +363,18 @@ class panelStructure extends Component {
 
 const mapDispatchToProps = {
   fetchDataUsers,
-  fetchDataStructure
+  fetchDataStructure,
+  fetchDataCompanies
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataStructure }) => {
+const mapStateToProps = ({ loading, dataUsers, dataStructure, totalDataStructure, dataCompanies, dinas }) => {
   return {
     loading,
     dataUsers,
-    dataStructure
+    dataStructure,
+    totalDataStructure,
+    dataCompanies,
+    dinas
   }
 }
 

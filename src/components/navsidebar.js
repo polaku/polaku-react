@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
 import {
-  Drawer, AppBar, Toolbar, List, CssBaseline, Typography, Divider, IconButton, ListItem, ListItemIcon, ListItemText, Collapse, Badge, Menu, MenuItem, 
+  Drawer, AppBar, Toolbar, List, CssBaseline, Typography, Divider, IconButton, ListItem, ListItemIcon, ListItemText, Collapse, Badge, Menu, MenuItem,
   // Icon
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -164,6 +164,7 @@ function Navsidebar(props) {
     if (token) {
       API.get('/users/checkToken', { headers: { token } })
         .then(async ({ data }) => {
+          console.log(data)
           let newData = {
             user_id: data.user_id,
             isRoomMaster: data.isRoomMaster,
@@ -172,14 +173,17 @@ function Navsidebar(props) {
             sisaCuti: data.sisaCuti,
             evaluator1: data.evaluator1,
             evaluator2: data.evaluator2,
-            bawahan: data.bawahan
+            bawahan: data.bawahan,
+            designation: data.designation,
+            dinas: data.dinas
           }
+          console.log(data)
           if (data.role_id === 1) {
-            newData.isAdmin = true
+            newData.isAdminsuper = true
           } else {
-            newData.isAdmin = false
+            newData.isAdminsuper = false
           }
-
+          console.log(data.adminContactCategori)
           if (data.adminContactCategori) {
             newData.adminContactCategori = data.adminContactCategori
           }
@@ -188,9 +192,10 @@ function Navsidebar(props) {
           await props.fetchDataNotification()
         })
         .catch(err => {
-          Cookies.remove('POLAGROUP')
-          props.userLogout()
-          props.history.push('/login')
+          console.log(err)
+          // Cookies.remove('POLAGROUP')
+          // props.userLogout()
+          // props.history.push('/login')
         })
     } else {
       props.history.push('/login')
@@ -199,12 +204,14 @@ function Navsidebar(props) {
   }, [])
 
   useEffect(() => {
+    let checkAdmin = null
+
     if (props.location.pathname === '/polanews') {
       setSelectedIndex(0)
     } else if (props.location.pathname === '/booking-room') {
       setSelectedIndex(1)
     } else if (props.location.pathname === '/booking-room/room-master') {
-      if (props.isAdmin) {
+      if (props.isAdminsuper) {
         setSelectedIndex(1.1)
       } else {
         props.history.push('/booking-room')
@@ -216,7 +223,10 @@ function Navsidebar(props) {
         props.history.push('/booking-room')
       }
     } else if (props.location.pathname === '/booking-room/rooms') {
-      if (props.isAdmin || props.isRoomMaster) {
+      if (props.designation) {
+        checkAdmin = props.designation.find(menu => menu.menu_id === 6)
+      }
+      if (props.isAdminsuper || props.isRoomMaster || checkAdmin) {
         setSelectedIndex(1.3)
       } else {
         props.history.push('/booking-room')
@@ -230,13 +240,27 @@ function Navsidebar(props) {
     } else if (props.location.pathname === '/hr') {
       setSelectedIndex(3)
     } else if (props.location.pathname === '/hr/report') {
-      setSelectedIndex(3.1)
+      if (props.designation) {
+        checkAdmin = props.designation.find(menu => menu.menu_id === 8)
+      }
+      if (checkAdmin || props.isAdminsuper) {
+        setSelectedIndex(3.1)
+      } else {
+        props.history.goBack()
+      }
     } else if (props.location.pathname === '/kpim') {
       setSelectedIndex(4)
     } else if (props.location.pathname === '/kpim/tal') {
       setSelectedIndex(4.1)
     } else if (props.location.pathname === '/kpim/report') {
-      setSelectedIndex(4.2)
+      if (props.designation) {
+        checkAdmin = props.designation.find(menu => menu.menu_id === 7)
+      }
+      if (checkAdmin || props.isAdminsuper) {
+        setSelectedIndex(4.2)
+      } else {
+        props.history.goBack()
+      }
     } else if (props.location.pathname === '/kpim/setting') {
       setSelectedIndex(4.3)
     } else if (props.location.pathname === '/setting' ||
@@ -246,16 +270,63 @@ function Navsidebar(props) {
       props.location.pathname === '/setting/setting-perusahaan/add-department' ||
       props.location.pathname === '/setting/setting-perusahaan/add-employee' ||
       props.location.pathname === '/setting/setting-perusahaan/add-service' ||
-      props.location.pathname === '/setting/setting-perusahaan/add-address') {
-      if (props.isAdmin || props.userId === 30 || props.userId === 33 || Number(props.adminContactCategori) === 4) {
+      props.location.pathname === '/setting/setting-perusahaan/add-address' ||
+      props.location.pathname === '/setting/setting-perusahaan/add-admin') {
+      // if (props.isAdminsuper || props.userId === 30 || props.userId === 33 || Number(props.adminContactCategori) === 4) {
+
+      if (props.location.pathname === '/setting/setting-perusahaan/add-address') { //admin struktur
+        if (props.designation) {
+          checkAdmin = props.designation.find(menu => menu.menu_id === 2)
+        }
+        if (checkAdmin || props.isAdminsuper) {
+          setSelectedIndex(99)
+        } else {
+          props.history.goBack()
+        }
+      }
+      else if (props.location.pathname === '/setting/setting-perusahaan/add-department') { //admin struktur
+        if (props.designation) {
+          checkAdmin = props.designation.find(menu => menu.menu_id === 3)
+        }
+        if (checkAdmin || props.isAdminsuper) {
+          setSelectedIndex(99)
+        } else {
+          props.history.goBack()
+        }
+      }
+      else if (props.location.pathname === '/setting/setting-perusahaan/add-employee' || props.location.pathname === '/setting/setting-perusahaan/add-service') { //admin karyawan
+        if (props.designation) {
+          checkAdmin = props.designation.find(menu => menu.menu_id === 4)
+        }
+        if (checkAdmin || props.isAdminsuper) {
+          setSelectedIndex(99)
+        } else {
+          props.history.goBack()
+        }
+      }
+      else if (props.location.pathname === '/setting/setting-perusahaan/add-admin') { //admin admin
+        if (props.designation) {
+          checkAdmin = props.designation.find(menu => menu.menu_id === 5)
+        }
+        if (checkAdmin || props.isAdminsuper) {
+          setSelectedIndex(99)
+        } else {
+          props.history.goBack()
+        }
+      }
+      else if (props.isAdminsuper || props.userId === 30 || props.userId === 33 || (props.designation && props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5))) {
         setSelectedIndex(99)
       } else {
+        // let check = props.designation ? props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5)
+        console.log(props.designation)
+        console.log("MASUK SONO")
+
         props.history.goBack()
       }
     } else if (props.location.pathname === '/profil') {
       setSelectedIndex(100)
     }
-  }, [props.location.pathname, props.isAdmin, props.userId, props.adminContactCategori, props.history, props.isRoomMaster])
+  }, [props.location.pathname, props.isAdminsuper, props.userId, props.adminContactCategori, props.history, props.isRoomMaster, props.designation])
 
   useEffect(() => {
     setOpen(false)
@@ -429,7 +500,7 @@ function Navsidebar(props) {
               <>
                 {
                   open
-                    ? (props.isAdmin || props.isRoomMaster)
+                    ? (props.isAdminsuper || props.isRoomMaster || (props.designation && props.designation.find(menu => menu.menu_id === 6)))
                       ? <ListItem button key="Facility"
                         onClick={event => handleClick(event, 'openChildBookingRoom')} selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
                         <ListItemIcon>
@@ -463,7 +534,7 @@ function Navsidebar(props) {
                       </ListItem>
                     </Link>
                     {
-                      props.isAdmin
+                      props.isAdminsuper
                         ? <Link to="/booking-room/room-master" onClick={event => handleListItemClick(event, 1.1)} style={{ textDecoration: 'none', color: 'black' }}>
                           <ListItem button className={classes.nested} selected={selectedIndex === 1.1}>
                             <ListItemText primary="Room Master" />
@@ -475,7 +546,6 @@ function Navsidebar(props) {
                           </ListItem>
                         </Link>
                     }
-
 
                     <Link to="/booking-room/rooms" onClick={event => handleListItemClick(event, 1.3)} style={{ textDecoration: 'none', color: 'black' }}>
                       <ListItem button className={classes.nested} selected={selectedIndex === 1.3}>
@@ -490,7 +560,7 @@ function Navsidebar(props) {
               <>
                 {
                   open
-                    ? (props.isAdmin || props.isCreatorMaster || props.isCreatorAssistant)
+                    ? (props.isAdminsuper || props.isCreatorMaster || props.isCreatorAssistant)
                       ? <ListItem button key="Event"
                         onClick={event => handleClick(event, 'openChildEvent')}
                         selected={selectedIndex === 2 || selectedIndex === 2.1 || selectedIndex === 2.2 || selectedIndex === 2.3}>
@@ -526,14 +596,14 @@ function Navsidebar(props) {
                       </ListItem>
                     </Link>
                     {
-                      (props.isAdmin || props.isCreatorMaster || props.isCreatorAssistant) && <Link to="/event/approval-event" onClick={event => handleListItemClick(event, 2.2)} style={{ textDecoration: 'none', color: 'black' }}>
+                      (props.isAdminsuper || props.isCreatorMaster || props.isCreatorAssistant) && <Link to="/event/approval-event" onClick={event => handleListItemClick(event, 2.2)} style={{ textDecoration: 'none', color: 'black' }}>
                         <ListItem button className={classes.nested} selected={selectedIndex === 2.2}>
                           <ListItemText primary="Acara disetujui" />
                         </ListItem>
                       </Link>
                     }
                     {
-                      props.isAdmin
+                      props.isAdminsuper
                         ? <Link to="/event/creator-master-and-assistant" onClick={event => handleListItemClick(event, 2.3)} style={{ textDecoration: 'none', color: 'black' }}>
                           <ListItem button className={classes.nested} selected={selectedIndex === 2.3}>
                             <ListItemText primary="Creator Master" />
@@ -553,7 +623,8 @@ function Navsidebar(props) {
               <>
                 {
                   open
-                    ? Number(props.adminContactCategori) === 4 || props.userId === 1
+                    // ? Number(props.adminContactCategori) === 4 || props.userId === 1
+                    ? (props.designation && props.designation.find(menu => menu.menu_id === 8)) || props.userId === 1
                       ? <ListItem button key="HR"
                         onClick={event => handleClick(event, 'openChildHR')} selected={selectedIndex === 3 || selectedIndex === 3.1}>
                         <ListItemIcon>
@@ -570,13 +641,13 @@ function Navsidebar(props) {
                           <ListItemText primary="HR" />
                         </ListItem>
                       </Link>
-                    : <Link to="/hr" onClick={event => handleListItemClick(event, 3)}>
-                      <ListItem button key="HR" selected={selectedIndex === 3 || selectedIndex === 3.1} >
-                        <ListItemIcon style={{ marginLeft: 8 }}>
-                          <SupervisorAccountIcon />
-                        </ListItemIcon>
-                      </ListItem>
-                    </Link>
+                      : <Link to="/hr" onClick={event => handleListItemClick(event, 3)}>
+                        <ListItem button key="HR" selected={selectedIndex === 3 || selectedIndex === 3.1} >
+                          <ListItemIcon style={{ marginLeft: 8 }}>
+                            <SupervisorAccountIcon />
+                          </ListItemIcon>
+                        </ListItem>
+                      </Link>
                 }
 
                 <Collapse in={openChildHR} timeout="auto" unmountOnExit>
@@ -629,11 +700,13 @@ function Navsidebar(props) {
                     </Link>
                     {
                       isAtasan && <>
-                        <Link to="/kpim/report" onClick={event => handleListItemClick(event, 4.2)} style={{ textDecoration: 'none', color: 'black' }}>
-                          <ListItem button className={classes.nested} selected={selectedIndex === 4.2}>
-                            <ListItemText primary="Laporan" />
-                          </ListItem>
-                        </Link>
+                        {
+                          (isAtasan || (props.designation && props.designation.find(menu => menu.menu_id === 7))) && <Link to="/kpim/report" onClick={event => handleListItemClick(event, 4.2)} style={{ textDecoration: 'none', color: 'black' }}>
+                            <ListItem button className={classes.nested} selected={selectedIndex === 4.2}>
+                              <ListItemText primary="Laporan" />
+                            </ListItem>
+                          </Link>
+                        }
                         <Link to="/kpim/setting" onClick={event => handleListItemClick(event, 4.3)} style={{ textDecoration: 'none', color: 'black' }}>
                           <ListItem button className={classes.nested} selected={selectedIndex === 4.3}>
                             <ListItemText primary="Pengaturan KPIM" />
@@ -649,7 +722,7 @@ function Navsidebar(props) {
               {/* Menu Setting */}
               <>
                 {
-                  (props.isAdmin || props.userId === 30 || props.userId === 33 || Number(props.adminContactCategori) === 4) && <>
+                  (props.isAdminsuper || props.userId === 30 || props.userId === 33 || Number(props.adminContactCategori) === 4) && <>
                     {
                       open
                         ? <Link to="/setting" onClick={event => handleListItemClick(event, 99)} style={{ textDecoration: 'none', color: 'black' }}>
@@ -715,9 +788,9 @@ const mapDispatchToProps = {
   userLogout
 }
 
-const mapStateToProps = ({ isAdmin, isRoomMaster, isCreatorMaster, isCreatorAssistant, dataNotification, userId, dataNewNotif, bawahan, adminContactCategori }) => {
+const mapStateToProps = ({ isAdminsuper, isRoomMaster, isCreatorMaster, isCreatorAssistant, dataNotification, userId, dataNewNotif, bawahan, adminContactCategori, designation }) => {
   return {
-    isAdmin,
+    isAdminsuper,
     isRoomMaster,
     isCreatorMaster,
     isCreatorAssistant,
@@ -725,7 +798,8 @@ const mapStateToProps = ({ isAdmin, isRoomMaster, isCreatorMaster, isCreatorAssi
     userId,
     dataNewNotif,
     bawahan,
-    adminContactCategori
+    adminContactCategori,
+    designation
   }
 }
 

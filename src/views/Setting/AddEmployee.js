@@ -47,7 +47,7 @@ class AddEmployee extends Component {
   };
 
   navigateBack = () => {
-    this.props.history.push('/setting/setting-perusahaan', { index: 3 })
+    this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
   }
 
   AddEmployee = () => {
@@ -85,7 +85,7 @@ class AddEmployee extends Component {
             this.setState({ data: [], proses: false, statusSubmit: false })
             await this.props.fetchDataUsers()
             swal('Ubah karyawan sukses', '', 'success')
-            this.props.history.push('/setting/setting-perusahaan', { index: 3 })
+            this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
           })
           .catch(err => {
             this.setState({ proses: false, statusSubmit: false })
@@ -98,18 +98,19 @@ class AddEmployee extends Component {
       let newData = this.state.data
       newData.push(args)
       this.setState({ proses: true })
-      let promises = []
+      let token = Cookies.get('POLAGROUP'), promises = []
+
 
       if (newData.length === this.state.department.length) {
         newData.forEach((data, index) => {
-          promises.push(API.post(`/users/signup`, data))
+          promises.push(API.post(`/users/register`, data, { headers: { token } }))
         })
         Promise.all(promises)
           .then(async ({ data }) => {
             this.setState({ data: [], proses: false, statusSubmit: false })
             await this.props.fetchDataUsers()
             swal('Tambah karyawan sukses', '', 'success')
-            this.props.history.push('/setting/setting-perusahaan', { index: 3 })
+            // this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
           })
           .catch(err => {
             this.setState({ proses: false, statusSubmit: false })

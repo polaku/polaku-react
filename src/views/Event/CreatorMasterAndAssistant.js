@@ -81,7 +81,7 @@ class CreatorMasterAndAssistant extends Component {
     return (
       <Grid>
         {
-          this.props.isAdmin
+          this.props.isAdminsuper
             ? <Button color="primary" onClick={this.openModal} >
               Assign Creator Master
               </Button>
@@ -140,13 +140,13 @@ const mapDispatchToProps = {
   fetchDataUsers,
 }
 
-const mapStateToProps = ({ loading, userId, dataCreatorMasterAndAssistant, dataUsers, isAdmin, error }) => {
+const mapStateToProps = ({ loading, userId, dataCreatorMasterAndAssistant, dataUsers, isAdminsuper, error }) => {
   return {
     loading,
     userId,
     dataCreatorMasterAndAssistant,
     dataUsers,
-    isAdmin,
+    isAdminsuper,
     error
   }
 }

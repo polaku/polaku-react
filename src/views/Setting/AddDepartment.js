@@ -25,7 +25,8 @@ class AddDepartment extends Component {
     dataForEdit: [],
     tempDataForEdit: [],
     proses: false,
-    loading: false
+    loading: false,
+    optionCompany: []
   }
 
   async componentDidMount() {
@@ -36,7 +37,9 @@ class AddDepartment extends Component {
         data.push()
         this.setState({ companyId: this.props.location.state.data.company_id, disableCompanyId: true, dataForEdit: data })
       } else {
-        this.setState({ companyId: this.props.location.state.company_id, disableCompanyId: true })
+        // this.setState({ companyId: this.props.location.state.company_id, disableCompanyId: true })
+        this.setState({ disableCompanyId: false })
+
       }
     }
 
@@ -47,12 +50,26 @@ class AddDepartment extends Component {
     this.setState({ loading: false })
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.dinas !== prevProps.dinas) {
+      console.log(this.props.dataCompanies)
+      console.log(this.props.dinas)
+      let optionCompany = []
+      this.props.dinas.forEach(el => {
+        let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+        if (check) optionCompany.push(check)
+      })
+
+      this.setState({ optionCompany })
+    }
+  }
+
   handleChange = name => event => {
     this.setState({ [name]: event.target.value });
   };
 
   navigateBack = () => {
-    this.props.history.push('/setting/setting-perusahaan', { index: 2 })
+    this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
   }
 
   addDivisi = () => {
@@ -80,6 +97,7 @@ class AddDepartment extends Component {
   }
 
   sendData = (args) => {
+    console.log(this.props.location.state.index)
     if (this.props.location.state && this.props.location.state.data) {
       let newData = this.state.tempDataForEdit
       newData.push(args)
@@ -88,6 +106,7 @@ class AddDepartment extends Component {
       if (newData.length === this.state.dataForEdit.length) {
         this.setState({ proses: true })
         newData.forEach((data, index) => {
+          data.companyId = this.state.companyId
           promises.push(API.put(`/structure/${data.id}`, data, { headers: { token } }))
         })
         Promise.all(promises)
@@ -95,7 +114,7 @@ class AddDepartment extends Component {
             this.setState({ data: [], proses: false })
             await this.props.fetchDataStructure()
             swal('Ubah divisi sukses', '', 'success')
-            this.props.history.push('/setting/setting-perusahaan', { index: 2 })
+            this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
           })
           .catch(err => {
             this.setState({ proses: false })
@@ -119,7 +138,7 @@ class AddDepartment extends Component {
           .then(async ({ data }) => {
             this.setState({ data: [], proses: false })
             swal('Tambah divisi sukses', '', 'success')
-            this.props.history.push('/setting/setting-perusahaan', { index: 2 })
+            this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
           })
           .catch(err => {
             this.setState({ proses: false })
@@ -161,7 +180,7 @@ class AddDepartment extends Component {
               style={{ width: 130 }}
             >
               {
-                this.props.dataCompanies.map((company, index) =>
+                this.state.optionCompany.map((company, index) =>
                   <MenuItem value={company.company_id} key={index}>{company.acronym}</MenuItem>
                 )
               }
@@ -204,9 +223,10 @@ const mapDispatchToProps = {
   fetchDataStructure
 }
 
-const mapStateToProps = ({ dataCompanies }) => {
+const mapStateToProps = ({ dataCompanies, dinas }) => {
   return {
-    dataCompanies
+    dataCompanies,
+    dinas
   }
 }
 

@@ -54,7 +54,8 @@ class cardAddEmployee extends Component {
     dataAddressDinas: [],
     isDinas: false,
 
-    password: ''
+    password: '',
+    optionCompany: []
   }
 
   async componentDidMount() {
@@ -67,6 +68,7 @@ class cardAddEmployee extends Component {
       console.log(this.props.data)
       await this.fetchDataEdit()
     }
+    // console.log(this.props.location.state.index)
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -119,6 +121,18 @@ class cardAddEmployee extends Component {
 
     if (this.props.statusSubmit !== prevProps.statusSubmit && this.props.statusSubmit) {
       this.submit()
+    }
+
+    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.dinas !== prevProps.dinas) {
+      console.log(this.props.dataCompanies)
+      console.log(this.props.dinas)
+      let optionCompany = []
+      this.props.dinas.forEach(el => {
+        let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+        if (check) optionCompany.push(check)
+      })
+
+      this.setState({ optionCompany })
     }
   }
 
@@ -322,7 +336,7 @@ class cardAddEmployee extends Component {
   submit = () => {
     let newData = new FormData()
 
-    newData.append("userId", this.props.data.userId)
+    if (this.props.data) newData.append("userId", this.props.data.userId)
     newData.append("username", this.state.nik)
     if (!this.props.data) newData.append("password", this.state.dateOfBirth.split('-').reverse().join(''))
     if (this.props.data && this.state.password) newData.append("password", this.state.password)
@@ -536,7 +550,7 @@ class cardAddEmployee extends Component {
                 style={{ width: '100%' }}
               >
                 {
-                  this.props.dataCompanies.map((company, index) =>
+                  this.state.optionCompany.map((company, index) =>
                     <MenuItem value={company.company_id} key={index}>{company.company_name}</MenuItem>
                   )
                 }
@@ -999,13 +1013,14 @@ const mapDispatchToProps = {
   fetchDataAddress
 }
 
-const mapStateToProps = ({ dataCompanies, dataDepartments, dataPositions, dataUsers, dataAddress }) => {
+const mapStateToProps = ({ dataCompanies, dataDepartments, dataPositions, dataUsers, dataAddress, dinas }) => {
   return {
     dataCompanies,
     dataDepartments,
     dataPositions,
     dataUsers,
-    dataAddress
+    dataAddress,
+    dinas
   }
 }
 

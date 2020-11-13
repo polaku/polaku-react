@@ -67,15 +67,8 @@ class AddAdmin extends Component {
     await this.fetchOptionDesignation()
 
     if (this.props.location.state) {
-      console.log(this.props.location.state.data)
+      // console.log(this.props.location.state.data)
       if (this.props.location.state.data) {
-        // let temp = []
-        // let data = this.props.location.state.data.dinas
-        // console.log(data)
-        // await data.forEach(el => temp.push(true))
-
-        //         
-        // 
         let adminIdSelected = this.props.dataUsers.find(el => el.user_id === this.props.location.state.data.user_id)
         let adminTypeSelected = this.state.optionDesignation.find(el => el.value === this.props.location.state.data.designations_id)
         this.setState({
@@ -363,7 +356,7 @@ class AddAdmin extends Component {
   }
 
   navigateBack = () => {
-    this.props.history.push('/setting/setting-perusahaan', { index: 4 })
+    this.props.history.push('/setting/setting-perusahaan',  { index: this.props.location.state.index })
   }
 
   submit = async () => {
@@ -384,7 +377,7 @@ class AddAdmin extends Component {
       if (isNaN(this.state.adminType)) {
         if (this.state.semua) {
           roles = [
-            { menuId: 1, view: 1, created: 1, edited: 1, deleted: 1, download: 1 },
+            // { menuId: 1, view: 1, created: 1, edited: 1, deleted: 1, download: 1 },
             { menuId: 2, view: 1, created: 1, edited: 1, deleted: 1, download: 1 },
             { menuId: 3, view: 1, created: 1, edited: 1, deleted: 1, download: 1 },
             { menuId: 4, view: 1, created: 1, edited: 1, deleted: 1, download: 1 },

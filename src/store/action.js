@@ -131,15 +131,17 @@ export function fetchDataPIC() {
   }
 }
 
-export function fetchDataAddress() {
+export function fetchDataAddress(payload) {
   return {
-    type: 'FETCH_DATA_ADDRESS'
+    type: 'FETCH_DATA_ADDRESS',
+    payload
   }
 }
 
-export function fetchDataStructure() {
+export function fetchDataStructure(payload) {
   return {
-    type: 'FETCH_DATA_STRUCTURE'
+    type: 'FETCH_DATA_STRUCTURE',
+    payload
   }
 }
 

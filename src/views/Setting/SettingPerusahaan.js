@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {
@@ -39,17 +39,43 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-export default class SettingPerusahaan extends Component {
+class SettingPerusahaan extends Component {
   state = {
     value: this.props.location.state ? this.props.location.state.index : 0,
     index: 0,
     openModalOnBoarding: false,
+    label: []
   }
 
   componentDidMount() {
     // if (this.props.location.state) {
     //   this.setState({ value: this.props.location.state.index })
     // }
+    if (this.props.designation) {
+      this.fetchLabel()
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.designation !== prevProps.designation || this.props.isAdminsuper !== prevProps.isAdminsuper) {
+      this.fetchLabel()
+    }
+  }
+
+  fetchLabel = () => {
+    let label = []
+    console.log("this.props.designation", this.props.designation)
+    let checkAlamat = this.props.designation && this.props.designation.find(menu => menu.menu_id === 2)
+    let checkStruktur = this.props.designation && this.props.designation.find(menu => menu.menu_id === 3)
+    let checkKaryawn = this.props.designation && this.props.designation.find(menu => menu.menu_id === 4)
+    let checkAdmin = this.props.designation && this.props.designation.find(menu => menu.menu_id === 5)
+
+    if (this.props.isAdminsuper) label.push('OnBoarding')
+    if (checkAlamat) label.push('Alamat')
+    if (checkStruktur) label.push('Struktur')
+    if (checkKaryawn) label.push('Karyawan')
+    if (checkAdmin) label.push('Admin')
+    this.setState({ label })
   }
 
   handleChange = (event, newValue) => {
@@ -74,11 +100,11 @@ export default class SettingPerusahaan extends Component {
             textColor="secondary"
             onChange={this.handleChange}
           >
-            <Tab label="OnBoarding" style={{ marginRight: 30 }} />
-            <Tab label="Alamat" style={{ marginRight: 30 }} />
-            <Tab label="Struktur" style={{ marginRight: 30 }} />
-            <Tab label="Karyawan" style={{ marginRight: 30 }} />
-            <Tab label="Admin" style={{ marginRight: 30 }} />
+            {
+              this.state.label.map((label, index) =>
+                <Tab label={label} key={'label' + index} style={{ marginRight: 30 }} />
+              )
+            }
           </Tabs>
           <Divider />
         </Paper>
@@ -88,32 +114,87 @@ export default class SettingPerusahaan extends Component {
           style={{ height: '100%' }}>
 
           {/* OnBoarding */}
-          <TabPanel value={this.state.value} index={0} style={{ height: '85vh' }}>
-            <Paper style={{ padding: 10, paddingLeft: 20, marginBottom: 5 }}>
-              pilih untuk lakukan aksi
-              <Button variant="outlined" style={{ marginLeft: '10px' }} onClick={this.handleModalOnBoarding}>onboarding baru</Button>
-            </Paper>
-            <PanelOnBoarding />
+          <TabPanel value={this.state.value} index={0}>
+            {
+              this.state.label[this.state.value] === 'OnBoarding'
+                ? <>
+                  <Paper style={{ padding: 10, paddingLeft: 20, marginBottom: 5 }}>
+                    pilih untuk lakukan aksi
+                    <Button variant="outlined" style={{ marginLeft: '10px' }} onClick={this.handleModalOnBoarding}>onboarding baru</Button>
+                  </Paper>
+                  <PanelOnBoarding index={this.state.value} />
+                </>
+                : this.state.label[this.state.value] === 'Alamat' ? <PanelAddress index={this.state.value} />
+                  : this.state.label[this.state.value] === 'Struktur' ? <PanelStructure index={this.state.value} />
+                    : this.state.label[this.state.value] === 'Karyawan' ? <PanelEmployee index={this.state.value} />
+                      : this.state.label[this.state.value] === 'Admin' && <PanelAdmin index={this.state.value} />
+            }
           </TabPanel>
 
-          {/* Alamat */}
           <TabPanel value={this.state.value} index={1}>
-            <PanelAddress />
+            {
+              this.state.label[this.state.value] === 'OnBoarding'
+                ? <>
+                  <Paper style={{ padding: 10, paddingLeft: 20, marginBottom: 5 }}>
+                    pilih untuk lakukan aksi
+                    <Button variant="outlined" style={{ marginLeft: '10px' }} onClick={this.handleModalOnBoarding}>onboarding baru</Button>
+                  </Paper>
+                  <PanelOnBoarding index={this.state.value} />
+                </>
+                : this.state.label[this.state.value] === 'Alamat' ? <PanelAddress index={this.state.value} />
+                  : this.state.label[this.state.value] === 'Struktur' ? <PanelStructure index={this.state.value} />
+                    : this.state.label[this.state.value] === 'Karyawan' ? <PanelEmployee index={this.state.value} />
+                      : this.state.label[this.state.value] === 'Admin' && <PanelAdmin index={this.state.value} />
+            }
           </TabPanel>
 
-          {/* Struktur */}
           <TabPanel value={this.state.value} index={2}>
-            <PanelStructure />
+            {
+              this.state.label[this.state.value] === 'OnBoarding'
+                ? <>
+                  <Paper style={{ padding: 10, paddingLeft: 20, marginBottom: 5 }}>
+                    pilih untuk lakukan aksi
+                    <Button variant="outlined" style={{ marginLeft: '10px' }} onClick={this.handleModalOnBoarding}>onboarding baru</Button>
+                  </Paper>
+                  <PanelOnBoarding index={this.state.value} />
+                </>
+                : this.state.label[this.state.value] === 'Alamat' ? <PanelAddress index={this.state.value} />
+                  : this.state.label[this.state.value] === 'Struktur' ? <PanelStructure index={this.state.value} />
+                    : this.state.label[this.state.value] === 'Karyawan' ? <PanelEmployee index={this.state.value} />
+                      : this.state.label[this.state.value] === 'Admin' && <PanelAdmin index={this.state.value} />
+            }
           </TabPanel>
-
-          {/* Karyawan */}
           <TabPanel value={this.state.value} index={3}>
-            <PanelEmployee />
+            {
+              this.state.label[this.state.value] === 'OnBoarding'
+                ? <>
+                  <Paper style={{ padding: 10, paddingLeft: 20, marginBottom: 5 }}>
+                    pilih untuk lakukan aksi
+                    <Button variant="outlined" style={{ marginLeft: '10px' }} onClick={this.handleModalOnBoarding}>onboarding baru</Button>
+                  </Paper>
+                  <PanelOnBoarding index={this.state.value} />
+                </>
+                : this.state.label[this.state.value] === 'Alamat' ? <PanelAddress index={this.state.value} />
+                  : this.state.label[this.state.value] === 'Struktur' ? <PanelStructure index={this.state.value} />
+                    : this.state.label[this.state.value] === 'Karyawan' ? <PanelEmployee index={this.state.value} />
+                      : this.state.label[this.state.value] === 'Admin' && <PanelAdmin index={this.state.value} />
+            }
           </TabPanel>
-
-          {/* Admin */}
           <TabPanel value={this.state.value} index={4}>
-            <PanelAdmin />
+            {
+              this.state.label[this.state.value] === 'OnBoarding'
+                ? <>
+                  <Paper style={{ padding: 10, paddingLeft: 20, marginBottom: 5 }}>
+                    pilih untuk lakukan aksi
+                    <Button variant="outlined" style={{ marginLeft: '10px' }} onClick={this.handleModalOnBoarding}>onboarding baru</Button>
+                  </Paper>
+                  <PanelOnBoarding index={this.state.value} />
+                </>
+                : this.state.label[this.state.value] === 'Alamat' ? <PanelAddress index={this.state.value} />
+                  : this.state.label[this.state.value] === 'Struktur' ? <PanelStructure index={this.state.value} />
+                    : this.state.label[this.state.value] === 'Karyawan' ? <PanelEmployee index={this.state.value} />
+                      : this.state.label[this.state.value] === 'Admin' && <PanelAdmin index={this.state.value} />
+            }
           </TabPanel>
         </SwipeableViews>
 
@@ -124,3 +205,12 @@ export default class SettingPerusahaan extends Component {
     )
   }
 }
+
+const mapStateToProps = ({ designation, isAdminsuper }) => {
+  return {
+    designation,
+    isAdminsuper
+  }
+}
+
+export default connect(mapStateToProps)(SettingPerusahaan)

@@ -16,11 +16,13 @@ import CardEmployee from './cardEmployee';
 import { fetchDataUsers, fetchDataCompanies, fetchDataDinas } from '../../store/action';
 
 import ModalCreateEditMuchEmployee from '../modal/modalCreateEditMuchEmployee';
+import ModalLogSetting from '../modal/modalLogSetting';
 
 class panelEmployee extends Component {
   state = {
     labelTab: ['Semua'],
     search: '',
+    searchDinas: '',
     valueA: 0,
     valueB: 0,
     index: 0,
@@ -37,7 +39,11 @@ class panelEmployee extends Component {
     isCreate: false,
     page: 0,
     rowsPerPage: 10,
-    proses: true
+    proses: true,
+    optionCompany: [],
+
+    openModalLogSetting: false,
+    type: ''
   }
 
   async componentDidMount() {
@@ -50,32 +56,14 @@ class panelEmployee extends Component {
 
     await this.props.fetchDataCompanies()
 
-    let newTab = [{ id: 0, label: 'Semua' }]
-    await this.props.dataCompanies.forEach(company => {
-      newTab.push({ id: company.company_id, label: company.acronym })
-    })
-
-    this.setState({ proses: false, labelTab: newTab })
+    if (this.props.dataCompanies && this.props.dinas) {
+      this.fetchOptionCompany()
+    }
   }
 
   async componentDidUpdate(prevProps, prevState) {
     if (this.state.search !== prevState.search && this.state.search === "") {
       this.setState({ dataForDisplay: this.state.data })
-    }
-
-    if (this.state.value !== prevState.value) {
-      if (this.state.value === 0) {
-        this.setState({ dataForDisplay: this.state.data })
-      } else {
-        let data
-        if (this.state.valueA === 0) {
-          data = await this.state.data.filter(el => el.tbl_company.acronym === this.state.label[this.state.value])
-        } else {
-          console.log(this.state.value)
-          // data = await this.state.data.filter(el => el.tbl_company.acronym === this.state.label[this.state.value])
-        }
-        this.setState({ dataForDisplay: data })
-      }
     }
 
     if (this.state.valueA !== prevState.valueA) {
@@ -90,6 +78,10 @@ class panelEmployee extends Component {
     if (this.props.dataUsers !== prevProps.dataUsers || this.props.dataDinas !== prevProps.dataDinas) {
       await this.fetchData()
       this.setState({ proses: false })
+    }
+
+    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.dinas !== prevProps.dinas) {
+      this.fetchOptionCompany()
     }
   }
 
@@ -131,6 +123,15 @@ class panelEmployee extends Component {
     }
   }
 
+  fetchOptionCompany = () => {
+    let optionCompany = [{ acronym: 'Semua' }]
+    this.props.dinas.forEach(el => {
+      let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+      if (check) optionCompany.push(check)
+    })
+    this.setState({ optionCompany })
+  }
+
   handleChangeTabA = (event, newValue) => {
     this.setState({ valueA: newValue })
   };
@@ -138,19 +139,23 @@ class panelEmployee extends Component {
   handleChangeTabB = async (event, newValue) => {
     let selected = newValue
     console.log(selected)
-    await this.setState({ valueB: selected, proses: true })
+    await this.setState({ valueB: selected, proses: true, search: '', searchDinas: '', page: 0 })
 
-    if (this.state.valueA === 0) {
-
-      let companySelectedId = this.state.labelTab[selected]
-      await this.props.fetchDataUsers({ limit: this.state.rowsPerPage, page: this.state.page, company: companySelectedId.id })
-    } else {
+    if (this.state.valueA === 0) { //Karyawan
+      if (selected === 0) {
+        await this.props.fetchDataUsers({ limit: this.state.rowsPerPage, page: 0 })
+      } else {
+        let companySelectedId = this.state.optionCompany[selected]
+        console.log(companySelectedId)
+        await this.props.fetchDataUsers({ limit: this.state.rowsPerPage, page: 0, company: companySelectedId.company_id })
+      }
+    } else { //Dinas
       let status
       if (selected === 1) status = 'tetap'
       else if (selected === 2) status = 'kontrak'
       else if (selected === 3) status = 'probation'
       else if (selected === 4) status = 'berhenti'
-      await this.props.fetchDataDinas({ limit: this.state.rowsPerPage, page: this.state.page, status })
+      await this.props.fetchDataDinas({ limit: this.state.rowsPerPage, page: 0, status })
     }
     this.setState({ proses: false })
   };
@@ -167,26 +172,25 @@ class panelEmployee extends Component {
   }
 
   handleSearch = async () => {
+    let query = { keyword: this.state.search }
+    this.setState({ page: 0 })
     if (this.state.valueB !== 0) {
-      let companySelectedId = this.state.labelTab[this.state.valueB]
-      await this.props.fetchDataUsers({ limit: this.state.rowsPerPage, page: this.state.page, company: companySelectedId.id, keyword: this.state.search })
-    } else {
-      await this.props.fetchDataUsers({ limit: this.state.rowsPerPage, page: this.state.page, keyword: this.state.search })
+      let companySelected = this.state.optionCompany[this.state.valueB]
+      if (companySelected) query.company = companySelected.company_id
     }
+    await this.props.fetchDataUsers({ limit: this.state.rowsPerPage, page: 0, ...query })
   }
 
   handleSearchDinas = async () => {
+    let query = { keyword: this.state.keywordDinas }
+    this.setState({ page: 0 })
     if (this.state.valueB !== 0) {
-      let status
-      if (this.state.valueB === 1) status = 'tetap'
-      else if (this.state.valueB === 2) status = 'kontrak'
-      else if (this.state.valueB === 3) status = 'probation'
-      else if (this.state.valueB === 4) status = 'berhenti'
-
-      await this.props.fetchDataDinas({ limit: this.state.rowsPerPage, page: this.state.page, status, keyword: this.state.keywordDinas })
-    } else {
-      await this.props.fetchDataDinas({ limit: this.state.rowsPerPage, page: this.state.page, keyword: this.state.keywordDinas })
+      if (this.state.valueB === 1) query.status = 'tetap'
+      else if (this.state.valueB === 2) query.status = 'kontrak'
+      else if (this.state.valueB === 3) query.status = 'probation'
+      else if (this.state.valueB === 4) query.status = 'berhenti'
     }
+    await this.props.fetchDataDinas({ limit: this.state.rowsPerPage, page: 0, ...query })
   }
 
   handleModalCreateEditMuchEmployee = (args) => {
@@ -202,6 +206,13 @@ class panelEmployee extends Component {
       })
     }
 
+  }
+
+  handleModalLogSetting = (args) => {
+    this.setState({
+      openModalLogSetting: !this.state.openModalLogSetting,
+      type: this.state.valueA === 0 ? 'users' : 'dinas'
+    })
   }
 
   // handleCheck = async (addressId) => {
@@ -237,10 +248,18 @@ class panelEmployee extends Component {
       page: newPage
     })
     this.setState({ proses: true })
+    let query = {}
+    if (this.state.search) query.keyword = this.state.search
+    if (this.state.valueB !== 0) {
+      console.log("MASUK SINI")
+      let companySelected = this.state.optionCompany[this.state.valueB]
+      if (companySelected) query.company = companySelected.company_id
+    }
+
     if (this.state.valueA === 0) {
-      await this.props.fetchDataUsers({ limit: this.state.rowsPerPage, page: newPage }) //limit:,skip:,company: 
+      await this.props.fetchDataUsers({ limit: this.state.rowsPerPage, page: newPage, ...query }) //limit:,skip:,company: 
     } else {
-      await this.props.fetchDataDinas({ limit: this.state.rowsPerPage, page: newPage })
+      await this.props.fetchDataDinas({ limit: this.state.rowsPerPage, page: newPage, ...query })
     }
   }
 
@@ -250,10 +269,16 @@ class panelEmployee extends Component {
       page: 0
     })
     this.setState({ proses: true })
+    let query = {}
+    if (this.state.search) query.keyword = this.state.search
+    if (this.state.valueB !== 0) {
+      let companySelected = this.state.optionCompany[this.state.valueB]
+      if (companySelected) query.company = companySelected.company_id
+    }
     if (this.state.valueA === 0) {
-      await this.props.fetchDataUsers({ limit: this.state.rowsPerPage + event.target.value, page: 0 }) //limit:,skip:,company: 
+      await this.props.fetchDataUsers({ limit: this.state.rowsPerPage + event.target.value, page: 0, ...query }) //limit:,skip:,company: 
     } else {
-      await this.props.fetchDataDinas({ limit: this.state.rowsPerPage + event.target.value, page: 0 })
+      await this.props.fetchDataDinas({ limit: this.state.rowsPerPage + event.target.value, page: 0, ...query })
     }
   }
 
@@ -292,10 +317,11 @@ class panelEmployee extends Component {
                         <img src={process.env.PUBLIC_URL + '/add-much-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                         <p style={{ margin: '0px 0px 0px 5px' }}>Tambah banyak</p>
                       </Grid>
-                      <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-employee')}>
+                      <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-employee', { index: this.props.index })}>
                         <img src={process.env.PUBLIC_URL + '/add-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                         <p style={{ margin: '0px 0px 0px 5px' }}>Tambah karyawan</p>
                       </Grid>
+                      <p style={{ color: '#d71149', margin: 0, cursor: 'pointer' }} onClick={this.handleModalLogSetting}>Lihat riwayat perubahan</p>
                     </Grid>
 
                     <Paper id="search" style={{ padding: 10, paddingLeft: 20, paddingBottom: 20, marginBottom: 20 }}>
@@ -306,8 +332,8 @@ class panelEmployee extends Component {
                         onChange={this.handleChangeTabB}
                       >
                         {
-                          this.state.labelTab.map((el, index) =>
-                            <Tab key={index} label={el.label} style={{ marginRight: 10, minWidth: 80 }} />
+                          this.state.optionCompany.map((el, index) =>
+                            <Tab key={index} label={el.acronym} style={{ marginRight: 10, minWidth: 80 }} />
                           )
                         }
                       </Tabs>
@@ -365,10 +391,11 @@ class panelEmployee extends Component {
                         <img src={process.env.PUBLIC_URL + '/add-much-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                         <p style={{ margin: '0px 0px 0px 5px' }}>Tambah banyak karyawan dinas</p>
                       </Grid> */}
-                      <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-service')}>
+                      <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-service', { index: this.props.index })}>
                         <img src={process.env.PUBLIC_URL + '/add-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                         <p style={{ margin: '0px 0px 0px 5px' }}>Tambah karyawan dinas</p>
                       </Grid>
+                      <p style={{ color: '#d71149', margin: 0, cursor: 'pointer' }} onClick={this.handleModalLogSetting}>Lihat riwayat perubahan</p>
                     </Grid>
 
                     <Paper id="search" style={{ padding: 10, paddingLeft: 20, paddingBottom: 20, marginBottom: 20 }}>
@@ -432,8 +459,8 @@ class panelEmployee extends Component {
                   </div>
                   : this.state.valueA === 0
                     ? this.state.dataForDisplay.map((data, index) =>
-                      <CardEmployee key={index} data={data} selectAll={this.state.selectAll} handleCheck={this.handleCheck} refresh={this.refresh} />)
-                    : this.state.dataForDisplay.map((data, index) => <CardService key={index} data={data} selectAll={this.state.selectAll} handleCheck={this.handleCheck} refresh={this.refresh} rowsPerPage={this.state.rowsPerPage} page={this.state.page} />)
+                      <CardEmployee key={index} data={data} selectAll={this.state.selectAll} handleCheck={this.handleCheck} refresh={this.refresh} index={this.props.index} />)
+                    : this.state.dataForDisplay.map((data, index) => <CardService key={index} data={data} selectAll={this.state.selectAll} handleCheck={this.handleCheck} refresh={this.refresh} rowsPerPage={this.state.rowsPerPage} page={this.state.page} index={this.props.index} />)
               }
 
               <TablePagination
@@ -457,6 +484,9 @@ class panelEmployee extends Component {
         {
           this.state.openModalCreateEditMuchEmployee && <ModalCreateEditMuchEmployee status={this.state.openModalCreateEditMuchEmployee} close={this.handleModalCreateEditMuchEmployee} isCreate={this.state.isCreate} refresh={this.refresh} />
         }
+        {
+          this.state.openModalLogSetting && <ModalLogSetting status={this.state.openModalLogSetting} close={this.handleModalLogSetting} type={this.state.type} />
+        }
       </div>
     )
   }
@@ -468,7 +498,7 @@ const mapDispatchToProps = {
   fetchDataDinas
 }
 
-const mapStateToProps = ({ loading, dataUsers, lengthAllDataUsers, dataCompanies, dataDinas, counterEmployeeTetap, counterEmployeeKontrak, counterEmployeeProbation, counterEmployeeBerhenti, allUser }) => {
+const mapStateToProps = ({ loading, dataUsers, lengthAllDataUsers, dataCompanies, dataDinas, counterEmployeeTetap, counterEmployeeKontrak, counterEmployeeProbation, counterEmployeeBerhenti, allUser, dinas }) => {
   return {
     loading,
     dataUsers,
@@ -479,7 +509,8 @@ const mapStateToProps = ({ loading, dataUsers, lengthAllDataUsers, dataCompanies
     counterEmployeeKontrak,
     counterEmployeeProbation,
     counterEmployeeBerhenti,
-    counterAllUser: allUser
+    counterAllUser: allUser,
+    dinas
   }
 }
 

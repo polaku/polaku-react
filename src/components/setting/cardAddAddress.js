@@ -334,6 +334,7 @@ export default class cardAddAddress extends Component {
   }
 
   handleChangeBuilding = (newValue, actionMeta) => {
+    console.log(newValue)
     if (newValue !== null) {
       this.setState({
         building: newValue.value

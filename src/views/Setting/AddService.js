@@ -47,7 +47,7 @@ class AddService extends Component {
   };
 
   navigateBack = () => {
-    this.props.history.push('/setting/setting-perusahaan')
+    this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
   }
 
   addDinas = () => {
@@ -90,7 +90,7 @@ class AddService extends Component {
             this.setState({ data: [], proses: false })
             await this.props.fetchDataDinas()
             swal('Ubah dinas sukses', '', 'success')
-            this.props.history.push('/setting/setting-perusahaan', { index: 3 })
+            this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
           })
           .catch(err => {
             console.log(err.response)
@@ -115,7 +115,7 @@ class AddService extends Component {
             this.setState({ data: [], proses: false })
             await this.props.fetchDataDinas()
             swal('Tambah dinas sukses', '', 'success')
-            this.props.history.push('/setting/setting-perusahaan', { index: 3 })
+            this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
           })
           .catch(err => {
             this.setState({ proses: false, statusSubmit: false })
@@ -156,7 +156,7 @@ class AddService extends Component {
           this.state.dataForEdit.length === 0 && <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addDinas} disabled={this.state.proses}>+ tambah dinas baru</p>
         }
 
-        <Button variant="outlined" color="secondary" style={{ width: 150, margin: 10 }} onClick={() => this.props.history.goBack()} disabled={this.state.proses}>batalkan</Button>
+        <Button variant="outlined" color="secondary" style={{ width: 150, margin: 10 }} onClick={() => this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })} disabled={this.state.proses}>batalkan</Button>
         <Button variant="contained" color="secondary" style={{ width: 150, margin: 10 }} onClick={this.submit} disabled={this.state.proses}>simpan</Button>
       </Grid>
     )

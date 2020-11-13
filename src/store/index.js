@@ -583,11 +583,31 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get('/address', { headers: { token } })
+      if (action.payload) {
+        if (action.payload.company) {
+          if (action.payload.keyword) {
+            getData = await API.get(
+              `/address?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}&search=${action.payload.keyword}`,
+              { headers: { token } })
+          } else {
+            getData = await API.get(
+              `/address?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}`,
+              { headers: { token } })
+          }
+        } else {
+          if (action.payload.keyword) {
+            getData = await API.get(`/address?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, { headers: { token } })
+          } else {
+            getData = await API.get(`/address?limit=${action.payload.limit}&page=${action.payload.page}`, { headers: { token } })
+          }
+        }
+      } else {
+        getData = await API.get('/address', { headers: { token } })
+      }
 
       next({
         type: 'FETCH_DATA_ADDRESS_SUCCESS',
-        payload: { dataAddress: getData.data.data }
+        payload: { dataAddress: getData.data.data, totalDataAddress: getData.data.totalData }
       })
 
     } catch (err) {
@@ -604,11 +624,31 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get('/structure', { headers: { token } })
+      if (action.payload) {
+        if (action.payload.company) {
+          if (action.payload.keyword) {
+            getData = await API.get(
+              `/structure?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}&search=${action.payload.keyword}`,
+              { headers: { token } })
+          } else {
+            getData = await API.get(
+              `/structure?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}`,
+              { headers: { token } })
+          }
+        } else {
+          if (action.payload.keyword) {
+            getData = await API.get(`/structure?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, { headers: { token } })
+          } else {
+            getData = await API.get(`/structure?limit=${action.payload.limit}&page=${action.payload.page}`, { headers: { token } })
+          }
+        }
+      } else {
+        getData = await API.get('/structure', { headers: { token } })
+      }
 
       next({
         type: 'FETCH_DATA_STRUCTURE_SUCCESS',
-        payload: { dataStructure: getData.data.data }
+        payload: { dataStructure: getData.data.data, totalDataStructure: getData.data.totalData }
       })
 
     } catch (err) {
@@ -693,7 +733,6 @@ const api = store => next => async action => {
           }
         }
       } else {
-        console.log("MASUK SINI")
         getData = await API.get('/designation', { headers: { token } })
       }
 

@@ -25,7 +25,8 @@ class AddAddress extends Component {
     dataForEdit: [],
     tempDataForEdit: [],
     proses: false,
-    dataBuilding: []
+    dataBuilding: [],
+    optionCompany: []
   }
 
   async componentDidMount() {
@@ -36,12 +37,27 @@ class AddAddress extends Component {
         data.push()
         this.setState({ companyId: this.props.location.state.data.company_id, disableCompanyId: true, dataForEdit: data })
       } else {
-        this.setState({ companyId: this.props.location.state.company_id, disableCompanyId: true })
+        this.setState({ disableCompanyId: false })
       }
     }
-
+    console.log(this.props.location.state)
     await this.props.fetchDataCompanies()
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.dinas !== prevProps.dinas) {
+      console.log(this.props.dataCompanies)
+      console.log(this.props.dinas)
+      let optionCompany = []
+      this.props.dinas.forEach(el => {
+        let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+        if (check) optionCompany.push(check)
+      })
+
+      this.setState({ optionCompany })
+    }
+  }
+
 
   fetchBuilding = async () => {
     try {
@@ -57,7 +73,8 @@ class AddAddress extends Component {
   };
 
   navigateBack = () => {
-    this.props.history.push('/setting/setting-perusahaan', { index: 1 })
+    this.props.history.push('/setting/setting-perusahaan', this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
+    )
   }
 
   addAlamat = () => {
@@ -103,7 +120,8 @@ class AddAddress extends Component {
               this.setState({ data: [], proses: false })
               await this.props.fetchDataAddress()
               swal('Ubah alamat sukses', '', 'success')
-              this.props.history.push('/setting/setting-perusahaan', { index: 1 })
+              this.props.history.push('/setting/setting-perusahaan', this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
+              )
             })
             .catch(err => {
               this.setState({ proses: false })
@@ -134,7 +152,8 @@ class AddAddress extends Component {
               this.setState({ data: [], proses: false })
               await this.props.fetchDataAddress()
               swal('Tambah alamat sukses', '', 'success')
-              this.props.history.push('/setting/setting-perusahaan', { index: 1 })
+              this.props.history.push('/setting/setting-perusahaan', this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
+              )
             })
             .catch(err => {
               this.setState({ proses: false })
@@ -182,7 +201,7 @@ class AddAddress extends Component {
               style={{ width: 130 }}
             >
               {
-                this.props.dataCompanies.map((company, index) =>
+                this.state.optionCompany.map((company, index) =>
                   <MenuItem value={company.company_id} key={index}>{company.acronym}</MenuItem>
                 )
               }
@@ -213,7 +232,8 @@ class AddAddress extends Component {
           this.state.dataForEdit.length === 0 && <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addAlamat} disabled={this.state.proses}>+ tambah alamat baru</p>
         }
 
-        <Button variant="outlined" color="secondary" style={{ width: 150, margin: 10 }} onClick={() => this.props.history.push('/setting/setting-perusahaan', { index: 1 })} disabled={this.state.proses}>batalkan</Button>
+        <Button variant="outlined" color="secondary" style={{ width: 150, margin: 10 }} onClick={() => this.props.history.push('/setting/setting-perusahaan', this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
+        )} disabled={this.state.proses}>batalkan</Button>
         <Button variant="contained" color="secondary" style={{ width: 150, margin: 10 }} onClick={this.submit} disabled={this.state.proses}>simpan</Button>
       </Grid>
     )
@@ -227,9 +247,10 @@ const mapDispatchToProps = {
   fetchDataAddress
 }
 
-const mapStateToProps = ({ dataCompanies }) => {
+const mapStateToProps = ({ dataCompanies, dinas }) => {
   return {
-    dataCompanies
+    dataCompanies,
+    dinas
   }
 }
 

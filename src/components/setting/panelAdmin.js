@@ -15,6 +15,7 @@ import CardAdmin from './cardAdmin';
 import { fetchDataCompanies, fetchDataDesignation } from '../../store/action';
 
 import ModalCreateEditMuchEmployee from '../modal/modalCreateEditMuchEmployee';
+import ModalLogSetting from '../modal/modalLogSetting';
 
 class panelAdmin extends Component {
   state = {
@@ -36,7 +37,9 @@ class panelAdmin extends Component {
     isCreate: false,
     page: 0,
     rowsPerPage: 10,
-    proses: true
+    proses: true,
+
+    openModalLogSetting: false,
   }
 
   async componentDidMount() {
@@ -63,7 +66,6 @@ class panelAdmin extends Component {
     if (this.state.valueA !== prevState.valueA) {
       await this.props.fetchDataDesignation({ limit: 10, page: 0 })
       this.setState({ proses: false, valueB: 0, page: 0, rowsPerPage: 10 })
-
     }
 
   }
@@ -104,7 +106,7 @@ class panelAdmin extends Component {
   }
 
   handleSearch = async () => {
-    this.setState({ proses: true })
+    this.setState({ proses: true, page: 0 })
 
     if (this.state.valueB !== 0) {
       let companySelectedId = this.state.labelTab[this.state.valueB]
@@ -157,6 +159,12 @@ class panelAdmin extends Component {
 
   }
 
+  handleModalLogSetting = (args) => {
+    this.setState({
+      openModalLogSetting: !this.state.openModalLogSetting
+    })
+  }
+
   render() {
     return (
       <div style={{ width: '100%', paddingTop: 0 }}>
@@ -175,10 +183,11 @@ class panelAdmin extends Component {
                   <img src={process.env.PUBLIC_URL + '/add-much-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                   <p style={{ margin: '0px 0px 0px 5px' }}>Tambah banyak</p>
                 </Grid> */}
-                <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-admin')}>
+                <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-admin', { index: this.props.index })}>
                   <img src={process.env.PUBLIC_URL + '/add-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                   <p style={{ margin: '0px 0px 0px 5px' }}>Tambah admin</p>
                 </Grid>
+                <p style={{ color: '#d71149', margin: 0, cursor: 'pointer' }} onClick={this.handleModalLogSetting}>Lihat riwayat perubahan</p>
               </Grid>
 
               <Paper id="search" style={{ padding: 10, paddingLeft: 20, paddingBottom: 20, marginBottom: 20 }}>
@@ -201,7 +210,7 @@ class panelAdmin extends Component {
                   {/* </form> */}
                   <Button onClick={this.handleSearch} variant="contained" style={{ width: 150 }}>
                     Cari
-                        </Button>
+                  </Button>
                 </Grid>
               </Paper>
 
@@ -251,6 +260,9 @@ class panelAdmin extends Component {
         }
         {
           this.state.openModalCreateEditMuchEmployee && <ModalCreateEditMuchEmployee status={this.state.openModalCreateEditMuchEmployee} close={this.handleModalCreateEditMuchEmployee} isCreate={this.state.isCreate} refresh={this.refresh} />
+        }
+        {
+          this.state.openModalLogSetting && <ModalLogSetting status={this.state.openModalLogSetting} close={this.handleModalLogSetting} type="designation" />
         }
       </div >
     )
