@@ -335,7 +335,7 @@ const api = store => next => async action => {
         getData = await API.get('/contactUs/allContactUs', { headers: { token } })
       }
       // let newData = await getData.data.data.filter(el => el.user_id === action.payload)
-      // let newDataStaff = await getData.data.data.filter(el => el.evaluator_1 === action.payload || el.evaluator_2 === action.payload)
+      // let newDataStaff = await getData.data.data.filter(el => el.evaluator_1 === action.payload || el.evaluator_2 === action.payload  || action.payload === 1)
 
       let newData = [], newDataStaff = []
       if (action.payload) {
@@ -351,11 +351,11 @@ const api = store => next => async action => {
             ) {
 
               if (el.user_id === action.payload) newData.push(el)
-              else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+              else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload || action.payload === 1) newDataStaff.push(el)
 
               // if (lastDate.length > 1) {   // for data from web php (yyyy-mm-dd,yyyy-mm-dd,yyyy-mm-dd) 
               //   if (Number(newLastDate.slice(newLastDate.length - 2, newLastDate.length)) >= new Date().getDate()) {
-              //     if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+              //     if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload || action.payload === 1) newDataStaff.push(el)
               //   }
               // } else { // for data from mobile (yyyy-mm-dd hh:mm:ss)
               //   if ((Number(newLastDate.slice(newLastDate.length - 2, newLastDate.length)) + (Number(el.leave_request) - 1)) >= new Date().getDate()) {                
@@ -369,14 +369,14 @@ const api = store => next => async action => {
               && Number(el.date_imp.slice(el.date_imp.length - 10, el.date_imp.length - 6)) >= new Date().getFullYear()) {
 
               if (el.user_id === action.payload) newData.push(el)
-              else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+              else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload || action.payload === 1) newDataStaff.push(el)
 
               // if (Number(el.date_imp.slice(el.date_imp.length - 2, el.date_imp.length)) >= new Date().getDate()) {
               // }
 
             } else if (Number(el.date_imp.slice(el.date_imp.length - 10, el.date_imp.length - 6)) > new Date().getFullYear()) {   // if next year
               if (el.user_id === action.payload) newData.push(el)
-              else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+              else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload || action.payload === 1) newDataStaff.push(el)
             }
           } else if (el.date_ijin_absen_end) {  // ia
             if (
@@ -384,14 +384,14 @@ const api = store => next => async action => {
               && Number(el.date_ijin_absen_end.slice(el.date_ijin_absen_end.length - 10, el.date_ijin_absen_end.length - 6)) >= new Date().getFullYear()) {
 
               if (el.user_id === action.payload) newData.push(el)
-              else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+              else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload || action.payload === 1) newDataStaff.push(el)
 
               // if (Number(el.date_ijin_absen_end.slice(el.date_ijin_absen_end.length - 2, el.date_ijin_absen_end.length)) > new Date().getDate()) {
               // }
 
             } else if (Number(el.date_ijin_absen_end.slice(el.date_ijin_absen_end.length - 10, el.date_ijin_absen_end.length - 6)) > new Date().getFullYear()) {  // if next year
               if (el.user_id === action.payload) newData.push(el)
-              else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+              else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload || action.payload === 1) newDataStaff.push(el)
             }
           } else if (el.type === "contact_us") {  // type === contact_us
             if ((el.status !== 'done' && el.status !== 'cancel') ||
@@ -399,11 +399,11 @@ const api = store => next => async action => {
                 new Date(el.done_expired_date).getFullYear() >= new Date().getFullYear())) {
 
               if (el.user_id === action.payload) newData.push(el)
-              else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+              else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload || action.payload === 1) newDataStaff.push(el)
 
             } else if (new Date(el.done_expired_date).getFullYear() > new Date().getFullYear()) { // if next year
               if (el.user_id === action.payload) newData.push(el)
-              else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload) newDataStaff.push(el)
+              else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload || action.payload === 1) newDataStaff.push(el)
             }
           }
         })

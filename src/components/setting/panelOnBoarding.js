@@ -120,7 +120,7 @@ class panelOnBoarding extends Component {
       }
 
       if (user.length > 0) {
-        let lastUpdate = '2020-01-01T00:00:00.000Z'
+        let lastUpdate = '2000-01-01T00:00:00.000Z'
 
         await user.forEach(async (el) => {
           if (lastUpdate < el.tbl_account_detail.updatedAt) lastUpdate = el.tbl_account_detail.updatedAt
@@ -144,7 +144,9 @@ class panelOnBoarding extends Component {
           }
         })
 
-        element.userLastUpdate = lastUpdate
+        if (lastUpdate !== '2000-01-01T00:00:00.000Z') element.userLastUpdate = lastUpdate
+        else element.userLastUpdate = null
+
         element.userNotComplete = userNotComplete
       }
     })

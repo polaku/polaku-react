@@ -57,7 +57,7 @@ class HR extends Component {
     })
 
     await this.props.fetchDataContactUs(this.props.userId)
-
+    console.log(this.props.dataContactUsStaff)
     let tempData = await this.props.dataContactUs.filter(el => el.date_ijin_absen_start !== null || el.date_imp !== null || el.leave_date !== null)
 
     let tempDataPengajuan = await tempData.filter(el => el.status === 'new' || el.status === 'new2')
@@ -113,6 +113,11 @@ class HR extends Component {
         }
       }
     })
+
+    console.log("tempDataPengajuan", tempDataPengajuan)
+    console.log("tempDataDisetujui", tempDataDisetujui)
+    console.log("tempDataPengajuanStaff", tempDataPengajuanStaff)
+    console.log("tempDataStaffSedangIjin", tempDataStaffSedangIjin)
 
     this.setState({
       proses: false,
@@ -243,28 +248,35 @@ class HR extends Component {
 
         <Grid container>
           {
-            this.state.ijinTab === 0 && this.state.dataIjinPengajuanStaff.map((element, index) =>
+            this.props.userId === 1 && this.state.dataIjinPengajuanStaff.map((element, index) =>
               <Grid item md={3} sm={6} key={index} style={{ padding: 10 }}>
                 <CardPermintaanHRD data={element} ijinTabs={0} ijinTab={0} fetchData={this.fetchData} />
               </Grid>
             )
           }
           {
-            this.state.ijinTab === 1 && this.state.dataIjinStaffSedangIjin.map((element, index) =>
+            this.state.ijinTab === 0 && this.props.userId !== 1 && this.state.dataIjinPengajuanStaff.map((element, index) =>
+              <Grid item md={3} sm={6} key={index} style={{ padding: 10 }}>
+                <CardPermintaanHRD data={element} ijinTabs={0} ijinTab={0} fetchData={this.fetchData} />
+              </Grid>
+            )
+          }
+          {
+            this.state.ijinTab === 1 && this.props.userId !== 1 && this.state.dataIjinStaffSedangIjin.map((element, index) =>
               <Grid item md={3} sm={6} key={index} style={{ padding: 10 }}>
                 <CardPermintaanHRD data={element} ijinTabs={0} ijinTab={1} fetchData={this.fetchData} />
               </Grid>
             )
           }
           {
-            this.state.ijinTab === 2 && this.state.dataIjinSayaPengajuan.map((element, index) =>
+            this.state.ijinTab === 2 && this.props.userId !== 1 && this.state.dataIjinSayaPengajuan.map((element, index) =>
               <Grid item md={3} sm={6} key={index} style={{ padding: 10 }}>
                 <CardPermintaanHRD data={element} ijinTabs={1} ijinTab={2} fetchData={this.fetchData} />
               </Grid>
             )
           }
           {
-            this.state.ijinTab === 3 && this.state.dataIjinSayaDisetujui.map((element, index) =>
+            this.state.ijinTab === 3 && this.props.userId !== 1 && this.state.dataIjinSayaDisetujui.map((element, index) =>
               <Grid item md={3} sm={6} key={index} style={{ padding: 10 }}>
                 <CardPermintaanHRD data={element} ijinTabs={1} ijinTab={3} fetchData={this.fetchData} />
               </Grid>
