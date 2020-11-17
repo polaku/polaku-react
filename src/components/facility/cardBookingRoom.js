@@ -30,16 +30,13 @@ class cardBookingRoom extends Component {
       this.setState({
         owner: true
       })
-      console.log("OWNER")
     }
-    console.log(this.props.designation)
 
     if (this.props.designation) {
       let checkAdmin = this.props.designation.find(menu => menu.menu_id === 6)
       if (checkAdmin) {
         this.setState({ admin: true })
       }
-      console.log("ADMIN")
     }
   }
 
@@ -98,8 +95,8 @@ class cardBookingRoom extends Component {
     this.setState({ openModal: true })
   }
 
-  refresh = () => {
-    this.props.refresh()
+  refresh =  async () => {
+    await this.props.refresh()
     this.setState({ openModal: false })
   }
 

@@ -142,8 +142,8 @@ class modalCreateEditBookingRoom extends Component {
       time_in = `${new Date(this.state.time_in).getHours()}:${new Date(this.state.time_in).getMinutes()}`
       time_out = `${new Date(this.state.time_out).getHours()}:${new Date(this.state.time_out).getMinutes()}`
 
-      let dateInMonth = new Date(this.state.date_in).getMonth()+1 < 10 ? `0${new Date(this.state.date_in).getMonth()+1}` : new Date(this.state.date_in).getMonth()+1
-      let dateInDate = new Date(this.state.date_in).getDate() < 10 ? `0${new Date(this.state.date_in).getDate()}` : new Date(this.state.date_in).getDate() 
+      let dateInMonth = new Date(this.state.date_in).getMonth() + 1 < 10 ? `0${new Date(this.state.date_in).getMonth() + 1}` : new Date(this.state.date_in).getMonth() + 1
+      let dateInDate = new Date(this.state.date_in).getDate() < 10 ? `0${new Date(this.state.date_in).getDate()}` : new Date(this.state.date_in).getDate()
 
       let newData = {
         date_in: `${new Date(this.state.date_in).getFullYear()}-${dateInMonth}-${dateInDate}`,
@@ -164,15 +164,15 @@ class modalCreateEditBookingRoom extends Component {
             }
           }
         )
-          .then(() => {
+          .then(async () => {
             swal('Create booking room success', "", "success");
 
             this.setState({
               proses: true,
               editableInput: true
             })
+            await this.props.refresh()
             this.props.closeModal()
-            this.props.refresh()
           })
           .catch((err) => {
             if (err.message === 'Request failed with status code 400') {
@@ -197,13 +197,14 @@ class modalCreateEditBookingRoom extends Component {
             }
           }
         )
-          .then(() => {
+          .then(async (data) => {
             swal('Edit booking room success', "", "success");
             this.setState({
               proses: true,
               editableInput: true
             })
-            this.props.refresh()
+            console.log(data)
+            await this.props.refresh()
           })
           .catch((err) => {
             if (err.message === 'Request failed with status code 400') {

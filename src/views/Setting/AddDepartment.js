@@ -52,15 +52,16 @@ class AddDepartment extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.dinas !== prevProps.dinas) {
-      console.log(this.props.dataCompanies)
-      console.log(this.props.dinas)
       let optionCompany = []
-      this.props.dinas.forEach(el => {
-        let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
-        if (check) optionCompany.push(check)
-      })
-
-      this.setState({ optionCompany })
+      if (this.props.isAdminsuper) {
+        this.setState({ optionCompany: [...optionCompany, ...this.props.dataCompanies] })
+      } else {
+        this.props.dinas.forEach(el => {
+          let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+          if (check) optionCompany.push(check)
+        })
+        this.setState({ optionCompany })
+      }
     }
   }
 
@@ -223,10 +224,11 @@ const mapDispatchToProps = {
   fetchDataStructure
 }
 
-const mapStateToProps = ({ dataCompanies, dinas }) => {
+const mapStateToProps = ({ dataCompanies, dinas, isAdminsuper }) => {
   return {
     dataCompanies,
-    dinas
+    dinas,
+    isAdminsuper
   }
 }
 

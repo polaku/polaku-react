@@ -53,11 +53,13 @@ class SettingPerusahaan extends Component {
     // }
     if (this.props.designation) {
       this.fetchLabel()
+    } else if (this.props.isAdminsuper || this.props.isPIC) {
+      this.fetchLabel()
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.designation !== prevProps.designation || this.props.isAdminsuper !== prevProps.isAdminsuper) {
+    if (this.props.designation !== prevProps.designation || this.props.isAdminsuper !== prevProps.isAdminsuper || this.props.isPIC !== prevProps.isPIC) {
       this.fetchLabel()
     }
   }
@@ -70,11 +72,12 @@ class SettingPerusahaan extends Component {
     let checkKaryawn = this.props.designation && this.props.designation.find(menu => menu.menu_id === 4)
     let checkAdmin = this.props.designation && this.props.designation.find(menu => menu.menu_id === 5)
 
+    console.log(this.props.isAdminsuper)
     if (this.props.isAdminsuper) label.push('OnBoarding')
-    if (checkAlamat) label.push('Alamat')
-    if (checkStruktur) label.push('Struktur')
-    if (checkKaryawn) label.push('Karyawan')
-    if (checkAdmin) label.push('Admin')
+    if (checkAlamat || this.props.isAdminsuper || this.props.isPIC) label.push('Alamat')
+    if (checkStruktur || this.props.isAdminsuper || this.props.isPIC) label.push('Struktur')
+    if (checkKaryawn || this.props.isAdminsuper || this.props.isPIC) label.push('Karyawan')
+    if (checkAdmin || this.props.isAdminsuper || this.props.isPIC) label.push('Admin')
     this.setState({ label })
   }
 
@@ -88,6 +91,10 @@ class SettingPerusahaan extends Component {
 
   handleModalOnBoarding = () => {
     this.setState({ openModalOnBoarding: !this.state.openModalOnBoarding })
+  }
+
+  changeTab = (index) => {
+    this.setState({ value: index })
   }
 
   render() {
@@ -122,7 +129,7 @@ class SettingPerusahaan extends Component {
                     pilih untuk lakukan aksi
                     <Button variant="outlined" style={{ marginLeft: '10px' }} onClick={this.handleModalOnBoarding}>onboarding baru</Button>
                   </Paper>
-                  <PanelOnBoarding index={this.state.value} />
+                  <PanelOnBoarding index={this.state.value} changeTab={this.changeTab} />
                 </>
                 : this.state.label[this.state.value] === 'Alamat' ? <PanelAddress index={this.state.value} />
                   : this.state.label[this.state.value] === 'Struktur' ? <PanelStructure index={this.state.value} />
@@ -139,7 +146,7 @@ class SettingPerusahaan extends Component {
                     pilih untuk lakukan aksi
                     <Button variant="outlined" style={{ marginLeft: '10px' }} onClick={this.handleModalOnBoarding}>onboarding baru</Button>
                   </Paper>
-                  <PanelOnBoarding index={this.state.value} />
+                  <PanelOnBoarding index={this.state.value} changeTab={this.changeTab} />
                 </>
                 : this.state.label[this.state.value] === 'Alamat' ? <PanelAddress index={this.state.value} />
                   : this.state.label[this.state.value] === 'Struktur' ? <PanelStructure index={this.state.value} />
@@ -156,7 +163,7 @@ class SettingPerusahaan extends Component {
                     pilih untuk lakukan aksi
                     <Button variant="outlined" style={{ marginLeft: '10px' }} onClick={this.handleModalOnBoarding}>onboarding baru</Button>
                   </Paper>
-                  <PanelOnBoarding index={this.state.value} />
+                  <PanelOnBoarding index={this.state.value} changeTab={this.changeTab} />
                 </>
                 : this.state.label[this.state.value] === 'Alamat' ? <PanelAddress index={this.state.value} />
                   : this.state.label[this.state.value] === 'Struktur' ? <PanelStructure index={this.state.value} />
@@ -172,7 +179,7 @@ class SettingPerusahaan extends Component {
                     pilih untuk lakukan aksi
                     <Button variant="outlined" style={{ marginLeft: '10px' }} onClick={this.handleModalOnBoarding}>onboarding baru</Button>
                   </Paper>
-                  <PanelOnBoarding index={this.state.value} />
+                  <PanelOnBoarding index={this.state.value} changeTab={this.changeTab} />
                 </>
                 : this.state.label[this.state.value] === 'Alamat' ? <PanelAddress index={this.state.value} />
                   : this.state.label[this.state.value] === 'Struktur' ? <PanelStructure index={this.state.value} />
@@ -188,7 +195,7 @@ class SettingPerusahaan extends Component {
                     pilih untuk lakukan aksi
                     <Button variant="outlined" style={{ marginLeft: '10px' }} onClick={this.handleModalOnBoarding}>onboarding baru</Button>
                   </Paper>
-                  <PanelOnBoarding index={this.state.value} />
+                  <PanelOnBoarding index={this.state.value} changeTab={this.changeTab} />
                 </>
                 : this.state.label[this.state.value] === 'Alamat' ? <PanelAddress index={this.state.value} />
                   : this.state.label[this.state.value] === 'Struktur' ? <PanelStructure index={this.state.value} />
@@ -206,10 +213,11 @@ class SettingPerusahaan extends Component {
   }
 }
 
-const mapStateToProps = ({ designation, isAdminsuper }) => {
+const mapStateToProps = ({ designation, isAdminsuper, isPIC }) => {
   return {
     designation,
-    isAdminsuper
+    isAdminsuper,
+    isPIC
   }
 }
 

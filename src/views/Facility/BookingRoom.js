@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { 
-  Grid, TextField, Button 
+import {
+  Grid, TextField, Button
 } from '@material-ui/core';
 
 import CardRoomInBookingRoom from '../../components/facility/cardRoomInBookingRoom';
@@ -28,6 +28,11 @@ class BookingRoom extends Component {
   };
 
   async fetchData() {
+    this.setState({
+      data: [],
+      dataForDisplay: []
+    })
+
     await this.props.fetchDataBookingRooms()
     await this.props.fetchDataRooms()
 
@@ -37,14 +42,15 @@ class BookingRoom extends Component {
       let temp = await this.props.dataBookingRooms.filter(el => el.room_id === room.room_id)
       room.tbl_booking_rooms = temp
     });
+    console.log(datas)
     this.setState({
       data: datas,
       dataForDisplay: datas
     })
   }
 
-  refresh = () => {
-    this.fetchData()
+  refresh = async () => {
+    await this.fetchData()
   }
 
   search = async () => {

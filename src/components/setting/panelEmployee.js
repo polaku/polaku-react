@@ -125,11 +125,15 @@ class panelEmployee extends Component {
 
   fetchOptionCompany = () => {
     let optionCompany = [{ acronym: 'Semua' }]
-    this.props.dinas.forEach(el => {
-      let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
-      if (check) optionCompany.push(check)
-    })
-    this.setState({ optionCompany })
+    if (this.props.isAdminsuper) {
+      this.setState({ optionCompany: [...optionCompany, ...this.props.dataCompanies] })
+    } else {
+      this.props.dinas.forEach(el => {
+        let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+        if (check) optionCompany.push(check)
+      })
+      this.setState({ optionCompany })
+    }
   }
 
   handleChangeTabA = (event, newValue) => {
@@ -498,7 +502,7 @@ const mapDispatchToProps = {
   fetchDataDinas
 }
 
-const mapStateToProps = ({ loading, dataUsers, lengthAllDataUsers, dataCompanies, dataDinas, counterEmployeeTetap, counterEmployeeKontrak, counterEmployeeProbation, counterEmployeeBerhenti, allUser, dinas }) => {
+const mapStateToProps = ({ loading, dataUsers, lengthAllDataUsers, dataCompanies, dataDinas, counterEmployeeTetap, counterEmployeeKontrak, counterEmployeeProbation, counterEmployeeBerhenti, allUser, dinas, isAdminsuper }) => {
   return {
     loading,
     dataUsers,
@@ -510,7 +514,8 @@ const mapStateToProps = ({ loading, dataUsers, lengthAllDataUsers, dataCompanies
     counterEmployeeProbation,
     counterEmployeeBerhenti,
     counterAllUser: allUser,
-    dinas
+    dinas,
+    isAdminsuper
   }
 }
 

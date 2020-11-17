@@ -5,6 +5,7 @@ const defaultState = {
   isRoomMaster: false,
   isCreatorMaster: false,
   isCreatorAssistant: false,
+  isPIC: false,
   adminContactCategori: null,
   sisaCuti: 0,
   evaluator1: null,
@@ -69,7 +70,8 @@ function reducer(state = defaultState, action) {
         bawahan: action.payload.bawahan,
         adminContactCategori: action.payload.adminContactCategori,
         designation: action.payload.designation,
-        dinas: action.payload.dinas
+        dinas: action.payload.dinas,
+        isPIC: action.payload.isPIC
       }
     }
     case 'FETCH_DATA_USER_DETAIL_SUCCESS': {

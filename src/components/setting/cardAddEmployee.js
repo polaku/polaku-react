@@ -36,10 +36,10 @@ class cardAddEmployee extends Component {
     dateOfBirth: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
     statusKaryawan: '',
     sisaCuti: '',
-    tanggalMulaiCutiBesar: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
+    tanggalMulaiCutiBesar: null,
     sisaCutiBesar: '',
-    nextFrame: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
-    nextLensa: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
+    nextFrame: null,
+    nextLensa: null,
 
     companyDinas: '',
     companyDinasAddress: '',
@@ -124,15 +124,16 @@ class cardAddEmployee extends Component {
     }
 
     if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.dinas !== prevProps.dinas) {
-      console.log(this.props.dataCompanies)
-      console.log(this.props.dinas)
       let optionCompany = []
-      this.props.dinas.forEach(el => {
-        let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
-        if (check) optionCompany.push(check)
-      })
-
-      this.setState({ optionCompany })
+      if (this.props.isAdminsuper) {
+        this.setState({ optionCompany: [...optionCompany, ...this.props.dataCompanies] })
+      } else {
+        this.props.dinas.forEach(el => {
+          let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+          if (check) optionCompany.push(check)
+        })
+        this.setState({ optionCompany })
+      }
     }
   }
 
@@ -612,7 +613,7 @@ class cardAddEmployee extends Component {
                 style={{ width: '100%' }}
               >
                 {
-                  this.props.dataPositions.length > 0 && this.props.dataPositions.map((position, index) =>
+                  this.props.dataPositions && this.props.dataPositions.map((position, index) =>
                     <MenuItem value={position.position_id} key={"department" + index}>{position.position}</MenuItem>
                   )
                 }
@@ -1013,14 +1014,15 @@ const mapDispatchToProps = {
   fetchDataAddress
 }
 
-const mapStateToProps = ({ dataCompanies, dataDepartments, dataPositions, dataUsers, dataAddress, dinas }) => {
+const mapStateToProps = ({ dataCompanies, dataDepartments, dataPositions, dataUsers, dataAddress, dinas, isAdminsuper }) => {
   return {
     dataCompanies,
     dataDepartments,
     dataPositions,
     dataUsers,
     dataAddress,
-    dinas
+    dinas,
+    isAdminsuper
   }
 }
 

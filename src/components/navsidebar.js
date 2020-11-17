@@ -175,7 +175,8 @@ function Navsidebar(props) {
             evaluator2: data.evaluator2,
             bawahan: data.bawahan,
             designation: data.designation,
-            dinas: data.dinas
+            dinas: data.dinas,
+            isPIC: data.isPIC
           }
           console.log(data)
           if (data.role_id === 1) {
@@ -272,13 +273,11 @@ function Navsidebar(props) {
       props.location.pathname === '/setting/setting-perusahaan/add-service' ||
       props.location.pathname === '/setting/setting-perusahaan/add-address' ||
       props.location.pathname === '/setting/setting-perusahaan/add-admin') {
-      // if (props.isAdminsuper || props.userId === 30 || props.userId === 33 || Number(props.adminContactCategori) === 4) {
-
       if (props.location.pathname === '/setting/setting-perusahaan/add-address') { //admin struktur
         if (props.designation) {
           checkAdmin = props.designation.find(menu => menu.menu_id === 2)
         }
-        if (checkAdmin || props.isAdminsuper) {
+        if (checkAdmin || props.isAdminsuper || props.isPIC) {
           setSelectedIndex(99)
         } else {
           props.history.goBack()
@@ -288,7 +287,7 @@ function Navsidebar(props) {
         if (props.designation) {
           checkAdmin = props.designation.find(menu => menu.menu_id === 3)
         }
-        if (checkAdmin || props.isAdminsuper) {
+        if (checkAdmin || props.isAdminsuper || props.isPIC) {
           setSelectedIndex(99)
         } else {
           props.history.goBack()
@@ -298,7 +297,7 @@ function Navsidebar(props) {
         if (props.designation) {
           checkAdmin = props.designation.find(menu => menu.menu_id === 4)
         }
-        if (checkAdmin || props.isAdminsuper) {
+        if (checkAdmin || props.isAdminsuper || props.isPIC) {
           setSelectedIndex(99)
         } else {
           props.history.goBack()
@@ -308,13 +307,13 @@ function Navsidebar(props) {
         if (props.designation) {
           checkAdmin = props.designation.find(menu => menu.menu_id === 5)
         }
-        if (checkAdmin || props.isAdminsuper) {
+        if (checkAdmin || props.isAdminsuper || props.isPIC) {
           setSelectedIndex(99)
         } else {
           props.history.goBack()
         }
       }
-      else if (props.isAdminsuper || props.userId === 30 || props.userId === 33 || (props.designation && props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5))) {
+      else if (props.isAdminsuper || props.isPIC || (props.designation && props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5))) {
         setSelectedIndex(99)
       } else {
         // let check = props.designation ? props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5)
@@ -326,7 +325,7 @@ function Navsidebar(props) {
     } else if (props.location.pathname === '/profil') {
       setSelectedIndex(100)
     }
-  }, [props.location.pathname, props.isAdminsuper, props.userId, props.adminContactCategori, props.history, props.isRoomMaster, props.designation])
+  }, [props.location.pathname, props.isAdminsuper, props.userId, props.adminContactCategori, props.history, props.isRoomMaster, props.designation, props.isPIC])
 
   useEffect(() => {
     setOpen(false)
@@ -641,13 +640,13 @@ function Navsidebar(props) {
                           <ListItemText primary="HR" />
                         </ListItem>
                       </Link>
-                      : <Link to="/hr" onClick={event => handleListItemClick(event, 3)}>
-                        <ListItem button key="HR" selected={selectedIndex === 3 || selectedIndex === 3.1} >
-                          <ListItemIcon style={{ marginLeft: 8 }}>
-                            <SupervisorAccountIcon />
-                          </ListItemIcon>
-                        </ListItem>
-                      </Link>
+                    : <Link to="/hr" onClick={event => handleListItemClick(event, 3)}>
+                      <ListItem button key="HR" selected={selectedIndex === 3 || selectedIndex === 3.1} >
+                        <ListItemIcon style={{ marginLeft: 8 }}>
+                          <SupervisorAccountIcon />
+                        </ListItemIcon>
+                      </ListItem>
+                    </Link>
                 }
 
                 <Collapse in={openChildHR} timeout="auto" unmountOnExit>
@@ -722,7 +721,7 @@ function Navsidebar(props) {
               {/* Menu Setting */}
               <>
                 {
-                  (props.isAdminsuper || props.userId === 30 || props.userId === 33 || Number(props.adminContactCategori) === 4) && <>
+                  (props.isAdminsuper || props.isPIC || (props.designation && props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5))) && <>
                     {
                       open
                         ? <Link to="/setting" onClick={event => handleListItemClick(event, 99)} style={{ textDecoration: 'none', color: 'black' }}>
@@ -788,7 +787,7 @@ const mapDispatchToProps = {
   userLogout
 }
 
-const mapStateToProps = ({ isAdminsuper, isRoomMaster, isCreatorMaster, isCreatorAssistant, dataNotification, userId, dataNewNotif, bawahan, adminContactCategori, designation }) => {
+const mapStateToProps = ({ isAdminsuper, isRoomMaster, isCreatorMaster, isCreatorAssistant, dataNotification, userId, dataNewNotif, bawahan, adminContactCategori, designation, isPIC }) => {
   return {
     isAdminsuper,
     isRoomMaster,
@@ -799,7 +798,8 @@ const mapStateToProps = ({ isAdminsuper, isRoomMaster, isCreatorMaster, isCreato
     dataNewNotif,
     bawahan,
     adminContactCategori,
-    designation
+    designation,
+    isPIC
   }
 }
 

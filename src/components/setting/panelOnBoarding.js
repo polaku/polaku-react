@@ -15,7 +15,7 @@ import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import SeCreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
 
-import { fetchDataUsers, fetchDataPIC, fetchDataAddress } from '../../store/action';
+import { fetchDataUsers, fetchDataPIC, fetchDataAddress, fetchDataStructure, fetchDataDesignation } from '../../store/action';
 
 import { API } from '../../config/API';
 
@@ -60,19 +60,25 @@ class panelOnBoarding extends Component {
   fetchData = async () => {
     this.setState({ loading: true })
     await this.props.fetchDataAddress()
+    await this.props.fetchDataStructure()
+    await this.props.fetchDataDesignation()
 
     let data = this.props.dataPIC || []
 
+    console.log(this.props.dataDesignation)
+
     data.length > 0 && data.forEach(async (element) => {
-      let notComplete = 0
+      let notComplete = 0, peranKosong = 0, userNotComplete = 0
       let address = await this.props.dataAddress.filter(el => el.company_id === element.company_id)
+      let structure = await this.props.dataStructure.filter(el => el.company_id === element.company_id)
+      let user = await this.props.dataUsers.filter(el => el.tbl_account_detail.company_id === element.company_id)
 
       if (address.length > 0) {
         let firstCreate = address[0].createdAt, lastUpdate = address[0].updatedAt
 
         await address.forEach((el) => {
           if (firstCreate > el.createdAt) firstCreate = el.createdAt
-          if (lastUpdate < el.updatedAt) firstCreate = el.updatedAt
+          if (lastUpdate < el.updatedAt) lastUpdate = el.updatedAt
 
           if (!el.acronym ||
             !el.address ||
@@ -87,11 +93,60 @@ class panelOnBoarding extends Component {
           }
         })
 
-        element.firstCreate = firstCreate
-        element.lastUpdate = lastUpdate
+        element.addressFirstCreate = firstCreate
+        element.addressLastUpdate = lastUpdate
+        element.totalAddress = address.length
+        element.notComplete = notComplete
       }
-      element.totalAddress = address.length
-      element.notComplete = notComplete
+
+      if (structure.length > 0) {
+        let lastUpdate = structure[0].updatedAt
+
+        await structure.forEach(async (el) => {
+          if (lastUpdate < el.updatedAt) lastUpdate = el.updatedAt
+
+          el.tbl_department_positions.length > 0 && await el.tbl_department_positions.forEach(departmentPosition => {
+            if (!departmentPosition.user_id) peranKosong++
+          })
+
+          el.tbl_department_teams.length > 0 && await el.tbl_department_teams.forEach(async (departmentTeam) => {
+            departmentTeam.tbl_team_positions.length > 0 && await departmentTeam.tbl_team_positions.forEach(teamPosition => {
+              if (!teamPosition.user_id) peranKosong++
+            })
+          })
+        })
+        element.structureLastUpdate = lastUpdate
+        element.peranKosong = peranKosong
+      }
+
+      if (user.length > 0) {
+        let lastUpdate = '2020-01-01T00:00:00.000Z'
+
+        await user.forEach(async (el) => {
+          if (lastUpdate < el.tbl_account_detail.updatedAt) lastUpdate = el.tbl_account_detail.updatedAt
+
+          if (!el.tbl_account_detail.address ||
+            el.tbl_account_detail.address === '-' ||
+            !el.tbl_account_detail.building_id ||
+            !el.tbl_account_detail.company_id ||
+            !el.tbl_account_detail.date_of_birth ||
+            !el.tbl_account_detail.departments_id ||
+            !el.tbl_account_detail.initial ||
+            !el.tbl_account_detail.join_date ||
+            !el.tbl_account_detail.name_evaluator_1 ||
+            !el.tbl_account_detail.nik ||
+            !el.tbl_account_detail.office_email ||
+            !el.tbl_account_detail.phone ||
+            !el.tbl_account_detail.position_id ||
+            !el.tbl_account_detail.status_employee
+          ) {
+            userNotComplete++
+          }
+        })
+
+        element.userLastUpdate = lastUpdate
+        element.userNotComplete = userNotComplete
+      }
     })
 
     this.props.dataPIC.length > 0 && await this.props.dataPIC.forEach(async (company) => {
@@ -140,6 +195,42 @@ class panelOnBoarding extends Component {
     }
   }
 
+  handleDelete = async (data) => {
+    console.log(data)
+    try {
+      swal({
+        title: "Apa anda yakin ingin menghapus semua PIC diperusahaan ini?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      })
+        .then((yesAnswer) => {
+          if (yesAnswer) {
+            this.setState({
+              proses: true
+            })
+            let token = Cookies.get('POLAGROUP'), promises = []
+
+            data.tbl_PICs.forEach(pic => {
+              promises.push(API.delete(`/pic/${pic.id}`, { headers: { token } }))
+            })
+            Promise.all(promises)
+              .then(async ({ data }) => {
+                this.setState({ data: [], proses: false })
+                await this.props.fetchDataPIC()
+                swal('Hapus PIC sukses', '', 'success')
+              })
+              .catch(err => {
+                this.setState({ proses: false })
+                swal('Hapus PIC gagal', '', 'error')
+              })
+          }
+        });
+    } catch (err) {
+      swal('Hapus PIC gagal', '', 'error')
+    }
+  }
+
   render() {
     return (
       <div style={{ width: '100%' }}>
@@ -163,7 +254,7 @@ class panelOnBoarding extends Component {
                   />
                   <Grid style={{ display: 'flex', alignItems: 'center' }}>
                     <Grid style={{ display: 'flex', width: 150, marginRight: 10 }}>
-                      <BusinessOutlinedIcon style={{ color: el.statusIcon1 ? '#d71149' : '#b4b4b4', minWidth: 40, height: 40, marginRight: 10 }} />
+                      <BusinessOutlinedIcon style={{ color: el.notComplete === 0 ? '#d71149' : '#b4b4b4', minWidth: 40, height: 40, marginRight: 10 }} />
                       <Typography style={{ fontWeight: 'bold', fontSize: 21 }}>{el.acronym}</Typography>
                     </Grid>
                     <Grid style={{ display: 'flex', width: 200, marginRight: 10 }}>
@@ -175,10 +266,10 @@ class panelOnBoarding extends Component {
                       </Grid>
                     </Grid>
                     <Grid style={{ display: 'flex', width: 100, marginRight: 10 }}>
-                      <PowerInputIcon style={{ color: el.statusIcon3 ? '#d71149' : '#b4b4b4', minWidth: 40, height: 40 }} />
+                      <PowerInputIcon style={{ color: el.peranKosong === 0 ? '#d71149' : '#b4b4b4', minWidth: 40, height: 40 }} />
                     </Grid>
                     <Grid style={{ display: 'flex', width: 100 }}>
-                      <PeopleOutlineIcon style={{ color: el.statusIcon4 ? '#d71149' : '#b4b4b4', minWidth: 40, height: 40 }} />
+                      <PeopleOutlineIcon style={{ color: el.userNotComplete === 0 ? '#d71149' : '#b4b4b4', minWidth: 40, height: 40 }} />
                     </Grid>
                   </Grid>
                 </AccordionSummary>
@@ -198,9 +289,9 @@ class panelOnBoarding extends Component {
                         style={{ width: '90%' }}
                       />
                     </div>
-                    <Button variant="contained" onClick={this.handleClick}>
-                      Pengaturan
-                  </Button>
+                    <Button variant="contained" onClick={() => this.handleDelete(el)} style={{ width: 130 }}>
+                      Hapus PIC
+                    </Button>
 
                     <Popover
                       open={this.state.openPopOver}
@@ -218,10 +309,10 @@ class panelOnBoarding extends Component {
                       <Paper style={{ width: 200 }}>
                         <ClickAwayListener onClickAway={this.handleClose}>
                           <MenuList autoFocusItem={this.state.openPopOver} id="menu-list-grow" onKeyDown={this.handleListKeyDown}>
-                            <MenuItem onClick={this.handleClose}>Ubah data</MenuItem>
+                            {/* <MenuItem onClick={this.handleClose}>Ubah data</MenuItem> */}
                             {/* <MenuItem onClick={this.handleClose}>Ubah PIC</MenuItem> */}
-                            <MenuItem onClick={this.handleClose}>Non-aktifkan</MenuItem>
-                            <MenuItem onClick={this.handleClose}>Hapus</MenuItem>
+                            {/* <MenuItem onClick={this.handleClose}>Non-aktifkan</MenuItem> */}
+                            <MenuItem onClick={() => this.handleDelete(index)}>Hapus</MenuItem>
                           </MenuList>
                         </ClickAwayListener>
                       </Paper>
@@ -233,42 +324,53 @@ class panelOnBoarding extends Component {
                         <b style={{ margin: 0 }}>Status Alamat</b>
                         <Grid style={{ display: "flex", flexWrap: 'wrap' }}>
                           <p style={{ margin: 0, fontSize: 12, width: 84 }}>Diisi tanggal</p>
-                          <p style={{ margin: 0, fontSize: 12 }}>: {el.firstCreate && el.firstCreate.slice(0, 10)}</p>
+                          <p style={{ margin: 0, fontSize: 12 }}>: {el.addressFirstCreate && el.addressFirstCreate.slice(0, 10)}</p>
                         </Grid>
                         <Grid style={{ display: "flex", flexWrap: 'wrap' }}>
                           <p style={{ margin: 0, fontSize: 12, width: 84 }}>Diubah terakhir</p>
-                          <p style={{ margin: 0, fontSize: 12 }}>: {el.lastUpdate && el.lastUpdate.slice(0, 10)}</p>
+                          <p style={{ margin: 0, fontSize: 12 }}>: {el.addressLastUpdate && el.addressLastUpdate.slice(0, 10)}</p>
                         </Grid>
+                        <p style={{ margin: 0, fontSize: 12, cursor: 'pointer' }} onClick={() => this.props.changeTab(1)}>Ubah data alamat</p>
                         <p style={{ margin: 0, fontSize: 12 }}>{el.totalAddress} alamat terdaftar</p>
                         {
                           el.notComplete !== 0 && <p style={{ margin: 0, fontSize: 12 }}>{el.notComplete} Alamat tidak lengkap</p>
                         }
                       </Grid>
                     </Grid>
-                    {/* <Grid item sm={3} style={{ padding: 5 }}>
+                    <Grid item sm={3} style={{ padding: 5 }}>
                       <Grid style={{ backgroundColor: 'white', border: '1px solid #e3e3e3', padding: 10, minHeight: 138 }}>
                         <b style={{ margin: 0 }}>Status Struktur</b>
                         <p style={{ margin: 0, fontSize: 12 }}>Surat Keputusan SO:</p>
-                        <p style={{ margin: 0, fontSize: 12 }}>Diubah terakhir</p>
-                        <p style={{ margin: 0, fontSize: 12 }}>Ubah data struktur</p>
-                        <p style={{ margin: 0, fontSize: 12 }}>3 Peran kosong</p>
+                        <Grid style={{ display: "flex", flexWrap: 'wrap' }}>
+                          <p style={{ margin: 0, fontSize: 12, width: 84 }}>Diubah terakhir</p>
+                          <p style={{ margin: 0, fontSize: 12 }}>: {el.structureLastUpdate && el.structureLastUpdate.slice(0, 10)}</p>
+                        </Grid>
+                        <p style={{ margin: 0, fontSize: 12, cursor: 'pointer' }} onClick={() => this.props.changeTab(2)}>Ubah data struktur</p>
+                        {
+                          el.peranKosong !== 0 && <p style={{ margin: 0, fontSize: 12 }}>{el.peranKosong} Peran kosong</p>
+                        }
                       </Grid>
                     </Grid>
                     <Grid item sm={3} style={{ padding: 5 }}>
                       <Grid style={{ backgroundColor: 'white', border: '1px solid #e3e3e3', padding: 10, minHeight: 138 }}>
                         <b style={{ margin: 0 }}>Status Karyawan</b>
-                        <p style={{ margin: 0, fontSize: 12 }}>Diubah terakhir</p>
-                        <p style={{ margin: 0, fontSize: 12 }}>Ubah data karyawan</p>
-                        <p style={{ margin: 0, fontSize: 12 }}>20 Data karyawan tidak lengkap</p>
+                        <Grid style={{ display: "flex", flexWrap: 'wrap' }}>
+                          <p style={{ margin: 0, fontSize: 12, width: 84 }}>Diubah terakhir</p>
+                          <p style={{ margin: 0, fontSize: 12 }}>: {el.userLastUpdate && el.userLastUpdate.slice(0, 10)}</p>
+                        </Grid>
+                        <p style={{ margin: 0, fontSize: 12, cursor: 'pointer' }} onClick={() => this.props.changeTab(3)}>Ubah data karyawan</p>
+                        {
+                          el.userNotComplete !== 0 && <p style={{ margin: 0, fontSize: 12 }}>{el.userNotComplete} Data karyawan tidak lengkap</p>
+                        }
                       </Grid>
                     </Grid>
-                    <Grid item sm={3} style={{ padding: 5 }}>
+                    {/* <Grid item sm={3} style={{ padding: 5 }}>
                       <Grid style={{ backgroundColor: 'white', border: '1px solid #e3e3e3', padding: 10, minHeight: 138 }}>
                         <b style={{ margin: 0 }}>Status Admin</b>
                         <p style={{ margin: 0, fontSize: 12 }}>Alamat</p>
                         <p style={{ margin: 0, fontSize: 12 }}>Struktur</p>
                         <p style={{ margin: 0, fontSize: 12 }}>Karyawan</p>
-                        <p style={{ margin: 0, fontSize: 12 }}>Ubah data admin</p>
+                        <p style={{ margin: 0, fontSize: 12, cursor: 'pointer' }} onClick={() => this.props.changeTab(4)}>Ubah data admin</p>
                         <p style={{ margin: 0, fontSize: 12 }}>2 Admin belum log in</p>
                       </Grid>
                     </Grid> */}
@@ -285,15 +387,19 @@ class panelOnBoarding extends Component {
 const mapDispatchToProps = {
   fetchDataUsers,
   fetchDataPIC,
-  fetchDataAddress
+  fetchDataAddress,
+  fetchDataStructure,
+  fetchDataDesignation
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataPIC, dataAddress }) => {
+const mapStateToProps = ({ loading, dataUsers, dataPIC, dataAddress, dataStructure, dataDesignation }) => {
   return {
     loading,
     dataUsers,
     dataPIC,
-    dataAddress
+    dataAddress,
+    dataStructure,
+    dataDesignation
   }
 }
 

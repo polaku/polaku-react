@@ -73,7 +73,8 @@ class Login extends Component {
           evaluator2: data.data.evaluator2,
           bawahan: data.data.bawahan,
           designation: data.data.designation,
-          dinas: data.data.dinas
+          dinas: data.data.dinas,
+          isPIC: data.data.isPIC
         }
         
         if (data.data.role_id === 1) {

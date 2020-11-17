@@ -91,11 +91,15 @@ class panelStructure extends Component {
 
   fetchOptionCompany = () => {
     let optionCompany = [{ acronym: 'Semua' }]
-    this.props.dinas.forEach(el => {
-      let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
-      if (check) optionCompany.push(check)
-    })
-    this.setState({ optionCompany })
+    if (this.props.isAdminsuper) {
+      this.setState({ optionCompany: [...optionCompany, ...this.props.dataCompanies] })
+    } else {
+      this.props.dinas.forEach(el => {
+        let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+        if (check) optionCompany.push(check)
+      })
+      this.setState({ optionCompany })
+    }
   }
 
   // handleChangeTabA = (event, newValue) => {
@@ -367,14 +371,15 @@ const mapDispatchToProps = {
   fetchDataCompanies
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataStructure, totalDataStructure, dataCompanies, dinas }) => {
+const mapStateToProps = ({ loading, dataUsers, dataStructure, totalDataStructure, dataCompanies, dinas, isAdminsuper }) => {
   return {
     loading,
     dataUsers,
     dataStructure,
     totalDataStructure,
     dataCompanies,
-    dinas
+    dinas,
+    isAdminsuper
   }
 }
 
