@@ -203,7 +203,7 @@ class modalCreateEditBookingRoom extends Component {
               proses: true,
               editableInput: true
             })
-            console.log(data)
+
             await this.props.refresh()
           })
           .catch((err) => {

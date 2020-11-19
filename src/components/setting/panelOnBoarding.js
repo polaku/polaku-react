@@ -65,8 +65,6 @@ class panelOnBoarding extends Component {
 
     let data = this.props.dataPIC || []
 
-    console.log(this.props.dataDesignation)
-
     data.length > 0 && data.forEach(async (element) => {
       let notComplete = 0, peranKosong = 0, userNotComplete = 0
       let address = await this.props.dataAddress.filter(el => el.company_id === element.company_id)
@@ -198,7 +196,6 @@ class panelOnBoarding extends Component {
   }
 
   handleDelete = async (data) => {
-    console.log(data)
     try {
       swal({
         title: "Apa anda yakin ingin menghapus semua PIC diperusahaan ini?",

@@ -57,7 +57,7 @@ class HR extends Component {
     })
 
     await this.props.fetchDataContactUs(this.props.userId)
-    console.log(this.props.dataContactUsStaff)
+
     let tempData = await this.props.dataContactUs.filter(el => el.date_ijin_absen_start !== null || el.date_imp !== null || el.leave_date !== null)
 
     let tempDataPengajuan = await tempData.filter(el => el.status === 'new' || el.status === 'new2')
@@ -114,10 +114,10 @@ class HR extends Component {
       }
     })
 
-    console.log("tempDataPengajuan", tempDataPengajuan)
-    console.log("tempDataDisetujui", tempDataDisetujui)
-    console.log("tempDataPengajuanStaff", tempDataPengajuanStaff)
-    console.log("tempDataStaffSedangIjin", tempDataStaffSedangIjin)
+    // console.log("tempDataPengajuan", tempDataPengajuan)
+    // console.log("tempDataDisetujui", tempDataDisetujui)
+    // console.log("tempDataPengajuanStaff", tempDataPengajuanStaff)
+    // console.log("tempDataStaffSedangIjin", tempDataStaffSedangIjin)
 
     this.setState({
       proses: false,

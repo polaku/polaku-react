@@ -31,7 +31,6 @@ class cardEmployee extends Component {
     let department = []
     this.props.data.position && this.props.data.position.length > 0 && this.props.data.position.forEach(element => {
       if (element.tbl_structure_department.company_id === this.props.data.companyId) {
-        console.log(element)
         department.push(element.tbl_structure_department.department.deptname)
       }
     });

@@ -66,13 +66,11 @@ class SettingPerusahaan extends Component {
 
   fetchLabel = () => {
     let label = []
-    console.log("this.props.designation", this.props.designation)
     let checkAlamat = this.props.designation && this.props.designation.find(menu => menu.menu_id === 2)
     let checkStruktur = this.props.designation && this.props.designation.find(menu => menu.menu_id === 3)
     let checkKaryawn = this.props.designation && this.props.designation.find(menu => menu.menu_id === 4)
     let checkAdmin = this.props.designation && this.props.designation.find(menu => menu.menu_id === 5)
 
-    console.log(this.props.isAdminsuper)
     if (this.props.isAdminsuper) label.push('OnBoarding')
     if (checkAlamat || this.props.isAdminsuper || this.props.isPIC) label.push('Alamat')
     if (checkStruktur || this.props.isAdminsuper || this.props.isPIC) label.push('Struktur')

@@ -101,7 +101,6 @@ class AddDepartment extends Component {
   }
 
   sendData = (args) => {
-    console.log(this.props.location.state.index)
     if (this.props.location.state && this.props.location.state.data) {
       let newData = this.state.tempDataForEdit
       newData.push(args)

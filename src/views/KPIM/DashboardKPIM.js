@@ -66,7 +66,7 @@ class DashboardKPIM extends Component {
 
   async componentDidMount() {
     this._isMounted = true
-    console.log(new Date().getMonth() + 1)
+
     if (this._isMounted) {
       if (this.props.location.state) {
         this.setState({

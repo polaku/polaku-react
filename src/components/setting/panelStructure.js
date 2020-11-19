@@ -114,11 +114,9 @@ class panelStructure extends Component {
 
     let companySelected = this.state.optionCompany[newValue]
     if (newValue === 0) {
-      console.log("MMMM")
       await this.props.fetchDataStructure({ limit: this.state.rowsPerPage, page: 0 })
       await this.fetchData()
     } else {
-      console.log("MASUK")
       await this.props.fetchDataStructure({ limit: this.state.rowsPerPage, page: 0, company: companySelected.company_id })
       await this.fetchData()
     }

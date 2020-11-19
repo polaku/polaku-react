@@ -164,7 +164,6 @@ function Navsidebar(props) {
     if (token) {
       API.get('/users/checkToken', { headers: { token } })
         .then(async ({ data }) => {
-          console.log(data)
           let newData = {
             user_id: data.user_id,
             isRoomMaster: data.isRoomMaster,
@@ -178,13 +177,13 @@ function Navsidebar(props) {
             dinas: data.dinas,
             isPIC: data.isPIC
           }
-          console.log(data)
+
           if (data.role_id === 1) {
             newData.isAdminsuper = true
           } else {
             newData.isAdminsuper = false
           }
-          console.log(data.adminContactCategori)
+
           if (data.adminContactCategori) {
             newData.adminContactCategori = data.adminContactCategori
           }
@@ -316,10 +315,6 @@ function Navsidebar(props) {
       else if (props.isAdminsuper || props.isPIC || (props.designation && props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5))) {
         setSelectedIndex(99)
       } else {
-        // let check = props.designation ? props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5)
-        console.log(props.designation)
-        console.log("MASUK SONO")
-
         props.history.goBack()
       }
     } else if (props.location.pathname === '/profil') {

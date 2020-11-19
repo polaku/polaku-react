@@ -151,9 +151,8 @@ class AddAdmin extends Component {
         this.resetCheckbox()
         this.setState({ statusDesignation: false })
       } else {
-        console.log("PILIH")
         let { tbl_user_roles } = this.state.dataDesignation.find(el => el.designations_id === this.state.adminType)
-        console.log(tbl_user_roles)
+
         let data = {}
 
         // ALAMAT
@@ -469,7 +468,7 @@ class AddAdmin extends Component {
         userId: this.state.adminId,
         roles
       }
-      console.log(data)
+
       let token = Cookies.get('POLAGROUP')
       await API.post('/designation', data, { headers: { token } })
       this.setState({ proses: false })

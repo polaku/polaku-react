@@ -22,7 +22,6 @@ class cardAdmin extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.data)
     // 1=Berita Pola, 
     // 2=Alamat, 
     // 3=Struktur, 

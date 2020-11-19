@@ -139,7 +139,6 @@ class cardAddEmployee extends Component {
           }
         }
       });
-      console.log(this.props.dataStructure)
       this.setState({ dataAddressDinas, optionDivisiDinas })
     }
 
@@ -165,8 +164,6 @@ class cardAddEmployee extends Component {
   }
 
   fetchDataEdit = async () => {
-    console.log(this.props.data)
-
     if (this.props.data.position.length > 0) {
       let listDivisi = [
         //   {
@@ -184,9 +181,7 @@ class cardAddEmployee extends Component {
           })
         }
       })
-      console.log(this.props.dataStructure)
 
-      console.log(listDivisi)
       this.setState({ listDivisi })
     }
 

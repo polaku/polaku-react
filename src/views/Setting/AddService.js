@@ -31,7 +31,7 @@ class AddService extends Component {
       if (this.props.location.state.data) {
         let temp = []
         let data = this.props.location.state.data.dinas
-        console.log(data)
+
         await data.forEach(el => temp.push(true))
         this.setState({ dataForEdit: data, service: temp })
       }
@@ -93,7 +93,7 @@ class AddService extends Component {
             this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
           })
           .catch(err => {
-            console.log(err.response)
+
             this.setState({ proses: false, statusSubmit: false })
             swal('Ubah dinas gagal', '', 'error')
           })

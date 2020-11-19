@@ -207,11 +207,9 @@ class cardAddDepartment extends Component {
 
   // HANDLE POSITION (START)
   handleChangePosition = (newValue, actionMeta) => {
-    console.log(newValue)
     let newPosition = this.state.position
     newPosition[newValue.index][newValue.name] = newValue.value
     if (newValue !== null) {
-      console.log(newPosition)
       this.setState({
         position: newPosition
       })

@@ -42,7 +42,7 @@ class BookingRoom extends Component {
       let temp = await this.props.dataBookingRooms.filter(el => el.room_id === room.room_id)
       room.tbl_booking_rooms = temp
     });
-    console.log(datas)
+
     this.setState({
       data: datas,
       dataForDisplay: datas

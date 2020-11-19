@@ -65,7 +65,7 @@ export default class modalCreateEditMuchEmployee extends Component {
   saveManyEmployee = () => {
     let token = Cookies.get('POLAGROUP')
     let newData = new FormData()
-    console.log(this.state.files[0])
+
     newData.append('file', this.state.files[0])
     newData.append('jenisImport', 'add')
 
@@ -84,7 +84,7 @@ export default class modalCreateEditMuchEmployee extends Component {
   editManyEmployee = () => {
     let token = Cookies.get('POLAGROUP')
     let newData = new FormData()
-    console.log(this.state.files[0])
+
     newData.append('file', this.state.files[0])
     newData.append('jenisImport', 'edit')
 

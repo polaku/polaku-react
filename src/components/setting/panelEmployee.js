@@ -105,7 +105,6 @@ class panelEmployee extends Component {
 
       this.setState({ data: tempNewDataUsers, dataForDisplay: tempNewDataUsers, label })
     } else {
-      console.log(this.props.dataDinas)
       await this.props.dataDinas.forEach(user => {
         let objUser = {
           userId: user.user_id,
@@ -145,7 +144,7 @@ class panelEmployee extends Component {
 
   handleChangeTabB = async (event, newValue) => {
     let selected = newValue
-    console.log(selected)
+
     await this.setState({ valueB: selected, proses: true, search: '', searchDinas: '', page: 0 })
 
     if (this.state.valueA === 0) { //Karyawan
@@ -153,7 +152,6 @@ class panelEmployee extends Component {
         await this.props.fetchDataUsers({ limit: this.state.rowsPerPage, page: 0 })
       } else {
         let companySelectedId = this.state.optionCompany[selected]
-        console.log(companySelectedId)
         await this.props.fetchDataUsers({ limit: this.state.rowsPerPage, page: 0, company: companySelectedId.company_id })
       }
     } else { //Dinas
@@ -258,7 +256,6 @@ class panelEmployee extends Component {
     let query = {}
     if (this.state.search) query.keyword = this.state.search
     if (this.state.valueB !== 0) {
-      console.log("MASUK SINI")
       let companySelected = this.state.optionCompany[this.state.valueB]
       if (companySelected) query.company = companySelected.company_id
     }

@@ -39,7 +39,6 @@ class cardAddService extends Component {
 
   async componentDidUpdate(prevProps, prevState) {
     if (this.props.statusSubmit !== prevProps.statusSubmit && this.props.statusSubmit) {
-      console.log("MASUK SUBMIT")
       this.submit()
     }
 
@@ -54,7 +53,7 @@ class cardAddService extends Component {
           }
         }
       });
-      console.log(listAddressCompany)
+
       this.setState({ listAddressCompany })
     }
 

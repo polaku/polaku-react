@@ -89,7 +89,6 @@ class AddEmployee extends Component {
             this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
           })
           .catch(err => {
-            console.log(err.response)
             this.setState({ proses: false, statusSubmit: false })
             swal('Ubah karyawan gagal', '', 'error')
           })

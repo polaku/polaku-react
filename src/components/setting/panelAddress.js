@@ -98,7 +98,6 @@ class panelAddress extends Component {
   }
 
   handleChangeTab = async (event, newValue) => {
-    console.log(newValue)
     this.setState({ value: newValue, search: '', page: 0 })
 
     let companySelected = this.state.optionCompany[newValue]

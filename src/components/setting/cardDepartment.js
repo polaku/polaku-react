@@ -24,7 +24,7 @@ class cardDepartment extends Component {
 
   async componentDidMount() {
     let counterPosition = 0, counterTeamPosition = 0, emptyPosition = false, emptyTeamPosition = 0
-    console.log(this.props.data)
+
     if (this.props.data.tbl_department_positions.length === 0) emptyPosition = true
     if (this.props.data.tbl_department_positions.length > 0) {
       await this.props.data.tbl_department_positions.forEach(element => {

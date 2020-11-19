@@ -40,7 +40,7 @@ class AddAddress extends Component {
         this.setState({ disableCompanyId: false })
       }
     }
-    console.log(this.props.location.state)
+
     await this.props.fetchDataCompanies()
   }
 
