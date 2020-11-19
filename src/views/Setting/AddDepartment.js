@@ -62,6 +62,9 @@ class AddDepartment extends Component {
         })
         this.setState({ optionCompany })
       }
+      if (optionCompany.length === 1) {
+        this.setState({ companyId: optionCompany[0].company_id })
+      }
     }
   }
 

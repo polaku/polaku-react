@@ -19,12 +19,13 @@ import swal from 'sweetalert';
 
 class cardDepartment extends Component {
   state = {
-    emptyPositionInDept: 0,
-    emptyPositionInTeam: 0,
+    statusEmpty: ''
   }
 
   async componentDidMount() {
-    let counterPosition = 0, counterTeamPosition = 0
+    let counterPosition = 0, counterTeamPosition = 0, emptyPosition = false, emptyTeamPosition = 0
+    console.log(this.props.data)
+    if (this.props.data.tbl_department_positions.length === 0) emptyPosition = true
     if (this.props.data.tbl_department_positions.length > 0) {
       await this.props.data.tbl_department_positions.forEach(element => {
         if (!element.user_id) counterPosition++
@@ -33,17 +34,20 @@ class cardDepartment extends Component {
 
     if (this.props.data.tbl_department_teams.length > 0) {
       await this.props.data.tbl_department_teams.forEach(async (element) => {
+        if (element.tbl_team_positions.length === 0) emptyTeamPosition++
         await element.tbl_team_positions.forEach(el => {
           if (!el.user_id) counterTeamPosition++
         })
       });
     }
 
-    if (this.props.data.tbl_department_positions.length === 0) counterPosition++
+    let status = []
+    if (emptyPosition) status.push('Divisi Tanpa Peran')
+    if (!emptyPosition && counterPosition > 0) status.push(`${counterPosition} Peran di Divisi`)
+    if (emptyTeamPosition > 0) status.push(`${emptyTeamPosition} Team Tanpa Peran`)
+    if (counterTeamPosition > 0) status.push(`${counterTeamPosition} Peran di Seluruh Tim`)
 
-    if (this.props.data.tbl_department_teams.length === 0) counterTeamPosition++
-
-    this.setState({ emptyPositionInDept: counterPosition, emptyPositionInTeam: counterTeamPosition })
+    this.setState({ statusEmpty: status.join(',') })
   }
 
   handleChangeCheck = event => {
@@ -86,20 +90,14 @@ class cardDepartment extends Component {
         <Grid style={{ width: '25%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Grid style={{ width: '120px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
             {
-              (this.state.emptyPositionInDept > 0 || this.state.emptyPositionInTeam > 0)
-                ? <Tooltip title={
-                  (this.state.emptyPositionInDept > 0 && this.state.emptyPositionInTeam > 0)
-                    ? `${this.state.emptyPositionInDept} Peran di Divisi, ${this.state.emptyPositionInTeam} Peran di Seluruh Tim`
-                    : this.state.emptyPositionInDept > 0
-                      ? `${this.state.emptyPositionInDept} Peran di Divisi`
-                      : `${this.state.emptyPositionInTeam} Peran di Seluruh Tim`
-                } aria-label="lengkapi-data">
+              this.state.statusEmpty
+                ? <Tooltip title={this.state.statusEmpty} aria-label="lengkapi-data">
                   <ErrorOutlinedIcon style={{ color: 'red' }} />
                 </Tooltip>
                 : <Grid style={{ width: 24 }} />
             }
             <Tooltip title="Edit divisi" aria-label="edit-data">
-              <img src={process.env.PUBLIC_URL + '/edit.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-department', { data: this.props.data, index: this.props.location.state.index })} />
+              <img src={process.env.PUBLIC_URL + '/edit.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-department', { data: this.props.data, index: this.props.index })} />
             </Tooltip>
             <Tooltip title="Hapus divisi" aria-label="delete-data">
               <DeleteIcon style={{ color: 'red', cursor: 'pointer' }} onClick={this.delete} />

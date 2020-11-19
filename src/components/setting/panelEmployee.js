@@ -31,7 +31,6 @@ class panelEmployee extends Component {
     data: [],
     dataForDisplay: [],
     dataDinas: [],
-    dataForDisplayDinas: [],
     dataForEdit: [],
     listCompany: [],
 
@@ -93,11 +92,12 @@ class panelEmployee extends Component {
         let objUser = {
           userId: user.user_id,
           company: user.tbl_account_detail.tbl_company !== null ? user.tbl_account_detail.tbl_company.company_name : "",
+          companyId: user.tbl_account_detail.tbl_company !== null ? user.tbl_account_detail.tbl_company.company_id : "",
           name: user.tbl_account_detail ? user.tbl_account_detail.fullname : "",
           evaluator1: user.tbl_account_detail.idEvaluator1 ? user.tbl_account_detail.idEvaluator1.tbl_account_detail.initial : "-",
           evaluator2: user.tbl_account_detail.idEvaluator2 ? user.tbl_account_detail.idEvaluator2.tbl_account_detail.initial : "-",
           isActive: user.activated,
-          position: user.tbl_account_detail.tbl_position ? user.tbl_account_detail.tbl_position.position : '-',
+          position: user.tbl_department_positions,
           rawData: user
         }
         tempNewDataUsers.push(objUser)
@@ -124,10 +124,13 @@ class panelEmployee extends Component {
   }
 
   fetchOptionCompany = () => {
-    let optionCompany = [{ acronym: 'Semua' }]
     if (this.props.isAdminsuper) {
-      this.setState({ optionCompany: [...optionCompany, ...this.props.dataCompanies] })
+      this.setState({ optionCompany: [{ acronym: 'Semua' }, ...this.props.dataCompanies] })
     } else {
+      let optionCompany = []
+      if (this.props.dinas.length > 1) {
+        optionCompany.push({ acronym: 'Semua' })
+      }
       this.props.dinas.forEach(el => {
         let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
         if (check) optionCompany.push(check)
@@ -177,7 +180,7 @@ class panelEmployee extends Component {
 
   handleSearch = async () => {
     let query = { keyword: this.state.search }
-    this.setState({ page: 0 })
+    this.setState({ page: 0, proses: true })
     if (this.state.valueB !== 0) {
       let companySelected = this.state.optionCompany[this.state.valueB]
       if (companySelected) query.company = companySelected.company_id
@@ -187,7 +190,7 @@ class panelEmployee extends Component {
 
   handleSearchDinas = async () => {
     let query = { keyword: this.state.keywordDinas }
-    this.setState({ page: 0 })
+    this.setState({ page: 0, proses: true })
     if (this.state.valueB !== 0) {
       if (this.state.valueB === 1) query.status = 'tetap'
       else if (this.state.valueB === 2) query.status = 'kontrak'

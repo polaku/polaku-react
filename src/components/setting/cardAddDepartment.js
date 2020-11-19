@@ -18,19 +18,23 @@ class cardAddDepartment extends Component {
     nameDepartment: '',
     levelHirarki: '',
     partOfDepartment: '',
-    position: [{
-      position: '',
-      user: ''
-    }],
+    position: [
+      //   {
+      //   position: '',
+      //   user: ''
+      // }
+    ],
     userPosition: [''],
-    team: [{
-      nameTeam: '',
-      teamPosition: [''],
-      selectedTeamPosition: [''],
-      user: [''],
-      userSelected: [''],
-      reportTo: '',
-    }],
+    team: [
+      //   {
+      //   nameTeam: '',
+      //   teamPosition: [''],
+      //   selectedTeamPosition: [''],
+      //   user: [''],
+      //   userSelected: [''],
+      //   reportTo: '',
+      // }
+    ],
     listDepartment: [],
     listPosition: [],
     listUser: [],

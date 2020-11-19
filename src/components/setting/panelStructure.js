@@ -86,14 +86,17 @@ class panelStructure extends Component {
       }
     });
 
-    this.setState({ data: this.props.dataStructure, dataForDisplay: this.props.dataStructure, label, page: 0, valueB: 0 })
+    this.setState({ data: this.props.dataStructure, dataForDisplay: this.props.dataStructure, label, page: 0 })
   }
 
   fetchOptionCompany = () => {
-    let optionCompany = [{ acronym: 'Semua' }]
     if (this.props.isAdminsuper) {
-      this.setState({ optionCompany: [...optionCompany, ...this.props.dataCompanies] })
+      this.setState({ optionCompany: [{ acronym: 'Semua' }, ...this.props.dataCompanies] })
     } else {
+      let optionCompany = []
+      if (this.props.dinas.length > 1) {
+        optionCompany.push({ acronym: 'Semua' })
+      }
       this.props.dinas.forEach(el => {
         let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
         if (check) optionCompany.push(check)
@@ -111,6 +114,7 @@ class panelStructure extends Component {
 
     let companySelected = this.state.optionCompany[newValue]
     if (newValue === 0) {
+      console.log("MMMM")
       await this.props.fetchDataStructure({ limit: this.state.rowsPerPage, page: 0 })
       await this.fetchData()
     } else {

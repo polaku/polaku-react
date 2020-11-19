@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import {
-  Grid, OutlinedInput,
-  // Button, Divider, 
+  Grid, OutlinedInput, Button,
+  // Divider, 
   FormControlLabel, Checkbox, Select, MenuItem, Paper, FormControl, TextField, Avatar
 } from '@material-ui/core';
 // import SeReactSelect from 'react-select/creatable';
@@ -12,7 +12,7 @@ import ReactSelect from 'react-select';
 import makeAnimated from 'react-select/animated';
 // import DragAndDrop from '../DragAndDrop';
 
-import { fetchDataCompanies, fetchDataDepartment, fetchDataPosition, fetchDataUsers, fetchDataAddress } from '../../store/action';
+import { fetchDataCompanies, fetchDataDepartment, fetchDataPosition, fetchDataUsers, fetchDataAddress, fetchDataStructure } from '../../store/action';
 
 const animatedComponents = makeAnimated();
 
@@ -26,8 +26,10 @@ class cardAddEmployee extends Component {
     company: '',
     companyAddress: '',
     nik: '',
-    divisi: '',
-    peran: '',
+    listDivisi: [{
+      divisi: '',
+      peran: '',
+    }],
     evaluator1: '',
     evaluator1Selected: null,
     evaluator2: '',
@@ -43,6 +45,10 @@ class cardAddEmployee extends Component {
 
     companyDinas: '',
     companyDinasAddress: '',
+    listDivisiDinas: [{
+      divisi: '',
+      peran: '',
+    }],
 
     emailPribadi: '',
     emailKantor: '',
@@ -55,17 +61,18 @@ class cardAddEmployee extends Component {
     isDinas: false,
 
     password: '',
-    optionCompany: []
+    optionCompany: [],
+    optionDivisi: [],
+    optionDivisiDinas: [],
   }
 
   async componentDidMount() {
     await this.props.fetchDataUsers()
     await this.props.fetchDataCompanies()
-    await this.props.fetchDataDepartment()
+    await this.props.fetchDataStructure({ forOption: true })
     await this.props.fetchDataPosition()
-    await this.props.fetchDataAddress()
+    await this.props.fetchDataAddress({ forOption: true })
     if (this.props.data) {
-      console.log(this.props.data)
       await this.fetchDataEdit()
     }
     // console.log(this.props.location.state.index)
@@ -85,15 +92,15 @@ class cardAddEmployee extends Component {
       this.setState({ listUser })
     }
 
-    if (this.props.dataAddress !== prevProps.dataAddress) {
-      this.setState({ dataAddress: this.props.dataAddress })
-    }
+    // if (this.props.dataAddress !== prevProps.dataAddress) {
+    //   this.setState({ dataAddress: this.props.dataAddress })
+    // }
 
     if (this.state.company !== prevState.company) {
-      let dataAddress = [], idBuilding = []
+      let dataAddress = [], idBuilding = [], optionDivisi = [], idDivisi = []
 
       await this.props.dataAddress.forEach(address => {
-        if (address.company_id === this.state.company) {
+        if ((address.company_id === this.state.company) || (this.props.data && address.company_id === this.props.data.companyId)) {
           if (idBuilding.indexOf(address.building_id) < 0) {
             idBuilding.push(address.building_id)
             dataAddress.push(address.tbl_building)
@@ -101,12 +108,20 @@ class cardAddEmployee extends Component {
         }
       });
 
-      this.setState({ dataAddress })
+      await this.props.dataStructure.forEach(structure => {
+        if (structure.company_id === this.state.company) {
+          if (idDivisi.indexOf(structure.departments_id) < 0) {
+            idDivisi.push(structure.departments_id)
+            optionDivisi.push(structure.department)
+          }
+        }
+      });
+
+      this.setState({ dataAddress, optionDivisi })
     }
 
     if (this.state.companyDinas !== prevState.companyDinas) {
-      let dataAddressDinas = [], idBuilding = []
-
+      let dataAddressDinas = [], idBuilding = [], optionDivisiDinas = [], idDivisi = []
       await this.props.dataAddress.forEach(address => {
         if (address.company_id === this.state.companyDinas) {
           if (idBuilding.indexOf(address.building_id) < 0) {
@@ -116,7 +131,16 @@ class cardAddEmployee extends Component {
         }
       });
 
-      this.setState({ dataAddressDinas })
+      await this.props.dataStructure.forEach(structure => {
+        if (structure.company_id === this.state.companyDinas) {
+          if (idDivisi.indexOf(structure.departments_id) < 0) {
+            idDivisi.push(structure.departments_id)
+            optionDivisiDinas.push(structure.department)
+          }
+        }
+      });
+      console.log(this.props.dataStructure)
+      this.setState({ dataAddressDinas, optionDivisiDinas })
     }
 
     if (this.props.statusSubmit !== prevProps.statusSubmit && this.props.statusSubmit) {
@@ -134,10 +158,38 @@ class cardAddEmployee extends Component {
         })
         this.setState({ optionCompany })
       }
+      if (optionCompany.length === 1) {
+        this.setState({ company: optionCompany[0].company_id })
+      }
     }
   }
 
   fetchDataEdit = async () => {
+    console.log(this.props.data)
+
+    if (this.props.data.position.length > 0) {
+      let listDivisi = [
+        //   {
+        //   divisi: '',
+        //   peran: '',
+        // }
+      ]
+
+      this.props.data.position.forEach(position => {
+        if (position.tbl_structure_department.company_id === this.props.data.companyId) {
+          listDivisi.push({
+            id: position.id,
+            peran: position.position_id,
+            divisi: position.tbl_structure_department.departments_id
+          })
+        }
+      })
+      console.log(this.props.dataStructure)
+
+      console.log(listDivisi)
+      this.setState({ listDivisi })
+    }
+
     this.setState({
       pathAvatar: this.props.data.rawData.tbl_account_detail.avatar,
       name: this.props.data.rawData.tbl_account_detail.fullname,
@@ -146,8 +198,6 @@ class cardAddEmployee extends Component {
       company: this.props.data.rawData.tbl_account_detail.company_id,
       companyAddress: this.props.data.rawData.tbl_account_detail.building_id,
       nik: this.props.data.rawData.tbl_account_detail.nik,
-      divisi: this.props.data.rawData.tbl_account_detail.departments_id,
-      peran: this.props.data.rawData.tbl_account_detail.position_id,
       evaluator1: this.props.data.rawData.tbl_account_detail.name_evaluator_1,
       evaluator1Selected: this.props.data.rawData.tbl_account_detail.name_evaluator_1 && this.state.listUser.find(user => user.value === +this.props.data.rawData.tbl_account_detail.name_evaluator_1),
       evaluator2: this.props.data.rawData.tbl_account_detail.name_evaluator_2,
@@ -167,6 +217,9 @@ class cardAddEmployee extends Component {
       alamat: this.props.data.rawData.tbl_account_detail.address,
 
       isDinas: this.props.data.rawData.dinas.length > 0 ? true : false,
+
+      // divisi: this.props.data.rawData.tbl_account_detail.departments_id,
+      // peran: this.props.data.rawData.tbl_account_detail.position_id,
     })
 
   }
@@ -175,166 +228,73 @@ class cardAddEmployee extends Component {
     this.setState({ [name]: event.target.value });
   };
 
-  // HANDLE PHONE (START)
-  handleChangePhone = index => event => {
-    let newArray = this.state.phone
-
-    newArray[index] = event.target.value
-
-    this.setState({ newArray })
-  }
-
-  deletePhone = index => {
-    let newArray = this.state.phone;
-
-    newArray.splice(index, 1);
-    this.setState({
-      phone: newArray
-    });
-  }
-
-  addPhone = index => {
-    let newArray = this.state.phone;
-
-    newArray.push('');
-    this.setState({
-      phone: newArray
-    });
-  }
-  // HANDLE PHONE (END)
-
-
-  // HANDLE FAX (START)
-  handleChangeFax = index => event => {
-    let newArray = this.state.fax
-
-    newArray[index] = event.target.value
-
-    this.setState({ newArray })
-  }
-
-  deleteFax = index => {
-    let newArray = this.state.fax;
-
-    newArray.splice(index, 1);
-    this.setState({
-      fax: newArray
-    });
-  }
-
-  addFax = index => {
-    let newArray = this.state.fax;
-
-    newArray.push('');
-    this.setState({
-      fax: newArray
-    });
-  }
-  // HANDLE PHONE (END)
-
-
-  handleOperationalDay = event => {
-    if (event.target.name === 'operationSemua') {
-      this.setState({
-        operationSemua: event.target.checked,
-        operationSenin: event.target.checked,
-        operationSelasa: event.target.checked,
-        operationRabu: event.target.checked,
-        operationKamis: event.target.checked,
-        operationJumat: event.target.checked,
-        operationSabtu: event.target.checked,
-        operationMinggu: event.target.checked
-      })
-    } else {
-      this.setState({
-        [event.target.name]: event.target.checked
-      })
-      if (this.state.operationSemua) {
-        this.setState({
-          operationSemua: false
-        })
-      }
-    }
-  }
-
-  // OPERATION HOUR (START)
-  handleChangeOperationHour = (name, index) => event => {
-    // this.setState({ [name]: event.target.value });
-    let newArray = this.state.operationHours;
+  // HANDLE DIVISI (START)
+  handleChangeDivisi = (index, name) => event => {
+    let newArray = this.state.listDivisi
 
     newArray[index][name] = event.target.value
 
-    this.setState({
-      operationHours: newArray
-    });
-  };
-
-  addOperationHour = () => {
-    let newArray = this.state.operationHours
-
-    newArray.push({
-      day: '',
-      startHour: '',
-      endHour: '',
-    })
-
-    this.setState({
-      operationHours: newArray
-    });
+    this.setState({ listDivisi: newArray })
   }
 
-  deleteOperationHour = index => {
-    let newArray = this.state.operationHours;
+  deleteDivisi = index => {
+    let newArray = this.state.listDivisi;
 
     newArray.splice(index, 1);
     this.setState({
-      operationHours: newArray
+      listDivisi: newArray
     });
   }
-  // OPERATION HOUR (END)
 
+  addDivisi = index => {
+    let newArray = this.state.listDivisi;
 
-  // OPERATION REST HOUR (START)
-  handleChangeOperationRestHour = (name, index) => event => {
-    // this.setState({ [name]: event.target.value });
-    let newArray = this.state.operationRestHours;
+    newArray.push({
+      divisi: '',
+      peran: '',
+    });
+    this.setState({
+      listDivisi: newArray
+    });
+  }
+  // HANDLE DIVISI (END)
+
+  // HANDLE DIVISI DINAS (START)
+  handleChangeDivisiDinas = (index, name) => event => {
+    let newArray = this.state.listDivisiDinas
 
     newArray[index][name] = event.target.value
 
-    this.setState({
-      operationRestHours: newArray
-    });
-  };
-
-  addOperationRestHour = () => {
-    let newArray = this.state.operationRestHours
-
-    newArray.push({
-      day: '',
-      startRestHour: '',
-      endRestHour: '',
-    })
-
-    this.setState({
-      operationRestHours: newArray
-    });
+    this.setState({ listDivisiDinas: newArray })
   }
 
-  deleteOperationRestHour = index => {
-    let newArray = this.state.operationRestHours;
+  deleteDivisiDinas = index => {
+    let newArray = this.state.listDivisiDinas;
 
     newArray.splice(index, 1);
     this.setState({
-      operationRestHours: newArray
+      listDivisiDinas: newArray
     });
   }
-  // OPERATION REST HOUR (END)
+
+  addDivisiDinas = index => {
+    let newArray = this.state.listDivisiDinas;
+
+    newArray.push({
+      divisi: '',
+      peran: '',
+    });
+    this.setState({
+      listDivisiDinas: newArray
+    });
+  }
+  // HANDLE DIVISI DINAS (END)
 
   handleFiles = files => {
     this.setState({ files })
   }
 
-  submit = () => {
+  submit = async () => {
     let newData = new FormData()
 
     if (this.props.data) newData.append("userId", this.props.data.userId)
@@ -347,19 +307,17 @@ class cardAddEmployee extends Component {
     newData.append("nik", this.state.nik)
     newData.append("address", this.state.alamat)
     if (this.state.dateOfBirth) newData.append("dateOfBirth", this.state.dateOfBirth)
-    newData.append("leave", this.state.sisaCuti)
-    newData.append("building_id", this.state.companyAddress)
-    newData.append("company_id", this.state.company)
-    newData.append("position_id", this.state.peran)
+    if (this.state.sisaCuti) newData.append("leave", this.state.sisaCuti)
+    if (this.state.companyAddress) newData.append("building_id", this.state.companyAddress)
+    if (this.state.company) newData.append("company_id", this.state.company)
     newData.append("phone", this.state.telepon)
-    newData.append("name_evaluator_1", this.state.evaluator1)
-    newData.append("name_evaluator_2", this.state.evaluator2)
+    if (this.state.evaluator1) newData.append("name_evaluator_1", this.state.evaluator1)
+    if (this.state.evaluator2) newData.append("name_evaluator_2", this.state.evaluator2)
     newData.append("nickname", this.state.nickname)
-    newData.append("departments_id", this.state.divisi)
     newData.append("statusEmployee", this.state.statusKaryawan)
     if (this.state.tanggalGabung) newData.append("joinDate", this.state.tanggalGabung)
     if (this.state.tanggalMulaiCutiBesar) newData.append("startLeaveBig", this.state.tanggalMulaiCutiBesar)
-    newData.append("leaveBig", this.state.sisaCutiBesar)
+    if (this.state.sisaCutiBesar) newData.append("leaveBig", this.state.sisaCutiBesar)
     if (this.state.nextFrame) newData.append("nextFrameDate", this.state.nextFrame)
     if (this.state.nextLensa) newData.append("nextLensaDate", this.state.nextLensa)
     if (!this.props.data) newData.append("dinasId", this.state.isDinas ? this.state.companyDinas : '')
@@ -367,6 +325,14 @@ class cardAddEmployee extends Component {
     newData.append("officeEmail", this.state.emailKantor)
 
     if (this.state.avatar) newData.append("avatar", this.state.avatar)
+
+    if (this.state.listDivisi[0].divisi && this.state.listDivisi[0].peran) {
+      newData.append("list_divisi", JSON.stringify(this.state.listDivisi))
+    }
+
+    if (this.state.listDivisiDinas[0].divisi && this.state.listDivisiDinas[0].peran) {
+      newData.append("list_divisi_dinas", JSON.stringify(this.state.listDivisiDinas))
+    }
 
     this.props.sendData(newData)
   }
@@ -579,47 +545,59 @@ class cardAddEmployee extends Component {
             />
           </Grid>
 
-          <Grid id="divisi" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Divisi</b>
-            </Grid>
+          {
+            this.state.listDivisi.map((divisi, index) =>
+              <Grid id="divisi" style={{ display: 'flex', alignItems: 'center' }}>
+                <Grid style={{ width: '20%', marginRight: 10 }}>
+                  <b style={{ marginBottom: 5 }}>Divisi</b>
+                </Grid>
 
-            <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
-              <Select
-                value={this.state.divisi}
-                onChange={this.handleChange('divisi')}
-                disabled={this.props.proses}
-                style={{ width: '100%' }}
-              >
+                <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
+                  <Select
+                    value={divisi.divisi}
+                    onChange={this.handleChangeDivisi(index, 'divisi')}
+                    disabled={this.props.proses}
+                    style={{ width: '100%' }}
+                  >
+                    <MenuItem value={null}>Pilih divisi</MenuItem>
+                    {
+                      this.state.optionDivisi.map((department, index) =>
+                        <MenuItem value={department.departments_id} key={"department" + index}>{department.deptname}</MenuItem>
+                      )
+                    }
+                  </Select>
+                </FormControl>
+
+                <Grid style={{ width: '2%' }} />
+
+                <Grid style={{ width: '20%', marginRight: 10 }}>
+                  <b style={{ marginBottom: 5 }}>Peran</b>
+                </Grid>
+
+                <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
+                  <Select
+                    value={divisi.peran}
+                    onChange={this.handleChangeDivisi(index, 'peran')}
+                    disabled={this.props.proses || !divisi.divisi}
+                    style={{ width: '100%' }}
+                  >
+                    <MenuItem value={null}>Pilih peran</MenuItem>
+                    {
+                      this.props.dataPositions && this.props.dataPositions.map((position, index) =>
+                        <MenuItem value={position.position_id} key={"department" + index}>{position.position}</MenuItem>
+                      )
+                    }
+                  </Select>
+                </FormControl>
+
                 {
-                  this.props.dataDepartments.map((department, index) =>
-                    <MenuItem value={department.departments_id} key={"department" + index}>{department.deptname}</MenuItem>
-                  )
+                  this.state.listDivisi.length > 1 && <Button style={{ backgroundColor: '#ff1919', borderRadius: 30, minWidth: 30, color: 'white', marginLeft: '10px' }} size='small' onClick={() => this.deleteDivisi(index)} disabled={this.state.proses}>X</Button>
                 }
-              </Select>
-            </FormControl>
+              </Grid>
+            )
+          }
+          <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addDivisi} disabled={this.state.proses}>+ tambah divisi</p>
 
-            <Grid style={{ width: '2%' }} />
-
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Peran</b>
-            </Grid>
-
-            <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
-              <Select
-                value={this.state.peran}
-                onChange={this.handleChange('peran')}
-                disabled={this.props.proses}
-                style={{ width: '100%' }}
-              >
-                {
-                  this.props.dataPositions && this.props.dataPositions.map((position, index) =>
-                    <MenuItem value={position.position_id} key={"department" + index}>{position.position}</MenuItem>
-                  )
-                }
-              </Select>
-            </FormControl>
-          </Grid>
 
           <Grid id="evaluator" style={{ display: 'flex', alignItems: 'center' }}>
             <Grid style={{ width: '20%', marginRight: 10 }}>
@@ -863,6 +841,59 @@ class cardAddEmployee extends Component {
                 </Select>
               </FormControl>
             </Grid>
+
+            {
+              this.state.listDivisiDinas.map((divisi, index) =>
+                <Grid id="divisi" style={{ display: 'flex', alignItems: 'center' }}>
+                  <Grid style={{ width: '20%', marginRight: 10 }}>
+                    <b style={{ marginBottom: 5 }}>Divisi</b>
+                  </Grid>
+
+                  <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
+                    <Select
+                      value={divisi.divisi}
+                      onChange={this.handleChangeDivisiDinas(index, 'divisi')}
+                      disabled={this.props.proses || !this.state.isDinas}
+                      style={{ width: '100%' }}
+                    >
+                      <MenuItem value={null}>Pilih divisi</MenuItem>
+                      {
+                        this.state.optionDivisiDinas.map((department, index) =>
+                          <MenuItem value={department.departments_id} key={"department" + index}>{department.deptname}</MenuItem>
+                        )
+                      }
+                    </Select>
+                  </FormControl>
+
+                  <Grid style={{ width: '2%' }} />
+
+                  <Grid style={{ width: '20%', marginRight: 10 }}>
+                    <b style={{ marginBottom: 5 }}>Peran</b>
+                  </Grid>
+
+                  <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
+                    <Select
+                      value={divisi.peran}
+                      onChange={this.handleChangeDivisiDinas(index, 'peran')}
+                      disabled={this.props.proses || !this.state.isDinas || !divisi.divisi}
+                      style={{ width: '100%' }}
+                    >
+                      <MenuItem value={null}>Pilih peran</MenuItem>
+                      {
+                        this.props.dataPositions && this.props.dataPositions.map((position, index) =>
+                          <MenuItem value={position.position_id} key={"department" + index}>{position.position}</MenuItem>
+                        )
+                      }
+                    </Select>
+                  </FormControl>
+
+                  {
+                    this.state.listDivisiDinas.length > 1 && <Button style={{ backgroundColor: '#ff1919', borderRadius: 30, minWidth: 30, color: 'white', marginLeft: '10px' }} size='small' onClick={() => this.deleteDivisiDinas(index)} disabled={this.state.proses}>X</Button>
+                  }
+                </Grid>
+              )
+            }
+            <p style={{ margin: 0, color: '#d91b51', cursor: !this.state.isDinas ? null : 'pointer' }} onClick={!this.state.isDinas ? null : this.addDivisiDinas} disabled={this.state.proses}>+ tambah divisi</p>
           </Paper>
         }
 
@@ -1011,10 +1042,11 @@ const mapDispatchToProps = {
   fetchDataDepartment,
   fetchDataPosition,
   fetchDataUsers,
-  fetchDataAddress
+  fetchDataAddress,
+  fetchDataStructure
 }
 
-const mapStateToProps = ({ dataCompanies, dataDepartments, dataPositions, dataUsers, dataAddress, dinas, isAdminsuper }) => {
+const mapStateToProps = ({ dataCompanies, dataDepartments, dataPositions, dataUsers, dataAddress, dinas, isAdminsuper, dataStructure }) => {
   return {
     dataCompanies,
     dataDepartments,
@@ -1022,7 +1054,8 @@ const mapStateToProps = ({ dataCompanies, dataDepartments, dataPositions, dataUs
     dataUsers,
     dataAddress,
     dinas,
-    isAdminsuper
+    isAdminsuper,
+    dataStructure
   }
 }
 

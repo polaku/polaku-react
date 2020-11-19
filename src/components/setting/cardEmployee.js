@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import {
-  Paper, Grid, Tooltip, Checkbox
+  Paper, Grid, Tooltip, Checkbox, Chip
 } from '@material-ui/core';
 
 import ErrorOutlinedIcon from '@material-ui/icons/ErrorOutlined';
@@ -19,13 +19,24 @@ import swal from 'sweetalert';
 class cardEmployee extends Component {
   state = {
     notComplete: false,
-    isActive: false
+    isActive: false,
+    department: "-"
   }
 
   componentDidMount() {
     this.setState({
       isActive: this.props.data.isActive === 1 ? true : false
     })
+
+    let department = []
+    this.props.data.position && this.props.data.position.length > 0 && this.props.data.position.forEach(element => {
+      if (element.tbl_structure_department.company_id === this.props.data.companyId) {
+        console.log(element)
+        department.push(element.tbl_structure_department.department.deptname)
+      }
+    });
+
+    this.setState({ department: department.length > 0 ? department.join(', ') : '-' })
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -87,9 +98,26 @@ class cardEmployee extends Component {
       <Paper style={{ display: 'flex', padding: '15px 20px', margin: 1, borderRadius: 0, alignItems: 'center' }}>
         <Grid style={{ width: '25%', display: 'flex', flexDirection: 'column' }}>
           <p style={{ margin: 0, }}>{this.props.data.name}</p>
-          <p style={{ margin: 0, color: 'gray', fontSize: 13 }}>{this.props.data.position}</p>
+          <Grid style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
+            {
+              this.props.data.position
+                ? (this.props.data.position.length > 0
+                  ? this.props.data.position.map((position, index) =>
+                    <Grid key={this.props.userId + "position" + index} style={{ display: 'flex', alignItems: 'center', marginRight: 5, marginTop: 3 }}>
+                      <Chip
+                        size="small"
+                        color="secondary"
+                        label={<p style={{ fontSize: 10 }}>{position.tbl_structure_department.tbl_company.acronym}</p>} style={{ marginRight: 3 }} />
+                      <p style={{ margin: 0, color: 'gray', fontSize: 12 }}>{position.tbl_position.position}
+                        {this.props.data.position.length > 1 && index !== this.props.data.position.length - 1 ? ', ' : ''} </p>
+                    </Grid>
+                  )
+                  : '-')
+                : '-'
+            }
+          </Grid>
         </Grid>
-        <p style={{ margin: 0, width: '25%' }}>{this.props.data.department}</p>
+        <p style={{ margin: 0, width: '25%' }}>{this.state.department}</p>
         <p style={{ margin: 0, width: '15%' }}>{this.props.data.evaluator1}</p>
         <p style={{ margin: 0, width: '15%' }}>{this.props.data.evaluator2}</p>
         <p style={{ margin: 0, width: '10%' }}>

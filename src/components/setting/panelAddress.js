@@ -82,10 +82,13 @@ class panelAddress extends Component {
   }
 
   fetchOptionCompany = () => {
-    let optionCompany = [{ acronym: 'Semua' }]
     if (this.props.isAdminsuper) {
-      this.setState({ optionCompany: [...optionCompany, ...this.props.dataCompanies] })
+      this.setState({ optionCompany: [{ acronym: 'Semua' }, ...this.props.dataCompanies] })
     } else {
+      let optionCompany = []
+      if (this.props.dinas.length > 1) {
+        optionCompany.push({ acronym: 'Semua' })
+      }
       this.props.dinas.forEach(el => {
         let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
         if (check) optionCompany.push(check)

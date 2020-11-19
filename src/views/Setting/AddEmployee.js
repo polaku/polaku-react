@@ -73,6 +73,7 @@ class AddEmployee extends Component {
     if (this.props.location.state && this.props.location.state.data) {
       let newData = this.state.tempDataForEdit
       newData.push(args)
+      this.setState({ proses: true })
       let token = Cookies.get('POLAGROUP'), promises = []
 
       if (newData.length === this.state.dataForEdit.length) {
@@ -88,6 +89,7 @@ class AddEmployee extends Component {
             this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
           })
           .catch(err => {
+            console.log(err.response)
             this.setState({ proses: false, statusSubmit: false })
             swal('Ubah karyawan gagal', '', 'error')
           })
@@ -110,7 +112,7 @@ class AddEmployee extends Component {
             this.setState({ data: [], proses: false, statusSubmit: false })
             await this.props.fetchDataUsers()
             swal('Tambah karyawan sukses', '', 'success')
-            // this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
+            this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
           })
           .catch(err => {
             this.setState({ proses: false, statusSubmit: false })
