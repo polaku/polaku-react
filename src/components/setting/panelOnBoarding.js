@@ -128,14 +128,12 @@ class panelOnBoarding extends Component {
             !el.tbl_account_detail.building_id ||
             !el.tbl_account_detail.company_id ||
             !el.tbl_account_detail.date_of_birth ||
-            !el.tbl_account_detail.departments_id ||
             !el.tbl_account_detail.initial ||
             !el.tbl_account_detail.join_date ||
             !el.tbl_account_detail.name_evaluator_1 ||
             !el.tbl_account_detail.nik ||
             !el.tbl_account_detail.office_email ||
             !el.tbl_account_detail.phone ||
-            !el.tbl_account_detail.position_id ||
             !el.tbl_account_detail.status_employee
           ) {
             userNotComplete++

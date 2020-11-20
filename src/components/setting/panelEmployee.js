@@ -240,7 +240,7 @@ class panelEmployee extends Component {
   // }
 
   refresh = async () => {
-    this.setState({ proses: true, rowsPerPage: 10, page: 0 })
+    this.setState({ proses: true, rowsPerPage: 10, page: 0, search: '' })
     if (this.state.valueA === 0) {
       await this.props.fetchDataUsers({ limit: 10, page: 0 })
     } else {
@@ -482,11 +482,10 @@ class panelEmployee extends Component {
                 onChangePage={this.handleChangePage}
                 onChangeRowsPerPage={this.handleChangeRowsPerPage}
               />
-
             </Grid>
         }
         {
-          this.state.openModalCreateEditMuchEmployee && <ModalCreateEditMuchEmployee status={this.state.openModalCreateEditMuchEmployee} close={this.handleModalCreateEditMuchEmployee} isCreate={this.state.isCreate} refresh={this.refresh} />
+          this.state.openModalCreateEditMuchEmployee && <ModalCreateEditMuchEmployee status={this.state.openModalCreateEditMuchEmployee} close={this.handleModalCreateEditMuchEmployee} isCreate={this.state.isCreate} refresh={this.refresh} data={this.state.dataForDisplay} keyword={this.state.search} optionCompany={this.state.optionCompany} indexCompany={this.state.valueB} />
         }
         {
           this.state.openModalLogSetting && <ModalLogSetting status={this.state.openModalLogSetting} close={this.handleModalLogSetting} type={this.state.type} />

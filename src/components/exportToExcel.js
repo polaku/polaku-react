@@ -1,5 +1,6 @@
 import React from "react";
 import ReactExport from "react-data-export";
+import { Button } from '@material-ui/core';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -80,7 +81,19 @@ export default class exportToExcel extends React.Component {
       // }
     }
 
-
+    else if (this.props.report === "edit-employee") {
+      return (
+        <ExcelFile filename={`Edit-employee`} element={<Button variant="outlined" style={{ width: '90%', alignSelf: 'center' }}>{this.props.title}</Button>}>
+          <ExcelSheet data={this.props.data} name="Sheet1">
+            {
+              this.props.labelValue.length > 0 && this.props.labelValue.map((el, index) => (
+                <ExcelColumn label={el.label} value={el.value} key={index} />
+              ))
+            }
+          </ExcelSheet>
+        </ExcelFile>
+      );
+    }
 
     else {
       return (
