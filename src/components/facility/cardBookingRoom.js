@@ -47,7 +47,7 @@ class cardBookingRoom extends Component {
       })
     }
 
-    if (this.props.designation !== prevProps.designation) {
+    if (this.props.designation !== prevProps.designation && (this.props.designation && this.props.designation.length > 0)) {
       let checkAdmin = this.props.designation.find(menu => menu.menu_id === 6)
       if (checkAdmin) {
         this.setState({ admin: true })
@@ -73,9 +73,9 @@ class cardBookingRoom extends Component {
             {
               headers: { token }
             })
-            .then(() => {
+            .then(async () => {
               swal("Pesanan berhasil dihapus !", "", "success")
-              this.props.refresh()
+              await this.props.refresh()
               this.setState({
                 proses: false
               })
@@ -95,7 +95,7 @@ class cardBookingRoom extends Component {
     this.setState({ openModal: true })
   }
 
-  refresh =  async () => {
+  refresh = async () => {
     await this.props.refresh()
     this.setState({ openModal: false })
   }
@@ -133,7 +133,7 @@ class cardBookingRoom extends Component {
             <p style={{ margin: 0, marginLeft: 5 }}>{this.props.data.tbl_user.tbl_account_detail.fullname}</p>
           </div>
           {
-            (this.state.owner || this.state.admin) &&
+            (this.state.owner || this.state.admin || this.props.isAdminsuper) &&
             <div style={{ alignSelf: 'end' }}>
               <IconButton aria-label="delete" onClick={this.delete}>
                 <Tooltip title="Hapus Pesanan" placement="top-end">
@@ -156,12 +156,13 @@ class cardBookingRoom extends Component {
   }
 }
 
-const mapStateToProps = ({ loading, userId, error, designation }) => {
+const mapStateToProps = ({ loading, userId, error, designation, isAdminsuper }) => {
   return {
     loading,
     userId,
     error,
-    designation
+    designation,
+    isAdminsuper
   }
 }
 export default connect(mapStateToProps)(cardBookingRoom)

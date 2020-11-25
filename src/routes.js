@@ -18,6 +18,8 @@ import Setting from './views/Setting/Setting';
 import SettingPerusahaan from './views/Setting/SettingPerusahaan';
 import StepperOnboarding from './views/Setting/StepperOnboarding';
 import SettingUser from './views/Setting/SettingUser';
+import SettingMeetingRoom from './views/Setting/SettingMeetingRoom';
+import AddMeetingRoom from './views/Setting/AddMeetingRoom';
 import AddAddress from './views/Setting/AddAddress';
 import AddDepartment from './views/Setting/AddDepartment';
 import AddEmployee from './views/Setting/AddEmployee';
@@ -72,6 +74,8 @@ function Routes() {
         <AuthenticatedRoute path="/setting/setting-perusahaan/add-admin" component={AddAdmin} />
         <AuthenticatedRoute path="/setting/setting-perusahaan" component={SettingPerusahaan} />
         <AuthenticatedRoute path="/setting/setting-user" component={SettingUser} />
+        <AuthenticatedRoute path="/setting/setting-meeting-room/add-meeting-room" component={AddMeetingRoom} />
+        <AuthenticatedRoute path="/setting/setting-meeting-room" component={SettingMeetingRoom} />
         <AuthenticatedRoute path="/setting" component={Setting} />
         <AuthenticatedRoute path="/hr/report" component={ReportIjin} />
         <AuthenticatedRoute path="/hr" component={HR} />

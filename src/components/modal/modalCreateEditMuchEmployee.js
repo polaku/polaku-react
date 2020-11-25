@@ -19,6 +19,7 @@ export default class modalCreateEditMuchEmployee extends Component {
     proses: false,
     files: [],
 
+    semua: false,
     fullname: false,
     nickname: false,
     initial: false,
@@ -58,13 +59,7 @@ export default class modalCreateEditMuchEmployee extends Component {
   }
 
   async componentDidMount() {
-    // console.log(this.props.keyword)
-    // console.log(this.props.optionCompany)
-    // console.log(this.props.indexCompany)
-    // console.log(this.props.data)
     let companySelectedId = this.props.optionCompany[this.props.indexCompany]
-    // console.log(companySelectedId)
-    // console.log(companySelectedId.company_id)
 
     let token = Cookies.get('POLAGROUP')
     let getData
@@ -99,11 +94,91 @@ export default class modalCreateEditMuchEmployee extends Component {
         this.editManyEmployee()
       }
     }
+
+    if (
+      (this.state.fullname !== prevState.fullname) ||
+      (this.state.nickname !== prevState.nickname) ||
+      (this.state.initial !== prevState.initial) ||
+      (this.state.birth_date !== prevState.birth_date) ||
+      (this.state.address !== prevState.address) ||
+      (this.state.phone !== prevState.phone) ||
+      (this.state.selfEmail !== prevState.selfEmail) ||
+      (this.state.officeEmail !== prevState.officeEmail) ||
+      (this.state.username !== prevState.username) ||
+      (this.state.building !== prevState.building) ||
+      (this.state.company !== prevState.company) ||
+      (this.state.evaluator1 !== prevState.evaluator1) ||
+      (this.state.evaluator2 !== prevState.evaluator2) ||
+      (this.state.department !== prevState.department) ||
+      (this.state.position !== prevState.position) ||
+      (this.state.leave !== prevState.leave) ||
+      (this.state.statusEmpolyee !== prevState.statusEmpolyee) ||
+      (this.state.joinDate !== prevState.joinDate) ||
+      (this.state.startBigLeave !== prevState.startBigLeave) ||
+      (this.state.bigLeave !== prevState.bigLeave) ||
+      (this.state.nextFrameDate !== prevState.nextFrameDate) ||
+      (this.state.nextLensaDate !== prevState.nextLensaDate)) {
+      if (!this.state.fullname || !this.state.nickname || !this.state.initial || !this.state.birth_date || !this.state.address || !this.state.phone || !this.state.selfEmail || !this.state.officeEmail || !this.state.username || !this.state.building || !this.state.company || !this.state.evaluator1 || !this.state.evaluator2 || !this.state.department || !this.state.position || !this.state.leave || !this.state.statusEmpolyee || !this.state.joinDate || !this.state.startBigLeave || !this.state.bigLeave || !this.state.nextFrameDate || !this.state.nextLensaDate) this.setState({ semua: false })
+    }
+
+    if (
+      (this.state.fullname !== prevState.fullname) ||
+      (this.state.nickname !== prevState.nickname) ||
+      (this.state.initial !== prevState.initial) ||
+      (this.state.birth_date !== prevState.birth_date) ||
+      (this.state.address !== prevState.address) ||
+      (this.state.phone !== prevState.phone) ||
+      (this.state.selfEmail !== prevState.selfEmail) ||
+      (this.state.officeEmail !== prevState.officeEmail) ||
+      (this.state.username !== prevState.username) ||
+      (this.state.building !== prevState.building) ||
+      (this.state.company !== prevState.company) ||
+      (this.state.evaluator1 !== prevState.evaluator1) ||
+      (this.state.evaluator2 !== prevState.evaluator2) ||
+      (this.state.department !== prevState.department) ||
+      (this.state.position !== prevState.position) ||
+      (this.state.leave !== prevState.leave) ||
+      (this.state.statusEmpolyee !== prevState.statusEmpolyee) ||
+      (this.state.joinDate !== prevState.joinDate) ||
+      (this.state.startBigLeave !== prevState.startBigLeave) ||
+      (this.state.bigLeave !== prevState.bigLeave) ||
+      (this.state.nextFrameDate !== prevState.nextFrameDate) ||
+      (this.state.nextLensaDate !== prevState.nextLensaDate)) {
+      if (this.state.fullname && this.state.nickname && this.state.initial && this.state.birth_date && this.state.address && this.state.phone && this.state.selfEmail && this.state.officeEmail && this.state.username && this.state.building && this.state.company && this.state.evaluator1 && this.state.evaluator2 && this.state.department && this.state.position && this.state.leave && this.state.statusEmpolyee && this.state.joinDate && this.state.startBigLeave && this.state.bigLeave && this.state.nextFrameDate && this.state.nextLensaDate) this.setState({ semua: true })
+
+    }
   }
 
   handleChangeCheck = async (event, name) => {
     await this.setState({ [name]: event.target.checked, proses: true });
     this.fetchDataReport()
+
+    if (name === 'semua') {
+      this.setState({
+        fullname: this.state.semua,
+        nickname: this.state.semua,
+        initial: this.state.semua,
+        birth_date: this.state.semua,
+        address: this.state.semua,
+        phone: this.state.semua,
+        selfEmail: this.state.semua,
+        officeEmail: this.state.semua,
+        username: this.state.semua,
+        building: this.state.semua,
+        company: this.state.semua,
+        evaluator1: this.state.semua,
+        evaluator2: this.state.semua,
+        department: this.state.semua,
+        position: this.state.semua,
+        leave: this.state.semua,
+        statusEmpolyee: this.state.semua,
+        joinDate: this.state.semua,
+        startBigLeave: this.state.semua,
+        bigLeave: this.state.semua,
+        nextFrameDate: this.state.semua,
+        nextLensaDate: this.state.semua,
+      })
+    }
   };
 
   saveManyEmployee = () => {
@@ -131,30 +206,6 @@ export default class modalCreateEditMuchEmployee extends Component {
 
     newData.append('file', this.state.files[0])
     newData.append('jenisImport', 'edit')
-
-    // this.state.nik && newData.append('nik', this.state.nik)
-    // this.state.fullname && newData.append('fullname', this.state.fullname)
-    // this.state.nickname && newData.append('nickname', this.state.nickname)
-    // this.state.initial && newData.append('initial', this.state.initial)
-    // this.state.birth_date && newData.append('birth_date', this.state.birth_date)
-    // this.state.address && newData.append('address', this.state.address)
-    // this.state.phone && newData.append('phone', this.state.phone)
-    // this.state.selfEmail && newData.append('selfEmail', this.state.selfEmail)
-    // this.state.officeEmail && newData.append('officeEmail', this.state.officeEmail)
-    // this.state.username && newData.append('username', this.state.username)
-    // this.state.building && newData.append('building', this.state.building)
-    // this.state.company && newData.append('company', this.state.company)
-    // this.state.evaluator1 && newData.append('evaluator1', this.state.evaluator1)
-    // this.state.evaluator2 && newData.append('evaluator2', this.state.evaluator2)
-    // this.state.department && newData.append('department', this.state.department)
-    // this.state.position && newData.append('position', this.state.position)
-    // this.state.leave && newData.append('leave', this.state.leave)
-    // this.state.statusEmpolyee && newData.append('statusEmpolyee', this.state.statusEmpolyee)
-    // this.state.joinDate && newData.append('joinDate', this.state.joinDate)
-    // this.state.startBigLeave && newData.append('startBigLeave', this.state.startBigLeave)
-    // this.state.bigLeave && newData.append('bigLeave', this.state.bigLeave)
-    // this.state.nextFrameDate && newData.append('nextFrameDate', this.state.nextFrameDate)
-    // this.state.nextLensaDate && newData.append('nextLensaDate', this.state.nextLensaDate)
 
     API.post('/users/settingImportUser', newData, { headers: { token } })
       .then(async (data) => {
@@ -203,8 +254,8 @@ export default class modalCreateEditMuchEmployee extends Component {
     if (this.state.nextFrameDate) label.push({ label: 'nextFrameDate', value: 'nextFrameDate' })
     if (this.state.nextLensaDate) label.push({ label: 'nextLensaDate', value: 'nextLensaDate' })
 
-    
-console.log(this.state.rawData)
+
+    console.log(this.state.rawData)
     this.state.rawData.forEach(element => {
       let newData = { nik: element.tbl_account_detail.nik }
       if (this.state.fullname) newData.fullname = element.tbl_account_detail.fullname
@@ -291,6 +342,17 @@ console.log(this.state.rawData)
                     <img src={process.env.PUBLIC_URL + '/upload-logo-1.png'} alt="Logo" style={{ width: 230, maxHeight: 120, alignSelf: 'center' }} />
                     <b>1. Pilih Kolom & Download Template excel</b>
                     <Grid style={{ border: '1px solid #e0e0e0', margin: 10, padding: '5px 10px', height: 100, overflow: 'auto', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={this.state.semua}
+                            onChange={(e) => this.handleChangeCheck(e, 'semua')}
+                            name="semua" style={{ width: 10, height: 10, marginRight: 8, marginLeft: 10 }}
+                          />
+                        }
+                        label={<p style={{ fontSize: 14, margin: 0 }}>Semua</p>}
+                        style={{ marginBottom: 5 }}
+                      />
                       {
                         this.state.key.map((el, index) =>
                           <FormControlLabel

@@ -65,7 +65,37 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get('/bookingRoom/rooms', { headers: { token } })
+      if (action.payload) {
+        if (action.payload.forOption) {
+          getData = await API.get('/bookingRoom/rooms?forOption=true', { headers: { token } })
+
+        } else {
+          if (action.payload.company) {
+            if (action.payload.keyword) {
+              getData = await API.get(
+                `/bookingRoom/rooms?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}&search=${action.payload.keyword}`,
+                { headers: { token } })
+            } else {
+              if (action.payload.limit || action.payload.page) {
+                getData = await API.get(
+                  `/bookingRoom/rooms?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}`,
+                  { headers: { token } })
+              } else {
+                getData = await API.get(`/bookingRoom/rooms?company=${action.payload.company}`, { headers: { token } })
+              }
+            }
+          } else {
+            if (action.payload.keyword) {
+              getData = await API.get(`/bookingRoom/rooms?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, { headers: { token } })
+            } else {
+              getData = await API.get(`/bookingRoom/rooms?limit=${action.payload.limit}&page=${action.payload.page}`, { headers: { token } })
+            }
+          }
+        }
+      } else {
+        getData = await API.get('/bookingRoom/rooms', { headers: { token } })
+      }
+
       next({
         type: 'FETCH_DATA_ROOMS_SUCCESS',
         payload: getData.data.data

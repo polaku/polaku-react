@@ -32,12 +32,14 @@ class BookingRoom extends Component {
       data: [],
       dataForDisplay: []
     })
+    console.log("MASUK 2")
 
     await this.props.fetchDataBookingRooms()
     await this.props.fetchDataRooms()
 
     let datas = this.props.dataRooms
-
+    console.log("MASUK 3")
+    console.log(this.props.dataBookingRooms)
     await datas.forEach(async room => {
       let temp = await this.props.dataBookingRooms.filter(el => el.room_id === room.room_id)
       room.tbl_booking_rooms = temp
@@ -49,8 +51,9 @@ class BookingRoom extends Component {
     })
   }
 
-  refresh = async () => {
-    await this.fetchData()
+  refresh = () => {
+    console.log("MASUK 1")
+    this.fetchData()
   }
 
   search = async () => {

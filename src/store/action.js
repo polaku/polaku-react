@@ -18,9 +18,10 @@ export function fetchDataBuildings() {
   }
 }
 
-export function fetchDataRooms() {
+export function fetchDataRooms(payload) {
   return {
-    type: 'FETCH_DATA_ROOMS'
+    type: 'FETCH_DATA_ROOMS',
+    payload
   }
 }
 

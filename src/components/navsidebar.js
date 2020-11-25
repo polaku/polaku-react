@@ -494,23 +494,32 @@ function Navsidebar(props) {
               <>
                 {
                   open
-                    ? (props.isAdminsuper || props.isRoomMaster || (props.designation && props.designation.find(menu => menu.menu_id === 6)))
-                      ? <ListItem button key="Facility"
-                        onClick={event => handleClick(event, 'openChildBookingRoom')} selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
+                    ? <Link to="/booking-room" onClick={event => handleListItemClick(event, 1)} style={{ textDecoration: "none", color: 'black' }}>
+                      <ListItem button key="Booking Room" selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
                         <ListItemIcon>
                           <MeetingRoomOutlinedIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Fasilitas" />
-                        {openChildBookingRoom ? <ExpandLess /> : <ExpandMore />}
+                        <ListItemText primary="Booking Room" />
                       </ListItem>
-                      : <Link to="/booking-room" onClick={event => handleListItemClick(event, 1)} style={{ textDecoration: "none", color: 'black' }}>
-                        <ListItem button key="Booking Room" selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
-                          <ListItemIcon>
-                            <MeetingRoomOutlinedIcon />
-                          </ListItemIcon>
-                          <ListItemText primary="Booking Room" />
-                        </ListItem>
-                      </Link>
+                    </Link>
+                    // (props.isAdminsuper || props.isRoomMaster || (props.designation && props.designation.find(menu => menu.menu_id === 6)))
+                    //   ? <ListItem button key="Facility"
+                    //     onClick={event => handleClick(event, 'openChildBookingRoom')} selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
+                    //     <ListItemIcon>
+                    //       <MeetingRoomOutlinedIcon />
+                    //     </ListItemIcon>
+                    //     <ListItemText primary="Fasilitas" />
+                    //     {openChildBookingRoom ? <ExpandLess /> : <ExpandMore />}
+                    //   </ListItem>
+                    //   : <Link to="/booking-room" onClick={event => handleListItemClick(event, 1)} style={{ textDecoration: "none", color: 'black' }}>
+                    //     <ListItem button key="Booking Room" selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
+                    //       <ListItemIcon>
+                    //         <MeetingRoomOutlinedIcon />
+                    //       </ListItemIcon>
+                    //       <ListItemText primary="Booking Room" />
+                    //     </ListItem>
+                    //   </Link>
+
                     : <Link to="/booking-room" onClick={event => handleListItemClick(event, 1)} style={{ textDecoration: "none", fontWeight: 'bold' }}>
                       <ListItem button key="Booking Room" selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
                         <ListItemIcon style={{ marginLeft: 8 }}>
