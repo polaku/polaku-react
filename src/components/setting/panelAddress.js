@@ -77,11 +77,11 @@ class panelAddress extends Component {
         label.push(element.tbl_company.acronym)
       }
     });
-
+    console.log(this.props.dataAddress)
     this.setState({ data: this.props.dataAddress, dataForDisplay: this.props.dataAddress, label, proses: false })
   }
 
-  fetchOptionCompany = () => {
+  fetchOptionCompany = async () => {
     if (this.props.isAdminsuper) {
       this.setState({ optionCompany: [{ acronym: 'Semua' }, ...this.props.dataCompanies] })
     } else {
@@ -89,10 +89,26 @@ class panelAddress extends Component {
       if (this.props.dinas.length > 1) {
         optionCompany.push({ acronym: 'Semua' })
       }
-      this.props.dinas.forEach(el => {
+
+      let idCompany = []
+      await this.props.dinas.forEach(el => {
         let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
-        if (check) optionCompany.push(check)
+        if (check) {
+          idCompany.push(el.company_id)
+          optionCompany.push(check)
+        }
       })
+
+      await this.props.PIC.forEach(el => {
+        if (idCompany.indexOf(el.company_id) === -1) {
+          let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+          if (check) {
+            idCompany.push(el.company_id)
+            optionCompany.push(check)
+          }
+        }
+      })
+
       this.setState({ optionCompany })
     }
   }
@@ -310,7 +326,7 @@ const mapDispatchToProps = {
   fetchDataCompanies
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataAddress, totalDataAddress, dataCompanies, dinas, isAdminsuper }) => {
+const mapStateToProps = ({ loading, dataUsers, dataAddress, totalDataAddress, dataCompanies, dinas, isAdminsuper, PIC }) => {
   return {
     loading,
     dataUsers,
@@ -318,7 +334,8 @@ const mapStateToProps = ({ loading, dataUsers, dataAddress, totalDataAddress, da
     totalDataAddress,
     dataCompanies,
     dinas,
-    isAdminsuper
+    isAdminsuper,
+    PIC
   }
 }
 

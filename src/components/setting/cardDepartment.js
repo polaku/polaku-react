@@ -23,7 +23,8 @@ class cardDepartment extends Component {
   }
 
   async componentDidMount() {
-    let counterPosition = 0, counterTeamPosition = 0, emptyPosition = false, emptyTeamPosition = 0
+    let counterPosition = 0, emptyPosition = false
+    // counterTeamPosition = 0, emptyTeamPosition = 0
 
     if (this.props.data.tbl_department_positions.length === 0) emptyPosition = true
     if (this.props.data.tbl_department_positions.length > 0) {
@@ -32,20 +33,20 @@ class cardDepartment extends Component {
       });
     }
 
-    if (this.props.data.tbl_department_teams.length > 0) {
-      await this.props.data.tbl_department_teams.forEach(async (element) => {
-        if (element.tbl_team_positions.length === 0) emptyTeamPosition++
-        await element.tbl_team_positions.forEach(el => {
-          if (!el.user_id) counterTeamPosition++
-        })
-      });
-    }
+    // if (this.props.data.tbl_department_teams.length > 0) {
+    //   await this.props.data.tbl_department_teams.forEach(async (element) => {
+    //     if (element.tbl_team_positions.length === 0) emptyTeamPosition++
+    //     await element.tbl_team_positions.forEach(el => {
+    //       if (!el.user_id) counterTeamPosition++
+    //     })
+    //   });
+    // }
 
     let status = []
-    if (emptyPosition) status.push('Divisi Tanpa Peran')
-    if (!emptyPosition && counterPosition > 0) status.push(`${counterPosition} Peran di Divisi`)
-    if (emptyTeamPosition > 0) status.push(`${emptyTeamPosition} Team Tanpa Peran`)
-    if (counterTeamPosition > 0) status.push(`${counterTeamPosition} Peran di Seluruh Tim`)
+    if (emptyPosition) status.push('Department Tanpa Posisi')
+    if (!emptyPosition && counterPosition > 0) status.push(`${counterPosition} Posisi di Department`)
+    // if (emptyTeamPosition > 0) status.push(`${emptyTeamPosition} Team Tanpa Posisi`)
+    // if (counterTeamPosition > 0) status.push(`${counterTeamPosition} Posisi di Seluruh Tim`)
 
     this.setState({ statusEmpty: status.join(',') })
   }
@@ -69,11 +70,11 @@ class cardDepartment extends Component {
           try {
             let token = Cookies.get('POLAGROUP')
             await API.delete(`/structure/${this.props.data.id}`, { headers: { token } })
-            swal("Hapus divisi sukses", "", "success")
+            swal("Hapus department sukses", "", "success")
             await this.props.fetchDataStructure()
             await this.props.fetchData()
           } catch (err) {
-            swal("Hapus divisi gagal", "", "error")
+            swal("Hapus department gagal", "", "error")
           }
         }
       });
@@ -84,9 +85,10 @@ class cardDepartment extends Component {
       <Paper style={{ display: 'flex', padding: '15px 20px', margin: 1, borderRadius: 0, alignItems: 'center' }}>
         <p style={{ margin: 0, width: '30%' }}>{this.props.data.department.deptname}</p>
         <b style={{ margin: 0, width: '10%', textAlign: 'center' }}>{this.props.data.hierarchy}</b>
-        <p style={{ margin: 0, width: '15%', textAlign: 'center' }}>{this.props.data.section.deptname}</p>
+        {/* <p style={{ margin: 0, width: '15%', textAlign: 'center' }}>{this.props.data.section.deptname}</p> */}
+        <p style={{ margin: 0, width: '25%', textAlign: 'center' }}>{this.props.data.section.deptname}</p>
         <p style={{ margin: 0, width: '10%', textAlign: 'center' }}>{this.props.data.tbl_department_positions.length}</p>
-        <p style={{ margin: 0, width: '10%', textAlign: 'center' }}>{this.props.data.tbl_department_teams.length}</p>
+        {/* <p style={{ margin: 0, width: '10%', textAlign: 'center' }}>{this.props.data.tbl_department_teams.length}</p> */}
         <Grid style={{ width: '25%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Grid style={{ width: '120px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
             {
@@ -96,10 +98,10 @@ class cardDepartment extends Component {
                 </Tooltip>
                 : <Grid style={{ width: 24 }} />
             }
-            <Tooltip title="Edit divisi" aria-label="edit-data">
+            <Tooltip title="Edit department" aria-label="edit-data">
               <img src={process.env.PUBLIC_URL + '/edit.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-department', { data: this.props.data, index: this.props.index })} />
             </Tooltip>
-            <Tooltip title="Hapus divisi" aria-label="delete-data">
+            <Tooltip title="Hapus department" aria-label="delete-data">
               <DeleteIcon style={{ color: 'red', cursor: 'pointer' }} onClick={this.delete} />
             </Tooltip>
           </Grid>

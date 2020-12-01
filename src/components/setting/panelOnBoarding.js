@@ -344,7 +344,7 @@ class panelOnBoarding extends Component {
                         </Grid>
                         <p style={{ margin: 0, fontSize: 12, cursor: 'pointer' }} onClick={() => this.props.changeTab(2)}>Ubah data struktur</p>
                         {
-                          el.peranKosong !== 0 && <p style={{ margin: 0, fontSize: 12 }}>{el.peranKosong} Peran kosong</p>
+                          el.peranKosong !== 0 && <p style={{ margin: 0, fontSize: 12 }}>{el.peranKosong} Posisi kosong</p>
                         }
                       </Grid>
                     </Grid>

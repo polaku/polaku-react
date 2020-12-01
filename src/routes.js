@@ -25,6 +25,7 @@ import AddDepartment from './views/Setting/AddDepartment';
 import AddEmployee from './views/Setting/AddEmployee';
 import AddService from './views/Setting/AddService';
 import AddAdmin from './views/Setting/AddAdmin';
+import SettingKeamanan from './views/Setting/SettingKeamanan';
 import HR from './views/HR/HR';
 import ReportIjin from './views/HR/ReportIjin';
 import KPIM from './views/KPIM/DashboardKPIM';
@@ -76,6 +77,7 @@ function Routes() {
         <AuthenticatedRoute path="/setting/setting-user" component={SettingUser} />
         <AuthenticatedRoute path="/setting/setting-meeting-room/add-meeting-room" component={AddMeetingRoom} />
         <AuthenticatedRoute path="/setting/setting-meeting-room" component={SettingMeetingRoom} />
+        <AuthenticatedRoute path="/setting/setting-keamanan" component={SettingKeamanan} />
         <AuthenticatedRoute path="/setting" component={Setting} />
         <AuthenticatedRoute path="/hr/report" component={ReportIjin} />
         <AuthenticatedRoute path="/hr" component={HR} />

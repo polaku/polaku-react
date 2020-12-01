@@ -89,7 +89,7 @@ class panelStructure extends Component {
     this.setState({ data: this.props.dataStructure, dataForDisplay: this.props.dataStructure, label, page: 0 })
   }
 
-  fetchOptionCompany = () => {
+  fetchOptionCompany = async () => {
     if (this.props.isAdminsuper) {
       this.setState({ optionCompany: [{ acronym: 'Semua' }, ...this.props.dataCompanies] })
     } else {
@@ -97,10 +97,26 @@ class panelStructure extends Component {
       if (this.props.dinas.length > 1) {
         optionCompany.push({ acronym: 'Semua' })
       }
-      this.props.dinas.forEach(el => {
+
+      let idCompany = []
+      await this.props.dinas.forEach(el => {
         let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
-        if (check) optionCompany.push(check)
+        if (check) {
+          idCompany.push(el.company_id)
+          optionCompany.push(check)
+        }
       })
+
+      await this.props.PIC.forEach(el => {
+        if (idCompany.indexOf(el.company_id) === -1) {
+          let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+          if (check) {
+            idCompany.push(el.company_id)
+            optionCompany.push(check)
+          }
+        }
+      })
+
       this.setState({ optionCompany })
     }
   }
@@ -251,7 +267,7 @@ class panelStructure extends Component {
                 </Grid> */}
                 <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-department', { index: this.props.index })}>
                   <img src={process.env.PUBLIC_URL + '/add-address.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
-                  <p style={{ margin: '0px 0px 0px 5px' }}>Tambah divisi</p>
+                  <p style={{ margin: '0px 0px 0px 5px' }}>Tambah department</p>
                 </Grid>
                 <p style={{ color: '#d71149', margin: 0, cursor: 'pointer' }} onClick={this.handleModalLogSetting}>Lihat riwayat perubahan</p>
               </Grid>
@@ -274,7 +290,7 @@ class panelStructure extends Component {
                   {/* <form style={{ width: '100%', marginRight: 15, marginTop: 3 }}> */}
                   <TextField
                     id="pencarian"
-                    placeholder="Cari berdasarkan nama divisi"
+                    placeholder="Cari berdasarkan nama department"
                     variant="outlined"
                     value={this.state.search}
                     onChange={this.handleChange('search')}
@@ -303,7 +319,7 @@ class panelStructure extends Component {
                     color="secondary"
                     size="small"
                   /><p style={{ margin: 0 }}>pilih untuk lakukan aksi</p> */}
-                  Divisi
+                  Department
                   {
                     this.state.columnToSort === 'department.deptname' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
                   }
@@ -314,24 +330,25 @@ class panelStructure extends Component {
                     this.state.columnToSort === 'hierarchy' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
                   }
                 </TableCell>
-                <TableCell style={{ padding: 13, width: '15%', border: 'none', display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }} align="center" onClick={() => this.handleSort('section.deptname')}>
+                {/* <TableCell style={{ padding: 13, width: '15%', border: 'none', display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }} align="center" onClick={() => this.handleSort('section.deptname')}> */}
+                <TableCell style={{ padding: 13, width: '25%', border: 'none', display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }} align="center" onClick={() => this.handleSort('section.deptname')}>
                   Lapor ke
                   {
                     this.state.columnToSort === 'section.deptname' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
                   }
                 </TableCell>
                 <TableCell style={{ padding: 13, width: '10%', border: 'none', display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }} align="center" onClick={() => this.handleSort('tbl_department_positions.length')}>
-                  Peran
+                  Posisi
                   {
                     this.state.columnToSort === 'tbl_department_positions.length' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
                   }
                 </TableCell>
-                <TableCell style={{ padding: 13, width: '10%', border: 'none', display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }} align="center" onClick={() => this.handleSort('tbl_department_teams.length')}>
+                {/* <TableCell style={{ padding: 13, width: '10%', border: 'none', display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }} align="center" onClick={() => this.handleSort('tbl_department_teams.length')}>
                   Tim
                   {
                     this.state.columnToSort === 'tbl_department_teams.length' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
                   }
-                </TableCell>
+                </TableCell> */}
                 <TableCell style={{ padding: 13, width: '25%', textAlign: 'center', border: 'none' }} align="center">
                   <p style={{ margin: 0 }}>Aksi</p>
                 </TableCell>
@@ -373,7 +390,7 @@ const mapDispatchToProps = {
   fetchDataCompanies
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataStructure, totalDataStructure, dataCompanies, dinas, isAdminsuper }) => {
+const mapStateToProps = ({ loading, dataUsers, dataStructure, totalDataStructure, dataCompanies, dinas, isAdminsuper, PIC }) => {
   return {
     loading,
     dataUsers,
@@ -381,7 +398,8 @@ const mapStateToProps = ({ loading, dataUsers, dataStructure, totalDataStructure
     totalDataStructure,
     dataCompanies,
     dinas,
-    isAdminsuper
+    isAdminsuper,
+    PIC
   }
 }
 

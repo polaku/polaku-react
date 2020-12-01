@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { browserName, osName, isMobile } from 'react-device-detect';
 
 import {
   TextField, InputAdornment, Typography, Button, CircularProgress
@@ -53,7 +54,13 @@ class Login extends Component {
     }
 
     try {
-      data = await API.post('/users/signin', user)
+      data = await API.post('/users/signin', user, {
+        headers: {
+          browser: browserName,
+          os: osName,
+          isMobile
+        }
+      })
       Cookies.set('POLAGROUP', data.data.token, { expires: 365 });
 
       if (data) {
@@ -74,9 +81,9 @@ class Login extends Component {
           bawahan: data.data.bawahan,
           designation: data.data.designation,
           dinas: data.data.dinas,
-          isPIC: data.data.isPIC
+          PIC: data.data.PIC
         }
-        
+
         if (data.data.role_id === 1) {
           newData.isAdminsuper = true
         } else {
@@ -105,7 +112,7 @@ class Login extends Component {
       <div style={{ display: 'flex', justifyContent: 'center', margin: '5% 0 0 auto' }}>
         <div style={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
           {/* <img src="https://polaku.polagroup.co.id/uploads/logo.png" alt="Logo" /> */}
-          <img src={process.env.PUBLIC_URL + '/logo.png'} alt="Logo" /> 
+          <img src={process.env.PUBLIC_URL + '/logo.png'} alt="Logo" />
           <Typography style={{ margin: 10, fontSize: 13 }}>SIGN IN TO CONTINUE.</Typography>
           <form noValidate autoComplete="off" onSubmit={this.signin} style={{ display: 'flex', flexDirection: 'column' }}>
             <TextField

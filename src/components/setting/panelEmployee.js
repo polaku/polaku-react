@@ -98,7 +98,8 @@ class panelEmployee extends Component {
           evaluator2: user.tbl_account_detail.idEvaluator2 ? user.tbl_account_detail.idEvaluator2.tbl_account_detail.initial : "-",
           isActive: user.activated,
           position: user.tbl_department_positions,
-          rawData: user
+          rawData: user,
+          status: user.tbl_account_detail.status_employee
         }
         tempNewDataUsers.push(objUser)
       });
@@ -122,7 +123,7 @@ class panelEmployee extends Component {
     }
   }
 
-  fetchOptionCompany = () => {
+  fetchOptionCompany = async () => {
     if (this.props.isAdminsuper) {
       this.setState({ optionCompany: [{ acronym: 'Semua' }, ...this.props.dataCompanies] })
     } else {
@@ -130,9 +131,24 @@ class panelEmployee extends Component {
       if (this.props.dinas.length > 1) {
         optionCompany.push({ acronym: 'Semua' })
       }
-      this.props.dinas.forEach(el => {
+
+      let idCompany = []
+      await this.props.dinas.forEach(el => {
         let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
-        if (check) optionCompany.push(check)
+        if (check) {
+          idCompany.push(el.company_id)
+          optionCompany.push(check)
+        }
+      })
+
+      await this.props.PIC.forEach(el => {
+        if (idCompany.indexOf(el.company_id) === -1) {
+          let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+          if (check) {
+            idCompany.push(el.company_id)
+            optionCompany.push(check)
+          }
+        }
       })
       this.setState({ optionCompany })
     }
@@ -376,10 +392,11 @@ class panelEmployee extends Component {
                   /><p style={{ margin: 0 }}>pilih untuk lakukan aksi</p> */}
                         <p style={{ margin: 0 }}>Karyawan</p>
                       </Grid>
-                      <p style={{ margin: 0, width: '25%' }}>Divisi</p>
+                      <p style={{ margin: 0, width: '20%' }}>Department</p>
                       <p style={{ margin: 0, width: '15%' }}>Evaluator 1</p>
                       <p style={{ margin: 0, width: '15%' }}>Evaluator 2</p>
                       <p style={{ margin: 0, width: '10%' }}>Status</p>
+                      <p style={{ margin: 0, width: '5%' }}>Aktif</p>
                       <p style={{ margin: 0, width: '10%', textAlign: 'center' }}>Aksi</p>
                     </Paper>
 
@@ -501,7 +518,7 @@ const mapDispatchToProps = {
   fetchDataDinas
 }
 
-const mapStateToProps = ({ loading, dataUsers, lengthAllDataUsers, dataCompanies, dataDinas, counterEmployeeTetap, counterEmployeeKontrak, counterEmployeeProbation, counterEmployeeBerhenti, allUser, dinas, isAdminsuper }) => {
+const mapStateToProps = ({ loading, dataUsers, lengthAllDataUsers, dataCompanies, dataDinas, counterEmployeeTetap, counterEmployeeKontrak, counterEmployeeProbation, counterEmployeeBerhenti, allUser, dinas, isAdminsuper, PIC }) => {
   return {
     loading,
     dataUsers,
@@ -514,7 +531,8 @@ const mapStateToProps = ({ loading, dataUsers, lengthAllDataUsers, dataCompanies
     counterEmployeeBerhenti,
     counterAllUser: allUser,
     dinas,
-    isAdminsuper
+    isAdminsuper,
+    PIC
   }
 }
 

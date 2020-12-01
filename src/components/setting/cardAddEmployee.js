@@ -146,14 +146,29 @@ class cardAddEmployee extends Component {
       this.submit()
     }
 
-    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.dinas !== prevProps.dinas) {
+    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.dinas !== prevProps.dinas || this.props.PIC !== prevProps.PIC) {
       let optionCompany = []
       if (this.props.isAdminsuper) {
         this.setState({ optionCompany: [...optionCompany, ...this.props.dataCompanies] })
       } else {
-        this.props.dinas.forEach(el => {
+        let idCompany = []
+
+        await this.props.dinas.forEach(el => {
           let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
-          if (check) optionCompany.push(check)
+          if (check) {
+            idCompany.push(el.company_id)
+            optionCompany.push(check)
+          }
+        })
+
+        await this.props.PIC.forEach(el => {
+          if (idCompany.indexOf(el.company_id) === -1) {
+            let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+            if (check) {
+              idCompany.push(el.company_id)
+              optionCompany.push(check)
+            }
+          }
         })
         this.setState({ optionCompany })
       }
@@ -196,7 +211,7 @@ class cardAddEmployee extends Component {
       evaluator1: this.props.data.rawData.tbl_account_detail.name_evaluator_1,
       evaluator1Selected: this.props.data.rawData.tbl_account_detail.name_evaluator_1 && this.state.listUser.find(user => user.value === +this.props.data.rawData.tbl_account_detail.name_evaluator_1),
       evaluator2: this.props.data.rawData.tbl_account_detail.name_evaluator_2,
-      evaluator2Selected: this.props.data.rawData.tbl_account_detail.name_evaluator_2 && this.state.listUser.find(user => user.value === this.props.data.rawData.tbl_account_detail.name_evaluator_2),
+      evaluator2Selected: this.props.data.rawData.tbl_account_detail.name_evaluator_2 && this.state.listUser.find(user => user.value === +this.props.data.rawData.tbl_account_detail.name_evaluator_2),
       tanggalGabung: this.props.data.rawData.tbl_account_detail.join_date || null,
       dateOfBirth: this.props.data.rawData.tbl_account_detail.date_of_birth || null,
       statusKaryawan: this.props.data.rawData.tbl_account_detail.status_employee,
@@ -306,8 +321,8 @@ class cardAddEmployee extends Component {
     if (this.state.companyAddress) newData.append("building_id", this.state.companyAddress)
     if (this.state.company) newData.append("company_id", this.state.company)
     newData.append("phone", this.state.telepon)
-    if (this.state.evaluator1) newData.append("name_evaluator_1", this.state.evaluator1)
-    if (this.state.evaluator2) newData.append("name_evaluator_2", this.state.evaluator2)
+    newData.append("name_evaluator_1", this.state.evaluator1)
+    newData.append("name_evaluator_2", this.state.evaluator2)
     newData.append("nickname", this.state.nickname)
     newData.append("statusEmployee", this.state.statusKaryawan)
     if (this.state.tanggalGabung) newData.append("joinDate", this.state.tanggalGabung)
@@ -356,21 +371,25 @@ class cardAddEmployee extends Component {
     if (newValue.eva1) {
       if (newValue !== null) {
         this.setState({
-          evaluator1: newValue.value
+          evaluator1: newValue.value,
+          evaluator1Selected: newValue
         })
       } else {
         this.setState({
-          partOfDepartment: ""
+          partOfDepartment: "",
+          evaluator1Selected: null
         })
       }
     } else {
       if (newValue !== null) {
         this.setState({
-          evaluator2: newValue.value
+          evaluator2: newValue.value,
+          evaluator2Selected: newValue
         })
       } else {
         this.setState({
-          partOfDepartment: ""
+          partOfDepartment: "",
+          evaluator2Selected: null
         })
       }
     }
@@ -544,7 +563,7 @@ class cardAddEmployee extends Component {
             this.state.listDivisi.map((divisi, index) =>
               <Grid id="divisi" style={{ display: 'flex', alignItems: 'center' }}>
                 <Grid style={{ width: '20%', marginRight: 10 }}>
-                  <b style={{ marginBottom: 5 }}>Divisi</b>
+                  <b style={{ marginBottom: 5 }}>Department</b>
                 </Grid>
 
                 <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
@@ -554,7 +573,7 @@ class cardAddEmployee extends Component {
                     disabled={this.props.proses}
                     style={{ width: '100%' }}
                   >
-                    <MenuItem value={null}>Pilih divisi</MenuItem>
+                    <MenuItem value={null}>Pilih Department</MenuItem>
                     {
                       this.state.optionDivisi.map((department, index) =>
                         <MenuItem value={department.departments_id} key={"department" + index}>{department.deptname}</MenuItem>
@@ -566,7 +585,7 @@ class cardAddEmployee extends Component {
                 <Grid style={{ width: '2%' }} />
 
                 <Grid style={{ width: '20%', marginRight: 10 }}>
-                  <b style={{ marginBottom: 5 }}>Peran</b>
+                  <b style={{ marginBottom: 5 }}>Posisi</b>
                 </Grid>
 
                 <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
@@ -576,7 +595,7 @@ class cardAddEmployee extends Component {
                     disabled={this.props.proses || !divisi.divisi}
                     style={{ width: '100%' }}
                   >
-                    <MenuItem value={null}>Pilih peran</MenuItem>
+                    <MenuItem value={null}>Pilih posisi</MenuItem>
                     {
                       this.props.dataPositions && this.props.dataPositions.map((position, index) =>
                         <MenuItem value={position.position_id} key={"department" + index}>{position.position}</MenuItem>
@@ -591,7 +610,7 @@ class cardAddEmployee extends Component {
               </Grid>
             )
           }
-          <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addDivisi} disabled={this.state.proses}>+ tambah divisi</p>
+          <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addDivisi} disabled={this.state.proses}>+ tambah department</p>
 
 
           <Grid id="evaluator" style={{ display: 'flex', alignItems: 'center' }}>
@@ -841,7 +860,7 @@ class cardAddEmployee extends Component {
               this.state.listDivisiDinas.map((divisi, index) =>
                 <Grid id="divisi" style={{ display: 'flex', alignItems: 'center' }}>
                   <Grid style={{ width: '20%', marginRight: 10 }}>
-                    <b style={{ marginBottom: 5 }}>Divisi</b>
+                    <b style={{ marginBottom: 5 }}>Department</b>
                   </Grid>
 
                   <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
@@ -851,7 +870,7 @@ class cardAddEmployee extends Component {
                       disabled={this.props.proses || !this.state.isDinas}
                       style={{ width: '100%' }}
                     >
-                      <MenuItem value={null}>Pilih divisi</MenuItem>
+                      <MenuItem value={null}>Pilih department</MenuItem>
                       {
                         this.state.optionDivisiDinas.map((department, index) =>
                           <MenuItem value={department.departments_id} key={"department" + index}>{department.deptname}</MenuItem>
@@ -863,7 +882,7 @@ class cardAddEmployee extends Component {
                   <Grid style={{ width: '2%' }} />
 
                   <Grid style={{ width: '20%', marginRight: 10 }}>
-                    <b style={{ marginBottom: 5 }}>Peran</b>
+                    <b style={{ marginBottom: 5 }}>Posisi</b>
                   </Grid>
 
                   <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
@@ -873,7 +892,7 @@ class cardAddEmployee extends Component {
                       disabled={this.props.proses || !this.state.isDinas || !divisi.divisi}
                       style={{ width: '100%' }}
                     >
-                      <MenuItem value={null}>Pilih peran</MenuItem>
+                      <MenuItem value={null}>Pilih posisi</MenuItem>
                       {
                         this.props.dataPositions && this.props.dataPositions.map((position, index) =>
                           <MenuItem value={position.position_id} key={"department" + index}>{position.position}</MenuItem>
@@ -888,7 +907,7 @@ class cardAddEmployee extends Component {
                 </Grid>
               )
             }
-            <p style={{ margin: 0, color: '#d91b51', cursor: !this.state.isDinas ? null : 'pointer' }} onClick={!this.state.isDinas ? null : this.addDivisiDinas} disabled={this.state.proses}>+ tambah divisi</p>
+            <p style={{ margin: 0, color: '#d91b51', cursor: !this.state.isDinas ? null : 'pointer' }} onClick={!this.state.isDinas ? null : this.addDivisiDinas} disabled={this.state.proses}>+ tambah department</p>
           </Paper>
         }
 
@@ -1041,7 +1060,7 @@ const mapDispatchToProps = {
   fetchDataStructure
 }
 
-const mapStateToProps = ({ dataCompanies, dataDepartments, dataPositions, dataUsers, dataAddress, dinas, isAdminsuper, dataStructure }) => {
+const mapStateToProps = ({ dataCompanies, dataDepartments, dataPositions, dataUsers, dataAddress, dinas, isAdminsuper, dataStructure, PIC }) => {
   return {
     dataCompanies,
     dataDepartments,
@@ -1050,7 +1069,8 @@ const mapStateToProps = ({ dataCompanies, dataDepartments, dataPositions, dataUs
     dataAddress,
     dinas,
     isAdminsuper,
-    dataStructure
+    dataStructure,
+    PIC
   }
 }
 

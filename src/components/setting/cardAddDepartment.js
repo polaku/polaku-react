@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import {
-  Grid, OutlinedInput, Button, Select, MenuItem, Paper,
-  // Divider, FormControlLabel, Checkbox,  FormControl, InputLabel
+  Grid, Button, Select, MenuItem, Paper,
+  // OutlinedInput, Divider, FormControlLabel, Checkbox,  FormControl, InputLabel 
 } from '@material-ui/core';
 import CreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
-import CloseIcon from '@material-ui/icons/Close';
+// import CloseIcon from '@material-ui/icons/Close';
 
 import swal from 'sweetalert';
 
@@ -312,10 +312,10 @@ class cardAddDepartment extends Component {
       let newData = {
         nameDepartment: this.state.nameDepartment,
         levelHirarki: this.state.levelHirarki,
-        partOfDepartment: this.state.partOfDepartment,
         position: await this.validatePosition(),
-        team: await this.validateTeam(),
+        team: await this.validateTeam()
       }
+      if (this.state.levelHirarki !== '1') newData.partOfDepartment = this.state.partOfDepartment
 
       if (this.props.data) newData.id = this.props.data.id
       this.props.sendData(newData)
@@ -349,11 +349,13 @@ class cardAddDepartment extends Component {
   handleChangeDepartment = (newValue, actionMeta) => {
     if (newValue !== null) {
       this.setState({
-        nameDepartment: newValue.value
+        nameDepartment: newValue.value,
+        selectedDept: newValue
       })
     } else {
       this.setState({
-        nameDepartment: ""
+        nameDepartment: "",
+        selectedDept: null
       })
     }
   };
@@ -369,11 +371,13 @@ class cardAddDepartment extends Component {
   handleChangePartOfDepartment = (newValue, actionMeta) => {
     if (newValue !== null) {
       this.setState({
-        partOfDepartment: newValue.value
+        partOfDepartment: newValue.value,
+        selectedPartDept: newValue
       })
     } else {
       this.setState({
-        partOfDepartment: ""
+        partOfDepartment: "",
+        selectedPartDept: null
       })
     }
   };
@@ -465,7 +469,7 @@ class cardAddDepartment extends Component {
 
         <Grid id="name-division" style={{ margin: '10px 0px', display: 'flex', alignItems: 'center' }}>
           <Grid style={{ width: '20%', minWidth: '200px', marginRight: 10 }}>
-            <b style={{ fontSize: 12, marginBottom: 5 }}>Nama Divisi</b>
+            <b style={{ fontSize: 12, marginBottom: 5 }}>Nama Department</b>
           </Grid>
 
           <Grid style={{ width: '50%', height: 40, margin: 5, minWidth: 300 }}>
@@ -509,25 +513,26 @@ class cardAddDepartment extends Component {
               <MenuItem value="10">10</MenuItem>
             </Select>
 
-            <Grid style={{ width: '50%' }}>
-              <CreatableSelect
-                isClearable
-                placeholder="lapor kepada"
-                value={this.props.data && this.state.selectedPartDept}
-                components={animatedComponents}
-                options={this.state.listDepartment}
-                onChange={this.handleChangePartOfDepartment}
-                disabled={this.state.proses}
-              />
-
-            </Grid>
+            {
+              this.state.levelHirarki !== '1' && <Grid style={{ width: '50%' }}>
+                <CreatableSelect
+                  isClearable
+                  placeholder="lapor kepada"
+                  value={this.props.data && this.state.selectedPartDept}
+                  components={animatedComponents}
+                  options={this.state.listDepartment}
+                  onChange={this.handleChangePartOfDepartment}
+                  disabled={this.state.proses}
+                />
+              </Grid>
+            }
 
           </Grid>
         </Grid>
 
         <Grid id="position" style={{ margin: '10px 0px', display: 'flex', }}>
           <Grid style={{ width: '20%', minWidth: '200px', marginRight: 10, marginTop: 13 }}>
-            <b style={{ fontSize: 12, marginBottom: 5 }}>Peran</b>
+            <b style={{ fontSize: 12, marginBottom: 5 }}>Posisi</b>
           </Grid>
 
           <Grid>
@@ -564,14 +569,14 @@ class cardAddDepartment extends Component {
               )
             }
             {
-              this.state.position[0] !== '' && <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addPosition} disabled={this.state.proses}>+ tambah peran</p>
+              this.state.position[0] !== '' && <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addPosition} disabled={this.state.proses}>+ tambah posisi</p>
 
             }
           </Grid>
         </Grid>
 
-        <b style={{ fontSize: 14 }}>Tim</b>
-        <p style={{ margin: 0, color: '#a5a5a5', fontSize: 10 }}>ini merupakan bagian dari divisi diatas</p>
+        {/* <b style={{ fontSize: 14 }}>Tim</b>
+        <p style={{ margin: 0, color: '#a5a5a5', fontSize: 10 }}>ini merupakan bagian dari department diatas</p>
 
         {
           this.state.team.map((team, index) =>
@@ -606,7 +611,7 @@ class cardAddDepartment extends Component {
 
               <Grid id="team-position" style={{ margin: '10px 0px', display: 'flex', }}>
                 <Grid style={{ width: '20%', minWidth: '200px', marginRight: 10, marginTop: 13 }}>
-                  <b style={{ fontSize: 12, marginBottom: 5 }}>Peran dalam Tim</b>
+                  <b style={{ fontSize: 12, marginBottom: 5 }}>Posisi dalam Tim</b>
                 </Grid>
 
                 <Grid>
@@ -645,7 +650,7 @@ class cardAddDepartment extends Component {
                     )
                   }
                   {
-                    team.teamPosition[0] !== '' && <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={() => this.addTeamPosition(index)} disabled={this.state.proses}>+ tambah peran dalam tim</p>
+                    team.teamPosition[0] !== '' && <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={() => this.addTeamPosition(index)} disabled={this.state.proses}>+ tambah posisi dalam tim</p>
 
                   }
                 </Grid>
@@ -669,7 +674,7 @@ class cardAddDepartment extends Component {
               </Grid>
             </Grid>)
         }
-        <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addTeam} disabled={this.state.proses}>+ tambah tim</p>
+        <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addTeam} disabled={this.state.proses}>+ tambah tim</p> */}
       </Paper>
     )
   }

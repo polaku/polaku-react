@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import { Grid, OutlinedInput, Button, Divider, FormControlLabel, Checkbox, Select, MenuItem, Paper, FormControl } from '@material-ui/core';
+import {
+  Grid, OutlinedInput, Button,
+  // Divider, 
+  FormControlLabel, Checkbox, Select, MenuItem, Paper, FormControl
+} from '@material-ui/core';
 // import CreatableSelect from 'react-select/creatable';
 
-import makeAnimated from 'react-select/animated';
+// import makeAnimated from 'react-select/animated';
 import DragAndDrop from '../../components/DragAndDrop';
 
 import { fetchDataBuildings, fetchDataUsers } from '../../store/action';
@@ -59,7 +63,6 @@ class AddMeetingRoom extends Component {
   async componentDidMount() {
     if (this.props.location.state) {
       if (this.props.location.state.data) {
-        console.log(this.props.location.state.data)
         let operationDay = this.props.location.state.data.operational_day ? this.props.location.state.data.operational_day.split(',') : []
         let access = this.props.location.state.data.access_by ? this.props.location.state.data.access_by.split(',') : []
 
@@ -89,7 +92,6 @@ class AddMeetingRoom extends Component {
 
     if (!this.props.dataBuilding) {
       await this.props.fetchDataBuildings()
-      console.log(this.props.dataBuildings)
     }
 
     if (this.props.dataUsers) {
@@ -236,7 +238,6 @@ class AddMeetingRoom extends Component {
     newData.append("end_hour", this.state.endHour)
 
     if (this.state.files.length > 0) this.state.files.forEach(file => {
-      console.log("MASUK FILE")
       newData.append("thumbnail", file)
     })
 

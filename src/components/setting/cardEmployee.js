@@ -116,10 +116,11 @@ class cardEmployee extends Component {
             }
           </Grid>
         </Grid>
-        <p style={{ margin: 0, width: '25%' }}>{this.state.department}</p>
+        <p style={{ margin: 0, width: '20%' }}>{this.state.department}</p>
         <p style={{ margin: 0, width: '15%' }}>{this.props.data.evaluator1}</p>
         <p style={{ margin: 0, width: '15%' }}>{this.props.data.evaluator2}</p>
-        <p style={{ margin: 0, width: '10%' }}>
+        <p style={{ margin: 0, width: '10%' }}>{this.props.data.status || '-'}</p>
+        <Grid style={{ margin: 0, width: '5%' }}>
           <Tooltip title={this.state.isActive ? "Jadikan non aktif" : "Jadikan aktif"} placement="top-end">
             <Checkbox
               checked={this.state.isActive}
@@ -128,7 +129,7 @@ class cardEmployee extends Component {
               color="secondary"
             />
           </Tooltip>
-        </p>
+        </Grid>
         <Grid style={{ width: '10%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Grid style={{ minWidth: '100px', display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexWrap: 'wrap' }}>
             {

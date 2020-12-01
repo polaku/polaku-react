@@ -77,7 +77,7 @@ class DashboardKPIM extends Component {
 
         let token = Cookies.get('POLAGROUP')
         let dataUser = await API.get(`/users/${this.props.location.state.userId}`, { headers: { token } })
-        // console.log(dataUser)
+
         this.setState({ listBawahan: dataUser.data.bawahan })
         await this.fetchData(new Date().getMonth() + 1, this.getNumberOfWeek(new Date()), this.props.location.state.userId)
 

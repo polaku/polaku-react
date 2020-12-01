@@ -5,7 +5,6 @@ import {
   Grid, Paper, Tooltip
 } from '@material-ui/core';
 
-import ErrorOutlinedIcon from '@material-ui/icons/ErrorOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import { API } from '../../config/API';

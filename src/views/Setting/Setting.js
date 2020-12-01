@@ -61,13 +61,13 @@ class Setting extends Component {
   }
 
   componentDidMount() {
-    if (this.props.designation || this.props.isAdminsuper) {
+    if (this.props.designation || this.props.isAdminsuper || this.props.PIC.length > 0) {
       this.fetchMenu()
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if ((this.props.designation !== prevProps.designation && (this.props.designation && this.props.designation.length > 0)) || this.props.isAdminsuper !== prevProps.isAdminsuper) {
+    if ((this.props.designation !== prevProps.designation && (this.props.designation && this.props.designation.length > 0)) || this.props.isAdminsuper !== prevProps.isAdminsuper || (this.props.PIC !== prevProps.PIC && this.props.PIC.length > 0)) {
       this.fetchMenu()
     }
   }
@@ -83,13 +83,19 @@ class Setting extends Component {
     })
 
     let checkAdminCompany = this.props.designation && this.props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5)
-    if (checkAdminCompany || this.props.isAdminsuper) menu.push({
+    if (checkAdminCompany || this.props.isAdminsuper || this.props.PIC.length > 0) menu.push({
       icon: 'BusinessOutlinedIcon',
       title: 'Perusahaan',
       information: 'Atur alamat, jam kerja, struktur perusahaan, dan karyawan. Termasuk proses onboarding.',
       route: '/setting/setting-perusahaan'
     })
-    console.log(menu)
+    if (this.props.isAdminsuper) menu.push({
+      icon: 'SecurityOutlinedIcon',
+      title: 'Keamanan',
+      information: 'Atur aktifitas log in, reset akun, perangkat terdaftar',
+      route: '/setting/setting-keamanan'
+    })
+
     this.setState({ menu })
   }
 
@@ -112,10 +118,11 @@ class Setting extends Component {
   }
 }
 
-const mapStateToProps = ({ designation, isAdminsuper }) => {
+const mapStateToProps = ({ designation, isAdminsuper, PIC }) => {
   return {
     designation,
-    isAdminsuper
+    isAdminsuper,
+    PIC
   }
 }
 export default connect(mapStateToProps)(Setting)

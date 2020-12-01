@@ -19,7 +19,6 @@ function DragAndDrop(props) {
   }, [files])
 
   const resetFile = () => {
-    console.log("MASUK SINI")
     setFiles([])
   }
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })

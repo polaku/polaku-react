@@ -3,6 +3,8 @@ import clsx from 'clsx';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import { browserName, osName, isMobile } from 'react-device-detect';
+import publicIp from 'public-ip';
 
 import {
   Drawer, AppBar, Toolbar, List, CssBaseline, Typography, Divider, IconButton, ListItem, ListItemIcon, ListItemText, Collapse, Badge, Menu, MenuItem,
@@ -158,48 +160,65 @@ function Navsidebar(props) {
     setSelectedIndex(index);
   }
 
-  useEffect(() => {
-    let token = Cookies.get('POLAGROUP')
+  useEffect( () => {
+    async function fetchData(){
 
-    if (token) {
-      API.get('/users/checkToken', { headers: { token } })
-        .then(async ({ data }) => {
-          let newData = {
-            user_id: data.user_id,
-            isRoomMaster: data.isRoomMaster,
-            isCreatorMaster: data.isCreatorMaster,
-            isCreatorAssistant: data.isCreatorAssistant,
-            sisaCuti: data.sisaCuti,
-            evaluator1: data.evaluator1,
-            evaluator2: data.evaluator2,
-            bawahan: data.bawahan,
-            designation: data.designation,
-            dinas: data.dinas,
-            isPIC: data.isPIC
+      let token = Cookies.get('POLAGROUP')
+      console.log(browserName)
+      console.log(osName)
+      console.log(isMobile)
+      console.log(publicIp)
+  
+      if (token) {
+        API.get('/users/checkToken', {
+          headers: {
+            token,
+            browser: browserName,
+            os: osName,
+            isMobile,
+            ip: await publicIp.v4()
           }
-
-          if (data.role_id === 1) {
-            newData.isAdminsuper = true
-          } else {
-            newData.isAdminsuper = false
-          }
-
-          if (data.adminContactCategori) {
-            newData.adminContactCategori = data.adminContactCategori
-          }
-
-          await props.setUser(newData)
-          await props.fetchDataNotification()
         })
-        .catch(err => {
-          console.log(err)
-          // Cookies.remove('POLAGROUP')
-          // props.userLogout()
-          // props.history.push('/login')
-        })
-    } else {
-      props.history.push('/login')
+          .then(async ({ data }) => {
+            console.log(data.PIC)
+            let newData = {
+              user_id: data.user_id,
+              isRoomMaster: data.isRoomMaster,
+              isCreatorMaster: data.isCreatorMaster,
+              isCreatorAssistant: data.isCreatorAssistant,
+              sisaCuti: data.sisaCuti,
+              evaluator1: data.evaluator1,
+              evaluator2: data.evaluator2,
+              bawahan: data.bawahan,
+              designation: data.designation,
+              dinas: data.dinas,
+              PIC: data.PIC
+            }
+  
+            if (data.role_id === 1) {
+              newData.isAdminsuper = true
+            } else {
+              newData.isAdminsuper = false
+            }
+  
+            if (data.adminContactCategori) {
+              newData.adminContactCategori = data.adminContactCategori
+            }
+  
+            await props.setUser(newData)
+            await props.fetchDataNotification()
+          })
+          .catch(err => {
+            console.log(err)
+            // Cookies.remove('POLAGROUP')
+            // props.userLogout()
+            // props.history.push('/login')
+          })
+      } else {
+        props.history.push('/login')
+      }
     }
+    fetchData()
     // eslint-disable-next-line
   }, [])
 
@@ -265,18 +284,23 @@ function Navsidebar(props) {
       setSelectedIndex(4.3)
     } else if (props.location.pathname === '/setting' ||
       props.location.pathname === '/setting/setting-user' ||
-      // props.location.pathname === '/setting/setting-perusahaan' ||
+      props.location.pathname === '/setting/setting-perusahaan' ||
       props.location.pathname === '/setting/setting-perusahaan/stepper-onboarding' ||
       props.location.pathname === '/setting/setting-perusahaan/add-department' ||
       props.location.pathname === '/setting/setting-perusahaan/add-employee' ||
       props.location.pathname === '/setting/setting-perusahaan/add-service' ||
       props.location.pathname === '/setting/setting-perusahaan/add-address' ||
-      props.location.pathname === '/setting/setting-perusahaan/add-admin') {
+      props.location.pathname === '/setting/setting-perusahaan/add-admin' ||
+      props.location.pathname === '/setting/setting-meeting-room' ||
+      props.location.pathname === '/setting/setting-meeting-room/add-meeting-room'
+      //  ||
+      // props.location.pathname === '/setting/setting-keamanan'
+    ) {
       if (props.location.pathname === '/setting/setting-perusahaan/add-address') { //admin struktur
         if (props.designation) {
           checkAdmin = props.designation.find(menu => menu.menu_id === 2)
         }
-        if (checkAdmin || props.isAdminsuper || props.isPIC) {
+        if (checkAdmin || props.isAdminsuper || props.PIC.length > 0) {
           setSelectedIndex(99)
         } else {
           props.history.goBack()
@@ -286,7 +310,7 @@ function Navsidebar(props) {
         if (props.designation) {
           checkAdmin = props.designation.find(menu => menu.menu_id === 3)
         }
-        if (checkAdmin || props.isAdminsuper || props.isPIC) {
+        if (checkAdmin || props.isAdminsuper || props.PIC.length > 0) {
           setSelectedIndex(99)
         } else {
           props.history.goBack()
@@ -296,7 +320,7 @@ function Navsidebar(props) {
         if (props.designation) {
           checkAdmin = props.designation.find(menu => menu.menu_id === 4)
         }
-        if (checkAdmin || props.isAdminsuper || props.isPIC) {
+        if (checkAdmin || props.isAdminsuper || props.PIC.length > 0) {
           setSelectedIndex(99)
         } else {
           props.history.goBack()
@@ -306,21 +330,41 @@ function Navsidebar(props) {
         if (props.designation) {
           checkAdmin = props.designation.find(menu => menu.menu_id === 5)
         }
-        if (checkAdmin || props.isAdminsuper || props.isPIC) {
+        if (checkAdmin || props.isAdminsuper || props.PIC.length > 0) {
           setSelectedIndex(99)
         } else {
           props.history.goBack()
         }
       }
-      else if (props.isAdminsuper || props.isPIC || (props.designation && props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5))) {
+      else if (props.location.pathname === '/setting/setting-meeting-room' || props.location.pathname === '/setting/setting-meeting-room/add-meeting-room') { //admin meeting room
+        if (props.designation) {
+          checkAdmin = props.designation.find(menu => menu.menu_id === 6)
+        }
+        if (checkAdmin || props.isAdminsuper || props.PIC.length > 0) {
+          setSelectedIndex(99)
+        } else {
+          props.history.goBack()
+        }
+      }
+      else if (props.location.pathname === '/setting/setting-keamanan') { //admin keamanan
+        if (props.isAdminsuper) {
+          setSelectedIndex(99)
+        } else {
+          props.history.goBack()
+        }
+      }
+      else if (props.isAdminsuper || props.PIC.length > 0 || (props.designation && props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5 || menu.menu_id === 6))) {
         setSelectedIndex(99)
+        console.log("isAdminsuper", props.isAdminsuper)
+        console.log("PIC", props.PIC.length > 0)
+        console.log("designation", props.designation)
       } else {
         props.history.goBack()
       }
     } else if (props.location.pathname === '/profil') {
       setSelectedIndex(100)
     }
-  }, [props.location.pathname, props.isAdminsuper, props.userId, props.adminContactCategori, props.history, props.isRoomMaster, props.designation, props.isPIC])
+  }, [props.location.pathname, props.isAdminsuper, props.userId, props.adminContactCategori, props.history, props.isRoomMaster, props.designation, props.PIC])
 
   useEffect(() => {
     setOpen(false)
@@ -725,7 +769,7 @@ function Navsidebar(props) {
               {/* Menu Setting */}
               <>
                 {
-                  (props.isAdminsuper || props.isPIC || (props.designation && props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5))) && <>
+                  (props.isAdminsuper || props.PIC.length > 0 || (props.designation && props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5))) && <>
                     {
                       open
                         ? <Link to="/setting" onClick={event => handleListItemClick(event, 99)} style={{ textDecoration: 'none', color: 'black' }}>
@@ -791,7 +835,7 @@ const mapDispatchToProps = {
   userLogout
 }
 
-const mapStateToProps = ({ isAdminsuper, isRoomMaster, isCreatorMaster, isCreatorAssistant, dataNotification, userId, dataNewNotif, bawahan, adminContactCategori, designation, isPIC }) => {
+const mapStateToProps = ({ isAdminsuper, isRoomMaster, isCreatorMaster, isCreatorAssistant, dataNotification, userId, dataNewNotif, bawahan, adminContactCategori, designation, PIC }) => {
   return {
     isAdminsuper,
     isRoomMaster,
@@ -803,7 +847,7 @@ const mapStateToProps = ({ isAdminsuper, isRoomMaster, isCreatorMaster, isCreato
     bawahan,
     adminContactCategori,
     designation,
-    isPIC
+    PIC
   }
 }
 

@@ -254,8 +254,6 @@ export default class modalCreateEditMuchEmployee extends Component {
     if (this.state.nextFrameDate) label.push({ label: 'nextFrameDate', value: 'nextFrameDate' })
     if (this.state.nextLensaDate) label.push({ label: 'nextLensaDate', value: 'nextLensaDate' })
 
-
-    console.log(this.state.rawData)
     this.state.rawData.forEach(element => {
       let newData = { nik: element.tbl_account_detail.nik }
       if (this.state.fullname) newData.fullname = element.tbl_account_detail.fullname

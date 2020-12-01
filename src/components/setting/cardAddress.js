@@ -23,6 +23,7 @@ class cardAddress extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props.data)
     if (!this.props.data.acronym ||
       !this.props.data.address ||
       !this.props.data.fax ||
@@ -81,7 +82,9 @@ class cardAddress extends Component {
           <p style={{ margin: 0, fontSize: 13 }}>{this.props.data.tbl_building && this.props.data.tbl_building.address}</p>
         </Grid>
         <b style={{ margin: 0, width: '20%' }}>{this.props.data.tbl_company.acronym}</b>
-        <p style={{ margin: 0, width: '20%' }}>????</p>
+        <p style={{ margin: 0, width: '20%' }}>{
+          this.props.data.tbl_building.tbl_dinas.length
+        }</p>
         <Grid style={{ width: '20%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Grid style={{ width: '120px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
             {

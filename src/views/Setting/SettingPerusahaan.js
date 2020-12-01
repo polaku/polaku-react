@@ -53,13 +53,13 @@ class SettingPerusahaan extends Component {
     // }
     if (this.props.designation) {
       this.fetchLabel()
-    } else if (this.props.isAdminsuper || this.props.isPIC) {
+    } else if (this.props.isAdminsuper || this.props.PIC.length > 0) {
       this.fetchLabel()
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.designation !== prevProps.designation || this.props.isAdminsuper !== prevProps.isAdminsuper || this.props.isPIC !== prevProps.isPIC) {
+    if (this.props.designation !== prevProps.designation || this.props.isAdminsuper !== prevProps.isAdminsuper || (this.props.PIC !== prevProps.PIC && this.props.PIC.length > 0)) {
       this.fetchLabel()
     }
   }
@@ -72,10 +72,10 @@ class SettingPerusahaan extends Component {
     let checkAdmin = this.props.designation && this.props.designation.find(menu => menu.menu_id === 5)
 
     if (this.props.isAdminsuper) label.push('OnBoarding')
-    if (checkAlamat || this.props.isAdminsuper || this.props.isPIC) label.push('Alamat')
-    if (checkStruktur || this.props.isAdminsuper || this.props.isPIC) label.push('Struktur')
-    if (checkKaryawn || this.props.isAdminsuper || this.props.isPIC) label.push('Karyawan')
-    if (checkAdmin || this.props.isAdminsuper || this.props.isPIC) label.push('Admin')
+    if (checkAlamat || this.props.isAdminsuper || this.props.PIC.length > 0) label.push('Alamat')
+    if (checkStruktur || this.props.isAdminsuper || this.props.PIC.length > 0) label.push('Struktur')
+    if (checkKaryawn || this.props.isAdminsuper || this.props.PIC.length > 0) label.push('Karyawan')
+    if (checkAdmin || this.props.isAdminsuper || this.props.PIC.length > 0) label.push('Admin')
     this.setState({ label })
   }
 
@@ -211,11 +211,11 @@ class SettingPerusahaan extends Component {
   }
 }
 
-const mapStateToProps = ({ designation, isAdminsuper, isPIC }) => {
+const mapStateToProps = ({ designation, isAdminsuper, PIC }) => {
   return {
     designation,
     isAdminsuper,
-    isPIC
+    PIC
   }
 }
 

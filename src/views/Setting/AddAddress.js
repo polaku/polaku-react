@@ -44,16 +44,31 @@ class AddAddress extends Component {
     await this.props.fetchDataCompanies()
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.dinas !== prevProps.dinas) {
       let optionCompany = []
       if (this.props.isAdminsuper) {
         this.setState({ optionCompany: [...optionCompany, ...this.props.dataCompanies] })
       } else {
-        this.props.dinas.forEach(el => {
+        let idCompany = []
+        await this.props.dinas.forEach(el => {
           let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
-          if (check) optionCompany.push(check)
+          if (check) {
+            idCompany.push(el.company_id)
+            optionCompany.push(check)
+          }
         })
+  
+        await this.props.PIC.forEach(el => {
+          if (idCompany.indexOf(el.company_id) === -1) {
+            let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+            if (check) {
+              idCompany.push(el.company_id)
+              optionCompany.push(check)
+            }
+          }
+        })
+
         this.setState({ optionCompany })
       }
       if (optionCompany.length === 1) {
@@ -251,11 +266,12 @@ const mapDispatchToProps = {
   fetchDataAddress
 }
 
-const mapStateToProps = ({ dataCompanies, dinas, isAdminsuper }) => {
+const mapStateToProps = ({ dataCompanies, dinas, isAdminsuper, PIC }) => {
   return {
     dataCompanies,
     dinas,
-    isAdminsuper
+    isAdminsuper,
+    PIC
   }
 }
 

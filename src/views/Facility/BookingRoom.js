@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import {
-  Grid, TextField, Button
+  Grid, TextField, Button, FormControl, Select, MenuItem
 } from '@material-ui/core';
 
 import CardRoomInBookingRoom from '../../components/facility/cardRoomInBookingRoom';
@@ -16,11 +16,27 @@ class BookingRoom extends Component {
       data: [],
       dataForDisplay: [],
       searchDate: '',
+      building: 'semua',
+      listBuilding: []
     }
   }
 
   componentDidMount() {
     this.fetchData()
+  }
+
+  async componentDidUpdate(prevProps, prevState) {
+    if (this.state.building !== prevState.building) {
+      console.log(this.state.building)
+      console.log(this.state.dataForDisplay)
+
+      if (this.state.building === 'semua') {
+        this.setState({ dataForDisplay: this.state.data })
+      } else {
+        let data = await this.state.data.filter(room => room.building_id === this.state.building)
+        this.setState({ dataForDisplay: data })
+      }
+    }
   }
 
   handleChange = name => event => {
@@ -32,20 +48,25 @@ class BookingRoom extends Component {
       data: [],
       dataForDisplay: []
     })
-    console.log("MASUK 2")
 
     await this.props.fetchDataBookingRooms()
     await this.props.fetchDataRooms()
 
     let datas = this.props.dataRooms
-    console.log("MASUK 3")
-    console.log(this.props.dataBookingRooms)
+
+    let idBuilding = [], building = []
     await datas.forEach(async room => {
       let temp = await this.props.dataBookingRooms.filter(el => el.room_id === room.room_id)
       room.tbl_booking_rooms = temp
+
+      if (idBuilding.indexOf(room.building_id) !== 0) {
+        idBuilding.push(room.building_id)
+        building.push(room.tbl_building)
+      }
     });
 
     this.setState({
+      listBuilding: building,
       data: datas,
       dataForDisplay: datas
     })
@@ -119,6 +140,24 @@ class BookingRoom extends Component {
               Semua
             </Button>
           </Grid>
+        </Grid>
+        <Grid style={{ display: 'flex', alignItems: 'center' }}>
+          <b style={{ margin: 0, marginRight: 30, fontSize: 18 }}>Gedung </b>
+          <FormControl variant="outlined" size="small" style={{ width: '100%', maxWidth: 400, height: 40, margin: '5px 0px' }}>
+            <Select
+              value={this.state.building}
+              onChange={this.handleChange('building')}
+              disabled={this.props.proses}
+              style={{ width: '100%' }}
+            >
+              <MenuItem value="semua">Semua</MenuItem>
+              {
+                this.state.listBuilding.map((building, index) =>
+                  <MenuItem value={building.building_id} key={"department" + index}>{building.building}</MenuItem>
+                )
+              }
+            </Select>
+          </FormControl>
         </Grid>
         <Grid container style={{ display: 'flex', padding: 10 }}>
           {

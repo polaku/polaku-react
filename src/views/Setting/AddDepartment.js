@@ -50,16 +50,31 @@ class AddDepartment extends Component {
     this.setState({ loading: false })
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.dinas !== prevProps.dinas) {
       let optionCompany = []
       if (this.props.isAdminsuper) {
         this.setState({ optionCompany: [...optionCompany, ...this.props.dataCompanies] })
       } else {
-        this.props.dinas.forEach(el => {
+        let idCompany = []
+        await this.props.dinas.forEach(el => {
           let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
-          if (check) optionCompany.push(check)
+          if (check) {
+            idCompany.push(el.company_id)
+            optionCompany.push(check)
+          }
         })
+
+        await this.props.PIC.forEach(el => {
+          if (idCompany.indexOf(el.company_id) === -1) {
+            let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+            if (check) {
+              idCompany.push(el.company_id)
+              optionCompany.push(check)
+            }
+          }
+        })
+
         this.setState({ optionCompany })
       }
       if (optionCompany.length === 1) {
@@ -116,12 +131,12 @@ class AddDepartment extends Component {
           .then(async ({ data }) => {
             this.setState({ data: [], proses: false })
             await this.props.fetchDataStructure()
-            swal('Ubah divisi sukses', '', 'success')
+            swal('Ubah department sukses', '', 'success')
             this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
           })
           .catch(err => {
-            this.setState({ proses: false })
-            swal('Ubah divisi gagal', '', 'error')
+            this.setState({ proses: false, statusSubmit: false })
+            swal('Ubah department gagal', '', 'error')
           })
       } else {
         this.setState({ tempDataForEdit: newData })
@@ -140,12 +155,12 @@ class AddDepartment extends Component {
         Promise.all(promises)
           .then(async ({ data }) => {
             this.setState({ data: [], proses: false })
-            swal('Tambah divisi sukses', '', 'success')
+            swal('Tambah department sukses', '', 'success')
             this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
           })
           .catch(err => {
-            this.setState({ proses: false })
-            swal('Tambah divisi gagal', '', 'error')
+            this.setState({ proses: false, statusSubmit: false })
+            swal('Tambah department gagal', '', 'error')
           })
       } else {
         this.setState({ data: newData })
@@ -164,8 +179,8 @@ class AddDepartment extends Component {
           <Grid style={{ display: 'flex', flexDirection: 'column', marginLeft: '15px' }}>
             {
               (this.props.location.state && this.props.location.state.data)
-                ? <b style={{ fontSize: 20 }}>Ubah Divisi</b>
-                : <b style={{ fontSize: 20 }}>Tambah Divisi</b>
+                ? <b style={{ fontSize: 20 }}>Ubah Department</b>
+                : <b style={{ fontSize: 20 }}>Tambah Department</b>
             }
 
             <p style={{ margin: '5px 0px' }}>Pastikan yang diisi sesuai dengan surat keputusan SO</p>
@@ -206,7 +221,7 @@ class AddDepartment extends Component {
           )
         }
         {
-          this.state.dataForEdit.length === 0 && <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addDivisi} disabled={this.state.proses}>+ tambah divisi baru</p>
+          this.state.dataForEdit.length === 0 && <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addDivisi} disabled={this.state.proses}>+ tambah department baru</p>
         }
 
         <Button variant="outlined" color="secondary" style={{ width: 150, margin: 10 }} onClick={() => this.props.history.goBack()} disabled={this.state.proses}>batalkan</Button>
@@ -226,11 +241,12 @@ const mapDispatchToProps = {
   fetchDataStructure
 }
 
-const mapStateToProps = ({ dataCompanies, dinas, isAdminsuper }) => {
+const mapStateToProps = ({ dataCompanies, dinas, isAdminsuper, PIC }) => {
   return {
     dataCompanies,
     dinas,
-    isAdminsuper
+    isAdminsuper,
+    PIC
   }
 }
 
