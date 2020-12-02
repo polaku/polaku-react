@@ -101,7 +101,7 @@ class cardAddDepartment extends Component {
   fetchOptionPosition = async () => {
     let listPosition = []
 
-    this.props.dataPositions.length > 0 && await this.props.dataPositions.forEach(position => {
+    this.props.dataPositions && this.props.dataPositions.length > 0 && await this.props.dataPositions.forEach(position => {
       listPosition.push({ value: position.position_id, label: position.position })
     })
     this.setState({ listPosition })

@@ -86,7 +86,7 @@ class cardDepartment extends Component {
         <p style={{ margin: 0, width: '30%' }}>{this.props.data.department.deptname}</p>
         <b style={{ margin: 0, width: '10%', textAlign: 'center' }}>{this.props.data.hierarchy}</b>
         {/* <p style={{ margin: 0, width: '15%', textAlign: 'center' }}>{this.props.data.section.deptname}</p> */}
-        <p style={{ margin: 0, width: '25%', textAlign: 'center' }}>{this.props.data.section.deptname}</p>
+        <p style={{ margin: 0, width: '25%', textAlign: 'center' }}>{this.props.data.section ? this.props.data.section.deptname : '-'}</p>
         <p style={{ margin: 0, width: '10%', textAlign: 'center' }}>{this.props.data.tbl_department_positions.length}</p>
         {/* <p style={{ margin: 0, width: '10%', textAlign: 'center' }}>{this.props.data.tbl_department_teams.length}</p> */}
         <Grid style={{ width: '25%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

@@ -67,9 +67,9 @@ class panelOnBoarding extends Component {
 
     data.length > 0 && data.forEach(async (element) => {
       let notComplete = 0, peranKosong = 0, userNotComplete = 0
-      let address = await this.props.dataAddress.filter(el => el.company_id === element.company_id)
-      let structure = await this.props.dataStructure.filter(el => el.company_id === element.company_id)
-      let user = await this.props.dataUsers.filter(el => el.tbl_account_detail.company_id === element.company_id)
+      let address = this.props.dataAddress && await this.props.dataAddress.filter(el => el.company_id === element.company_id)
+      let structure = this.props.dataStructure && await this.props.dataStructure.filter(el => el.company_id === element.company_id)
+      let user = this.props.dataUsers && await this.props.dataUsers.filter(el => el.tbl_account_detail.company_id === element.company_id)
 
       if (address.length > 0) {
         let firstCreate = address[0].createdAt, lastUpdate = address[0].updatedAt

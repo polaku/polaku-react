@@ -53,7 +53,7 @@ class SettingPerusahaan extends Component {
     // }
     if (this.props.designation) {
       this.fetchLabel()
-    } else if (this.props.isAdminsuper || this.props.PIC.length > 0) {
+    } else if (this.props.isAdminsuper || (this.props.PIC && this.props.PIC.length > 0)) {
       this.fetchLabel()
     }
   }
@@ -72,10 +72,10 @@ class SettingPerusahaan extends Component {
     let checkAdmin = this.props.designation && this.props.designation.find(menu => menu.menu_id === 5)
 
     if (this.props.isAdminsuper) label.push('OnBoarding')
-    if (checkAlamat || this.props.isAdminsuper || this.props.PIC.length > 0) label.push('Alamat')
-    if (checkStruktur || this.props.isAdminsuper || this.props.PIC.length > 0) label.push('Struktur')
-    if (checkKaryawn || this.props.isAdminsuper || this.props.PIC.length > 0) label.push('Karyawan')
-    if (checkAdmin || this.props.isAdminsuper || this.props.PIC.length > 0) label.push('Admin')
+    if (checkAlamat || this.props.isAdminsuper || (this.props.PIC && this.props.PIC.length > 0)) label.push('Alamat')
+    if (checkStruktur || this.props.isAdminsuper || (this.props.PIC && this.props.PIC.length > 0)) label.push('Struktur')
+    if (checkKaryawn || this.props.isAdminsuper || (this.props.PIC && this.props.PIC.length > 0)) label.push('Karyawan')
+    if (checkAdmin || this.props.isAdminsuper || (this.props.PIC && this.props.PIC.length > 0)) label.push('Admin')
     this.setState({ label })
   }
 

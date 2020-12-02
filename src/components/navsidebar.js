@@ -300,7 +300,7 @@ function Navsidebar(props) {
         if (props.designation) {
           checkAdmin = props.designation.find(menu => menu.menu_id === 2)
         }
-        if (checkAdmin || props.isAdminsuper || props.PIC.length > 0) {
+        if (checkAdmin || props.isAdminsuper || (props.PIC && props.PIC.length > 0)) {
           setSelectedIndex(99)
         } else {
           props.history.goBack()
@@ -310,7 +310,7 @@ function Navsidebar(props) {
         if (props.designation) {
           checkAdmin = props.designation.find(menu => menu.menu_id === 3)
         }
-        if (checkAdmin || props.isAdminsuper || props.PIC.length > 0) {
+        if (checkAdmin || props.isAdminsuper || (props.PIC && props.PIC.length > 0)) {
           setSelectedIndex(99)
         } else {
           props.history.goBack()
@@ -320,7 +320,7 @@ function Navsidebar(props) {
         if (props.designation) {
           checkAdmin = props.designation.find(menu => menu.menu_id === 4)
         }
-        if (checkAdmin || props.isAdminsuper || props.PIC.length > 0) {
+        if (checkAdmin || props.isAdminsuper || (props.PIC && props.PIC.length > 0)) {
           setSelectedIndex(99)
         } else {
           props.history.goBack()
@@ -330,7 +330,7 @@ function Navsidebar(props) {
         if (props.designation) {
           checkAdmin = props.designation.find(menu => menu.menu_id === 5)
         }
-        if (checkAdmin || props.isAdminsuper || props.PIC.length > 0) {
+        if (checkAdmin || props.isAdminsuper || (props.PIC && props.PIC.length > 0)) {
           setSelectedIndex(99)
         } else {
           props.history.goBack()
@@ -340,7 +340,7 @@ function Navsidebar(props) {
         if (props.designation) {
           checkAdmin = props.designation.find(menu => menu.menu_id === 6)
         }
-        if (checkAdmin || props.isAdminsuper || props.PIC.length > 0) {
+        if (checkAdmin || props.isAdminsuper || (props.PIC && props.PIC.length > 0)) {
           setSelectedIndex(99)
         } else {
           props.history.goBack()
@@ -353,10 +353,10 @@ function Navsidebar(props) {
           props.history.goBack()
         }
       }
-      else if (props.isAdminsuper || props.PIC.length > 0 || (props.designation && props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5 || menu.menu_id === 6))) {
+      else if (props.isAdminsuper || (props.PIC && props.PIC.length > 0) || (props.designation && props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5 || menu.menu_id === 6))) {
         setSelectedIndex(99)
         console.log("isAdminsuper", props.isAdminsuper)
-        console.log("PIC", props.PIC.length > 0)
+        console.log("PIC",  props.PIC.length > 0)
         console.log("designation", props.designation)
       } else {
         props.history.goBack()
@@ -740,11 +740,11 @@ function Navsidebar(props) {
                         <ListItemText primary="Dashboard" />
                       </ListItem>
                     </Link>
-                    <Link to="/kpim/tal" onClick={event => handleListItemClick(event, 4.1)} style={{ textDecoration: 'none', color: 'black' }}>
+                    {/* <Link to="/kpim/tal" onClick={event => handleListItemClick(event, 4.1)} style={{ textDecoration: 'none', color: 'black' }}>
                       <ListItem button className={classes.nested} selected={selectedIndex === 4.1}>
                         <ListItemText primary="TAL" />
                       </ListItem>
-                    </Link>
+                    </Link> */}
                     {
                       isAtasan && <>
                         {
@@ -769,7 +769,7 @@ function Navsidebar(props) {
               {/* Menu Setting */}
               <>
                 {
-                  (props.isAdminsuper || props.PIC.length > 0 || (props.designation && props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5))) && <>
+                  (props.isAdminsuper || (props.PIC && props.PIC.length > 0) || (props.designation && props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5))) && <>
                     {
                       open
                         ? <Link to="/setting" onClick={event => handleListItemClick(event, 99)} style={{ textDecoration: 'none', color: 'black' }}>

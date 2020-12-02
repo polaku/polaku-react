@@ -61,7 +61,7 @@ class Setting extends Component {
   }
 
   componentDidMount() {
-    if (this.props.designation || this.props.isAdminsuper || this.props.PIC.length > 0) {
+    if (this.props.designation || this.props.isAdminsuper || (this.props.PIC && this.props.PIC.length > 0)) {
       this.fetchMenu()
     }
   }
@@ -83,18 +83,18 @@ class Setting extends Component {
     })
 
     let checkAdminCompany = this.props.designation && this.props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5)
-    if (checkAdminCompany || this.props.isAdminsuper || this.props.PIC.length > 0) menu.push({
+    if (checkAdminCompany || this.props.isAdminsuper || (this.props.PIC && this.props.PIC.length > 0)) menu.push({
       icon: 'BusinessOutlinedIcon',
       title: 'Perusahaan',
       information: 'Atur alamat, jam kerja, struktur perusahaan, dan karyawan. Termasuk proses onboarding.',
       route: '/setting/setting-perusahaan'
     })
-    if (this.props.isAdminsuper) menu.push({
-      icon: 'SecurityOutlinedIcon',
-      title: 'Keamanan',
-      information: 'Atur aktifitas log in, reset akun, perangkat terdaftar',
-      route: '/setting/setting-keamanan'
-    })
+    // if (this.props.isAdminsuper) menu.push({
+    //   icon: 'SecurityOutlinedIcon',
+    //   title: 'Keamanan',
+    //   information: 'Atur aktifitas log in, reset akun, perangkat terdaftar',
+    //   route: '/setting/setting-keamanan'
+    // })
 
     this.setState({ menu })
   }
