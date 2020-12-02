@@ -59,7 +59,7 @@ class BookingRoom extends Component {
       let temp = await this.props.dataBookingRooms.filter(el => el.room_id === room.room_id)
       room.tbl_booking_rooms = temp
 
-      if (idBuilding.indexOf(room.building_id) !== 0) {
+      if (idBuilding.indexOf(room.building_id) === -1) {
         idBuilding.push(room.building_id)
         building.push(room.tbl_building)
       }
