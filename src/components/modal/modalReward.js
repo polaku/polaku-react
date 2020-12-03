@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Modal, Fade, Grid, Backdrop, Typography, OutlinedInput, IconButton, InputAdornment, Button
@@ -41,7 +42,7 @@ export default class modalReward extends Component {
     this.setState({ statusAddReward: !this.state.statusAddReward })
   }
 
-  saveIndicator = () => {
+  saveIndicator = async () => {
     let token = Cookies.get('POLAGROUP')
 
     let newReward = {
@@ -55,7 +56,12 @@ export default class modalReward extends Component {
     newListReward.push(newReward)
     newListReward.sort(this.compare)
 
-    API.post('/rewardKPIM', newReward, { headers: { token } })
+    API.post('/rewardKPIM', newReward, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(data => {
         this.setState({ listReward: newListReward, statusAddReward: !this.state.statusAddReward })
         this.props.refresh()

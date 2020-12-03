@@ -168,7 +168,9 @@ class panelEmployee extends Component {
         await this.props.fetchDataUsers({ limit: this.state.rowsPerPage, page: 0 })
       } else {
         let companySelectedId = this.state.optionCompany[selected]
+        console.log("companySelectedId.company_id", companySelectedId.company_id)
         await this.props.fetchDataUsers({ limit: this.state.rowsPerPage, page: 0, company: companySelectedId.company_id })
+        console.log(this.props.dataUsers)
       }
     } else { //Dinas
       let status

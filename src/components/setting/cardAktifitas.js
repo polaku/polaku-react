@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import Cookies from 'js-cookie';
 import { withRouter } from 'react-router-dom';
+import publicIp from 'public-ip';
 import {
-  Grid, Paper, 
+  Grid, Paper,
   // Tooltip
 } from '@material-ui/core';
 
@@ -32,7 +33,12 @@ class cardAktifitas extends Component {
         if (yesAnswer) {
           try {
             let token = Cookies.get('POLAGROUP')
-            await API.delete(`/bookingRoom/rooms/${this.props.data.room_id}`, { headers: { token } })
+            await API.delete(`/bookingRoom/rooms/${this.props.data.room_id}`, {
+              headers: {
+                token,
+                ip: await publicIp.v4()
+              }
+            })
             swal("Hapus ruang sukses", "", "success")
             await this.props.refresh()
           } catch (err) {

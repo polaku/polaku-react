@@ -2,6 +2,7 @@ import 'date-fns';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   TextField, Typography, Button, CircularProgress, InputLabel, MenuItem, FormControl, Select as SelectOption
@@ -140,7 +141,8 @@ class CreateBookingRoom extends Component {
       API.post('/bookingRoom', newData,
         {
           headers: {
-            token
+            token,
+            ip: await publicIp.v4()
           }
         }
       )

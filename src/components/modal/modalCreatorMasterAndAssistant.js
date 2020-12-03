@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Modal, Backdrop, Button, CircularProgress, Fade, Typography, FormControl
@@ -42,7 +43,7 @@ class modalCreatorMasterAndAssistant extends Component {
     })
   }
 
-  send = e => {
+  send = async (e) => {
     e.preventDefault();
 
     let token = Cookies.get('POLAGROUP')
@@ -53,7 +54,12 @@ class modalCreatorMasterAndAssistant extends Component {
       user_id: this.state.user.user_id,
     }
 
-    API.post('/events/masterCreator', newData, { headers: { token } })
+    API.post('/events/masterCreator', newData, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(() => {
         this.setState({
           proses: false,

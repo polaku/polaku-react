@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import PropTypes from 'prop-types';
 
@@ -238,7 +239,7 @@ class SettingUser extends Component {
     }
   };
 
-  addNewUser = () => {
+  addNewUser = async () => {
     // this.state.konfirmasiPassword
     if (!this.state.passwordNotExact &&
       this.state.username !== "" &&
@@ -272,7 +273,12 @@ class SettingUser extends Component {
       formData.append("name_evaluator_2", this.state.idEvaluator2)
       formData.append("position_id", this.state.positionId)
 
-      API.post('/users/signup', formData, { headers: { token } })
+      API.post('/users/signup', formData, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
         .then(() => {
           this.fetchData()
           this.resetForm()
@@ -448,7 +454,7 @@ class SettingUser extends Component {
     }
   }
 
-  importFile = args => () => {
+  importFile = args => async () => {
     let token = Cookies.get('POLAGROUP')
 
     var formData = new FormData();
@@ -463,7 +469,12 @@ class SettingUser extends Component {
       formData.append("file", this.state.fileUser)
     }
 
-    API.post('/users/importUser', formData, { headers: { token } })
+    API.post('/users/importUser', formData, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(data => {
         this.setState({ file: null })
         swal("Import data sukses", "", "success")
@@ -815,7 +826,7 @@ class SettingUser extends Component {
                     >
                       <MenuItem value="">-</MenuItem>
                       {
-                         this.props.dataPositions && this.props.dataPositions.length > 0 && this.props.dataPositions.map((position, index) =>
+                        this.props.dataPositions && this.props.dataPositions.length > 0 && this.props.dataPositions.map((position, index) =>
                           <MenuItem value={position.position_id} key={index}>{position.position}</MenuItem>
                         )
                       }

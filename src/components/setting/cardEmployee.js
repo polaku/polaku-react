@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Paper, Grid, Tooltip, Checkbox, Chip
@@ -46,14 +47,19 @@ class cardEmployee extends Component {
     }
   }
 
-  handleChangeCheck = event => {
+  handleChangeCheck = async (event) => {
     this.setState({
       isActive: event.target.checked
     })
 
     let token = Cookies.get('POLAGROUP')
 
-    API.put(`/users/editUser/${this.props.data.userId}`, { isActive: event.target.checked }, { headers: { token } })
+    API.put(`/users/editUser/${this.props.data.userId}`, { isActive: event.target.checked }, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(() => {
         this.props.refresh()
       })
@@ -81,7 +87,8 @@ class cardEmployee extends Component {
   //       if (yesAnswer) {
   //         try {
   //           let token = Cookies.get('POLAGROUP')
-  //           await API.delete(`/address/${this.props.data.id}`, { headers: { token } })
+  //           await API.delete(`/address/${this.props.data.id}`, { headers: { token,
+  //           ip: await publicIp.v4() } })
   //           swal("Hapus alamat sukses", "", "success")
   //           await this.props.fetchDataAddress()
   //           await this.props.fetchData()

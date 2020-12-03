@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Accordion, AccordionSummary, AccordionDetails, Checkbox, FormControlLabel, Typography, Grid, Button, Popover, Paper, ClickAwayListener, MenuItem, MenuList, Divider, CircularProgress
@@ -175,7 +176,12 @@ class panelOnBoarding extends Component {
   handleChangeSelect = async (idCompany, newValue, actionMeta) => {
     try {
       let token = Cookies.get('POLAGROUP')
-      await API.put(`/pic/${idCompany}`, { pic: newValue }, { headers: { token } })
+      await API.put(`/pic/${idCompany}`, { pic: newValue }, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
       await this.props.fetchDataPIC()
     } catch (err) {
       swal("Edit PIC gagal", "", "warning")
@@ -201,15 +207,20 @@ class panelOnBoarding extends Component {
         buttons: true,
         dangerMode: true,
       })
-        .then((yesAnswer) => {
+        .then(async (yesAnswer) => {
           if (yesAnswer) {
             this.setState({
               proses: true
             })
             let token = Cookies.get('POLAGROUP'), promises = []
 
-            data.tbl_PICs.forEach(pic => {
-              promises.push(API.delete(`/pic/${pic.id}`, { headers: { token } }))
+            data.tbl_PICs.forEach(async (pic) => {
+              promises.push(API.delete(`/pic/${pic.id}`, {
+                headers: {
+                  token,
+                  ip: await publicIp.v4()
+                }
+              }))
             })
             Promise.all(promises)
               .then(async ({ data }) => {

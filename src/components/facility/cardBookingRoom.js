@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import { Grid, Tooltip, IconButton } from '@material-ui/core';
 
@@ -62,7 +63,7 @@ class cardBookingRoom extends Component {
       buttons: true,
       dangerMode: true,
     })
-      .then((yesAnswer) => {
+      .then(async (yesAnswer) => {
         if (yesAnswer) {
           this.setState({
             proses: true
@@ -71,7 +72,10 @@ class cardBookingRoom extends Component {
 
           API.delete(`/bookingRoom/${this.props.data.room_booking_id}`,
             {
-              headers: { token }
+              headers: {
+                token,
+                ip: await publicIp.v4()
+              }
             })
             .then(async () => {
               swal("Pesanan berhasil dihapus !", "", "success")

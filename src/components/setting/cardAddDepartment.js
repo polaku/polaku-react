@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import {
-  Grid, Button, Select, MenuItem, Paper,
+  Grid, Button, Select, MenuItem, Paper, InputLabel
   // OutlinedInput, Divider, FormControlLabel, Checkbox,  FormControl, InputLabel 
 } from '@material-ui/core';
 import CreatableSelect from 'react-select/creatable';
+import ReactSelect from 'react-select';
 import makeAnimated from 'react-select/animated';
 // import CloseIcon from '@material-ui/icons/Close';
 
@@ -472,16 +473,20 @@ class cardAddDepartment extends Component {
             <b style={{ fontSize: 12, marginBottom: 5 }}>Nama Department</b>
           </Grid>
 
-          <Grid style={{ width: '50%', height: 40, margin: 5, minWidth: 300 }}>
-            <CreatableSelect
-              isClearable
-              value={this.props.data && this.state.selectedDept}
-              components={animatedComponents}
-              options={this.state.listDepartment}
-              onChange={this.handleChangeDepartment}
-              onInputChange={this.handleInputChange}
-              disabled={this.state.proses}
-            />
+          <Grid style={{ width: '50%' }}>
+            <Grid style={{ width: '50%', height: 40, margin: 5, minWidth: 300 }}>
+              <CreatableSelect
+                isClearable
+                value={this.props.data && this.state.selectedDept}
+                components={animatedComponents}
+                options={this.state.listDepartment}
+                onChange={this.handleChangeDepartment}
+                onInputChange={this.handleInputChange}
+                disabled={this.state.proses}
+                placeholder="Select or Create new"
+              />
+            </Grid>
+            <InputLabel style={{ fontStyle: 'italic', fontSize: 12, marginLeft: 5 }}>* apabila tidak ada pilihannya harap tulis dan create</InputLabel>
           </Grid>
         </Grid>
 
@@ -490,40 +495,45 @@ class cardAddDepartment extends Component {
             <b style={{ fontSize: 12, marginBottom: 5 }}>Level Hirarki</b>
           </Grid>
 
-          <Grid style={{ width: '50%', height: 40, margin: 5, minWidth: 300, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Select
-              displayEmpty
-              value={this.state.levelHirarki}
-              onChange={this.handleChange('levelHirarki')}
-              style={{ width: 80, marginRight: 10 }}
-              disabled={this.state.proses}
-            >
-              <MenuItem value="">
-                <em>Hirarki</em>
-              </MenuItem>
-              <MenuItem value="1">1</MenuItem>
-              <MenuItem value="2">2</MenuItem>
-              <MenuItem value="3">3</MenuItem>
-              <MenuItem value="4">4</MenuItem>
-              <MenuItem value="5">5</MenuItem>
-              <MenuItem value="6">6</MenuItem>
-              <MenuItem value="7">7</MenuItem>
-              <MenuItem value="8">8</MenuItem>
-              <MenuItem value="9">9</MenuItem>
-              <MenuItem value="10">10</MenuItem>
-            </Select>
+          <Grid style={{ width: '50%', margin: 5, minWidth: 500, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Grid style={{ height: 40 }}>
+              <Select
+                displayEmpty
+                value={this.state.levelHirarki}
+                onChange={this.handleChange('levelHirarki')}
+                style={{ width: 80, marginRight: 10 }}
+                disabled={this.state.proses}
+              >
+                <MenuItem value="">
+                  <em>Hirarki</em>
+                </MenuItem>
+                <MenuItem value="1">1</MenuItem>
+                <MenuItem value="2">2</MenuItem>
+                <MenuItem value="3">3</MenuItem>
+                <MenuItem value="4">4</MenuItem>
+                <MenuItem value="5">5</MenuItem>
+                <MenuItem value="6">6</MenuItem>
+                <MenuItem value="7">7</MenuItem>
+                <MenuItem value="8">8</MenuItem>
+                <MenuItem value="9">9</MenuItem>
+                <MenuItem value="10">10</MenuItem>
+              </Select>
+            </Grid>
 
             {
-              this.state.levelHirarki !== '1' && <Grid style={{ width: '50%' }}>
-                <CreatableSelect
-                  isClearable
-                  placeholder="lapor kepada"
-                  value={this.props.data && this.state.selectedPartDept}
-                  components={animatedComponents}
-                  options={this.state.listDepartment}
-                  onChange={this.handleChangePartOfDepartment}
-                  disabled={this.state.proses}
-                />
+              this.state.levelHirarki !== '1' && <Grid style={{}}>
+                <Grid style={{ marginBottom: 5 }}>
+                  <CreatableSelect
+                    isClearable
+                    placeholder="lapor kepada"
+                    value={this.props.data && this.state.selectedPartDept}
+                    components={animatedComponents}
+                    options={this.state.listDepartment}
+                    onChange={this.handleChangePartOfDepartment}
+                    disabled={this.state.proses}
+                  />
+                </Grid>
+                <InputLabel style={{ fontStyle: 'italic', fontSize: 12 }}>* apabila tidak ada pilihannya harap tulis dan create</InputLabel>
               </Grid>
             }
 
@@ -538,22 +548,24 @@ class cardAddDepartment extends Component {
           <Grid>
             {
               this.state.position.map((position, index) =>
-                <Grid style={{ width: '50%', margin: 5, minWidth: 300, display: 'flex', alignItems: 'center' }} key={"position" + index}>
-                  <img src={process.env.PUBLIC_URL + '/dropdown.png'} alt="dropdown" style={{ width: 20, height: 20, marginRight: 10 }} />
-                  <Grid style={{ width: 400, height: 40 }}>
-                    <CreatableSelect
-                      isClearable
-                      placeholder="posisi"
-                      value={this.props.data && this.state.selectedPosition[index]}
-                      components={animatedComponents}
-                      options={this.state.listPosition}
-                      onChange={(newValue) => this.handleChangePosition({ ...newValue, index, name: 'position' })}
-                      disabled={this.state.proses}
-
-                    />
+                <Grid style={{ width: '50%', margin: 5, minWidth: 300, display: 'flex', alignItems: 'flex-start' }} key={"position" + index}>
+                  <img src={process.env.PUBLIC_URL + '/dropdown.png'} alt="dropdown" style={{ width: 20, height: 20, marginRight: 10, marginTop: 10 }} />
+                  <Grid style={{ width: 400 }}>
+                    <Grid style={{ height: 40 }}>
+                      <CreatableSelect
+                        isClearable
+                        placeholder="posisi"
+                        value={this.props.data && this.state.selectedPosition[index]}
+                        components={animatedComponents}
+                        options={this.state.listPosition}
+                        onChange={(newValue) => this.handleChangePosition({ ...newValue, index, name: 'position' })}
+                        disabled={this.state.proses}
+                      />
+                    </Grid>
+                    <InputLabel style={{ fontStyle: 'italic', fontSize: 12 }}>* apabila tidak ada pilihannya harap tulis dan create</InputLabel>
                   </Grid>
-                  <Grid style={{ width: 400, height: 40, margin: 5 }}>
-                    <CreatableSelect
+                  <Grid style={{ width: 400, height: 40, marginLeft: 5 }}>
+                    <ReactSelect
                       isClearable
                       value={this.props.data && this.state.selectedUserPosition[index]}
                       components={animatedComponents}
@@ -563,7 +575,7 @@ class cardAddDepartment extends Component {
                     />
                   </Grid>
                   {
-                    this.state.position.length > 1 && <Button variant="outlined" style={{ backgroundColor: '#ff1919', minWidth: 30, color: 'white', }} size='small' onClick={() => this.deletePosition(index)} disabled={this.state.proses}>X</Button>
+                    this.state.position.length > 1 && <Button variant="outlined" style={{ backgroundColor: '#ff1919', minWidth: 30, color: 'white', marginTop: 3, marginLeft: 5 }} size='small' onClick={() => this.deletePosition(index)} disabled={this.state.proses}>X</Button>
                   }
                 </Grid>
               )
@@ -628,7 +640,7 @@ class cardAddDepartment extends Component {
                             options={this.state.listPosition}
                             onChange={(newValue) => this.handleChangePartOfPosition({ ...newValue, index, indexPosition })}
                             disabled={this.state.proses}
-
+                            placeholder="Select or Create new"
                           />
                         </Grid>
                         <Grid style={{ width: 400, height: 40, margin: 5 }}>

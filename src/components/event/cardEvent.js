@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import { Button, CircularProgress } from '@material-ui/core';
 
@@ -100,7 +101,10 @@ class cardEvent extends Component {
           event_id: this.props.data.event_id, response: args.toLowerCase(),
         },
         {
-          headers: { token }
+          headers: {
+            token,
+            ip: await publicIp.v4()
+          }
         })
 
       if (args === "Join") {
@@ -150,7 +154,7 @@ class cardEvent extends Component {
     this.joinEvent("Cancel Join")
   }
 
-  approve = args => {
+  approve = async (args) => {
     let token = Cookies.get('POLAGROUP')
 
     API.put(`/events/approvalEvent/${this.props.data.event_id}`,
@@ -158,7 +162,10 @@ class cardEvent extends Component {
         status: Number(args),
       },
       {
-        headers: { token }
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
       })
       .then(() => {
         this.props.fetchDataEventNeedApproval()

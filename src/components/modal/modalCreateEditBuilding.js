@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Modal, Backdrop, Button, InputLabel, Select as SelectOption, MenuItem, CircularProgress, Fade, FormControl, TextField
@@ -31,7 +32,7 @@ class modalCreateEditBuilding extends Component {
     }
   }
 
-  save = () => {
+  save = async () => {
     this.setState({
       proses: true
     })
@@ -43,7 +44,12 @@ class modalCreateEditBuilding extends Component {
         company_id: this.state.company_id
       }
 
-      API.post(`/bookingRoom/building`, newData, { headers: { token } })
+      API.post(`/bookingRoom/building`, newData, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
         .then(() => {
           this.props.fetchDataBuildings()
           this.props.closeModal()
@@ -65,7 +71,12 @@ class modalCreateEditBuilding extends Component {
         company_id: this.state.company_id
       }
 
-      API.put(`/bookingRoom/building/${this.props.data.building_id}`, newData, { headers: { token } })
+      API.put(`/bookingRoom/building/${this.props.data.building_id}`, newData, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
         .then(() => {
           this.props.fetchDataBuildings()
           this.props.closeModal()

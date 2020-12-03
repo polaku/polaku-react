@@ -2,6 +2,7 @@ import 'date-fns';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Modal, Backdrop, Fade, TextField, Typography, Button, CircularProgress, InputLabel, MenuItem, FormControl, Select as SelectOption
@@ -160,7 +161,8 @@ class modalCreateEditBookingRoom extends Component {
         API.post('/bookingRoom', newData,
           {
             headers: {
-              token
+              token,
+              ip: await publicIp.v4()
             }
           }
         )
@@ -193,7 +195,8 @@ class modalCreateEditBookingRoom extends Component {
         API.put(`/bookingRoom/${this.props.data.room_booking_id}`, newData,
           {
             headers: {
-              token
+              token,
+              ip: await publicIp.v4()
             }
           }
         )

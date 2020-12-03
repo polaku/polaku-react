@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Modal, Fade, Grid, Backdrop, Typography, Button, TextField, RadioGroup, FormControlLabel, Radio
@@ -51,7 +52,7 @@ export default class modalCreateEditPolanews extends Component {
     }
   }
 
-  submit = () => {
+  submit = async () => {
     if (this.props.data) { //Edit
       let token = Cookies.get('POLAGROUP')
 
@@ -63,7 +64,12 @@ export default class modalCreateEditPolanews extends Component {
       this.state.attachmentPdf && formData1.append("files", this.state.attachmentPdf)
       this.state.thumbnail && formData1.append("files", this.state.thumbnail)
 
-      API.put(`/news/${this.props.data.polanews_id}`, formData1, { headers: { token } })
+      API.put(`/news/${this.props.data.polanews_id}`, formData1, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
         .then(data => {
           swal("Edit berita pola sukses", "", "success")
           this.props.refresh()
@@ -86,7 +92,12 @@ export default class modalCreateEditPolanews extends Component {
         formData2.append("files", this.state.attachmentPdf)
         formData2.append("files", this.state.thumbnail)
 
-        API.post('/news', formData2, { headers: { token } })
+        API.post('/news', formData2, {
+          headers: {
+            token,
+            ip: await publicIp.v4()
+          }
+        })
           .then(data => {
             swal("Tambah berita pola sukses", "", "success")
             this.props.refresh()
@@ -228,7 +239,7 @@ export default class modalCreateEditPolanews extends Component {
                         ? <img src={this.props.data.thumbnail} alt="thumbnail" style={{ width: 150, height: 180 }} />
                         : this.state.imgPreview
                           ? <img src={this.state.imgPreview} alt="thumbnail" style={{ width: 150, height: 180 }} />
-                          : <img src={process.env.PUBLIC_URL + '/placeholder.png'} alt="Logo" style={{ width: 150, height: 150 }}/>
+                          : <img src={process.env.PUBLIC_URL + '/placeholder.png'} alt="Logo" style={{ width: 150, height: 150 }} />
                     }
                   </Grid>
                 </Grid>

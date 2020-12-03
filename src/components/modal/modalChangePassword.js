@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Modal, Fade, Grid, Backdrop, Typography, Button, TextField, CircularProgress
@@ -36,7 +37,7 @@ export default class modalChangePassword extends Component {
     this.setState({ [name]: event.target.value });
   };
 
-  submitForm = () => {
+  submitForm = async () => {
     if (!this.state.errorPass && this.state.passOld && this.state.passNew) {
       let token = Cookies.get('POLAGROUP')
       this.setState({
@@ -47,7 +48,12 @@ export default class modalChangePassword extends Component {
         passwordBaru: this.state.passNew
       }
 
-      API.put('/users/changePassword', newData, { headers: { token } })
+      API.put('/users/changePassword', newData, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
         .then(async data => {
           swal("Change password success", "", "success")
           this.setState({
@@ -58,7 +64,7 @@ export default class modalChangePassword extends Component {
         .catch(err => {
           if (err.message === 'Request failed with status code 400') {
             swal('Password lama yang anda masukan salah')
-          }else{            
+          } else {
             swal('please try again')
           }
           console.log(err)
@@ -128,8 +134,8 @@ export default class modalChangePassword extends Component {
               error={this.state.errorPass}
             />
 
-            <Grid style={{display:'flex', justifyContent:'center', alignItems: 'center' }}>
-              <Button color="secondary" onClick={this.props.closeModal} style={{marginRight:20, height:50}}>
+            <Grid style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Button color="secondary" onClick={this.props.closeModal} style={{ marginRight: 20, height: 50 }}>
                 Cancel
               </Button>
               <Button variant="contained" color="primary" style={{ margin: '20px 0', width: 100, height: 50, alignSelf: 'center' }} onClick={this.submitForm}
@@ -142,7 +148,7 @@ export default class modalChangePassword extends Component {
                 }
               </Button>
             </Grid>
-            
+
 
           </Grid>
         </Fade>

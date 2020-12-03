@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import { browserName, osName, isMobile } from 'react-device-detect';
 import publicIp from 'public-ip';
 
 import {
@@ -160,23 +159,15 @@ function Navsidebar(props) {
     setSelectedIndex(index);
   }
 
-  useEffect( () => {
-    async function fetchData(){
+  useEffect(() => {
+    async function fetchData() {
 
       let token = Cookies.get('POLAGROUP')
-      console.log(browserName)
-      console.log(osName)
-      console.log(isMobile)
-      console.log(publicIp)
-  
+
       if (token) {
         API.get('/users/checkToken', {
           headers: {
             token,
-            browser: browserName,
-            os: osName,
-            isMobile,
-            ip: await publicIp.v4()
           }
         })
           .then(async ({ data }) => {
@@ -194,17 +185,17 @@ function Navsidebar(props) {
               dinas: data.dinas,
               PIC: data.PIC
             }
-  
+
             if (data.role_id === 1) {
               newData.isAdminsuper = true
             } else {
               newData.isAdminsuper = false
             }
-  
+
             if (data.adminContactCategori) {
               newData.adminContactCategori = data.adminContactCategori
             }
-  
+
             await props.setUser(newData)
             await props.fetchDataNotification()
           })
@@ -356,7 +347,7 @@ function Navsidebar(props) {
       else if (props.isAdminsuper || (props.PIC && props.PIC.length > 0) || (props.designation && props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5 || menu.menu_id === 6))) {
         setSelectedIndex(99)
         console.log("isAdminsuper", props.isAdminsuper)
-        console.log("PIC",  props.PIC.length > 0)
+        console.log("PIC", props.PIC.length > 0)
         console.log("designation", props.designation)
       } else {
         props.history.goBack()
@@ -380,14 +371,19 @@ function Navsidebar(props) {
     }
   }, [props.bawahan])
 
-  const handleClickNotif = event => {
+  const handleClickNotif = async (event) => {
     let newData = [], token = Cookies.get('POLAGROUP')
     setAnchorEl(event.currentTarget);
     props.dataNewNotif.forEach(element => {
       newData.push(element.notifications_id)
     });
 
-    API.put('/notification', { notifications_id: newData }, { headers: { token } })
+    API.put('/notification', { notifications_id: newData }, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(async data => {
         await props.fetchDataNotification()
       })
@@ -400,10 +396,15 @@ function Navsidebar(props) {
     setAnchorEl(null);
   };
 
-  const updateStatus = id => {
+  const updateStatus = async (id) => {
     let token = Cookies.get('POLAGROUP')
 
-    API.put(`/notification/${id}`, { read: 1 }, { headers: { token } })
+    API.put(`/notification/${id}`, { read: 1 }, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(async data => {
       })
       .catch(err => {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import { Grid, Button, Select, MenuItem, FormControl } from '@material-ui/core';
 
@@ -123,9 +124,14 @@ class AddDepartment extends Component {
 
       if (newData.length === this.state.dataForEdit.length) {
         this.setState({ proses: true })
-        newData.forEach((data, index) => {
+        newData.forEach(async (data, index) => {
           data.companyId = this.state.companyId
-          promises.push(API.put(`/structure/${data.id}`, data, { headers: { token } }))
+          promises.push(API.put(`/structure/${data.id}`, data, {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          }))
         })
         Promise.all(promises)
           .then(async ({ data }) => {
@@ -148,9 +154,14 @@ class AddDepartment extends Component {
       let token = Cookies.get('POLAGROUP'), promises = []
 
       if (newData.length === this.state.department.length) {
-        newData.forEach((data, index) => {
+        newData.forEach(async (data, index) => {
           data.companyId = this.state.companyId
-          promises.push(API.post('/structure', data, { headers: { token } }))
+          promises.push(API.post('/structure', data, {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          }))
         })
         Promise.all(promises)
           .then(async ({ data }) => {

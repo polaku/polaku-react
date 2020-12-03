@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Card, Grid, Avatar, Paper, Button
@@ -124,14 +125,19 @@ class cardPermintaanHRD extends Component {
       buttons: true,
       dangerMode: true,
     })
-      .then((willDelete) => {
+      .then(async (willDelete) => {
         if (willDelete) {
           this.setState({
             proses: true
           })
           let token = Cookies.get('POLAGROUP')
 
-          API.put(`/contactUs/cancel/${this.props.data.contact_id}`, {}, { headers: { token } })
+          API.put(`/contactUs/cancel/${this.props.data.contact_id}`, {}, {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          })
             .then(data => {
               swal("Cancel success", "", "success");
               this.props.fetchData()
@@ -158,10 +164,15 @@ class cardPermintaanHRD extends Component {
       buttons: true,
       dangerMode: true,
     })
-      .then((yesAnswer) => {
+      .then(async (yesAnswer) => {
         if (yesAnswer) {
           let token = Cookies.get('POLAGROUP')
-          API.get(`/contactUs/rejected/${this.props.data.contact_id}`, { headers: { token } })
+          API.get(`/contactUs/rejected/${this.props.data.contact_id}`, {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          })
             .then(async () => {
               swal("Sukses ditolak", "", "success");
               this.props.fetchData()
@@ -183,7 +194,7 @@ class cardPermintaanHRD extends Component {
       buttons: true,
       dangerMode: true,
     })
-      .then((yesAnswer) => {
+      .then(async (yesAnswer) => {
         if (yesAnswer) {
           let newStatus, token = Cookies.get('POLAGROUP')
           if (this.props.data.status === 'new') {
@@ -192,7 +203,12 @@ class cardPermintaanHRD extends Component {
             newStatus = 'approved'
           }
 
-          API.put(`/contactUs/approved/${this.props.data.contact_id}`, { status: newStatus }, { headers: { token } })
+          API.put(`/contactUs/approved/${this.props.data.contact_id}`, { status: newStatus }, {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          })
             .then(async () => {
               swal("Sukses disetujui", "", "success");
               this.props.fetchData()

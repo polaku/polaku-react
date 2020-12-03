@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   ListItem, IconButton, ListItemText, ListItemSecondaryAction
@@ -24,9 +25,14 @@ class cardRoom extends Component {
     }
   }
 
-  delete = () => {
+  delete = async () => {
     let token = Cookies.get('POLAGROUP')
-    API.delete(`/bookingRoom/rooms/${this.props.data.room_id}`, { headers: { token } })
+    API.delete(`/bookingRoom/rooms/${this.props.data.room_id}`, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(() => {
         this.props.fetchDataRooms();
       })

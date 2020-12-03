@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   TableCell, TableRow, Grid, TextField, CircularProgress
@@ -51,7 +52,7 @@ export default class cardTAL extends Component {
     this.setState({ [name]: event.target.value });
   };
 
-  submitData = args => event => {
+  submitData = args => async (event) => {
     event.preventDefault()
     let token = Cookies.get('POLAGROUP'), newData
     if (this.state.load > 10 || this.state.achievement > 100) {
@@ -79,7 +80,12 @@ export default class cardTAL extends Component {
         this.setState({ prosesLink: true })
       }
 
-      API.put(`/tal/${this.props.data.tal_score_id}`, newData, { headers: { token } })
+      API.put(`/tal/${this.props.data.tal_score_id}`, newData, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
         .then(() => {
           this.setState({
             editAchievement: false,

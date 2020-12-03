@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import { Grid, Button, Select, MenuItem, FormControl, FormControlLabel, Checkbox } from '@material-ui/core';
 
@@ -58,7 +59,7 @@ class AddAddress extends Component {
             optionCompany.push(check)
           }
         })
-  
+
         await this.props.PIC.forEach(el => {
           if (idCompany.indexOf(el.company_id) === -1) {
             let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
@@ -115,7 +116,7 @@ class AddAddress extends Component {
     this.setState({ statusSubmit: true })
   }
 
-  sendData = (args) => {
+  sendData = async (args) => {
     if (this.state.companyId !== '') {
       if (this.props.location.state && this.props.location.state.data) {
         let newData = this.state.tempDataForEdit
@@ -124,7 +125,7 @@ class AddAddress extends Component {
 
         if (newData.length === this.state.dataForEdit.length) {
           this.setState({ proses: true })
-          newData.forEach((data, index) => {
+          newData.forEach(async (data, index) => {
             if (this.state.indexMainAddress !== null) {
               if (index === this.state.indexMainAddress) {
                 data.append('isMainAddress', true)
@@ -132,7 +133,12 @@ class AddAddress extends Component {
                 data.append('isMainAddress', false)
               }
             }
-            promises.push(API.put(`/address/${data.get('addressId')}`, data, { headers: { token } }))
+            promises.push(API.put(`/address/${data.get('addressId')}`, data, {
+              headers: {
+                token,
+                ip: await publicIp.v4()
+              }
+            }))
           })
           Promise.all(promises)
             .then(async ({ data }) => {
@@ -156,7 +162,7 @@ class AddAddress extends Component {
         let token = Cookies.get('POLAGROUP'), promises = []
 
         if (newData.length === this.state.alamat.length) {
-          newData.forEach((data, index) => {
+          newData.forEach(async (data, index) => {
             if (this.state.indexMainAddress !== null) {
               if (index === this.state.indexMainAddress) {
                 data.append('isMainAddress', true)
@@ -164,7 +170,12 @@ class AddAddress extends Component {
                 data.append('isMainAddress', false)
               }
             }
-            promises.push(API.post('/address', data, { headers: { token } }))
+            promises.push(API.post('/address', data, {
+              headers: {
+                token,
+                ip: await publicIp.v4()
+              }
+            }))
           })
           Promise.all(promises)
             .then(async ({ data }) => {

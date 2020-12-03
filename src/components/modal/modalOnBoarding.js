@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Modal, Fade, Grid, Backdrop, Typography, OutlinedInput, FormControl,
@@ -86,7 +87,12 @@ class modalOnBoarding extends Component {
       pic: this.state.pic,
     }
 
-    API.post('/pic', newData, { headers: { token } })
+    API.post('/pic', newData, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(async ({ data }) => {
         await this.props.fetchDataPIC()
         swal("Tambah PIC sukses", "", "success")

@@ -2,6 +2,7 @@ import { createStore, applyMiddleware } from 'redux'
 import reducer from './reducer'
 import { API } from '../config/API';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 // import axios from 'axios';
 
 // const CancelToken = axios.CancelToken;
@@ -22,23 +23,48 @@ const api = store => next => async action => {
           if (action.payload.keyword) {
             getData = await API.get(
               `/users?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}&search=${action.payload.keyword}`,
-              { headers: { token } })
+              {
+                headers: {
+                  token,
+                  ip: await publicIp.v4()
+                }
+              })
           } else {
             getData = await API.get(
               `/users?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}`,
-              { headers: { token } })
+              {
+                headers: {
+                  token,
+                  ip: await publicIp.v4()
+                }
+              })
           }
         } else {
           if (action.payload.keyword) {
-            getData = await API.get(`/users?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, { headers: { token } })
+            getData = await API.get(`/users?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, {
+              headers: {
+                token,
+                ip: await publicIp.v4()
+              }
+            })
           } else {
-            getData = await API.get(`/users?limit=${action.payload.limit}&page=${action.payload.page}`, { headers: { token } })
+            getData = await API.get(`/users?limit=${action.payload.limit}&page=${action.payload.page}`, {
+              headers: {
+                token,
+                ip: await publicIp.v4()
+              }
+            })
           }
         }
       } else {
-        getData = await API.get('/users', { headers: { token } })
+        getData = await API.get('/users', {
+          headers: {
+            token,
+            ip: await publicIp.v4()
+          }
+        })
       }
-
+      console.log(getData.data.data)
       let newData = await getData.data.data.filter(user => user.tbl_account_detail)
 
       await newData.sort(compare)
@@ -67,33 +93,68 @@ const api = store => next => async action => {
     try {
       if (action.payload) {
         if (action.payload.forOption) {
-          getData = await API.get('/bookingRoom/rooms?forOption=true', { headers: { token } })
+          getData = await API.get('/bookingRoom/rooms?forOption=true', {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          })
 
         } else {
           if (action.payload.company) {
             if (action.payload.keyword) {
               getData = await API.get(
                 `/bookingRoom/rooms?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}&search=${action.payload.keyword}`,
-                { headers: { token } })
+                {
+                  headers: {
+                    token,
+                    ip: await publicIp.v4()
+                  }
+                })
             } else {
               if (action.payload.limit || action.payload.page) {
                 getData = await API.get(
                   `/bookingRoom/rooms?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}`,
-                  { headers: { token } })
+                  {
+                    headers: {
+                      token,
+                      ip: await publicIp.v4()
+                    }
+                  })
               } else {
-                getData = await API.get(`/bookingRoom/rooms?company=${action.payload.company}`, { headers: { token } })
+                getData = await API.get(`/bookingRoom/rooms?company=${action.payload.company}`, {
+                  headers: {
+                    token,
+                    ip: await publicIp.v4()
+                  }
+                })
               }
             }
           } else {
             if (action.payload.keyword) {
-              getData = await API.get(`/bookingRoom/rooms?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, { headers: { token } })
+              getData = await API.get(`/bookingRoom/rooms?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, {
+                headers: {
+                  token,
+                  ip: await publicIp.v4()
+                }
+              })
             } else {
-              getData = await API.get(`/bookingRoom/rooms?limit=${action.payload.limit}&page=${action.payload.page}`, { headers: { token } })
+              getData = await API.get(`/bookingRoom/rooms?limit=${action.payload.limit}&page=${action.payload.page}`, {
+                headers: {
+                  token,
+                  ip: await publicIp.v4()
+                }
+              })
             }
           }
         }
       } else {
-        getData = await API.get('/bookingRoom/rooms', { headers: { token } })
+        getData = await API.get('/bookingRoom/rooms', {
+          headers: {
+            token,
+            ip: await publicIp.v4()
+          }
+        })
       }
 
       next({
@@ -115,7 +176,12 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get('/bookingRoom/roomMaster', { headers: { token } })
+      getData = await API.get('/bookingRoom/roomMaster', {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
 
       getData.data.data.forEach(element => {
         let companyList = []
@@ -149,7 +215,12 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get('/company', { headers: { token } })
+      getData = await API.get('/company', {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
 
       next({
         type: 'FETCH_DATA_COMPANIES_SUCCESS',
@@ -170,7 +241,12 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get('/bookingRoom/building', { headers: { token } })
+      getData = await API.get('/bookingRoom/building', {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
 
       next({
         type: 'FETCH_DATA_BUILDINGS_SUCCESS',
@@ -191,7 +267,12 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get('/bookingRoom', { headers: { token } })
+      getData = await API.get('/bookingRoom', {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
 
       next({
         type: 'FETCH_DATA_BOOKING_ROOMS_SUCCESS',
@@ -212,7 +293,12 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get('/bookingRoom/myroom', { headers: { token } })
+      getData = await API.get('/bookingRoom/myroom', {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
 
       next({
         type: 'FETCH_DATA_MY_BOOKING_ROOMS_SUCCESS',
@@ -233,7 +319,12 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get('/events', { headers: { token } })
+      getData = await API.get('/events', {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
 
       let newDataEvent = await getData.data.data.filter(event => event.status === 1)
 
@@ -261,7 +352,12 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get('/events/all', { headers: { token } })
+      getData = await API.get('/events/all', {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
 
       let newDataEvent = await getData.data.data.filter(event => event.status === 0)
 
@@ -289,7 +385,12 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get('/events/masterCreator', { headers: { token } })
+      getData = await API.get('/events/masterCreator', {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
 
       next({
         type: 'FETCH_DATA_CREATOR_MASTER_AND_ASSISTANT_SUCCESS',
@@ -310,7 +411,12 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get('/department', { headers: { token } })
+      getData = await API.get('/department', {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
 
       next({
         type: 'FETCH_DATA_DEPARTMENT_SUCCESS',
@@ -331,7 +437,12 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get('/notification', { headers: { token } })
+      getData = await API.get('/notification', {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
 
       let datas = getData.data.data.filter(el => el.read_inline === 0 && el.read !== 1)
       next({
@@ -358,11 +469,26 @@ const api = store => next => async action => {
         let startDate, endDate
         startDate = `${action.payload.startDate.getFullYear()}-${action.payload.startDate.getMonth() + 1 < 10 ? `0${action.payload.startDate.getMonth() + 1}` : action.payload.startDate.getMonth() + 1}-${action.payload.startDate.getDate() < 10 ? `0${action.payload.startDate.getDate()}` : action.payload.startDate.getDate()}`
         endDate = `${action.payload.endDate.getFullYear()}-${action.payload.endDate.getMonth() + 1 < 10 ? `0${action.payload.endDate.getMonth() + 1}` : action.payload.endDate.getMonth() + 1}-${action.payload.endDate.getDate() < 10 ? `0${action.payload.endDate.getDate()}` : action.payload.endDate.getDate()}`
-        getData = await API.get(`/contactUs/allContactUs?for-report-hr=true&after-date=${startDate}&before-date=${endDate}`, { headers: { token } })
+        getData = await API.get(`/contactUs/allContactUs?for-report-hr=true&after-date=${startDate}&before-date=${endDate}`, {
+          headers: {
+            token,
+            ip: await publicIp.v4()
+          }
+        })
       } else if (action.payload) {
-        getData = await API.get('/contactUs/allContactUs?for-hr=true', { headers: { token } })
+        getData = await API.get('/contactUs/allContactUs?for-hr=true', {
+          headers: {
+            token,
+            ip: await publicIp.v4()
+          }
+        })
       } else {
-        getData = await API.get('/contactUs/allContactUs', { headers: { token } })
+        getData = await API.get('/contactUs/allContactUs', {
+          headers: {
+            token,
+            ip: await publicIp.v4()
+          }
+        })
       }
       // let newData = await getData.data.data.filter(el => el.user_id === action.payload)
       // let newDataStaff = await getData.data.data.filter(el => el.evaluator_1 === action.payload || el.evaluator_2 === action.payload  || action.payload === 1)
@@ -458,10 +584,30 @@ const api = store => next => async action => {
 
     let getDataKPIM
     try {
-      if (action.payload["for-setting"]) getDataKPIM = await API.get(`/kpim?for-setting=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}`, { headers: { token } })
-      else if (action.payload["for-dashboard"]) getDataKPIM = await API.get(`/kpim?for-dashboard=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}&user-id=${action.payload.userId}`, { headers: { token } })
-      else if (action.payload["for-report"]) getDataKPIM = await API.get(`/kpim?for-report=true&year=${action.payload.year}&month=${action.payload.month}`, { headers: { token } })
-      else getDataKPIM = await API.get(`/kpim`, { headers: { token } })
+      if (action.payload["for-setting"]) getDataKPIM = await API.get(`/kpim?for-setting=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
+      else if (action.payload["for-dashboard"]) getDataKPIM = await API.get(`/kpim?for-dashboard=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}&user-id=${action.payload.userId}`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
+      else if (action.payload["for-report"]) getDataKPIM = await API.get(`/kpim?for-report=true&year=${action.payload.year}&month=${action.payload.month}`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
+      else getDataKPIM = await API.get(`/kpim`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
 
       next({
         type: 'FETCH_DATA_ALL_KPIM_SUCCESS',
@@ -482,10 +628,30 @@ const api = store => next => async action => {
 
     let getData
     try {
-      if (action.payload["for-setting"]) getData = await API.get(`/tal?for-setting=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}`, { headers: { token } })
-      else if (action.payload["for-dashboard"]) getData = await API.get(`/tal?for-dashboard=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}&user-id=${action.payload.userId}`, { headers: { token } })
-      else if (action.payload["for-tal-team"]) getData = await API.get(`/tal?for-tal-team=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}&user-id=${action.payload.userId}`, { headers: { token } })
-      else getData = await API.get(`/tal?year=${action.payload}`, { headers: { token } })
+      if (action.payload["for-setting"]) getData = await API.get(`/tal?for-setting=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
+      else if (action.payload["for-dashboard"]) getData = await API.get(`/tal?for-dashboard=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}&user-id=${action.payload.userId}`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
+      else if (action.payload["for-tal-team"]) getData = await API.get(`/tal?for-tal-team=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}&user-id=${action.payload.userId}`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
+      else getData = await API.get(`/tal?year=${action.payload}`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
 
       next({
         type: 'FETCH_DATA_ALL_TAL_SUCCESS',
@@ -506,7 +672,12 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get(`/rewardKPIM?all=true`, { headers: { token } })
+      getData = await API.get(`/rewardKPIM?all=true`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
 
       let myRewardKPIM = await getData.data.data.filter(el => el.user_id === action.payload)
 
@@ -529,7 +700,12 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get(`/position`, { headers: { token } })
+      getData = await API.get(`/position`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
 
       next({
         type: 'FETCH_DATA_POSITION_SUCCESS',
@@ -550,7 +726,12 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get(`/news`, { headers: { token } })
+      getData = await API.get(`/news`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
 
       next({
         type: 'FETCH_DATA_POLANEWS_SUCCESS',
@@ -571,7 +752,12 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get(`/users/${action.payload}`, { headers: { token } })
+      getData = await API.get(`/users/${action.payload}`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
 
       next({
         type: 'FETCH_DATA_USER_DETAIL_SUCCESS',
@@ -592,7 +778,12 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get('/pic', { headers: { token } })
+      getData = await API.get('/pic', {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
 
       next({
         type: 'FETCH_DATA_PIC_SUCCESS',
@@ -615,28 +806,58 @@ const api = store => next => async action => {
     try {
       if (action.payload) {
         if (action.payload.forOption) {
-          getData = await API.get(`/address?forOption=true`, { headers: { token } })
+          getData = await API.get(`/address?forOption=true`, {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          })
         } else {
           if (action.payload.company) {
             if (action.payload.keyword) {
               getData = await API.get(
                 `/address?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}&search=${action.payload.keyword}`,
-                { headers: { token } })
+                {
+                  headers: {
+                    token,
+                    ip: await publicIp.v4()
+                  }
+                })
             } else {
               getData = await API.get(
                 `/address?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}`,
-                { headers: { token } })
+                {
+                  headers: {
+                    token,
+                    ip: await publicIp.v4()
+                  }
+                })
             }
           } else {
             if (action.payload.keyword) {
-              getData = await API.get(`/address?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, { headers: { token } })
+              getData = await API.get(`/address?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, {
+                headers: {
+                  token,
+                  ip: await publicIp.v4()
+                }
+              })
             } else {
-              getData = await API.get(`/address?limit=${action.payload.limit}&page=${action.payload.page}`, { headers: { token } })
+              getData = await API.get(`/address?limit=${action.payload.limit}&page=${action.payload.page}`, {
+                headers: {
+                  token,
+                  ip: await publicIp.v4()
+                }
+              })
             }
           }
         }
       } else {
-        getData = await API.get('/address', { headers: { token } })
+        getData = await API.get('/address', {
+          headers: {
+            token,
+            ip: await publicIp.v4()
+          }
+        })
       }
 
       next({
@@ -660,33 +881,68 @@ const api = store => next => async action => {
     try {
       if (action.payload) {
         if (action.payload.forOption) {
-          getData = await API.get('/structure?forOption=true', { headers: { token } })
+          getData = await API.get('/structure?forOption=true', {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          })
 
         } else {
           if (action.payload.company) {
             if (action.payload.keyword) {
               getData = await API.get(
                 `/structure?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}&search=${action.payload.keyword}`,
-                { headers: { token } })
+                {
+                  headers: {
+                    token,
+                    ip: await publicIp.v4()
+                  }
+                })
             } else {
               if (action.payload.limit || action.payload.page) {
                 getData = await API.get(
                   `/structure?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}`,
-                  { headers: { token } })
+                  {
+                    headers: {
+                      token,
+                      ip: await publicIp.v4()
+                    }
+                  })
               } else {
-                getData = await API.get(`/structure?company=${action.payload.company}`, { headers: { token } })
+                getData = await API.get(`/structure?company=${action.payload.company}`, {
+                  headers: {
+                    token,
+                    ip: await publicIp.v4()
+                  }
+                })
               }
             }
           } else {
             if (action.payload.keyword) {
-              getData = await API.get(`/structure?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, { headers: { token } })
+              getData = await API.get(`/structure?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, {
+                headers: {
+                  token,
+                  ip: await publicIp.v4()
+                }
+              })
             } else {
-              getData = await API.get(`/structure?limit=${action.payload.limit}&page=${action.payload.page}`, { headers: { token } })
+              getData = await API.get(`/structure?limit=${action.payload.limit}&page=${action.payload.page}`, {
+                headers: {
+                  token,
+                  ip: await publicIp.v4()
+                }
+              })
             }
           }
         }
       } else {
-        getData = await API.get('/structure', { headers: { token } })
+        getData = await API.get('/structure', {
+          headers: {
+            token,
+            ip: await publicIp.v4()
+          }
+        })
       }
       next({
         type: 'FETCH_DATA_STRUCTURE_SUCCESS',
@@ -712,21 +968,46 @@ const api = store => next => async action => {
           if (action.payload.keyword) {
             getData = await API.get(
               `/dinas?limit=${action.payload.limit}&page=${action.payload.page}&status=${action.payload.status}&search=${action.payload.keyword}`,
-              { headers: { token } })
+              {
+                headers: {
+                  token,
+                  ip: await publicIp.v4()
+                }
+              })
           } else {
             getData = await API.get(
               `/dinas?limit=${action.payload.limit}&page=${action.payload.page}&status=${action.payload.status}`,
-              { headers: { token } })
+              {
+                headers: {
+                  token,
+                  ip: await publicIp.v4()
+                }
+              })
           }
         } else {
           if (action.payload.keyword) {
-            getData = await API.get(`/dinas?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, { headers: { token } })
+            getData = await API.get(`/dinas?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, {
+              headers: {
+                token,
+                ip: await publicIp.v4()
+              }
+            })
           } else {
-            getData = await API.get(`/dinas?limit=${action.payload.limit}&page=${action.payload.page}`, { headers: { token } })
+            getData = await API.get(`/dinas?limit=${action.payload.limit}&page=${action.payload.page}`, {
+              headers: {
+                token,
+                ip: await publicIp.v4()
+              }
+            })
           }
         }
       } else {
-        getData = await API.get('/dinas', { headers: { token } })
+        getData = await API.get('/dinas', {
+          headers: {
+            token,
+            ip: await publicIp.v4()
+          }
+        })
       }
 
       next({
@@ -761,21 +1042,46 @@ const api = store => next => async action => {
           if (action.payload.keyword) {
             getData = await API.get(
               `/designation?limit=${action.payload.limit}&page=${action.payload.page}&status=${action.payload.status}&search=${action.payload.keyword}`,
-              { headers: { token } })
+              {
+                headers: {
+                  token,
+                  ip: await publicIp.v4()
+                }
+              })
           } else {
             getData = await API.get(
               `/designation?limit=${action.payload.limit}&page=${action.payload.page}&status=${action.payload.status}`,
-              { headers: { token } })
+              {
+                headers: {
+                  token,
+                  ip: await publicIp.v4()
+                }
+              })
           }
         } else {
           if (action.payload.keyword) {
-            getData = await API.get(`/designation?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, { headers: { token } })
+            getData = await API.get(`/designation?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, {
+              headers: {
+                token,
+                ip: await publicIp.v4()
+              }
+            })
           } else {
-            getData = await API.get(`/designation?limit=${action.payload.limit}&page=${action.payload.page}`, { headers: { token } })
+            getData = await API.get(`/designation?limit=${action.payload.limit}&page=${action.payload.page}`, {
+              headers: {
+                token,
+                ip: await publicIp.v4()
+              }
+            })
           }
         }
       } else {
-        getData = await API.get('/designation', { headers: { token } })
+        getData = await API.get('/designation', {
+          headers: {
+            token,
+            ip: await publicIp.v4()
+          }
+        })
       }
 
       next({

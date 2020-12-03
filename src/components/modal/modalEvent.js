@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Modal, Fade, Backdrop, Paper, Grid, Divider, Typography, Button, CircularProgress
@@ -64,7 +65,10 @@ class modalEvent extends Component {
           event_id: this.props.data.event_id, response: args.toLowerCase(),
         },
         {
-          headers: { token }
+          headers: {
+            token,
+            ip: await publicIp.v4()
+          }
         })
 
       if (args === "Join") {
@@ -181,7 +185,7 @@ class modalEvent extends Component {
                   }}>
                     <p style={{ margin: 10 }}> {this.state.joinEvent.length} Mengikuti </p>
                     {
-                      this.props.data.end_date >= new Date() && 
+                      this.props.data.end_date >= new Date() &&
                       (this.state.statusJoinUser !== 'Join'
                         ? <Button style={{
                           width: 'auto',

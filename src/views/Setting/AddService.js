@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import { Grid, Button } from '@material-ui/core';
 
@@ -79,11 +80,21 @@ class AddService extends Component {
 
         await this.state.dataForEdit.forEach(async (el) => {
           let check = newData.find(element => element.dinasId === el.id)
-          if (!check) await API.delete(`/dinas/${el.id}`, { headers: { token } })
+          if (!check) await API.delete(`/dinas/${el.id}`, {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          })
         })
 
-        newData.forEach((data, index) => {
-          promises.push(API.put(`/dinas/${data.dinasId}`, data, { headers: { token } }))
+        newData.forEach(async (data, index) => {
+          promises.push(API.put(`/dinas/${data.dinasId}`, data, {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          }))
         })
         Promise.all(promises)
           .then(async ({ data }) => {
@@ -107,8 +118,13 @@ class AddService extends Component {
       let token = Cookies.get('POLAGROUP'), promises = []
 
       if (newData.length === this.state.service.length) {
-        newData.forEach((data, index) => {
-          promises.push(API.post('/dinas', data, { headers: { token } }))
+        newData.forEach(async (data, index) => {
+          promises.push(API.post('/dinas', data, {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          }))
         })
         Promise.all(promises)
           .then(async ({ data }) => {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Grid, OutlinedInput, Button, Divider, FormControlLabel, Checkbox, Select, MenuItem, Paper } from '@material-ui/core';
+import { Grid, OutlinedInput, Button, Divider, FormControlLabel, Checkbox, Select, MenuItem, Paper, InputLabel } from '@material-ui/core';
 // import SeCreatableSelect from 'react-select/creatable';
 import CreatableSelect from 'react-select/creatable';
 
@@ -382,17 +382,21 @@ export default class cardAddAddress extends Component {
             </Grid>
 
             <Grid style={{ width: '80%' }}>
-              <Grid style={{ width: '30%', height: 40, margin: 5, minWidth: 200 }}>
-                <CreatableSelect
-                  isClearable
-                  value={this.props.data && this.state.selectedItem}
-                  // value={this.props.data && !this.state.hasEdit && this.state.selectedItem}
-                  components={animatedComponents}
-                  options={this.state.listBuilding}
-                  onChange={this.handleChangeBuilding}
-                  onInputChange={this.handleInputChange}
-                  disabled={this.state.proses}
-                />
+              <Grid style={{ marginBottom: 10 }}>
+                <Grid style={{ width: '30%', height: 40, margin: 5, minWidth: 200 }}>
+                  <CreatableSelect
+                    isClearable
+                    value={this.props.data && this.state.selectedItem}
+                    // value={this.props.data && !this.state.hasEdit && this.state.selectedItem}
+                    components={animatedComponents}
+                    options={this.state.listBuilding}
+                    onChange={this.handleChangeBuilding}
+                    onInputChange={this.handleInputChange}
+                    disabled={this.state.proses}
+                    placeholder="Pilih atau Tulis nama lokasi"
+                  />
+                </Grid>
+                <InputLabel style={{ fontStyle: 'italic', fontSize: 12, marginLeft: 5 }}>* apabila tidak ada pilihannya harap tulis dan create</InputLabel>
               </Grid>
               <OutlinedInput
                 placeholder="alamat"

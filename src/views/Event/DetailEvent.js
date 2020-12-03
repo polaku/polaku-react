@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Grid, Button, Divider, Typography, CircularProgress, Paper
@@ -30,10 +31,15 @@ class DetailEvent extends Component {
     this.fetchData()
   }
 
-  fetchData = () => {
+  fetchData = async () => {
     let temp = []
     let token = Cookies.get('POLAGROUP')
-    API.get(`/events/${this.props.match.params.id}`, { headers: { token } })
+    API.get(`/events/${this.props.match.params.id}`, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(async ({ data }) => {
         this.setState({
           data: data.data

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   TableRow, TableCell, IconButton
@@ -24,11 +25,16 @@ class CardRoomAssistant extends Component {
     }
   }
 
-  delete = () => {
+  delete = async () => {
 
     let token = Cookies.get('POLAGROUP')
 
-    API.delete(`/bookingRoom/roomMaster/${this.props.data.master_room_id}`, { headers: { token } })
+    API.delete(`/bookingRoom/roomMaster/${this.props.data.master_room_id}`, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(() => {
         this.props.fetchDataRoomMaster()
         this.props.refresh()

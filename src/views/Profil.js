@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie'
+import publicIp from 'public-ip';
 
 import { Paper, Button, Grid, TextField } from '@material-ui/core';
 
@@ -63,10 +64,15 @@ class Profil extends Component {
     })
   }
 
-  submitChangeUsername = () => {
+  submitChangeUsername = async () => {
     let token = Cookies.get('POLAGROUP')
 
-    API.put('/users/editProfil', { username: this.state.username }, { headers: { token } })
+    API.put('/users/editProfil', { username: this.state.username }, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(async data => {
         swal("Username berhasil diubah")
         await this.props.fetchDataUserDetail(this.props.userId)

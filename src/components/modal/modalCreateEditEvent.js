@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Modal, Backdrop, Button, CircularProgress, Fade, FormControl, TextField, Divider, Radio, RadioGroup, FormControlLabel, FormLabel
@@ -60,7 +61,7 @@ class modalCreateEditRoom extends Component {
     })
   }
 
-  save = () => {
+  save = async () => {
     this.setState({
       proses: true
     })
@@ -86,7 +87,12 @@ class modalCreateEditRoom extends Component {
       formData.append("invited", JSON.stringify(newArray))
     }
 
-    API.post('/events', formData, { headers: { token } })
+    API.post('/events', formData, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(() => {
         this.props.fetchDataEvent()
         this.props.closeModal()

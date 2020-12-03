@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Grid, Button,
@@ -78,8 +79,13 @@ class AddEmployee extends Component {
 
       if (newData.length === this.state.dataForEdit.length) {
         this.setState({ proses: true })
-        newData.forEach((data, index) => {
-          promises.push(API.put(`/users/${data.get('userId')}`, data, { headers: { token } }))
+        newData.forEach(async (data, index) => {
+          promises.push(API.put(`/users/${data.get('userId')}`, data, {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          }))
         })
         Promise.all(promises)
           .then(async ({ data }) => {
@@ -103,8 +109,13 @@ class AddEmployee extends Component {
 
 
       if (newData.length === this.state.department.length) {
-        newData.forEach((data, index) => {
-          promises.push(API.post(`/users/register`, data, { headers: { token } }))
+        newData.forEach(async (data, index) => {
+          promises.push(API.post(`/users/register`, data, {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          }))
         })
         Promise.all(promises)
           .then(async ({ data }) => {

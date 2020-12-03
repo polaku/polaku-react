@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Modal, Fade, Grid, Backdrop, Button, Divider, FormControlLabel, Checkbox
@@ -66,15 +67,35 @@ export default class modalCreateEditMuchEmployee extends Component {
     try {
       if (companySelectedId.company_id) {
         if (this.props.keyword) {
-          getData = await API.get(`/users?search=${this.props.keyword}&company=${companySelectedId.company_id}`, { headers: { token } })
+          getData = await API.get(`/users?search=${this.props.keyword}&company=${companySelectedId.company_id}`, {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          })
         } else {
-          getData = await API.get(`/users?company=${companySelectedId.company_id}`, { headers: { token } })
+          getData = await API.get(`/users?company=${companySelectedId.company_id}`, {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          })
         }
       } else {
         if (this.props.keyword) {
-          getData = await API.get(`/users?search=${this.props.keyword}`, { headers: { token } })
+          getData = await API.get(`/users?search=${this.props.keyword}`, {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          })
         } else {
-          getData = await API.get(`/users`, { headers: { token } })
+          getData = await API.get(`/users`, {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          })
         }
       }
 
@@ -181,14 +202,19 @@ export default class modalCreateEditMuchEmployee extends Component {
     }
   };
 
-  saveManyEmployee = () => {
+  saveManyEmployee = async () => {
     let token = Cookies.get('POLAGROUP')
     let newData = new FormData()
 
     newData.append('file', this.state.files[0])
     newData.append('jenisImport', 'add')
 
-    API.post('/users/settingImportUser', newData, { headers: { token } })
+    API.post('/users/settingImportUser', newData, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(async (data) => {
         swal('Berhasil tambah banyak karyawan', '', 'success')
         await this.props.refresh()
@@ -200,14 +226,19 @@ export default class modalCreateEditMuchEmployee extends Component {
       })
   }
 
-  editManyEmployee = () => {
+  editManyEmployee = async () => {
     let token = Cookies.get('POLAGROUP')
     let newData = new FormData()
 
     newData.append('file', this.state.files[0])
     newData.append('jenisImport', 'edit')
 
-    API.post('/users/settingImportUser', newData, { headers: { token } })
+    API.post('/users/settingImportUser', newData, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(async (data) => {
         swal('Berhasil ubah banyak karyawan', '', 'success')
         await this.props.refresh()

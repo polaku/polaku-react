@@ -16,6 +16,7 @@ class Polanews extends Component {
   }
 
   async componentDidMount() {
+    console.log("MASUK")
     await this.props.fetchDataPolanews()
   }
 

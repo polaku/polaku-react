@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Modal, Fade, Grid, Backdrop, Typography, Button
@@ -39,7 +40,7 @@ class modalCopyIndicatorKPIM extends Component {
     })
   };
 
-  submitForm = () => {
+  submitForm = async () => {
     let token = Cookies.get('POLAGROUP'), tempMonthly = []
     let newData = {
       indicator_kpim: this.props.data.indicator_kpim,
@@ -59,7 +60,12 @@ class modalCopyIndicatorKPIM extends Component {
 
     newData.monthly = tempMonthly
 
-    API.post('/kpim', newData, { headers: { token } })
+    API.post('/kpim', newData, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(async data => {
         swal("Duplikat indikator KPIM success", "", "success")
         this.props.refresh()

@@ -811,7 +811,7 @@ class cardAddEmployee extends Component {
                 control={<Checkbox checked={this.state.isDinas} onChange={this.handleChecked} size="small" name="dinas" disabled={this.props.proses} />}
                 label={<b style={{ margin: 0 }}>Dinas</b>}
               />
-              <p style={{ margin: 0 }}>diabaikan apabila dak dinas</p>
+              <p style={{ margin: 0 }}>diabaikan apabila tidak dinas</p>
             </Grid>
 
             <Grid id="pt-dinas" style={{ display: 'flex', alignItems: 'center' }}>

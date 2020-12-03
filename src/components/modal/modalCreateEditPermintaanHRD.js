@@ -2,6 +2,7 @@ import 'date-fns';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Modal, Backdrop, Fade, TextField, Typography, Button, CircularProgress, InputLabel, MenuItem, FormControl, Select as SelectOption
@@ -192,7 +193,8 @@ class modalCreateEditPermintaanHRD extends Component {
       if (valid) {
         API.post('/contactUs', newData, {
           headers: {
-            token
+            token,
+            ip: await publicIp.v4()
           }
         })
           .then(data => {
@@ -218,7 +220,7 @@ class modalCreateEditPermintaanHRD extends Component {
     }
   }
 
-  editPengajuan = () => {
+  editPengajuan = async () => {
     this.setState({
       proses: true,
       editableInput: false
@@ -267,7 +269,8 @@ class modalCreateEditPermintaanHRD extends Component {
 
     API.patch(`/contactUs/${this.props.data.contact_id}`, newData, {
       headers: {
-        token
+        token,
+        ip: await publicIp.v4()
       }
     })
       .then(data => {

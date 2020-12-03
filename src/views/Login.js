@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import { browserName, osName, isMobile } from 'react-device-detect';
+import publicIp from 'public-ip';
 
 import {
   TextField, InputAdornment, Typography, Button, CircularProgress
@@ -56,9 +56,7 @@ class Login extends Component {
     try {
       data = await API.post('/users/signin', user, {
         headers: {
-          browser: browserName,
-          os: osName,
-          isMobile
+          ip: await publicIp.v4()
         }
       })
       Cookies.set('POLAGROUP', data.data.token, { expires: 365 });

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Grid, Popover, Button, CircularProgress
@@ -90,10 +91,15 @@ export default class cardIndicator extends Component {
     this.props.refresh()
   }
 
-  calculateKPIMScore = () => {
+  calculateKPIMScore = async () => {
     let token = Cookies.get('POLAGROUP')
 
-    API.put('/kpim/calculateKPIMTEAM', { year: new Date().getFullYear(), month: this.props.monthSelected }, { headers: { token } })
+    API.put('/kpim/calculateKPIMTEAM', { year: new Date().getFullYear(), month: this.props.monthSelected }, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(() => {
         swal("Nilai sudah terbaru", "", "success")
       })

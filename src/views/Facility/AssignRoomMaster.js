@@ -2,6 +2,7 @@ import 'date-fns';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Typography, Button, CircularProgress, FormControl, Grid, FormControlLabel, Checkbox, FormLabel, FormGroup
@@ -121,7 +122,12 @@ class AssignRoomMaster extends Component {
       company_id: companyId.join()
     }
 
-    API.post('/bookingRoom/roomMaster', newData, { headers: { token } })
+    API.post('/bookingRoom/roomMaster', newData, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(() => {
         this.props.history.goBack();
       })

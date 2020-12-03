@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Grid, LinearProgress, Table, TableHead, TableRow, TableCell, TableBody, TextField, Button, MenuItem, Select as SelectOption, CircularProgress
@@ -76,7 +77,12 @@ class DashboardKPIM extends Component {
         })
 
         let token = Cookies.get('POLAGROUP')
-        let dataUser = await API.get(`/users/${this.props.location.state.userId}`, { headers: { token } })
+        let dataUser = await API.get(`/users/${this.props.location.state.userId}`, {
+          headers: {
+            token,
+            ip: await publicIp.v4()
+          }
+        })
 
         this.setState({ listBawahan: dataUser.data.bawahan })
         await this.fetchData(new Date().getMonth() + 1, this.getNumberOfWeek(new Date()), this.props.location.state.userId)
@@ -339,7 +345,7 @@ class DashboardKPIM extends Component {
     })
   }
 
-  saveNewTal = () => {
+  saveNewTal = async () => {
     if ((Number(this.state.totalWeight) + Number(this.state.weight)) <= 100 && Number(this.state.load) <= 10) {
       this.setState({
         proses: true
@@ -366,7 +372,12 @@ class DashboardKPIM extends Component {
       }
 
       let token = Cookies.get('POLAGROUP')
-      API.post("/tal", newData, { headers: { token } })
+      API.post("/tal", newData, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
         .then(async ({ data }) => {
           await this.fetchData(this.state.monthSelected, this.state.weekSelected, this.props.location.state ? this.props.location.state.userId : this.props.userId)
           this.setState({

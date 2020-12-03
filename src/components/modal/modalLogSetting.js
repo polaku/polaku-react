@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Modal, Fade, Grid, Backdrop, Typography, Button, Table, TableCell, TableRow, TableBody, TableHead, TablePagination, Select, MenuItem
@@ -48,7 +49,12 @@ export default class modalLogSetting
 
       date = `${year}-${month}-01`
       let token = Cookies.get('POLAGROUP')
-      let { data } = await API.get(`/${this.props.type}/log?date=${date}`, { headers: { token } })
+      let { data } = await API.get(`/${this.props.type}/log?date=${date}`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
       this.setState({ data: data.data })
     } catch (err) {
       console.log(err)

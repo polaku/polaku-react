@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import { Grid, Button, Paper, Checkbox, FormControlLabel, FormGroup, IconButton } from '@material-ui/core';
 import ReactSelect from 'react-select';
@@ -207,7 +208,12 @@ class AddAdmin extends Component {
   fetchOptionDesignation = async () => {
     try {
       let token = Cookies.get('POLAGROUP'), optionDesignation = []
-      let { data } = await API.get(`/designation?option=true`, { headers: { token } })
+      let { data } = await API.get(`/designation?option=true`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
 
       await data.data.forEach(el => {
         optionDesignation.push({ value: el.designations_id, label: el.designations })
@@ -355,7 +361,7 @@ class AddAdmin extends Component {
   }
 
   navigateBack = () => {
-    this.props.history.push('/setting/setting-perusahaan',  { index: this.props.location.state.index })
+    this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
   }
 
   submit = async () => {
@@ -470,7 +476,12 @@ class AddAdmin extends Component {
       }
 
       let token = Cookies.get('POLAGROUP')
-      await API.post('/designation', data, { headers: { token } })
+      await API.post('/designation', data, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
       this.setState({ proses: false })
       this.resetCheckbox()
       await this.props.fetchDataDesignation({ limit: 10, page: 0 })
@@ -508,6 +519,7 @@ class AddAdmin extends Component {
           <Grid item sm={12} md={4}>
             <Paper style={{ padding: 20 }}>
               <p style={{ margin: 0, fontWeight: 'bold', fontSize: 15, marginBottom: 10 }}>Admin</p>
+              <p style={{ margin: 0, fontSize: 15, marginBottom: 10 }}>Jenis Admin</p>
               <Grid style={{ width: '100%', height: 40, maxWidth: 500, marginBottom: 20 }}>
                 <CreatableSelect
                   value={this.state.adminTypeSelected}
@@ -517,7 +529,7 @@ class AddAdmin extends Component {
                   onInputChange={this.handleInputChange}
                 />
               </Grid>
-
+              <p style={{ margin: 0, fontSize: 15, marginBottom: 10 }}>Karyawan</p>
               <Grid style={{ width: '100%', height: 40, maxWidth: 500, marginBottom: 20 }}>
                 <ReactSelect
                   value={this.state.adminIdSelected}

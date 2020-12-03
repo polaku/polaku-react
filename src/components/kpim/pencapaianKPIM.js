@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Grid, TextField
@@ -33,11 +34,16 @@ export default class pencapaianKPIM extends Component {
     this.setState({ [name]: event.target.value });
   };
 
-  addCapaian = kpim_score_id => event => {
+  addCapaian = kpim_score_id => async (event) => {
     event.preventDefault()
 
     let token = Cookies.get('POLAGROUP')
-    API.put(`/kpim/${kpim_score_id}?update=month`, { pencapaian_monthly: this.state.pencapaian }, { headers: { token } })
+    API.put(`/kpim/${kpim_score_id}?update=month`, { pencapaian_monthly: this.state.pencapaian }, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(data => {
         this.props.refresh()
       })

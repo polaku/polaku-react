@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import { Grid, Typography, Paper, Button } from '@material-ui/core';
 
@@ -26,11 +27,16 @@ class cardPolanews extends Component {
       buttons: true,
       dangerMode: true,
     })
-      .then((willDelete) => {
+      .then(async (willDelete) => {
         if (willDelete) {
           let token = Cookies.get('POLAGROUP')
 
-          API.delete(`/news/${this.props.data.polanews_id}`, { headers: { token } })
+          API.delete(`/news/${this.props.data.polanews_id}`, {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          })
             .then(data => {
               this.props.refresh()
             })

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 import {
   Grid, OutlinedInput, Button,
   // Divider, 
@@ -252,11 +253,21 @@ class AddMeetingRoom extends Component {
     try {
       let token = Cookies.get('POLAGROUP')
       if (this.props.location.state.data) {
-        await API.put(`/bookingRoom/rooms/${this.props.location.state.data.room_id}`, newData, { headers: { token } })
+        await API.put(`/bookingRoom/rooms/${this.props.location.state.data.room_id}`, newData, {
+          headers: {
+            token,
+            ip: await publicIp.v4()
+          }
+        })
 
         swal('Ubah ruang meeting berhasil', '', 'success')
       } else {
-        await API.post(`/bookingRoom/rooms`, newData, { headers: { token } })
+        await API.post(`/bookingRoom/rooms`, newData, {
+          headers: {
+            token,
+            ip: await publicIp.v4()
+          }
+        })
         swal('Tambah ruang meeting berhasil', '', 'success')
       }
 

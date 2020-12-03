@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Paper, Grid, Tooltip
@@ -69,7 +70,12 @@ class cardDepartment extends Component {
         if (yesAnswer) {
           try {
             let token = Cookies.get('POLAGROUP')
-            await API.delete(`/structure/${this.props.data.id}`, { headers: { token } })
+            await API.delete(`/structure/${this.props.data.id}`, {
+              headers: {
+                token,
+                ip: await publicIp.v4()
+              }
+            })
             swal("Hapus department sukses", "", "success")
             await this.props.fetchDataStructure()
             await this.props.fetchData()

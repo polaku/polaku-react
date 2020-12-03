@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import { TableCell, TableRow, Checkbox, IconButton, Tooltip } from '@material-ui/core';
 
@@ -76,16 +77,21 @@ export default class CardReport extends Component {
         isActive: this.props.data.isActive
       })
     }
-  }  
+  }
 
-  handleChangeCheck = event => {
+  handleChangeCheck = async (event) => {
     this.setState({
       isActive: event.target.checked
     })
 
     let token = Cookies.get('POLAGROUP')
 
-    API.put(`/users/editUser/${this.props.data.userId}`, { isActive: event.target.checked }, { headers: { token } })
+    API.put(`/users/editUser/${this.props.data.userId}`, { isActive: event.target.checked }, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(() => {
         this.props.refresh()
       })

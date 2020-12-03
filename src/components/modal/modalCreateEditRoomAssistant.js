@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Modal, Backdrop, Button, CircularProgress, Fade, FormControl, FormLabel
@@ -49,7 +50,7 @@ class modalCreateEditRoomAssistant extends Component {
     }
   }
 
-  save = () => {
+  save = async () => {
     let newData, roomId = [], token = Cookies.get('POLAGROUP')
 
     if (this.props.statusCreate) {
@@ -62,7 +63,12 @@ class modalCreateEditRoomAssistant extends Component {
         room_id: roomId.join()
       }
 
-      API.post(`/bookingRoom/roomMaster`, newData, { headers: { token } })
+      API.post(`/bookingRoom/roomMaster`, newData, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
         .then(() => {
           this.props.closeModal()
         })
@@ -80,7 +86,12 @@ class modalCreateEditRoomAssistant extends Component {
         room_id: roomId.join()
       }
 
-      API.put(`/bookingRoom/roomMaster/${this.props.data.master_room_id}`, newData, { headers: { token } })
+      API.put(`/bookingRoom/roomMaster/${this.props.data.master_room_id}`, newData, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
         .then(() => {
           this.props.refresh()
         })

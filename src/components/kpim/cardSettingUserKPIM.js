@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Grid, Typography, Avatar, Button, Paper, TextField, MenuItem, FormControl, InputLabel, Select as SelectOption, Tooltip
@@ -333,7 +334,7 @@ export default class cardSettingUserKPIM extends Component {
     this.setState({ newDataKPIM: data, openModalTargetKPIM: false })
   }
 
-  createNewKPIM = () => {
+  createNewKPIM = async () => {
     let token = Cookies.get('POLAGROUP')
     this.setState({ proses: true })
     let newData = this.state.newDataKPIM
@@ -344,7 +345,12 @@ export default class cardSettingUserKPIM extends Component {
       newData.user_id = this.state.user_id
       newData.indicator_kpim = this.state.newIndicatorKPIM
       newData.month = this.props.month
-      API.post('/kpim', newData, { headers: { token } })
+      API.post('/kpim', newData, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
         .then(async data => {
           swal("Tambah indicator KPIM success", "", "success")
           this.setState({
@@ -404,7 +410,12 @@ export default class cardSettingUserKPIM extends Component {
         kpim_score_id: this.state.TALMonth.kpim_score_id
       }
 
-      API.post('/tal', newData, { headers: { token } })
+      API.post('/tal', newData, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
         .then(async data => {
           swal("Tambah indicator TAL success", "", "success")
           this.setState({
@@ -430,7 +441,7 @@ export default class cardSettingUserKPIM extends Component {
     this.props.refresh()
   }
 
-  updateKPIMMonthly = event => {
+  updateKPIMMonthly = async (event) => {
     event.preventDefault()
     let token = Cookies.get('POLAGROUP')
     this.setState({ proses: true })
@@ -439,7 +450,12 @@ export default class cardSettingUserKPIM extends Component {
       bobot: this.state.bobot,
     }
 
-    API.put(`/kpim/${this.state.TALMonth.kpim_score_id}?update=month`, newData, { headers: { token } })
+    API.put(`/kpim/${this.state.TALMonth.kpim_score_id}?update=month`, newData, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(data => {
         this.setState({
           editBobotTAL: false,
@@ -475,7 +491,7 @@ export default class cardSettingUserKPIM extends Component {
       buttons: true,
       dangerMode: true,
     })
-      .then((yesAnswer) => {
+      .then(async (yesAnswer) => {
         if (yesAnswer) {
           this.setState({ proses: true })
           let arrayKPIMScoreId = []
@@ -487,7 +503,12 @@ export default class cardSettingUserKPIM extends Component {
             })
           })
 
-          API.put('/kpim/sendGrade', { arrayKPIMScoreId }, { headers: { token } })
+          API.put('/kpim/sendGrade', { arrayKPIMScoreId }, {
+            headers: {
+              token,
+              ip: await publicIp.v4()
+            }
+          })
             .then(({ data }) => {
               this.setState({
                 openModalSendGrade: false

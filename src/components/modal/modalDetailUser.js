@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Modal, Fade, Grid, Backdrop, Select, Button, TextField, MenuItem,
@@ -105,7 +106,7 @@ class modalDetailUser extends Component {
     }
   }
 
-  saveDataUser = () => {
+  saveDataUser = async () => {
     if (this.state.password === '' || (this.state.confirPassword && !this.state.isError)) {
       let token = Cookies.get('POLAGROUP')
 
@@ -121,7 +122,12 @@ class modalDetailUser extends Component {
 
       if (this.state.password !== '') newData.password = this.state.password
 
-      API.put(`/users/editUser/${this.props.data.userId}`, newData, { headers: { token } })
+      API.put(`/users/editUser/${this.props.data.userId}`, newData, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
         .then(data => {
           this.setState({ isEdit: false })
           swal('Edit data user success', '', 'success')

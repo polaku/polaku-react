@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Grid, Button, Paper, Popover, Typography, MenuList, MenuItem, ListItemIcon, TextField, FormControl, InputLabel, Select as SelectOption,
@@ -162,7 +163,12 @@ export default class cardSettingIndicator extends Component {
         this.setState({ openModalTargetKPIM: true })
       } else {
         let token = Cookies.get('POLAGROUP')
-        let allKPIM = await API.get(`/kpim/${this.props.data.kpim_id}`, { headers: { token } })
+        let allKPIM = await API.get(`/kpim/${this.props.data.kpim_id}`, {
+          headers: {
+            token,
+            ip: await publicIp.v4()
+          }
+        })
 
         this.setState({
           dataForEdit: {
@@ -222,7 +228,12 @@ export default class cardSettingIndicator extends Component {
       let token = Cookies.get('POLAGROUP')
       let newData
       if (!this.state.dataForEdit.tbl_kpim_scores) {
-        let allKPIM = await API.get(`/kpim/${this.props.data.kpim_id}`, { headers: { token } })
+        let allKPIM = await API.get(`/kpim/${this.props.data.kpim_id}`, {
+          headers: {
+            token,
+            ip: await publicIp.v4()
+          }
+        })
 
         newData = {
           target: allKPIM.data.data.target,
@@ -246,7 +257,12 @@ export default class cardSettingIndicator extends Component {
         }
       })
 
-      API.put(`/kpim/${this.props.data.kpim_id}`, newData, { headers: { token } })
+      API.put(`/kpim/${this.props.data.kpim_id}`, newData, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
         .then((data) => {
           swal("Edit indicator KPIM sukses", "", "success")
           this.setState({
@@ -275,7 +291,7 @@ export default class cardSettingIndicator extends Component {
     this.props.refresh()
   }
 
-  updateKPIMMonthly = event => {
+  updateKPIMMonthly = async (event) => {
     event.preventDefault()
     let statusOverBobot = false
     if (!this.props.data.bobot || this.props.data.bobot === 0 || this.props.data.bobot === null) {
@@ -297,7 +313,12 @@ export default class cardSettingIndicator extends Component {
         bobot: this.state.bobot,
         pencapaian_monthly: this.state.capaian
       }
-      API.put(`/kpim/${this.props.data.kpim_score_id}?update=month`, newData, { headers: { token } })
+      API.put(`/kpim/${this.props.data.kpim_score_id}?update=month`, newData, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
         .then(data => {
           this.props.refresh()
         })
@@ -341,7 +362,12 @@ export default class cardSettingIndicator extends Component {
       }
       let token = Cookies.get('POLAGROUP')
 
-      API.put(`/tal/${this.props.data.tal_score_id}`, newData, { headers: { token } })
+      API.put(`/tal/${this.props.data.tal_score_id}`, newData, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
         .then(data => {
           this.props.refresh()
           this.setState({
@@ -365,12 +391,17 @@ export default class cardSettingIndicator extends Component {
       buttons: true,
       dangerMode: true,
     })
-      .then((willDelete) => {
+      .then(async (willDelete) => {
         if (willDelete) {
           let token = Cookies.get('POLAGROUP')
 
           if (this.props.status === "TAL") {
-            API.delete(`/tal/${this.props.data.tal_score_id}?delete=week`, { headers: { token } })
+            API.delete(`/tal/${this.props.data.tal_score_id}?delete=week`, {
+              headers: {
+                token,
+                ip: await publicIp.v4()
+              }
+            })
               .then(data => {
                 this.props.refresh()
               })
@@ -379,7 +410,12 @@ export default class cardSettingIndicator extends Component {
               })
           } else {
 
-            API.delete(`/kpim/${this.props.data.kpim_score_id}?delete=month`, { headers: { token } })
+            API.delete(`/kpim/${this.props.data.kpim_score_id}?delete=month`, {
+              headers: {
+                token,
+                ip: await publicIp.v4()
+              }
+            })
               .then(data => {
                 this.props.refresh()
               })

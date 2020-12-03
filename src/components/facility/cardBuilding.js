@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Button, Accordion, AccordionDetails, AccordionSummary, AccordionActions, Divider, Typography, List
@@ -50,10 +51,15 @@ class cardBuilding extends Component {
     this.setState({ openModalBuilding: false })
   }
 
-  deleteBuilding = () => {
+  deleteBuilding = async () => {
     let token = Cookies.get('POLAGROUP')
 
-    API.delete(`/bookingRoom/building/${this.props.data.building_id}`, { headers: { token } })
+    API.delete(`/bookingRoom/building/${this.props.data.building_id}`, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(() => {
         this.props.fetchDataBuildings()
       })
@@ -105,8 +111,8 @@ class cardBuilding extends Component {
         {
           this.state.openModalRoom && <ModalCreateEditRoom status={this.state.openModalRoom} closeModal={this.closeModalRoom} data={this.props.data} statusCreate={true} fetchData={this.fetchData} />
         }
-        
-        
+
+
       </Accordion>
     )
   }

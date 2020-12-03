@@ -89,12 +89,12 @@ class Setting extends Component {
       information: 'Atur alamat, jam kerja, struktur perusahaan, dan karyawan. Termasuk proses onboarding.',
       route: '/setting/setting-perusahaan'
     })
-    // if (this.props.isAdminsuper) menu.push({
-    //   icon: 'SecurityOutlinedIcon',
-    //   title: 'Keamanan',
-    //   information: 'Atur aktifitas log in, reset akun, perangkat terdaftar',
-    //   route: '/setting/setting-keamanan'
-    // })
+    if (this.props.isAdminsuper) menu.push({
+      icon: 'SecurityOutlinedIcon',
+      title: 'Keamanan',
+      information: 'Atur aktifitas log in, reset akun, perangkat terdaftar',
+      route: '/setting/setting-keamanan'
+    })
 
     this.setState({ menu })
   }

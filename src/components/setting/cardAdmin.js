@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Paper, Grid, Tooltip
@@ -68,7 +69,12 @@ class cardAdmin extends Component {
         if (yesAnswer) {
           try {
             let token = Cookies.get('POLAGROUP')
-            await API.delete(`/designation/user/${this.props.data.user_id}`, { headers: { token } })
+            await API.delete(`/designation/user/${this.props.data.user_id}`, {
+              headers: {
+                token,
+                ip: await publicIp.v4()
+              }
+            })
             swal("Hapus admin sukses", "", "success")
             await this.props.refresh()
           } catch (err) {

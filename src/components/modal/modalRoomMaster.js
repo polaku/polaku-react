@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
+import publicIp from 'public-ip';
 
 import {
   Modal, Backdrop, Button, CircularProgress, Fade, FormControl, Grid, FormLabel, FormGroup, FormControlLabel, Checkbox
@@ -73,7 +74,7 @@ class modalRoomMaster extends Component {
     }
   };
 
-  save = () => {
+  save = async () => {
     let newData, companyId = [], token = Cookies.get('POLAGROUP')
 
     this.state.company.forEach(el => {
@@ -86,7 +87,12 @@ class modalRoomMaster extends Component {
       company_id: companyId.join()
     }
 
-    API.put(`/bookingRoom/roomMaster/${this.props.data.master_room_id}`, newData, { headers: { token } })
+    API.put(`/bookingRoom/roomMaster/${this.props.data.master_room_id}`, newData, {
+      headers: {
+        token,
+        ip: await publicIp.v4()
+      }
+    })
       .then(() => {
         this.props.fetchDataRoomMaster()
         this.props.closeModal()
