@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Modal, Backdrop, Button, CircularProgress, Fade, FormControl, Grid, FormLabel, FormGroup, FormControlLabel, Checkbox
@@ -90,7 +89,7 @@ class modalRoomMaster extends Component {
     API.put(`/bookingRoom/roomMaster/${this.props.data.master_room_id}`, newData, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: this.props.ip
       }
     })
       .then(() => {
@@ -210,10 +209,11 @@ const mapDispatchToProps = {
   fetchDataRoomMaster
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataCompanies }) => {
+const mapStateToProps = ({ loading, dataUsers, dataCompanies, ip }) => {
   return {
     loading,
     dataCompanies,
+    ip
   }
 }
 

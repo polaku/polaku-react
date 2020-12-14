@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
+import { connect } from 'react-redux';
 
 import {
   Modal, Fade, Grid, Backdrop, Typography, Button, TextField, RadioGroup, FormControlLabel, Radio
@@ -12,7 +12,7 @@ import swal from 'sweetalert';
 
 import { API } from '../../config/API';
 
-export default class modalCreateEditPolanews extends Component {
+class modalCreateEditPolanews extends Component {
   state = {
     title: '',
     description: '',
@@ -67,7 +67,7 @@ export default class modalCreateEditPolanews extends Component {
       API.put(`/news/${this.props.data.polanews_id}`, formData1, {
         headers: {
           token,
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
         .then(data => {
@@ -95,7 +95,7 @@ export default class modalCreateEditPolanews extends Component {
         API.post('/news', formData2, {
           headers: {
             token,
-            ip: await publicIp.v4()
+            ip: this.props.ip
           }
         })
           .then(data => {
@@ -291,3 +291,10 @@ export default class modalCreateEditPolanews extends Component {
     )
   }
 }
+
+const mapStateToProps = ({ ip }) => {
+  return {
+    ip
+  }
+}
+export default connect(mapStateToProps)(modalCreateEditPolanews)

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Grid, Button,
@@ -83,7 +82,7 @@ class AddEmployee extends Component {
           promises.push(API.put(`/users/${data.get('userId')}`, data, {
             headers: {
               token,
-              ip: await publicIp.v4()
+              ip: this.props.ip
             }
           }))
         })
@@ -113,7 +112,7 @@ class AddEmployee extends Component {
           promises.push(API.post(`/users/register`, data, {
             headers: {
               token,
-              ip: await publicIp.v4()
+              ip: this.props.ip
             }
           }))
         })
@@ -182,9 +181,10 @@ const mapDispatchToProps = {
   fetchDataUsers
 }
 
-const mapStateToProps = ({ dataCompanies }) => {
+const mapStateToProps = ({ dataCompanies, ip }) => {
   return {
-    dataCompanies
+    dataCompanies,
+    ip
   }
 }
 

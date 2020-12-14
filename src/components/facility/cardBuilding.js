@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Button, Accordion, AccordionDetails, AccordionSummary, AccordionActions, Divider, Typography, List
@@ -57,7 +56,7 @@ class cardBuilding extends Component {
     API.delete(`/bookingRoom/building/${this.props.data.building_id}`, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: this.props.ip
       }
     })
       .then(() => {
@@ -122,4 +121,10 @@ const mapDispatchToProps = {
   fetchDataBuildings
 }
 
-export default connect(null, mapDispatchToProps)(cardBuilding)
+const mapStateToProps = ({ ip }) => {
+  return {
+    ip
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(cardBuilding)

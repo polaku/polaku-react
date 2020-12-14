@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Paper, Grid, Tooltip
@@ -43,7 +42,7 @@ class cardService extends Component {
             await API.delete(`/dinas/user/${this.props.data.userId}`, {
               headers: {
                 token,
-                ip: await publicIp.v4()
+                ip: this.props.ip
               }
             })
             swal("Hapus dinas karyawan sukses", "", "success")
@@ -88,4 +87,9 @@ const mapDispatchToProps = {
   fetchDataAddress
 }
 
-export default connect(null, mapDispatchToProps)(withRouter(cardService))
+const mapStateToProps = ({ ip }) => {
+  return {
+    ip
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(cardService))

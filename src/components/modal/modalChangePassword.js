@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Modal, Fade, Grid, Backdrop, Typography, Button, TextField, CircularProgress
@@ -9,8 +8,9 @@ import {
 import swal from 'sweetalert';
 
 import { API } from '../../config/API';
+import { connect } from 'react-redux';
 
-export default class modalChangePassword extends Component {
+class modalChangePassword extends Component {
   state = {
     proses: false,
     passOld: '',
@@ -51,7 +51,7 @@ export default class modalChangePassword extends Component {
       API.put('/users/changePassword', newData, {
         headers: {
           token,
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
         .then(async data => {
@@ -156,3 +156,11 @@ export default class modalChangePassword extends Component {
     )
   }
 }
+
+const mapStateToProps = ({ ip }) => {
+  return {
+    ip
+  }
+}
+
+export default connect(mapStateToProps)(modalChangePassword)

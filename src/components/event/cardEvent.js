@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import { Button, CircularProgress } from '@material-ui/core';
 
@@ -103,7 +102,7 @@ class cardEvent extends Component {
         {
           headers: {
             token,
-            ip: await publicIp.v4()
+            ip: this.props.ip
           }
         })
 
@@ -164,7 +163,7 @@ class cardEvent extends Component {
       {
         headers: {
           token,
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
       .then(() => {
@@ -265,11 +264,12 @@ const mapDispatchToProps = {
   fetchDataEventNeedApproval
 }
 
-const mapStateToProps = ({ loading, userId, error }) => {
+const mapStateToProps = ({ loading, userId, error, ip }) => {
   return {
     loading,
     userId,
-    error
+    error,
+    ip
   }
 }
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
+import { connect } from 'react-redux';
 
 import {
   Grid, Popover, Button, CircularProgress
@@ -15,7 +15,7 @@ import swal from 'sweetalert';
 
 let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-export default class cardIndicator extends Component {
+class cardIndicator extends Component {
   state = {
     open: false,
     anchorEl: null,
@@ -97,7 +97,7 @@ export default class cardIndicator extends Component {
     API.put('/kpim/calculateKPIMTEAM', { year: new Date().getFullYear(), month: this.props.monthSelected }, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: this.props.ip
       }
     })
       .then(() => {
@@ -220,3 +220,11 @@ export default class cardIndicator extends Component {
     )
   }
 }
+
+const mapStateToProps = ({ ip }) => {
+  return {
+    ip
+  }
+}
+
+export default connect(mapStateToProps)(cardIndicator)

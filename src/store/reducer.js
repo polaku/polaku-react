@@ -1,4 +1,5 @@
 const defaultState = {
+  ip: null,
   userId: null,
   dataUserDetail: {},
   isAdminsuper: false,
@@ -71,7 +72,8 @@ function reducer(state = defaultState, action) {
         adminContactCategori: action.payload.adminContactCategori,
         designation: action.payload.designation,
         dinas: action.payload.dinas,
-        PIC: action.payload.PIC
+        PIC: action.payload.PIC,
+        ip: action.payload.ip
       }
     }
     case 'FETCH_DATA_USER_DETAIL_SUCCESS': {

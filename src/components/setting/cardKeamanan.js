@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import Cookies from 'js-cookie';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import publicIp from 'public-ip';
+
 import {
   Grid, Paper, Tooltip
 } from '@material-ui/core';
@@ -35,7 +36,7 @@ class cardKeamanan extends Component {
             await API.delete(`/bookingRoom/rooms/${this.props.data.room_id}`, {
               headers: {
                 token,
-                ip: await publicIp.v4()
+                ip: this.props.ip
               }
             })
             swal("Hapus ruang sukses", "", "success")
@@ -79,4 +80,10 @@ class cardKeamanan extends Component {
   }
 }
 
-export default withRouter(cardKeamanan)
+const mapStateToProps = ({ ip }) => {
+  return {
+    ip
+  }
+}
+
+export default connect(mapStateToProps)(withRouter(cardKeamanan))

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   TableRow, TableCell, IconButton,
@@ -21,7 +20,7 @@ class cardCreatorMasterAndAssistant extends Component {
     API.delete(`/events/masterCreator/${this.props.data.master_creator_id}`, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: this.props.ip
       }
     })
       .then(() => {
@@ -50,4 +49,10 @@ const mapDispatchToProps = {
   fetchDataCreatorMasterAndAssistant,
 }
 
-export default connect(null, mapDispatchToProps)(cardCreatorMasterAndAssistant)
+const mapStateToProps = ({ ip }) => {
+  return {
+    ip
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(cardCreatorMasterAndAssistant)

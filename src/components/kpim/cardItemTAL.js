@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
+import { connect } from 'react-redux';
 
 import {
   TableCell, TableRow, Grid, TextField, CircularProgress
@@ -15,7 +15,7 @@ import { API } from '../../config/API';
 
 import swal from 'sweetalert';
 
-export default class cardTAL extends Component {
+class cardTAL extends Component {
   state = {
     load: 0,
     achievement: 0,
@@ -83,7 +83,7 @@ export default class cardTAL extends Component {
       API.put(`/tal/${this.props.data.tal_score_id}`, newData, {
         headers: {
           token,
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
         .then(() => {
@@ -257,3 +257,11 @@ export default class cardTAL extends Component {
     )
   }
 }
+
+const mapStateToProps = ({ ip }) => {
+  return {
+    ip
+  }
+}
+
+export default connect(mapStateToProps)(cardTAL)

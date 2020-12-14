@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Modal, Fade, Grid, Backdrop, Typography, Button
@@ -63,7 +62,7 @@ class modalCopyIndicatorKPIM extends Component {
     API.post('/kpim', newData, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: this.props.ip
       }
     })
       .then(async data => {
@@ -127,9 +126,10 @@ class modalCopyIndicatorKPIM extends Component {
 }
 
 
-const mapStateToProps = ({ bawahan }) => {
+const mapStateToProps = ({ bawahan, ip }) => {
   return {
-    bawahan
+    bawahan,
+    ip
   }
 }
 

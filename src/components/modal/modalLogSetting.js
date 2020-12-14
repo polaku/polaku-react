@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Modal, Fade, Grid, Backdrop, Typography, Button, Table, TableCell, TableRow, TableBody, TableHead, TablePagination, Select, MenuItem
@@ -10,8 +9,9 @@ import {
 import { API } from '../../config/API';
 
 import swal from 'sweetalert';
+import { connect } from 'react-redux';
 
-export default class modalLogSetting
+class modalLogSetting
   extends Component {
   state = {
     data: [],
@@ -52,7 +52,7 @@ export default class modalLogSetting
       let { data } = await API.get(`/${this.props.type}/log?date=${date}`, {
         headers: {
           token,
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
       this.setState({ data: data.data })
@@ -266,3 +266,11 @@ export default class modalLogSetting
     )
   }
 }
+
+const mapStateToProps = ({ ip }) => {
+  return {
+    ip
+  }
+}
+
+export default connect(mapStateToProps)(modalLogSetting)

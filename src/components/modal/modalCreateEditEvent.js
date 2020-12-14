@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Modal, Backdrop, Button, CircularProgress, Fade, FormControl, TextField, Divider, Radio, RadioGroup, FormControlLabel, FormLabel
@@ -90,7 +89,7 @@ class modalCreateEditRoom extends Component {
     API.post('/events', formData, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: this.props.ip
       }
     })
       .then(() => {
@@ -352,12 +351,13 @@ const mapDispatchToProps = {
   fetchDataUsers
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataDepartments, dataCompanies }) => {
+const mapStateToProps = ({ loading, dataUsers, dataDepartments, dataCompanies, ip }) => {
   return {
     loading,
     dataUsers,
     dataCompanies,
-    dataDepartments
+    dataDepartments,
+    ip
   }
 }
 

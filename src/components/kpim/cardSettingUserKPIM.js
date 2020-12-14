@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
+import { connect } from 'react-redux';
 
 import {
   Grid, Typography, Avatar, Button, Paper, TextField, MenuItem, FormControl, InputLabel, Select as SelectOption, Tooltip
@@ -24,7 +24,7 @@ import ModalSendGrade from "../modal/modalSendGrade";
 
 import { API } from '../../config/API';
 
-export default class cardSettingUserKPIM extends Component {
+class cardSettingUserKPIM extends Component {
   state = {
     proses: false,
     isVisible: true,
@@ -348,7 +348,7 @@ export default class cardSettingUserKPIM extends Component {
       API.post('/kpim', newData, {
         headers: {
           token,
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
         .then(async data => {
@@ -413,7 +413,7 @@ export default class cardSettingUserKPIM extends Component {
       API.post('/tal', newData, {
         headers: {
           token,
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
         .then(async data => {
@@ -453,7 +453,7 @@ export default class cardSettingUserKPIM extends Component {
     API.put(`/kpim/${this.state.TALMonth.kpim_score_id}?update=month`, newData, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: this.props.ip
       }
     })
       .then(data => {
@@ -506,7 +506,7 @@ export default class cardSettingUserKPIM extends Component {
           API.put('/kpim/sendGrade', { arrayKPIMScoreId }, {
             headers: {
               token,
-              ip: await publicIp.v4()
+              ip: this.props.ip
             }
           })
             .then(({ data }) => {
@@ -857,3 +857,11 @@ export default class cardSettingUserKPIM extends Component {
     )
   }
 }
+
+const mapStateToProps = ({ ip }) => {
+  return {
+    ip
+  }
+}
+
+export default connect(mapStateToProps)(cardSettingUserKPIM)

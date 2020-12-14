@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Grid, TextField
@@ -11,8 +10,9 @@ import CancelPresentationIcon from '@material-ui/icons/CancelPresentation';
 import { API } from '../../config/API';
 
 import swal from 'sweetalert';
+import { connect } from 'react-redux';
 
-export default class pencapaianKPIM extends Component {
+class pencapaianKPIM extends Component {
   state = {
     open: false,
     anchorEl: null,
@@ -41,7 +41,7 @@ export default class pencapaianKPIM extends Component {
     API.put(`/kpim/${kpim_score_id}?update=month`, { pencapaian_monthly: this.state.pencapaian }, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: this.props.ip
       }
     })
       .then(data => {
@@ -141,3 +141,11 @@ export default class pencapaianKPIM extends Component {
     )
   }
 }
+
+const mapStateToProps = ({ ip }) => {
+  return {
+    ip
+  }
+}
+
+export default connect(mapStateToProps)(pencapaianKPIM)

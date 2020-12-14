@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Grid, LinearProgress, Table, TableHead, TableRow, TableCell, TableBody, TextField, Button, MenuItem, Select as SelectOption, CircularProgress
@@ -80,7 +79,7 @@ class DashboardKPIM extends Component {
         let dataUser = await API.get(`/users/${this.props.location.state.userId}`, {
           headers: {
             token,
-            ip: await publicIp.v4()
+            ip: this.props.ip
           }
         })
 
@@ -375,7 +374,7 @@ class DashboardKPIM extends Component {
       API.post("/tal", newData, {
         headers: {
           token,
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
         .then(async ({ data }) => {
@@ -468,8 +467,6 @@ class DashboardKPIM extends Component {
 
       if (monthSelected === newDate.getMonth() + 1) {
         date.push(newDate.getDate())
-      } else {
-        date.push(newDate.getDate())
       }
       awalMingguSekarang++
     }
@@ -481,6 +478,7 @@ class DashboardKPIM extends Component {
 
       day.push(listDay[date])
     })
+
     this.setState({
       chooseWhen: day
     })
@@ -713,7 +711,7 @@ const mapDispatchToProps = {
   fetchDataRewardKPIM
 }
 
-const mapStateToProps = ({ loading, error, dataAllKPIM, dataAllTAL, userId, bawahan, myRewardKPIM }) => {
+const mapStateToProps = ({ loading, error, dataAllKPIM, dataAllTAL, userId, bawahan, myRewardKPIM, ip }) => {
   return {
     loading,
     error,
@@ -721,7 +719,8 @@ const mapStateToProps = ({ loading, error, dataAllKPIM, dataAllTAL, userId, bawa
     dataAllTAL,
     userId,
     bawahan,
-    myRewardKPIM
+    myRewardKPIM,
+    ip
   }
 }
 

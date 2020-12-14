@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Paper, Grid, Tooltip
@@ -72,7 +71,7 @@ class cardAdmin extends Component {
             await API.delete(`/designation/user/${this.props.data.user_id}`, {
               headers: {
                 token,
-                ip: await publicIp.v4()
+                ip: this.props.ip
               }
             })
             swal("Hapus admin sukses", "", "success")
@@ -117,4 +116,10 @@ const mapDispatchToProps = {
   fetchDataAddress
 }
 
-export default connect(null, mapDispatchToProps)(withRouter(cardAdmin))
+const mapStateToProps = ({ ip }) => {
+  return {
+    ip
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(cardAdmin))

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
+
 import {
   Grid, OutlinedInput, Button,
   // Divider, 
@@ -256,7 +256,7 @@ class AddMeetingRoom extends Component {
         await API.put(`/bookingRoom/rooms/${this.props.location.state.data.room_id}`, newData, {
           headers: {
             token,
-            ip: await publicIp.v4()
+            ip: this.props.ip
           }
         })
 
@@ -265,7 +265,7 @@ class AddMeetingRoom extends Component {
         await API.post(`/bookingRoom/rooms`, newData, {
           headers: {
             token,
-            ip: await publicIp.v4()
+            ip: this.props.ip
           }
         })
         swal('Tambah ruang meeting berhasil', '', 'success')
@@ -618,10 +618,11 @@ const mapDispatchToProps = {
   fetchDataRooms
 }
 
-const mapStateToProps = ({ dataBuildings, dataUsers }) => {
+const mapStateToProps = ({ dataBuildings, dataUsers, ip }) => {
   return {
     dataBuildings,
-    dataUsers
+    dataUsers,
+    ip
   }
 }
 

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import { Grid, Button, Select, MenuItem, FormControl, FormControlLabel, Checkbox } from '@material-ui/core';
 
@@ -136,7 +135,7 @@ class AddAddress extends Component {
             promises.push(API.put(`/address/${data.get('addressId')}`, data, {
               headers: {
                 token,
-                ip: await publicIp.v4()
+                ip: this.props.ip
               }
             }))
           })
@@ -156,12 +155,14 @@ class AddAddress extends Component {
           this.setState({ tempDataForEdit: newData })
         }
       } else {
+        console.log("MASUK 1")
         let newData = this.state.data
         newData.push(args)
         this.setState({ proses: true })
         let token = Cookies.get('POLAGROUP'), promises = []
 
         if (newData.length === this.state.alamat.length) {
+          console.log("MASUK 2")
           newData.forEach(async (data, index) => {
             if (this.state.indexMainAddress !== null) {
               if (index === this.state.indexMainAddress) {
@@ -173,7 +174,7 @@ class AddAddress extends Component {
             promises.push(API.post('/address', data, {
               headers: {
                 token,
-                ip: await publicIp.v4()
+                // ip: this.props.ip
               }
             }))
           })
@@ -277,12 +278,13 @@ const mapDispatchToProps = {
   fetchDataAddress
 }
 
-const mapStateToProps = ({ dataCompanies, dinas, isAdminsuper, PIC }) => {
+const mapStateToProps = ({ dataCompanies, dinas, isAdminsuper, PIC, ip }) => {
   return {
     dataCompanies,
     dinas,
     isAdminsuper,
-    PIC
+    PIC,
+    ip
   }
 }
 

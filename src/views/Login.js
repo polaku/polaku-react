@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   TextField, InputAdornment, Typography, Button, CircularProgress
@@ -56,7 +55,7 @@ class Login extends Component {
     try {
       data = await API.post('/users/signin', user, {
         headers: {
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
       Cookies.set('POLAGROUP', data.data.token, { expires: 365 });
@@ -175,4 +174,10 @@ const mapDispatchToProps = {
   fetchDataNotification
 }
 
-export default connect(null, mapDispatchToProps)(Login)
+const mapStateToProps = ({ ip }) => {
+  return {
+    ip
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

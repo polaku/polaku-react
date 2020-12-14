@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import { TableCell, TableRow, Checkbox, IconButton, Tooltip } from '@material-ui/core';
 
@@ -12,8 +11,9 @@ import ModalDetailUser from '../modal/modalDetailUser';
 import { API } from '../../config/API';
 
 import swal from 'sweetalert';
+import { connect } from 'react-redux';
 
-export default class CardReport extends Component {
+class CardReport extends Component {
   state = {
     statusIjin: '',
     tglMulai: '',
@@ -89,7 +89,7 @@ export default class CardReport extends Component {
     API.put(`/users/editUser/${this.props.data.userId}`, { isActive: event.target.checked }, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: this.props.ip
       }
     })
       .then(() => {
@@ -174,3 +174,11 @@ export default class CardReport extends Component {
     )
   }
 }
+
+const mapStateToProps = ({ ip }) => {
+  return {
+    ip
+  }
+}
+
+export default connect(mapStateToProps)(CardReport)

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import { Grid, Button, Select, MenuItem, FormControl } from '@material-ui/core';
 
@@ -129,7 +128,7 @@ class AddDepartment extends Component {
           promises.push(API.put(`/structure/${data.id}`, data, {
             headers: {
               token,
-              ip: await publicIp.v4()
+              ip: this.props.ip
             }
           }))
         })
@@ -159,7 +158,7 @@ class AddDepartment extends Component {
           promises.push(API.post('/structure', data, {
             headers: {
               token,
-              ip: await publicIp.v4()
+              ip: this.props.ip
             }
           }))
         })
@@ -252,12 +251,13 @@ const mapDispatchToProps = {
   fetchDataStructure
 }
 
-const mapStateToProps = ({ dataCompanies, dinas, isAdminsuper, PIC }) => {
+const mapStateToProps = ({ dataCompanies, dinas, isAdminsuper, PIC, ip }) => {
   return {
     dataCompanies,
     dinas,
     isAdminsuper,
-    PIC
+    PIC,
+    ip
   }
 }
 

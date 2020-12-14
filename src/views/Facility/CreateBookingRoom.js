@@ -2,7 +2,6 @@ import 'date-fns';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   TextField, Typography, Button, CircularProgress, InputLabel, MenuItem, FormControl, Select as SelectOption
@@ -142,7 +141,7 @@ class CreateBookingRoom extends Component {
         {
           headers: {
             token,
-            ip: await publicIp.v4()
+            ip: this.props.ip
           }
         }
       )
@@ -306,11 +305,12 @@ const mapDispatchToProps = {
   fetchDataRooms,
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataRooms }) => {
+const mapStateToProps = ({ loading, dataUsers, dataRooms, ip }) => {
   return {
     loading,
     dataUsers,
     dataRooms,
+    ip
   }
 }
 

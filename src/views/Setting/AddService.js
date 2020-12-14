@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import { Grid, Button } from '@material-ui/core';
 
@@ -83,7 +82,7 @@ class AddService extends Component {
           if (!check) await API.delete(`/dinas/${el.id}`, {
             headers: {
               token,
-              ip: await publicIp.v4()
+              ip: this.props.ip
             }
           })
         })
@@ -92,7 +91,7 @@ class AddService extends Component {
           promises.push(API.put(`/dinas/${data.dinasId}`, data, {
             headers: {
               token,
-              ip: await publicIp.v4()
+              ip: this.props.ip
             }
           }))
         })
@@ -122,7 +121,7 @@ class AddService extends Component {
           promises.push(API.post('/dinas', data, {
             headers: {
               token,
-              ip: await publicIp.v4()
+              ip: this.props.ip
             }
           }))
         })
@@ -188,10 +187,11 @@ const mapDispatchToProps = {
   fetchDataDinas
 }
 
-const mapStateToProps = ({ dataCompanies, dataAddress }) => {
+const mapStateToProps = ({ dataCompanies, dataAddress, ip }) => {
   return {
     dataCompanies,
-    dataAddress
+    dataAddress,
+    ip
   }
 }
 

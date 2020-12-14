@@ -2,7 +2,6 @@ import 'date-fns';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Modal, Backdrop, Fade, TextField, Typography, Button, CircularProgress, InputLabel, MenuItem, FormControl, Select as SelectOption
@@ -194,7 +193,7 @@ class modalCreateEditPermintaanHRD extends Component {
         API.post('/contactUs', newData, {
           headers: {
             token,
-            ip: await publicIp.v4()
+            ip: this.props.ip
           }
         })
           .then(data => {
@@ -270,7 +269,7 @@ class modalCreateEditPermintaanHRD extends Component {
     API.patch(`/contactUs/${this.props.data.contact_id}`, newData, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: this.props.ip
       }
     })
       .then(data => {
@@ -631,12 +630,13 @@ const mapDispatchToProps = {
   fetchDataRooms,
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataRooms, sisaCuti, }) => {
+const mapStateToProps = ({ loading, dataUsers, dataRooms, sisaCuti, ip }) => {
   return {
     loading,
     dataUsers,
     dataRooms,
     sisaCuti,
+    ip
   }
 }
 

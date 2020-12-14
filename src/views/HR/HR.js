@@ -19,6 +19,8 @@ class HR extends Component {
     dataIjinSayaDisetujui: [],
     dataIjinPengajuanStaff: [],
     dataIjinStaffSedangIjin: [],
+    dataIjinStaffDisetujui: [],
+    dataIjinStaffSudahLewat: [],
     ijinTabs: 0,
     ijinTab: 0,
     display: 0,
@@ -68,7 +70,7 @@ class HR extends Component {
 
     let tempDataPengajuanStaff = await tempDataStaff.filter(el => el.status === 'new' || el.status === 'new2')
 
-    let tempDataStaffSedangIjin = []
+    let tempDataStaffSedangIjin = [], tempDataIjinSudahLewat = [], tempDataIjinDisetujui = []
     await tempDataStaff.forEach(el => {
       if (el.status === 'approved') {
         if (el.date_imp && (
@@ -112,6 +114,27 @@ class HR extends Component {
           }
         }
       }
+
+      if (el.date_imp) {
+        if (new Date(el.date_imp) > new Date()) {
+          tempDataIjinDisetujui.push(el)
+        } else {
+          tempDataIjinSudahLewat.push(el)
+        }
+      } else if (el.date_ijin_absen_end) {
+        if (new Date(el.date_ijin_absen_end) > new Date()) {
+          tempDataIjinDisetujui.push(el)
+        } else {
+          console.log("IA SUDAH LEWAT")
+          tempDataIjinSudahLewat.push(el)
+        }
+      } else if (el.leave_request) {
+        if (new Date(el.leave_date_in.slice(0, 4), el.leave_date_in.slice(5, 7) - 1, el.leave_date_in.slice(8, 10), 0, 0, 0) > new Date()) {
+          tempDataIjinDisetujui.push(el)
+        } else {
+          tempDataIjinSudahLewat.push(el)
+        }
+      }
     })
 
     // console.log("tempDataPengajuan", tempDataPengajuan)
@@ -125,6 +148,8 @@ class HR extends Component {
       dataIjinSayaDisetujui: tempDataDisetujui,
       dataIjinPengajuanStaff: tempDataPengajuanStaff,
       dataIjinStaffSedangIjin: tempDataStaffSedangIjin,
+      dataIjinStaffDisetujui: tempDataIjinDisetujui,
+      dataIjinStaffSudahLewat: tempDataIjinSudahLewat
     })
   }
 
@@ -211,19 +236,33 @@ class HR extends Component {
                             <p style={{ margin: 0, marginRight: 5, fontSize: 25 }}>{this.state.dataIjinStaffSedangIjin.length}</p>
                             <p style={{ margin: 0, marginRight: 5 }}>Staff sedang ijin</p>
                           </Grid>
-                        </>
-                        : <>
                           <Grid style={{
                             width: 300,
                             height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: '1px solid gray', backgroundColor: this.state.ijinTab === 2 ? '#ebebeb' : 'white', cursor: 'pointer'
                           }} onClick={() => this.changeIjinTab(2)}>
-                            <p style={{ margin: 0, marginRight: 5, fontSize: 25 }}>{this.state.dataIjinSayaPengajuan.length}</p>
-                            <p style={{ margin: 0, marginRight: 5 }}>Ijin dalam pengajuan</p>
+                            <p style={{ margin: 0, marginRight: 5, fontSize: 25 }}>{this.state.dataIjinStaffSudahLewat.length}</p>
+                            <p style={{ margin: 0, marginRight: 5 }}>Ijin staff sudah lewat</p>
                           </Grid>
                           <Grid style={{
                             width: 300,
                             height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: '1px solid gray', backgroundColor: this.state.ijinTab === 3 ? '#ebebeb' : 'white', cursor: 'pointer'
                           }} onClick={() => this.changeIjinTab(3)}>
+                            <p style={{ margin: 0, marginRight: 5, fontSize: 25 }}>{this.state.dataIjinStaffDisetujui.length}</p>
+                            <p style={{ margin: 0, marginRight: 5 }}>Ijin staff disetujui</p>
+                          </Grid>
+                        </>
+                        : <>
+                          <Grid style={{
+                            width: 300,
+                            height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: '1px solid gray', backgroundColor: this.state.ijinTab === 4 ? '#ebebeb' : 'white', cursor: 'pointer'
+                          }} onClick={() => this.changeIjinTab(4)}>
+                            <p style={{ margin: 0, marginRight: 5, fontSize: 25 }}>{this.state.dataIjinSayaPengajuan.length}</p>
+                            <p style={{ margin: 0, marginRight: 5 }}>Ijin dalam pengajuan</p>
+                          </Grid>
+                          <Grid style={{
+                            width: 300,
+                            height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: '1px solid gray', backgroundColor: this.state.ijinTab === 5 ? '#ebebeb' : 'white', cursor: 'pointer'
+                          }} onClick={() => this.changeIjinTab(5)}>
                             <p style={{ margin: 0, marginRight: 5, fontSize: 25 }}>{this.state.dataIjinSayaDisetujui.length}</p>
                             <p style={{ margin: 0, marginRight: 5 }}>Ijin sudah disetujui</p>
                           </Grid>
@@ -269,16 +308,30 @@ class HR extends Component {
             )
           }
           {
-            this.state.ijinTab === 2 && this.props.userId !== 1 && this.state.dataIjinSayaPengajuan.map((element, index) =>
+            this.state.ijinTab === 2 && this.props.userId !== 1 && this.state.dataIjinStaffSudahLewat.map((element, index) =>
               <Grid item md={3} sm={6} key={index} style={{ padding: 10 }}>
-                <CardPermintaanHRD data={element} ijinTabs={1} ijinTab={2} fetchData={this.fetchData} />
+                <CardPermintaanHRD data={element} ijinTabs={0} ijinTab={2} fetchData={this.fetchData} />
               </Grid>
             )
           }
           {
-            this.state.ijinTab === 3 && this.props.userId !== 1 && this.state.dataIjinSayaDisetujui.map((element, index) =>
+            this.state.ijinTab === 3 && this.props.userId !== 1 && this.state.dataIjinStaffDisetujui.map((element, index) =>
               <Grid item md={3} sm={6} key={index} style={{ padding: 10 }}>
-                <CardPermintaanHRD data={element} ijinTabs={1} ijinTab={3} fetchData={this.fetchData} />
+                <CardPermintaanHRD data={element} ijinTabs={0} ijinTab={3} fetchData={this.fetchData} />
+              </Grid>
+            )
+          }
+          {
+            this.state.ijinTab === 4 && this.props.userId !== 1 && this.state.dataIjinSayaPengajuan.map((element, index) =>
+              <Grid item md={3} sm={6} key={index} style={{ padding: 10 }}>
+                <CardPermintaanHRD data={element} ijinTabs={1} ijinTab={4} fetchData={this.fetchData} />
+              </Grid>
+            )
+          }
+          {
+            this.state.ijinTab === 5 && this.props.userId !== 1 && this.state.dataIjinSayaDisetujui.map((element, index) =>
+              <Grid item md={3} sm={6} key={index} style={{ padding: 10 }}>
+                <CardPermintaanHRD data={element} ijinTabs={1} ijinTab={5} fetchData={this.fetchData} />
               </Grid>
             )
           }

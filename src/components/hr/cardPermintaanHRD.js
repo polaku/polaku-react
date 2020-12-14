@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Card, Grid, Avatar, Paper, Button
@@ -135,7 +134,7 @@ class cardPermintaanHRD extends Component {
           API.put(`/contactUs/cancel/${this.props.data.contact_id}`, {}, {
             headers: {
               token,
-              ip: await publicIp.v4()
+              ip: this.props.ip
             }
           })
             .then(data => {
@@ -170,7 +169,7 @@ class cardPermintaanHRD extends Component {
           API.get(`/contactUs/rejected/${this.props.data.contact_id}`, {
             headers: {
               token,
-              ip: await publicIp.v4()
+              ip: this.props.ip
             }
           })
             .then(async () => {
@@ -206,7 +205,7 @@ class cardPermintaanHRD extends Component {
           API.put(`/contactUs/approved/${this.props.data.contact_id}`, { status: newStatus }, {
             headers: {
               token,
-              ip: await publicIp.v4()
+              ip: this.props.ip
             }
           })
             .then(async () => {
@@ -354,9 +353,10 @@ class cardPermintaanHRD extends Component {
   }
 }
 
-const mapStateToProps = ({ userId }) => {
+const mapStateToProps = ({ userId, ip }) => {
   return {
-    userId
+    userId,
+    ip
   }
 }
 

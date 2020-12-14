@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Grid, Button, Divider, Typography, CircularProgress, Paper
@@ -37,7 +36,7 @@ class DetailEvent extends Component {
     API.get(`/events/${this.props.match.params.id}`, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: this.props.ip
       }
     })
       .then(async ({ data }) => {
@@ -175,11 +174,12 @@ class DetailEvent extends Component {
   }
 }
 
-const mapStateToProps = ({ loading, dataEvents, error }) => {
+const mapStateToProps = ({ loading, dataEvents, error, ip }) => {
   return {
     loading,
     dataEvents,
-    error
+    error,
+    ip
   }
 }
 

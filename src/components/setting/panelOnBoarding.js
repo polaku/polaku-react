@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Accordion, AccordionSummary, AccordionDetails, Checkbox, FormControlLabel, Typography, Grid, Button, Popover, Paper, ClickAwayListener, MenuItem, MenuList, Divider, CircularProgress
@@ -179,7 +178,7 @@ class panelOnBoarding extends Component {
       await API.put(`/pic/${idCompany}`, { pic: newValue }, {
         headers: {
           token,
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
       await this.props.fetchDataPIC()
@@ -218,7 +217,7 @@ class panelOnBoarding extends Component {
               promises.push(API.delete(`/pic/${pic.id}`, {
                 headers: {
                   token,
-                  ip: await publicIp.v4()
+                  ip: this.props.ip
                 }
               }))
             })
@@ -400,14 +399,15 @@ const mapDispatchToProps = {
   fetchDataDesignation
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataPIC, dataAddress, dataStructure, dataDesignation }) => {
+const mapStateToProps = ({ loading, dataUsers, dataPIC, dataAddress, dataStructure, dataDesignation, ip }) => {
   return {
     loading,
     dataUsers,
     dataPIC,
     dataAddress,
     dataStructure,
-    dataDesignation
+    dataDesignation,
+    ip
   }
 }
 

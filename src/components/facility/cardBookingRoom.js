@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import { Grid, Tooltip, IconButton } from '@material-ui/core';
 
@@ -74,7 +73,7 @@ class cardBookingRoom extends Component {
             {
               headers: {
                 token,
-                ip: await publicIp.v4()
+                ip: this.props.ip
               }
             })
             .then(async () => {
@@ -160,13 +159,14 @@ class cardBookingRoom extends Component {
   }
 }
 
-const mapStateToProps = ({ loading, userId, error, designation, isAdminsuper }) => {
+const mapStateToProps = ({ loading, userId, error, designation, isAdminsuper, ip }) => {
   return {
     loading,
     userId,
     error,
     designation,
-    isAdminsuper
+    isAdminsuper,
+    ip
   }
 }
 export default connect(mapStateToProps)(cardBookingRoom)

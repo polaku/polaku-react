@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import PropTypes from 'prop-types';
 
@@ -276,7 +275,7 @@ class SettingUser extends Component {
       API.post('/users/signup', formData, {
         headers: {
           token,
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
         .then(() => {
@@ -472,7 +471,7 @@ class SettingUser extends Component {
     API.post('/users/importUser', formData, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: this.props.ip
       }
     })
       .then(data => {
@@ -1040,14 +1039,15 @@ const mapDispatchToProps = {
   fetchDataBuildings
 }
 
-const mapStateToProps = ({ loading, error, dataUsers, dataCompanies, dataPositions, dataBuildings }) => {
+const mapStateToProps = ({ loading, error, dataUsers, dataCompanies, dataPositions, dataBuildings, ip }) => {
   return {
     loading,
     error,
     dataUsers,
     dataCompanies,
     dataPositions,
-    dataBuildings
+    dataBuildings,
+    ip
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SettingUser)

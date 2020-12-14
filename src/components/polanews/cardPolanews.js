@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import { Grid, Typography, Paper, Button } from '@material-ui/core';
 
@@ -34,7 +33,7 @@ class cardPolanews extends Component {
           API.delete(`/news/${this.props.data.polanews_id}`, {
             headers: {
               token,
-              ip: await publicIp.v4()
+              ip: this.props.ip
             }
           })
             .then(data => {
@@ -110,9 +109,10 @@ class cardPolanews extends Component {
   }
 }
 
-const mapStateToProps = ({ userId }) => {
+const mapStateToProps = ({ userId, ip }) => {
   return {
-    userId
+    userId,
+    ip
   }
 }
 

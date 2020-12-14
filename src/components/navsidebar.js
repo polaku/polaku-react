@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Drawer, AppBar, Toolbar, List, CssBaseline, Typography, Divider, IconButton, ListItem, ListItemIcon, ListItemText, Collapse, Badge, Menu, MenuItem,
@@ -163,15 +162,14 @@ function Navsidebar(props) {
     async function fetchData() {
 
       let token = Cookies.get('POLAGROUP')
-
       if (token) {
         API.get('/users/checkToken', {
           headers: {
             token,
+            // ip: ip || null
           }
         })
           .then(async ({ data }) => {
-            console.log(data.PIC)
             let newData = {
               user_id: data.user_id,
               isRoomMaster: data.isRoomMaster,
@@ -183,7 +181,8 @@ function Navsidebar(props) {
               bawahan: data.bawahan,
               designation: data.designation,
               dinas: data.dinas,
-              PIC: data.PIC
+              PIC: data.PIC,
+              ip: props.ip
             }
 
             if (data.role_id === 1) {
@@ -346,9 +345,9 @@ function Navsidebar(props) {
       }
       else if (props.isAdminsuper || (props.PIC && props.PIC.length > 0) || (props.designation && props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5 || menu.menu_id === 6))) {
         setSelectedIndex(99)
-        console.log("isAdminsuper", props.isAdminsuper)
-        console.log("PIC", props.PIC.length > 0)
-        console.log("designation", props.designation)
+        // console.log("isAdminsuper", props.isAdminsuper)
+        // console.log("PIC", props.PIC.length > 0)
+        // console.log("designation", props.designation)
       } else {
         props.history.goBack()
       }
@@ -381,7 +380,7 @@ function Navsidebar(props) {
     API.put('/notification', { notifications_id: newData }, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: props.ip
       }
     })
       .then(async data => {
@@ -402,7 +401,7 @@ function Navsidebar(props) {
     API.put(`/notification/${id}`, { read: 1 }, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: props.ip
       }
     })
       .then(async data => {
@@ -836,7 +835,7 @@ const mapDispatchToProps = {
   userLogout
 }
 
-const mapStateToProps = ({ isAdminsuper, isRoomMaster, isCreatorMaster, isCreatorAssistant, dataNotification, userId, dataNewNotif, bawahan, adminContactCategori, designation, PIC }) => {
+const mapStateToProps = ({ isAdminsuper, isRoomMaster, isCreatorMaster, isCreatorAssistant, dataNotification, userId, dataNewNotif, bawahan, adminContactCategori, designation, PIC, ip }) => {
   return {
     isAdminsuper,
     isRoomMaster,
@@ -848,7 +847,8 @@ const mapStateToProps = ({ isAdminsuper, isRoomMaster, isCreatorMaster, isCreato
     bawahan,
     adminContactCategori,
     designation,
-    PIC
+    PIC,
+    ip
   }
 }
 

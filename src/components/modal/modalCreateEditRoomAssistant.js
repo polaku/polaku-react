@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Modal, Backdrop, Button, CircularProgress, Fade, FormControl, FormLabel
@@ -66,7 +65,7 @@ class modalCreateEditRoomAssistant extends Component {
       API.post(`/bookingRoom/roomMaster`, newData, {
         headers: {
           token,
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
         .then(() => {
@@ -89,7 +88,7 @@ class modalCreateEditRoomAssistant extends Component {
       API.put(`/bookingRoom/roomMaster/${this.props.data.master_room_id}`, newData, {
         headers: {
           token,
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
         .then(() => {
@@ -236,12 +235,13 @@ const mapDispatchToProps = {
   fetchDataRoomMaster
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataRooms, error }) => {
+const mapStateToProps = ({ loading, dataUsers, dataRooms, error, ip }) => {
   return {
     loading,
     dataRooms,
     dataUsers,
-    error
+    error,
+    ip
   }
 }
 

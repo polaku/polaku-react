@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   TableRow, TableCell, IconButton
@@ -32,7 +31,7 @@ class CardRoomAssistant extends Component {
     API.delete(`/bookingRoom/roomMaster/${this.props.data.master_room_id}`, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: this.props.ip
       }
     })
       .then(() => {
@@ -93,4 +92,10 @@ const mapDispatchToProps = {
   fetchDataRoomMaster,
 }
 
-export default connect(null, mapDispatchToProps)(CardRoomAssistant)
+const mapStateToProps = ({ ip }) => {
+  return {
+    ip
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CardRoomAssistant)

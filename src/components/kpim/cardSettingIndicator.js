@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
+import { connect } from 'react-redux';
 
 import {
   Grid, Button, Paper, Popover, Typography, MenuList, MenuItem, ListItemIcon, TextField, FormControl, InputLabel, Select as SelectOption,
@@ -26,7 +26,7 @@ import swal from 'sweetalert';
 
 import { API } from '../../config/API';
 
-export default class cardSettingIndicator extends Component {
+class cardSettingIndicator extends Component {
   state = {
     proses: false,
     open: false,
@@ -166,7 +166,7 @@ export default class cardSettingIndicator extends Component {
         let allKPIM = await API.get(`/kpim/${this.props.data.kpim_id}`, {
           headers: {
             token,
-            ip: await publicIp.v4()
+            ip: this.props.ip
           }
         })
 
@@ -231,7 +231,7 @@ export default class cardSettingIndicator extends Component {
         let allKPIM = await API.get(`/kpim/${this.props.data.kpim_id}`, {
           headers: {
             token,
-            ip: await publicIp.v4()
+            ip: this.props.ip
           }
         })
 
@@ -260,7 +260,7 @@ export default class cardSettingIndicator extends Component {
       API.put(`/kpim/${this.props.data.kpim_id}`, newData, {
         headers: {
           token,
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
         .then((data) => {
@@ -316,7 +316,7 @@ export default class cardSettingIndicator extends Component {
       API.put(`/kpim/${this.props.data.kpim_score_id}?update=month`, newData, {
         headers: {
           token,
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
         .then(data => {
@@ -365,7 +365,7 @@ export default class cardSettingIndicator extends Component {
       API.put(`/tal/${this.props.data.tal_score_id}`, newData, {
         headers: {
           token,
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
         .then(data => {
@@ -399,7 +399,7 @@ export default class cardSettingIndicator extends Component {
             API.delete(`/tal/${this.props.data.tal_score_id}?delete=week`, {
               headers: {
                 token,
-                ip: await publicIp.v4()
+                ip: this.props.ip
               }
             })
               .then(data => {
@@ -413,7 +413,7 @@ export default class cardSettingIndicator extends Component {
             API.delete(`/kpim/${this.props.data.kpim_score_id}?delete=month`, {
               headers: {
                 token,
-                ip: await publicIp.v4()
+                ip: this.props.ip
               }
             })
               .then(data => {
@@ -838,3 +838,11 @@ export default class cardSettingIndicator extends Component {
     )
   }
 }
+
+const mapStateToProps = ({ ip }) => {
+  return {
+    ip
+  }
+}
+
+export default connect(mapStateToProps)(cardSettingIndicator)

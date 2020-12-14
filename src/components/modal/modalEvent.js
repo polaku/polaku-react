@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Modal, Fade, Backdrop, Paper, Grid, Divider, Typography, Button, CircularProgress
@@ -67,7 +66,7 @@ class modalEvent extends Component {
         {
           headers: {
             token,
-            ip: await publicIp.v4()
+            ip: this.props.ip
           }
         })
 
@@ -241,9 +240,10 @@ class modalEvent extends Component {
   }
 }
 
-const mapStateToProps = ({ userId }) => {
+const mapStateToProps = ({ userId, ip }) => {
   return {
-    userId
+    userId,
+    ip
   }
 }
 

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie'
-import publicIp from 'public-ip';
 
 import { Paper, Button, Grid, TextField } from '@material-ui/core';
 
@@ -37,15 +36,26 @@ class Profil extends Component {
     if (prevProps.userId !== this.props.userId) {
       await this.props.fetchDataUserDetail(this.props.userId)
       this.setState({
-        username: this.props.dataUserDetail.username
+        username: this.props.dataUserDetail ? this.props.dataUserDetail.username : null
       })
     }
   }
 
-  logout = () => {
-    Cookies.remove('POLAGROUP')
-    this.props.history.push('/login')
-    this.props.userLogout()
+  logout = async () => {
+
+    try {
+      await API.get('/users/signout', {
+        headers: {
+          ip: this.props.ip
+        }
+      })
+
+      Cookies.remove('POLAGROUP')
+      this.props.userLogout()
+      this.props.history.push('/login')
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   handleChange = name => event => {
@@ -70,7 +80,7 @@ class Profil extends Component {
     API.put('/users/editProfil', { username: this.state.username }, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: this.props.ip
       }
     })
       .then(async data => {
@@ -151,11 +161,12 @@ const mapDispatchToProps = {
   fetchDataUserDetail
 }
 
-const mapStateToProps = ({ userId, dataUserDetail, loading }) => {
+const mapStateToProps = ({ userId, dataUserDetail, loading, ip }) => {
   return {
     loading,
     userId,
-    dataUserDetail
+    dataUserDetail,
+    ip
   }
 }
 

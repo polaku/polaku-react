@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import { Grid, Button, Paper, Checkbox, FormControlLabel, FormGroup, IconButton } from '@material-ui/core';
 import ReactSelect from 'react-select';
@@ -211,7 +210,7 @@ class AddAdmin extends Component {
       let { data } = await API.get(`/designation?option=true`, {
         headers: {
           token,
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
 
@@ -479,7 +478,7 @@ class AddAdmin extends Component {
       await API.post('/designation', data, {
         headers: {
           token,
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
       this.setState({ proses: false })
@@ -527,6 +526,7 @@ class AddAdmin extends Component {
                   options={this.state.optionDesignation}
                   onChange={value => this.handleChangeSelect('adminType', value)}
                   onInputChange={this.handleInputChange}
+                  placeholder="Select or Create new"
                 />
               </Grid>
               <p style={{ margin: 0, fontSize: 15, marginBottom: 10 }}>Karyawan</p>
@@ -766,9 +766,10 @@ const mapDispatchToProps = {
   fetchDataDesignation
 }
 
-const mapStateToProps = ({ dataUsers }) => {
+const mapStateToProps = ({ dataUsers, ip }) => {
   return {
-    dataUsers
+    dataUsers,
+    ip
   }
 }
 

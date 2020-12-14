@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Modal, Fade, Grid, Backdrop, Select, Button, TextField, MenuItem,
@@ -125,7 +124,7 @@ class modalDetailUser extends Component {
       API.put(`/users/editUser/${this.props.data.userId}`, newData, {
         headers: {
           token,
-          ip: await publicIp.v4()
+          ip: this.props.ip
         }
       })
         .then(data => {
@@ -378,12 +377,13 @@ class modalDetailUser extends Component {
   }
 }
 
-const mapStateToProps = ({ loading, error, dataCompanies, dataUsers }) => {
+const mapStateToProps = ({ loading, error, dataCompanies, dataUsers, ip }) => {
   return {
     loading,
     error,
     dataCompanies,
-    dataUsers
+    dataUsers,
+    ip
   }
 }
 

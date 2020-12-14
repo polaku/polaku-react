@@ -458,6 +458,7 @@ const api = store => next => async action => {
     }
   }
   else if (action.type === 'FETCH_DATA_CONTACT_US') {
+    console.log("MASUK 1")
     next({
       type: 'FETCH_DATA_LOADING_CONTACT_US'
     })
@@ -492,9 +493,11 @@ const api = store => next => async action => {
       }
       // let newData = await getData.data.data.filter(el => el.user_id === action.payload)
       // let newDataStaff = await getData.data.data.filter(el => el.evaluator_1 === action.payload || el.evaluator_2 === action.payload  || action.payload === 1)
+      console.log("MASUK 2")
 
       let newData = [], newDataStaff = []
       if (action.payload) {
+        console.log(getData.data.data)
         await getData.data.data.forEach(el => {
 
           if (el.leave_date) {  // cuti

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
+import { connect } from 'react-redux';
 
 import {
   Modal, Fade, Grid, Backdrop, Typography, OutlinedInput, IconButton, InputAdornment, Button
@@ -13,7 +13,7 @@ import { API } from '../../config/API';
 
 import swal from 'sweetalert';
 
-export default class modalReward extends Component {
+class modalReward extends Component {
   state = {
     listReward: [],
     nilaiBawah: '',
@@ -59,7 +59,7 @@ export default class modalReward extends Component {
     API.post('/rewardKPIM', newReward, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: this.props.ip
       }
     })
       .then(data => {
@@ -197,3 +197,12 @@ export default class modalReward extends Component {
     )
   }
 }
+
+
+const mapStateToProps = ({ ip }) => {
+  return {
+    ip
+  }
+}
+
+export default connect(mapStateToProps)(modalReward)

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Modal, Fade, Grid, Backdrop, Button, Divider, FormControlLabel, Checkbox
@@ -14,8 +13,9 @@ import Download from '../../components/exportToExcel';
 import { API } from '../../config/API';
 
 import swal from 'sweetalert';
+import { connect } from 'react-redux';
 
-export default class modalCreateEditMuchEmployee extends Component {
+class modalCreateEditMuchEmployee extends Component {
   state = {
     proses: false,
     files: [],
@@ -24,7 +24,7 @@ export default class modalCreateEditMuchEmployee extends Component {
     fullname: false,
     nickname: false,
     initial: false,
-    birth_date: false,
+    date_of_birth: false,
     address: false,
     phone: false,
     selfEmail: false,
@@ -44,7 +44,7 @@ export default class modalCreateEditMuchEmployee extends Component {
     nextFrameDate: false,
     nextLensaDate: false,
 
-    key: ["fullname", "nickname", "initial", "birth_date", "address", "phone", "selfEmail", "officeEmail", "username",
+    key: ["fullname", "nickname", "initial", "date_of_birth", "address", "phone", "selfEmail", "officeEmail", "username",
       // "building",
       "company", "evaluator1", "evaluator2",
       // "department", "position", 
@@ -70,14 +70,14 @@ export default class modalCreateEditMuchEmployee extends Component {
           getData = await API.get(`/users?search=${this.props.keyword}&company=${companySelectedId.company_id}`, {
             headers: {
               token,
-              ip: await publicIp.v4()
+              ip: this.props.ip
             }
           })
         } else {
           getData = await API.get(`/users?company=${companySelectedId.company_id}`, {
             headers: {
               token,
-              ip: await publicIp.v4()
+              ip: this.props.ip
             }
           })
         }
@@ -86,14 +86,14 @@ export default class modalCreateEditMuchEmployee extends Component {
           getData = await API.get(`/users?search=${this.props.keyword}`, {
             headers: {
               token,
-              ip: await publicIp.v4()
+              ip: this.props.ip
             }
           })
         } else {
           getData = await API.get(`/users`, {
             headers: {
               token,
-              ip: await publicIp.v4()
+              ip: this.props.ip
             }
           })
         }
@@ -120,7 +120,7 @@ export default class modalCreateEditMuchEmployee extends Component {
       (this.state.fullname !== prevState.fullname) ||
       (this.state.nickname !== prevState.nickname) ||
       (this.state.initial !== prevState.initial) ||
-      (this.state.birth_date !== prevState.birth_date) ||
+      (this.state.date_of_birth !== prevState.date_of_birth) ||
       (this.state.address !== prevState.address) ||
       (this.state.phone !== prevState.phone) ||
       (this.state.selfEmail !== prevState.selfEmail) ||
@@ -139,14 +139,14 @@ export default class modalCreateEditMuchEmployee extends Component {
       (this.state.bigLeave !== prevState.bigLeave) ||
       (this.state.nextFrameDate !== prevState.nextFrameDate) ||
       (this.state.nextLensaDate !== prevState.nextLensaDate)) {
-      if (!this.state.fullname || !this.state.nickname || !this.state.initial || !this.state.birth_date || !this.state.address || !this.state.phone || !this.state.selfEmail || !this.state.officeEmail || !this.state.username || !this.state.building || !this.state.company || !this.state.evaluator1 || !this.state.evaluator2 || !this.state.department || !this.state.position || !this.state.leave || !this.state.statusEmpolyee || !this.state.joinDate || !this.state.startBigLeave || !this.state.bigLeave || !this.state.nextFrameDate || !this.state.nextLensaDate) this.setState({ semua: false })
+      if (!this.state.fullname || !this.state.nickname || !this.state.initial || !this.state.date_of_birth || !this.state.address || !this.state.phone || !this.state.selfEmail || !this.state.officeEmail || !this.state.username || !this.state.building || !this.state.company || !this.state.evaluator1 || !this.state.evaluator2 || !this.state.department || !this.state.position || !this.state.leave || !this.state.statusEmpolyee || !this.state.joinDate || !this.state.startBigLeave || !this.state.bigLeave || !this.state.nextFrameDate || !this.state.nextLensaDate) this.setState({ semua: false })
     }
 
     if (
       (this.state.fullname !== prevState.fullname) ||
       (this.state.nickname !== prevState.nickname) ||
       (this.state.initial !== prevState.initial) ||
-      (this.state.birth_date !== prevState.birth_date) ||
+      (this.state.date_of_birth !== prevState.date_of_birth) ||
       (this.state.address !== prevState.address) ||
       (this.state.phone !== prevState.phone) ||
       (this.state.selfEmail !== prevState.selfEmail) ||
@@ -165,7 +165,7 @@ export default class modalCreateEditMuchEmployee extends Component {
       (this.state.bigLeave !== prevState.bigLeave) ||
       (this.state.nextFrameDate !== prevState.nextFrameDate) ||
       (this.state.nextLensaDate !== prevState.nextLensaDate)) {
-      if (this.state.fullname && this.state.nickname && this.state.initial && this.state.birth_date && this.state.address && this.state.phone && this.state.selfEmail && this.state.officeEmail && this.state.username && this.state.building && this.state.company && this.state.evaluator1 && this.state.evaluator2 && this.state.department && this.state.position && this.state.leave && this.state.statusEmpolyee && this.state.joinDate && this.state.startBigLeave && this.state.bigLeave && this.state.nextFrameDate && this.state.nextLensaDate) this.setState({ semua: true })
+      if (this.state.fullname && this.state.nickname && this.state.initial && this.state.date_of_birth && this.state.address && this.state.phone && this.state.selfEmail && this.state.officeEmail && this.state.username && this.state.building && this.state.company && this.state.evaluator1 && this.state.evaluator2 && this.state.department && this.state.position && this.state.leave && this.state.statusEmpolyee && this.state.joinDate && this.state.startBigLeave && this.state.bigLeave && this.state.nextFrameDate && this.state.nextLensaDate) this.setState({ semua: true })
 
     }
   }
@@ -179,7 +179,7 @@ export default class modalCreateEditMuchEmployee extends Component {
         fullname: this.state.semua,
         nickname: this.state.semua,
         initial: this.state.semua,
-        birth_date: this.state.semua,
+        date_of_birth: this.state.semua,
         address: this.state.semua,
         phone: this.state.semua,
         selfEmail: this.state.semua,
@@ -212,7 +212,7 @@ export default class modalCreateEditMuchEmployee extends Component {
     API.post('/users/settingImportUser', newData, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: this.props.ip
       }
     })
       .then(async (data) => {
@@ -236,7 +236,7 @@ export default class modalCreateEditMuchEmployee extends Component {
     API.post('/users/settingImportUser', newData, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: this.props.ip
       }
     })
       .then(async (data) => {
@@ -262,53 +262,53 @@ export default class modalCreateEditMuchEmployee extends Component {
     let data = [], label = []
 
     label.push({ label: 'nik', value: 'nik' })
-    if (this.state.fullname) label.push({ label: 'fullname', value: 'fullname' })
-    if (this.state.nickname) label.push({ label: 'nickname', value: 'nickname' })
-    if (this.state.initial) label.push({ label: 'initial', value: 'initial' })
-    if (this.state.birth_date) label.push({ label: 'birth_date', value: 'birth_date' })
-    if (this.state.address) label.push({ label: 'address', value: 'address' })
-    if (this.state.phone) label.push({ label: 'phone', value: 'phone' })
-    if (this.state.selfEmail) label.push({ label: 'selfEmail', value: 'selfEmail' })
-    if (this.state.officeEmail) label.push({ label: 'officeEmail', value: 'officeEmail' })
-    if (this.state.username) label.push({ label: 'username', value: 'username' })
+    if (this.state.semua || this.state.fullname) label.push({ label: 'fullname', value: 'fullname' })
+    if (this.state.semua || this.state.nickname) label.push({ label: 'nickname', value: 'nickname' })
+    if (this.state.semua || this.state.initial) label.push({ label: 'initial', value: 'initial' })
+    if (this.state.semua || this.state.date_of_birth) label.push({ label: 'date_of_birth', value: 'date_of_birth' })
+    if (this.state.semua || this.state.address) label.push({ label: 'address', value: 'address' })
+    if (this.state.semua || this.state.phone) label.push({ label: 'phone', value: 'phone' })
+    if (this.state.semua || this.state.selfEmail) label.push({ label: 'selfEmail', value: 'selfEmail' })
+    if (this.state.semua || this.state.officeEmail) label.push({ label: 'officeEmail', value: 'officeEmail' })
+    if (this.state.semua || this.state.username) label.push({ label: 'username', value: 'username' })
     //building
-    if (this.state.company) label.push({ label: 'company', value: 'company' })
-    if (this.state.evaluator1) label.push({ label: 'evaluator1', value: 'evaluator1' })
-    if (this.state.evaluator2) label.push({ label: 'evaluator2', value: 'evaluator2' })
+    if (this.state.semua || this.state.company) label.push({ label: 'company', value: 'company' })
+    if (this.state.semua || this.state.evaluator1) label.push({ label: 'evaluator1', value: 'evaluator1' })
+    if (this.state.semua || this.state.evaluator2) label.push({ label: 'evaluator2', value: 'evaluator2' })
     //department
     //position
-    if (this.state.leave) label.push({ label: 'leave', value: 'leave' })
-    if (this.state.statusEmpolyee) label.push({ label: 'statusEmpolyee', value: 'statusEmpolyee' })
-    if (this.state.joinDate) label.push({ label: 'joinDate', value: 'joinDate' })
-    if (this.state.startBigLeave) label.push({ label: 'startBigLeave', value: 'startBigLeave' })
-    if (this.state.bigLeave) label.push({ label: 'bigLeave', value: 'bigLeave' })
-    if (this.state.nextFrameDate) label.push({ label: 'nextFrameDate', value: 'nextFrameDate' })
-    if (this.state.nextLensaDate) label.push({ label: 'nextLensaDate', value: 'nextLensaDate' })
+    if (this.state.semua || this.state.leave) label.push({ label: 'leave', value: 'leave' })
+    if (this.state.semua || this.state.statusEmpolyee) label.push({ label: 'statusEmpolyee', value: 'statusEmpolyee' })
+    if (this.state.semua || this.state.joinDate) label.push({ label: 'joinDate', value: 'joinDate' })
+    if (this.state.semua || this.state.startBigLeave) label.push({ label: 'startBigLeave', value: 'startBigLeave' })
+    if (this.state.semua || this.state.bigLeave) label.push({ label: 'bigLeave', value: 'bigLeave' })
+    if (this.state.semua || this.state.nextFrameDate) label.push({ label: 'nextFrameDate', value: 'nextFrameDate' })
+    if (this.state.semua || this.state.nextLensaDate) label.push({ label: 'nextLensaDate', value: 'nextLensaDate' })
 
     this.state.rawData.forEach(element => {
       let newData = { nik: element.tbl_account_detail.nik }
-      if (this.state.fullname) newData.fullname = element.tbl_account_detail.fullname
-      if (this.state.nickname) newData.nickname = element.tbl_account_detail.nickname
-      if (this.state.initial) newData.initial = element.tbl_account_detail.initial
-      if (this.state.birth_date) newData.birthDate = element.tbl_account_detail.date_of_birth
-      if (this.state.address) newData.address = element.tbl_account_detail.address
-      if (this.state.phone) newData.phone = element.tbl_account_detail.phone
-      if (this.state.selfEmail) newData.selfEmail = element.email
-      if (this.state.officeEmail) newData.officeEmail = element.tbl_account_detail.office_email
-      if (this.state.username) newData.username = element.username
+      if (this.state.semua || this.state.fullname) newData.fullname = element.tbl_account_detail.fullname
+      if (this.state.semua || this.state.nickname) newData.nickname = element.tbl_account_detail.nickname
+      if (this.state.semua || this.state.initial) newData.initial = element.tbl_account_detail.initial
+      if (this.state.semua || this.state.date_of_birth) newData.date_of_birth = element.tbl_account_detail.date_of_birth
+      if (this.state.semua || this.state.address) newData.address = element.tbl_account_detail.address
+      if (this.state.semua || this.state.phone) newData.phone = element.tbl_account_detail.phone
+      if (this.state.semua || this.state.selfEmail) newData.selfEmail = element.email
+      if (this.state.semua || this.state.officeEmail) newData.officeEmail = element.tbl_account_detail.office_email
+      if (this.state.semua || this.state.username) newData.username = element.username
       //building
-      if (this.state.company) newData.company = element.tbl_account_detail.tbl_company.acronym
-      if (this.state.evaluator1) newData.evaluator1 = element.tbl_account_detail.idEvaluator1 ? element.tbl_account_detail.idEvaluator1.tbl_account_detail.nik : null
-      if (this.state.evaluator2) newData.evaluator2 = element.tbl_account_detail.idEvaluator2 ? element.tbl_account_detail.idEvaluator2.tbl_account_detail.nik : null
+      if (this.state.semua || this.state.company) newData.company = element.tbl_account_detail.tbl_company.acronym
+      if (this.state.semua || this.state.evaluator1) newData.evaluator1 = element.tbl_account_detail.idEvaluator1 ? element.tbl_account_detail.idEvaluator1.tbl_account_detail.nik : null
+      if (this.state.semua || this.state.evaluator2) newData.evaluator2 = element.tbl_account_detail.idEvaluator2 ? element.tbl_account_detail.idEvaluator2.tbl_account_detail.nik : null
       //department
       //position
-      if (this.state.leave) newData.leave = element.tbl_account_detail.leave
-      if (this.state.statusEmpolyee) newData.statusEmpolyee = element.tbl_account_detail.status_employee
-      if (this.state.joinDate) newData.joinDate = element.tbl_account_detail.join_date
-      if (this.state.startBigLeave) newData.startBigLeave = element.tbl_account_detail.start_leave_big
-      if (this.state.bigLeave) newData.bigLeave = element.tbl_account_detail.leave_big
-      if (this.state.nextFrameDate) newData.nextFrameDate = element.tbl_account_detail.next_frame_date
-      if (this.state.nextLensaDate) newData.nextLensaDate = element.tbl_account_detail.next_lensa_date
+      if (this.state.semua || this.state.leave) newData.leave = element.tbl_account_detail.leave
+      if (this.state.semua || this.state.statusEmpolyee) newData.statusEmpolyee = element.tbl_account_detail.status_employee
+      if (this.state.semua || this.state.joinDate) newData.joinDate = element.tbl_account_detail.join_date
+      if (this.state.semua || this.state.startBigLeave) newData.startBigLeave = element.tbl_account_detail.start_leave_big
+      if (this.state.semua || this.state.bigLeave) newData.bigLeave = element.tbl_account_detail.leave_big
+      if (this.state.semua || this.state.nextFrameDate) newData.nextFrameDate = element.tbl_account_detail.next_frame_date
+      if (this.state.semua || this.state.nextLensaDate) newData.nextLensaDate = element.tbl_account_detail.next_lensa_date
 
       data.push(newData)
       // building: false,
@@ -434,3 +434,11 @@ export default class modalCreateEditMuchEmployee extends Component {
     )
   }
 }
+
+const mapStateToProps = ({ ip }) => {
+  return {
+    ip
+  }
+}
+
+export default connect(mapStateToProps)(modalCreateEditMuchEmployee)

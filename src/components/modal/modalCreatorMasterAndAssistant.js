@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-import publicIp from 'public-ip';
 
 import {
   Modal, Backdrop, Button, CircularProgress, Fade, Typography, FormControl
@@ -57,7 +56,7 @@ class modalCreatorMasterAndAssistant extends Component {
     API.post('/events/masterCreator', newData, {
       headers: {
         token,
-        ip: await publicIp.v4()
+        ip: this.props.ip
       }
     })
       .then(() => {
@@ -170,10 +169,11 @@ const mapDispatchToProps = {
   fetchDataUsers
 }
 
-const mapStateToProps = ({ loading, dataUsers }) => {
+const mapStateToProps = ({ loading, dataUsers, ip }) => {
   return {
     loading,
     dataUsers,
+    ip
   }
 }
 
