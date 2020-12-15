@@ -292,7 +292,7 @@ class panelAddress extends Component {
 
               {
                 this.state.dataForDisplay.map((address, index) =>
-                  <CardAddress key={index} data={address} selectAll={this.state.selectAll} handleCheck={this.handleCheck} fetchData={this.fetchData} index={this.props.index} />
+                  <CardAddress key={index} data={address} selectAll={this.state.selectAll} handleCheck={this.handleCheck} fetchData={this.fetchData} index={this.props.index} limit={this.state.rowsPerPage} page={this.state.page} />
                 )
               }
               <TablePagination

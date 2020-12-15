@@ -88,6 +88,7 @@ class panelEmployee extends Component {
     let label = this.state.labelTab, tempNewDataUsers = []
 
     if (this.state.valueA === 0) { //EMPLOYEE
+      console.log(this.props.dataUsers)
       await this.props.dataUsers.forEach(user => {
         let objUser = {
           userId: user.user_id,

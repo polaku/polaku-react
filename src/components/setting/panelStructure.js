@@ -356,7 +356,7 @@ class panelStructure extends Component {
               </Paper>
               {
                 orderBy(this.state.dataForDisplay, this.state.columnToSort, this.state.sortDirection).map((department, index) =>
-                  <CardDepartment key={"department" + index} data={department} selectAll={this.state.selectAll} handleCheck={this.handleCheck} fetchData={this.fetchData} index={this.props.index} />
+                  <CardDepartment key={"department" + index} data={department} selectAll={this.state.selectAll} handleCheck={this.handleCheck} fetchData={this.fetchData} index={this.props.index} limit={this.state.rowsPerPage} page={this.state.page} />
                 )
               }
               <TablePagination

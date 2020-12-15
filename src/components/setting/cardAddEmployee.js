@@ -34,8 +34,10 @@ class cardAddEmployee extends Component {
     evaluator1Selected: null,
     evaluator2: '',
     evaluator2Selected: null,
-    tanggalGabung: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
-    dateOfBirth: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
+    // tanggalGabung: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
+    // dateOfBirth: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
+    tanggalGabung: null,
+    dateOfBirth: null,
     statusKaryawan: '',
     sisaCuti: '',
     tanggalMulaiCutiBesar: null,
@@ -60,6 +62,7 @@ class cardAddEmployee extends Component {
     dataAddressDinas: [],
     isDinas: false,
 
+    username: '',
     password: '',
     optionCompany: [],
     optionDivisi: [],
@@ -227,7 +230,7 @@ class cardAddEmployee extends Component {
       alamat: this.props.data.rawData.tbl_account_detail.address,
 
       isDinas: this.props.data.rawData.dinas.length > 0 ? true : false,
-
+      username: this.props.data.rawData.username
       // divisi: this.props.data.rawData.tbl_account_detail.departments_id,
       // peran: this.props.data.rawData.tbl_account_detail.position_id,
     })
@@ -308,7 +311,7 @@ class cardAddEmployee extends Component {
     let newData = new FormData()
 
     if (this.props.data) newData.append("userId", this.props.data.userId)
-    newData.append("username", this.state.nik)
+    newData.append("username", this.state.username)
     if (!this.props.data) newData.append("password", this.state.dateOfBirth.split('-').reverse().join(''))
     if (this.props.data && this.state.password) newData.append("password", this.state.password)
     newData.append("email", this.state.emailPribadi)
@@ -316,7 +319,7 @@ class cardAddEmployee extends Component {
     newData.append("initial", this.state.initial)
     newData.append("nik", this.state.nik)
     newData.append("address", this.state.alamat)
-    if (this.state.dateOfBirth) newData.append("dateOfBirth", this.state.dateOfBirth)
+    if (this.state.dateOfBirth && new Date(this.state.dateOfBirth) !== 'Invalid Date' && new Date(this.state.dateOfBirth) !== 'Invalid date' && new Date(this.state.dateOfBirth) !== 'invalid date') newData.append("dateOfBirth", this.state.dateOfBirth)
     if (this.state.sisaCuti) newData.append("leave", this.state.sisaCuti)
     if (this.state.companyAddress) newData.append("building_id", this.state.companyAddress)
     if (this.state.company) newData.append("company_id", this.state.company)
@@ -939,6 +942,26 @@ class cardAddEmployee extends Component {
 
         {/* 5 */}
         <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
+
+          <Grid id="username" style={{ display: 'flex', alignItems: 'center' }}>
+            <Grid style={{ width: '20%', marginRight: 10 }}>
+              <b style={{ marginBottom: 5 }}>Username</b>
+            </Grid>
+
+            <OutlinedInput
+              value={this.state.username}
+              onChange={this.handleChange('username')}
+              variant="outlined"
+              style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
+              inputProps={{
+                style: {
+                  padding: '5px 8px',
+                  fontSize: 14
+                }
+              }}
+              disabled={this.props.proses}
+            />
+          </Grid>
 
           {
             this.props.data &&

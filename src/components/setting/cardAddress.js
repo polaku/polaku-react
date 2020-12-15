@@ -62,7 +62,7 @@ class cardAddress extends Component {
               }
             })
             swal("Hapus alamat sukses", "", "success")
-            await this.props.fetchDataAddress()
+            await this.props.fetchDataAddress({ limit: this.props.rowsPerPage, page: this.props.page })
             await this.props.fetchData()
           } catch (err) {
             swal("Hapus alamat gagal", "", "error")
