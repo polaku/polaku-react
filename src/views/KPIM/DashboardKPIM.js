@@ -91,6 +91,7 @@ class DashboardKPIM extends Component {
         await this.props.myRewardKPIM.sort(this.sortingReward)
 
       } else if (this.props.userId) {
+        console.log("MASUK")
         this.setState({
           weekSelected: this.getNumberOfWeek(new Date()),
           monthSelected: new Date().getMonth() + 1
@@ -301,7 +302,7 @@ class DashboardKPIM extends Component {
 
 
     // ===== FETCH TAL MONTH (START) ===== // 
-    let pembagiTALTEAM = 0, tempTALScore = 0, tempWeekBawahan = [], userIdProcessing = this.props.dataAllTAL[0].user_id;
+    let pembagiTALTEAM = 0, tempTALScore = 0, tempWeekBawahan = [], userIdProcessing = this.props.dataAllTAL[0] ? this.props.dataAllTAL[0].user_id : null;
     await this.props.dataAllTAL.forEach(async (tal) => {
       await tal.tbl_tal_scores.forEach(tal_score => {
         tempTALScore += tal_score.score_tal

@@ -1043,39 +1043,83 @@ const api = store => next => async action => {
       if (action.payload) {
         if (action.payload.status) {
           if (action.payload.keyword) {
-            getData = await API.get(
-              `/designation?limit=${action.payload.limit}&page=${action.payload.page}&status=${action.payload.status}&search=${action.payload.keyword}`,
-              {
-                headers: {
-                  token,
-                  ip: await publicIp.v4()
-                }
-              })
+            console.log("MASUK 1")
+            if (action.payload.company) {
+              getData = await API.get(
+                `/designation?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}&status=${action.payload.status}&search=${action.payload.keyword}`,
+                {
+                  headers: {
+                    token,
+                    ip: await publicIp.v4()
+                  }
+                })
+            } else {
+              getData = await API.get(
+                `/designation?limit=${action.payload.limit}&page=${action.payload.page}&status=${action.payload.status}&search=${action.payload.keyword}`,
+                {
+                  headers: {
+                    token,
+                    ip: await publicIp.v4()
+                  }
+                })
+            }
           } else {
-            getData = await API.get(
-              `/designation?limit=${action.payload.limit}&page=${action.payload.page}&status=${action.payload.status}`,
-              {
-                headers: {
-                  token,
-                  ip: await publicIp.v4()
-                }
-              })
+            console.log("MASUK 2")
+            if (action.payload.company) {
+              getData = await API.get(
+                `/designation?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}&status=${action.payload.status}`,
+                {
+                  headers: {
+                    token,
+                    ip: await publicIp.v4()
+                  }
+                })
+            } else {
+              getData = await API.get(
+                `/designation?limit=${action.payload.limit}&page=${action.payload.page}&status=${action.payload.status}`,
+                {
+                  headers: {
+                    token,
+                    ip: await publicIp.v4()
+                  }
+                })
+            }
           }
         } else {
           if (action.payload.keyword) {
-            getData = await API.get(`/designation?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, {
-              headers: {
-                token,
-                ip: await publicIp.v4()
-              }
-            })
+            console.log("MASUK 3")
+            if (action.payload.company) {
+              getData = await API.get(`/designation?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}&company=${action.payload.company}`, {
+                headers: {
+                  token,
+                  ip: await publicIp.v4()
+                }
+              })
+            } else {
+              getData = await API.get(`/designation?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, {
+                headers: {
+                  token,
+                  ip: await publicIp.v4()
+                }
+              })
+            }
           } else {
-            getData = await API.get(`/designation?limit=${action.payload.limit}&page=${action.payload.page}`, {
-              headers: {
-                token,
-                ip: await publicIp.v4()
-              }
-            })
+            console.log("MASUK 4")
+            if (action.payload.company) {
+              getData = await API.get(`/designation?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}`, {
+                headers: {
+                  token,
+                  ip: await publicIp.v4()
+                }
+              })
+            } else {
+              getData = await API.get(`/designation?limit=${action.payload.limit}&page=${action.payload.page}`, {
+                headers: {
+                  token,
+                  ip: await publicIp.v4()
+                }
+              })
+            }
           }
         }
       } else {
@@ -1090,8 +1134,8 @@ const api = store => next => async action => {
       next({
         type: 'FETCH_DATA_DESIGNATION_SUCCESS',
         payload: {
-          dataDesignation: getData.data.data,
-          lengthAllDataDesignation: getData.data.totalRecord,
+          dataDesignation: getData.data.data || [],
+          lengthAllDataDesignation: getData.data.totalRecord || 0,
         }
       })
 

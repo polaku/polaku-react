@@ -12,8 +12,8 @@ const API = axios.create({
     browser: browserName,
     os: osName,
     isMobile,
-    'Access-Control-Allow-Origin': "*"
-  }
+    // 'Access-Control-Allow-Origin': '*'
+  },
 })
 
 export {

@@ -163,13 +163,14 @@ function Navsidebar(props) {
 
       let token = Cookies.get('POLAGROUP')
       if (token) {
-        API.get('/users/checkToken', {
+        API.get('/users/check-token', {
           headers: {
             token,
             // ip: ip || null
           }
         })
           .then(async ({ data }) => {
+            console.log(data)
             let newData = {
               user_id: data.user_id,
               isRoomMaster: data.isRoomMaster,
@@ -179,11 +180,51 @@ function Navsidebar(props) {
               evaluator1: data.evaluator1,
               evaluator2: data.evaluator2,
               bawahan: data.bawahan,
-              designation: data.designation,
-              dinas: data.dinas,
-              PIC: data.PIC,
-              ip: props.ip
+              admin: data.admin,
+              // ip: props.ip
             }
+
+            let checkPIC = data.admin.find(el => el.PIC)
+            let PIC = checkPIC ? true : false
+            newData.isPIC = PIC
+
+            let isAdminNews = false, isAdminAddress = false, isAdminStructure = false, isAdminEmployee = false, isAdminAdmin = false, isAdminRoom = false, isAdminKPIM = false, isAdminHR = false
+
+            if (!PIC) {
+              await data.admin.forEach(admin => {
+                let checkNews = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 1)
+                if (checkNews) isAdminNews = true
+
+                let checkAddress = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 2)
+                if (checkAddress) isAdminAddress = true
+
+                let checkStructure = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 3)
+                if (checkStructure) isAdminStructure = true
+
+                let checkEmployee = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 4)
+                if (checkEmployee) isAdminEmployee = true
+
+                let checkAdmin = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 5)
+                if (checkAdmin) isAdminAdmin = true
+
+                let checkRoom = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 6)
+                if (checkRoom) isAdminRoom = true
+
+                let checkKPIM = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 7)
+                if (checkKPIM) isAdminKPIM = true
+
+                let checkHR = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 8)
+                if (checkHR) isAdminHR = true
+              })
+            }
+            newData.isAdminNews = isAdminNews
+            newData.isAdminAddress = isAdminAddress
+            newData.isAdminStructure = isAdminStructure
+            newData.isAdminEmployee = isAdminEmployee
+            newData.isAdminAdmin = isAdminAdmin
+            newData.isAdminRoom = isAdminRoom
+            newData.isAdminKPIM = isAdminKPIM
+            newData.isAdminHR = isAdminHR
 
             if (data.role_id === 1) {
               newData.isAdminsuper = true
@@ -232,9 +273,6 @@ function Navsidebar(props) {
         props.history.push('/booking-room')
       }
     } else if (props.location.pathname === '/booking-room/rooms') {
-      if (props.designation) {
-        checkAdmin = props.designation.find(menu => menu.menu_id === 6)
-      }
       if (props.isAdminsuper || props.isRoomMaster || checkAdmin) {
         setSelectedIndex(1.3)
       } else {
@@ -249,10 +287,7 @@ function Navsidebar(props) {
     } else if (props.location.pathname === '/hr') {
       setSelectedIndex(3)
     } else if (props.location.pathname === '/hr/report') {
-      if (props.designation) {
-        checkAdmin = props.designation.find(menu => menu.menu_id === 8)
-      }
-      if (checkAdmin || props.isAdminsuper) {
+      if (props.isAdminHR || props.isAdminsuper) {
         setSelectedIndex(3.1)
       } else {
         props.history.goBack()
@@ -262,10 +297,7 @@ function Navsidebar(props) {
     } else if (props.location.pathname === '/kpim/tal') {
       setSelectedIndex(4.1)
     } else if (props.location.pathname === '/kpim/report') {
-      if (props.designation) {
-        checkAdmin = props.designation.find(menu => menu.menu_id === 7)
-      }
-      if (checkAdmin || props.isAdminsuper) {
+      if (props.isAdminKPIM || props.isAdminsuper) {
         setSelectedIndex(4.2)
       } else {
         props.history.goBack()
@@ -286,51 +318,36 @@ function Navsidebar(props) {
       //  ||
       // props.location.pathname === '/setting/setting-keamanan'
     ) {
-      if (props.location.pathname === '/setting/setting-perusahaan/add-address') { //admin struktur
-        if (props.designation) {
-          checkAdmin = props.designation.find(menu => menu.menu_id === 2)
-        }
-        if (checkAdmin || props.isAdminsuper || (props.PIC && props.PIC.length > 0)) {
+      if (props.location.pathname === '/setting/setting-perusahaan/add-address') { //admin alamat
+        if (props.isAdminAddress || props.isAdminsuper || props.isPIC) {
           setSelectedIndex(99)
         } else {
           props.history.goBack()
         }
       }
       else if (props.location.pathname === '/setting/setting-perusahaan/add-department') { //admin struktur
-        if (props.designation) {
-          checkAdmin = props.designation.find(menu => menu.menu_id === 3)
-        }
-        if (checkAdmin || props.isAdminsuper || (props.PIC && props.PIC.length > 0)) {
+        if (props.isAdminStructure || props.isAdminsuper || props.isPIC) {
           setSelectedIndex(99)
         } else {
           props.history.goBack()
         }
       }
       else if (props.location.pathname === '/setting/setting-perusahaan/add-employee' || props.location.pathname === '/setting/setting-perusahaan/add-service') { //admin karyawan
-        if (props.designation) {
-          checkAdmin = props.designation.find(menu => menu.menu_id === 4)
-        }
-        if (checkAdmin || props.isAdminsuper || (props.PIC && props.PIC.length > 0)) {
+        if (props.isAdminEmployee || props.isAdminsuper || props.isPIC) {
           setSelectedIndex(99)
         } else {
           props.history.goBack()
         }
       }
       else if (props.location.pathname === '/setting/setting-perusahaan/add-admin') { //admin admin
-        if (props.designation) {
-          checkAdmin = props.designation.find(menu => menu.menu_id === 5)
-        }
-        if (checkAdmin || props.isAdminsuper || (props.PIC && props.PIC.length > 0)) {
+        if (props.isAdminAdmin || props.isAdminsuper || props.isPIC) {
           setSelectedIndex(99)
         } else {
           props.history.goBack()
         }
       }
       else if (props.location.pathname === '/setting/setting-meeting-room' || props.location.pathname === '/setting/setting-meeting-room/add-meeting-room') { //admin meeting room
-        if (props.designation) {
-          checkAdmin = props.designation.find(menu => menu.menu_id === 6)
-        }
-        if (checkAdmin || props.isAdminsuper || (props.PIC && props.PIC.length > 0)) {
+        if (props.isAdminRoom || props.isAdminsuper || props.isPIC) {
           setSelectedIndex(99)
         } else {
           props.history.goBack()
@@ -343,18 +360,15 @@ function Navsidebar(props) {
           props.history.goBack()
         }
       }
-      else if (props.isAdminsuper || (props.PIC && props.PIC.length > 0) || (props.designation && props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5 || menu.menu_id === 6))) {
+      else if (props.isAdminsuper || props.isPIC || props.isAdminNews || props.isAdminAddress || props.isAdminStructure || props.isAdminEmployee || props.isAdminAdmin || props.isAdminRoom || props.isAdminKPIM || props.isAdminHR) {
         setSelectedIndex(99)
-        // console.log("isAdminsuper", props.isAdminsuper)
-        // console.log("PIC", props.PIC.length > 0)
-        // console.log("designation", props.designation)
       } else {
         props.history.goBack()
       }
     } else if (props.location.pathname === '/profil') {
       setSelectedIndex(100)
     }
-  }, [props.location.pathname, props.isAdminsuper, props.userId, props.adminContactCategori, props.history, props.isRoomMaster, props.designation, props.PIC])
+  }, [props.location.pathname, props.isAdminsuper, props.userId, props.adminContactCategori, props.history, props.isRoomMaster, props.designation, props.admin, props.isPIC, props.isAdminNews, props.isAdminAddress, props.isAdminStructure, props.isAdminEmployee, props.isAdminAdmin, props.isAdminRoom, props.isAdminKPIM, props.isAdminHR])
 
   useEffect(() => {
     setOpen(false)
@@ -546,7 +560,7 @@ function Navsidebar(props) {
                         <ListItemText primary="Booking Room" />
                       </ListItem>
                     </Link>
-                    // (props.isAdminsuper || props.isRoomMaster || (props.designation && props.designation.find(menu => menu.menu_id === 6)))
+                    // (props.isAdminsuper || props.isRoomMaster || props.isAdminRoom)
                     //   ? <ListItem button key="Facility"
                     //     onClick={event => handleClick(event, 'openChildBookingRoom')} selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
                     //     <ListItemIcon>
@@ -671,7 +685,7 @@ function Navsidebar(props) {
                 {
                   open
                     // ? Number(props.adminContactCategori) === 4 || props.userId === 1
-                    ? (props.designation && props.designation.find(menu => menu.menu_id === 8)) || props.userId === 1
+                    ? props.isAdminHR || props.userId === 1
                       ? <ListItem button key="HR"
                         onClick={event => handleClick(event, 'openChildHR')} selected={selectedIndex === 3 || selectedIndex === 3.1}>
                         <ListItemIcon>
@@ -748,7 +762,7 @@ function Navsidebar(props) {
                     {
                       isAtasan && <>
                         {
-                          (isAtasan || (props.designation && props.designation.find(menu => menu.menu_id === 7))) && <Link to="/kpim/report" onClick={event => handleListItemClick(event, 4.2)} style={{ textDecoration: 'none', color: 'black' }}>
+                          (isAtasan || props.isAdminKPIM) && <Link to="/kpim/report" onClick={event => handleListItemClick(event, 4.2)} style={{ textDecoration: 'none', color: 'black' }}>
                             <ListItem button className={classes.nested} selected={selectedIndex === 4.2}>
                               <ListItemText primary="Laporan" />
                             </ListItem>
@@ -769,7 +783,7 @@ function Navsidebar(props) {
               {/* Menu Setting */}
               <>
                 {
-                  (props.isAdminsuper || (props.PIC && props.PIC.length > 0) || (props.designation && props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5))) && <>
+                  (props.isAdminsuper || props.isPIC || props.isAdminAddress || props.isAdminStructure || props.isAdminEmployee || props.isAdminAdmin) && <>
                     {
                       open
                         ? <Link to="/setting" onClick={event => handleListItemClick(event, 99)} style={{ textDecoration: 'none', color: 'black' }}>
@@ -835,7 +849,7 @@ const mapDispatchToProps = {
   userLogout
 }
 
-const mapStateToProps = ({ isAdminsuper, isRoomMaster, isCreatorMaster, isCreatorAssistant, dataNotification, userId, dataNewNotif, bawahan, adminContactCategori, designation, PIC, ip }) => {
+const mapStateToProps = ({ isAdminsuper, isRoomMaster, isCreatorMaster, isCreatorAssistant, dataNotification, userId, dataNewNotif, bawahan, adminContactCategori, ip, isPIC, isAdminNews, isAdminAddress, isAdminStructure, isAdminEmployee, isAdminAdmin, isAdminRoom, isAdminKPIM, isAdminHR }) => {
   return {
     isAdminsuper,
     isRoomMaster,
@@ -846,9 +860,16 @@ const mapStateToProps = ({ isAdminsuper, isRoomMaster, isCreatorMaster, isCreato
     dataNewNotif,
     bawahan,
     adminContactCategori,
-    designation,
-    PIC,
-    ip
+    ip,
+    isPIC,
+    isAdminNews,
+    isAdminAddress,
+    isAdminStructure,
+    isAdminEmployee,
+    isAdminAdmin,
+    isAdminRoom,
+    isAdminKPIM,
+    isAdminHR
   }
 }
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
-import { Grid, Button, Paper, Checkbox, FormControlLabel, FormGroup, IconButton } from '@material-ui/core';
+import { Grid, Button, Paper, Checkbox, FormControlLabel, FormGroup, IconButton, FormControl, MenuItem, Select } from '@material-ui/core';
 import ReactSelect from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
@@ -10,7 +10,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import swal from 'sweetalert';
 
-import { fetchDataUsers, fetchDataDesignation } from '../../store/action';
+import { fetchDataUsers, fetchDataDesignation, fetchDataCompanies } from '../../store/action';
 
 import { API } from '../../config/API';
 
@@ -22,6 +22,8 @@ class AddAdmin extends Component {
     adminTypeSelected: null,
     adminId: '',
     adminIdSelected: null,
+    company: '',
+    optionCompany:[],
     proses: false,
 
     semua: false,
@@ -63,8 +65,10 @@ class AddAdmin extends Component {
   }
 
   async componentDidMount() {
+    await this.props.fetchDataCompanies()
     await this.props.fetchDataUsers()
     await this.fetchOptionDesignation()
+    await this.fetchOptionCompany()
 
     if (this.props.location.state) {
       // console.log(this.props.location.state.data)
@@ -224,7 +228,27 @@ class AddAdmin extends Component {
     }
   }
 
+  fetchOptionCompany = async () => {
+    if (this.props.isAdminsuper) {
+      this.setState({ optionCompany: this.props.dataCompanies })
+    } else {
+      let optionCompany = []
+      let idCompany = []
+      await this.props.admin.forEach(el => {
+        if (idCompany.indexOf(el.company_id) === -1) {
+          let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+          if (check) {
+            idCompany.push(el.company_id)
+            optionCompany.push(check)
+          }
+        }
+      })
+      this.setState({ optionCompany })
+    }
+  }
+
   handleChange = name => event => {
+    console.log(name)
     this.setState({ [name]: event.target.value });
   };
 
@@ -471,6 +495,7 @@ class AddAdmin extends Component {
       let data = {
         name: this.state.adminType,
         userId: this.state.adminId,
+        companyId: this.state.company,
         roles
       }
 
@@ -541,7 +566,22 @@ class AddAdmin extends Component {
                   isDisabled={this.state.proses || this.state.disabledUser}
                 />
               </Grid>
-
+              <p style={{ margin: 0, fontSize: 15, marginBottom: 10 }}>Perusahaan</p>
+              <Grid style={{ width: '100%', height: 40, maxWidth: 500, marginBottom: 20 }}>
+                <FormControl variant="outlined" style={{ width: '100%', height: 38, maxWidth: 500 }} size="small">
+                  <Select
+                    value={this.state.company}
+                    onChange={this.handleChange('company')}
+                    disabled={this.state.proses}
+                  >
+                    {
+                      this.state.optionCompany.map((company, index) =>
+                        <MenuItem value={company.company_id} key={"company" + index}>{company.company_name}</MenuItem>
+                      )
+                    }
+                  </Select>
+                </FormControl>
+              </Grid>
 
               <FormGroup >
                 <FormControlLabel
@@ -763,13 +803,17 @@ class AddAdmin extends Component {
 
 const mapDispatchToProps = {
   fetchDataUsers,
-  fetchDataDesignation
+  fetchDataDesignation,
+  fetchDataCompanies
 }
 
-const mapStateToProps = ({ dataUsers, ip }) => {
+const mapStateToProps = ({ dataUsers, ip, isAdminsuper, admin, dataCompanies }) => {
   return {
     dataUsers,
-    ip
+    ip,
+    isAdminsuper,
+    admin,
+    dataCompanies
   }
 }
 

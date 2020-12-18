@@ -76,8 +76,7 @@ class cardDepartment extends Component {
               }
             })
             swal("Hapus department sukses", "", "success")
-            await this.props.fetchDataStructure({ limit: this.props.rowsPerPage, page: this.props.page })
-            await this.props.fetchData()
+            await this.props.refresh()
           } catch (err) {
             swal("Hapus department gagal", "", "error")
           }

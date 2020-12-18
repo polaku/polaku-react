@@ -25,7 +25,7 @@ function DragAndDrop(props) {
 
   return (
     <div {...getRootProps()} style={{ border: '1px #adadad dashed', margin: '5px 0px', padding: 10, display: 'flex', justifyContent: 'center', cursor: props.status === 'room' && files.length === 1 ? null : 'pointer' }} >
-      <input {...getInputProps()} disabled={props.status === 'room' && files.length === 1} />
+      <input {...getInputProps()} disabled={props.status === 'room' && files.length === 1} accept={props.status === "employee" ? "application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" : "image/png,image/jpeg"} />
       {
         isDragActive ?
           // true ?

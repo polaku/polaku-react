@@ -61,29 +61,27 @@ class Setting extends Component {
   }
 
   componentDidMount() {
-    if (this.props.designation || this.props.isAdminsuper || (this.props.PIC && this.props.PIC.length > 0)) {
+    if (this.props.isAdminAddress || this.props.isAdminStructure || this.props.isAdminEmployee || this.props.isAdminAdmin || this.props.isAdminsuper || (this.props.admin && this.props.admin.length > 0)) {
       this.fetchMenu()
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if ((this.props.designation !== prevProps.designation && (this.props.designation && this.props.designation.length > 0)) || this.props.isAdminsuper !== prevProps.isAdminsuper || (this.props.PIC !== prevProps.PIC && this.props.PIC.length > 0)) {
+    if (this.props.isAdminAddress !== prevProps.isAdminAddress || this.props.isAdminStructure !== prevProps.isAdminStructure || this.props.isAdminEmployee !== prevProps.isAdminEmployee || this.props.isAdminAdmin !== prevProps.isAdminAdmin || this.props.isAdminsuper !== prevProps.isAdminsuper || (this.props.admin !== prevProps.admin && this.props.admin.length > 0)) {
       this.fetchMenu()
     }
   }
 
   fetchMenu = () => {
     let menu = []
-    let checkAdminMeetingRoom = this.props.designation && this.props.designation.find(menu => menu.menu_id === 6)
-    if (checkAdminMeetingRoom || this.props.isAdminsuper) menu.push({
+    if (this.props.isAdminRoom || this.props.isAdminsuper) menu.push({
       icon: 'SupervisedUserCircleOutlinedIcon',
       title: 'Meeting Room',
       information: 'Kelola meeting room dan aksesnya',
       route: '/setting/setting-meeting-room'
     })
 
-    let checkAdminCompany = this.props.designation && this.props.designation.find(menu => menu.menu_id === 2 || menu.menu_id === 3 || menu.menu_id === 4 || menu.menu_id === 5)
-    if (checkAdminCompany || this.props.isAdminsuper || (this.props.PIC && this.props.PIC.length > 0)) menu.push({
+    if (this.props.isAdminAddress || this.props.isAdminStructure || this.props.isAdminEmployee || this.props.isAdminAdmin || this.props.isAdminsuper || this.props.isPIC) menu.push({
       icon: 'BusinessOutlinedIcon',
       title: 'Perusahaan',
       information: 'Atur alamat, jam kerja, struktur perusahaan, dan karyawan. Termasuk proses onboarding.',
@@ -118,11 +116,19 @@ class Setting extends Component {
   }
 }
 
-const mapStateToProps = ({ designation, isAdminsuper, PIC }) => {
+const mapStateToProps = ({ isAdminsuper, admin, isPIC, isAdminNews, isAdminAddress, isAdminStructure, isAdminEmployee, isAdminAdmin, isAdminRoom, isAdminKPIM, isAdminHR }) => {
   return {
-    designation,
     isAdminsuper,
-    PIC
+    admin,
+    isPIC,
+    isAdminNews,
+    isAdminAddress,
+    isAdminStructure,
+    isAdminEmployee,
+    isAdminAdmin,
+    isAdminRoom,
+    isAdminKPIM,
+    isAdminHR
   }
 }
 export default connect(mapStateToProps)(Setting)

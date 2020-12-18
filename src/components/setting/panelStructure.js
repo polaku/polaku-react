@@ -52,7 +52,7 @@ class panelStructure extends Component {
     await this.props.fetchDataStructure({ limit: this.state.rowsPerPage, page: this.state.page })
     await this.fetchData()
 
-    if (this.props.dataCompanies && this.props.dinas) {
+    if (this.props.dataCompanies && this.props.admin) {
       this.fetchOptionCompany()
     }
   }
@@ -72,7 +72,7 @@ class panelStructure extends Component {
       }
     }
 
-    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.dinas !== prevProps.dinas) {
+    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.admin !== prevProps.admin) {
       this.fetchOptionCompany()
     }
   }
@@ -94,20 +94,12 @@ class panelStructure extends Component {
       this.setState({ optionCompany: [{ acronym: 'Semua' }, ...this.props.dataCompanies] })
     } else {
       let optionCompany = []
-      if (this.props.dinas.length > 1) {
+      if (this.props.admin.length > 1) {
         optionCompany.push({ acronym: 'Semua' })
       }
 
       let idCompany = []
-      await this.props.dinas.forEach(el => {
-        let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
-        if (check) {
-          idCompany.push(el.company_id)
-          optionCompany.push(check)
-        }
-      })
-
-      await this.props.PIC.forEach(el => {
+      await this.props.admin.forEach(el => {
         if (idCompany.indexOf(el.company_id) === -1) {
           let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
           if (check) {
@@ -233,6 +225,12 @@ class panelStructure extends Component {
     this.setState({ proses: false })
   }
 
+  refresh = async () => {
+    this.setState({ proses: true })
+    await this.props.fetchDataStructure({ limit: this.state.rowsPerPage, page: this.state.page })
+    await this.fetchData()
+  }
+
   render() {
     return (
       <div style={{ width: '100%', paddingTop: 0 }}>
@@ -356,7 +354,7 @@ class panelStructure extends Component {
               </Paper>
               {
                 orderBy(this.state.dataForDisplay, this.state.columnToSort, this.state.sortDirection).map((department, index) =>
-                  <CardDepartment key={"department" + index} data={department} selectAll={this.state.selectAll} handleCheck={this.handleCheck} fetchData={this.fetchData} index={this.props.index} limit={this.state.rowsPerPage} page={this.state.page} />
+                  <CardDepartment key={"department" + index} data={department} selectAll={this.state.selectAll} handleCheck={this.handleCheck} refresh={this.refresh} index={this.props.index} />
                 )
               }
               <TablePagination
@@ -390,16 +388,17 @@ const mapDispatchToProps = {
   fetchDataCompanies
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataStructure, totalDataStructure, dataCompanies, dinas, isAdminsuper, PIC }) => {
+const mapStateToProps = ({ loading, dataUsers, dataStructure, totalDataStructure, dataCompanies, isAdminsuper, admin }) => {
   return {
     loading,
     dataUsers,
     dataStructure,
     totalDataStructure,
     dataCompanies,
-    dinas,
     isAdminsuper,
-    PIC
+    admin
+    // dinas,
+    // PIC
   }
 }
 

@@ -55,7 +55,7 @@ class panelEmployee extends Component {
 
     await this.props.fetchDataCompanies()
 
-    if (this.props.dataCompanies && this.props.dinas) {
+    if (this.props.dataCompanies && this.props.admin) {
       this.fetchOptionCompany()
     }
   }
@@ -79,7 +79,7 @@ class panelEmployee extends Component {
       this.setState({ proses: false })
     }
 
-    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.dinas !== prevProps.dinas) {
+    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.admin !== prevProps.admin) {
       this.fetchOptionCompany()
     }
   }
@@ -129,20 +129,12 @@ class panelEmployee extends Component {
       this.setState({ optionCompany: [{ acronym: 'Semua' }, ...this.props.dataCompanies] })
     } else {
       let optionCompany = []
-      if (this.props.dinas.length > 1) {
+      if (this.props.admin.length > 1) {
         optionCompany.push({ acronym: 'Semua' })
       }
 
       let idCompany = []
-      await this.props.dinas.forEach(el => {
-        let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
-        if (check) {
-          idCompany.push(el.company_id)
-          optionCompany.push(check)
-        }
-      })
-
-      await this.props.PIC.forEach(el => {
+      await this.props.admin.forEach(el => {
         if (idCompany.indexOf(el.company_id) === -1) {
           let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
           if (check) {
@@ -521,7 +513,7 @@ const mapDispatchToProps = {
   fetchDataDinas
 }
 
-const mapStateToProps = ({ loading, dataUsers, lengthAllDataUsers, dataCompanies, dataDinas, counterEmployeeTetap, counterEmployeeKontrak, counterEmployeeProbation, counterEmployeeBerhenti, allUser, dinas, isAdminsuper, PIC }) => {
+const mapStateToProps = ({ loading, dataUsers, lengthAllDataUsers, dataCompanies, dataDinas, counterEmployeeTetap, counterEmployeeKontrak, counterEmployeeProbation, counterEmployeeBerhenti, allUser, isAdminsuper, admin }) => {
   return {
     loading,
     dataUsers,
@@ -533,9 +525,10 @@ const mapStateToProps = ({ loading, dataUsers, lengthAllDataUsers, dataCompanies
     counterEmployeeProbation,
     counterEmployeeBerhenti,
     counterAllUser: allUser,
-    dinas,
     isAdminsuper,
-    PIC
+    admin
+    // dinas,
+    // PIC
   }
 }
 

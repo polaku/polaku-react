@@ -149,22 +149,13 @@ class cardAddEmployee extends Component {
       this.submit()
     }
 
-    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.dinas !== prevProps.dinas || this.props.PIC !== prevProps.PIC) {
+    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.admin !== prevProps.admin) {
       let optionCompany = []
       if (this.props.isAdminsuper) {
         this.setState({ optionCompany: [...optionCompany, ...this.props.dataCompanies] })
       } else {
         let idCompany = []
-
-        await this.props.dinas.forEach(el => {
-          let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
-          if (check) {
-            idCompany.push(el.company_id)
-            optionCompany.push(check)
-          }
-        })
-
-        await this.props.PIC.forEach(el => {
+        await this.props.admin.forEach(el => {
           if (idCompany.indexOf(el.company_id) === -1) {
             let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
             if (check) {
@@ -1083,17 +1074,18 @@ const mapDispatchToProps = {
   fetchDataStructure
 }
 
-const mapStateToProps = ({ dataCompanies, dataDepartments, dataPositions, dataUsers, dataAddress, dinas, isAdminsuper, dataStructure, PIC }) => {
+const mapStateToProps = ({ dataCompanies, dataDepartments, dataPositions, dataUsers, dataAddress, isAdminsuper, dataStructure, admin }) => {
   return {
     dataCompanies,
     dataDepartments,
     dataPositions,
     dataUsers,
     dataAddress,
-    dinas,
     isAdminsuper,
     dataStructure,
-    PIC
+    // PIC,
+    // dinas,
+    admin
   }
 }
 

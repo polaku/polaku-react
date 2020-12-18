@@ -48,34 +48,24 @@ class SettingPerusahaan extends Component {
   }
 
   componentDidMount() {
-    // if (this.props.location.state) {
-    //   this.setState({ value: this.props.location.state.index })
-    // }
-    if (this.props.designation) {
-      this.fetchLabel()
-    } else if (this.props.isAdminsuper || (this.props.PIC && this.props.PIC.length > 0)) {
+    if (this.props.isAdminsuper || (this.props.admin && this.props.admin.length > 0) || this.props.isAdminAddress || this.props.isAdminStructure || this.props.isAdminEmployee || this.props.isAdminAdmin) {
       this.fetchLabel()
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.designation !== prevProps.designation || this.props.isAdminsuper !== prevProps.isAdminsuper || (this.props.PIC !== prevProps.PIC && this.props.PIC.length > 0)) {
+    if (this.props.isAdminAddress !== prevProps.isAdminAddress || this.props.isAdminStructure !== prevProps.isAdminStructure || this.props.isAdminEmployee !== prevProps.isAdminEmployee || this.props.isAdminAdmin !== prevProps.isAdminAdmin || this.props.isAdminsuper !== prevProps.isAdminsuper || (this.props.admin !== prevProps.admin && this.props.admin.length > 0)) {
       this.fetchLabel()
     }
   }
 
   fetchLabel = () => {
     let label = []
-    let checkAlamat = this.props.designation && this.props.designation.find(menu => menu.menu_id === 2)
-    let checkStruktur = this.props.designation && this.props.designation.find(menu => menu.menu_id === 3)
-    let checkKaryawn = this.props.designation && this.props.designation.find(menu => menu.menu_id === 4)
-    let checkAdmin = this.props.designation && this.props.designation.find(menu => menu.menu_id === 5)
-
     if (this.props.isAdminsuper) label.push('OnBoarding')
-    if (checkAlamat || this.props.isAdminsuper || (this.props.PIC && this.props.PIC.length > 0)) label.push('Alamat')
-    if (checkStruktur || this.props.isAdminsuper || (this.props.PIC && this.props.PIC.length > 0)) label.push('Struktur')
-    if (checkKaryawn || this.props.isAdminsuper || (this.props.PIC && this.props.PIC.length > 0)) label.push('Karyawan')
-    if (checkAdmin || this.props.isAdminsuper || (this.props.PIC && this.props.PIC.length > 0)) label.push('Admin')
+    if (this.props.isAdminAddress || this.props.isAdminsuper || this.props.isPIC) label.push('Alamat')
+    if (this.props.isAdminStructure || this.props.isAdminsuper || this.props.isPIC) label.push('Struktur')
+    if (this.props.isAdminEmployee || this.props.isAdminsuper || this.props.isPIC) label.push('Karyawan')
+    if (this.props.isAdminAdmin || this.props.isAdminsuper || this.props.isPIC) label.push('Admin')
     this.setState({ label })
   }
 
@@ -211,11 +201,15 @@ class SettingPerusahaan extends Component {
   }
 }
 
-const mapStateToProps = ({ designation, isAdminsuper, PIC }) => {
+const mapStateToProps = ({ isAdminsuper, admin, isAdminAddress, isAdminStructure, isAdminEmployee, isAdminAdmin, isPIC }) => {
   return {
-    designation,
     isAdminsuper,
-    PIC
+    admin,
+    isAdminAddress,
+    isAdminStructure,
+    isAdminEmployee,
+    isAdminAdmin,
+    isPIC
   }
 }
 

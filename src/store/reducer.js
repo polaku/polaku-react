@@ -6,14 +6,15 @@ const defaultState = {
   isRoomMaster: false,
   isCreatorMaster: false,
   isCreatorAssistant: false,
-  PIC: [],
+  admin: [],
+  isPIC: false,
+  // PIC: [],
+  // dinas: [],
   adminContactCategori: null,
   sisaCuti: 0,
   evaluator1: null,
   evaluator2: null,
   bawahan: [],
-  designation: [],
-  dinas: [],
   loading: false,
   error: {},
   isLogin: false,
@@ -70,10 +71,11 @@ function reducer(state = defaultState, action) {
         evaluator2: action.payload.evaluator2,
         bawahan: action.payload.bawahan,
         adminContactCategori: action.payload.adminContactCategori,
-        designation: action.payload.designation,
-        dinas: action.payload.dinas,
-        PIC: action.payload.PIC,
-        ip: action.payload.ip
+        // dinas: action.payload.dinas,
+        // PIC: action.payload.PIC,admin
+        admin: action.payload.admin,
+        ip: action.payload.ip,
+        isPIC: action.payload.isPIC
       }
     }
     case 'FETCH_DATA_USER_DETAIL_SUCCESS': {

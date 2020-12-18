@@ -7,6 +7,7 @@ import { Grid, Button, Select, MenuItem, FormControl, FormControlLabel, Checkbox
 import CloseIcon from '@material-ui/icons/Close';
 
 import CardAddAddress from '../../components/setting/cardAddAddress';
+import Loading from '../../components/Loading';
 
 import swal from 'sweetalert';
 
@@ -45,21 +46,13 @@ class AddAddress extends Component {
   }
 
   async componentDidUpdate(prevProps, prevState) {
-    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.dinas !== prevProps.dinas) {
+    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.admin !== prevProps.admin) {
       let optionCompany = []
       if (this.props.isAdminsuper) {
         this.setState({ optionCompany: [...optionCompany, ...this.props.dataCompanies] })
       } else {
         let idCompany = []
-        await this.props.dinas.forEach(el => {
-          let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
-          if (check) {
-            idCompany.push(el.company_id)
-            optionCompany.push(check)
-          }
-        })
-
-        await this.props.PIC.forEach(el => {
+        await this.props.admin.forEach(el => {
           if (idCompany.indexOf(el.company_id) === -1) {
             let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
             if (check) {
@@ -124,33 +117,58 @@ class AddAddress extends Component {
 
         if (newData.length === this.state.dataForEdit.length) {
           this.setState({ proses: true })
-          newData.forEach(async (data, index) => {
-            if (this.state.indexMainAddress !== null) {
-              if (index === this.state.indexMainAddress) {
-                data.append('isMainAddress', true)
-              } else {
-                data.append('isMainAddress', false)
-              }
-            }
-            promises.push(API.put(`/address/${data.get('addressId')}`, data, {
+          if (newData.length === 1) {
+            API.put(`/address/${newData[0].get('addressId')}`, newData[0], {
               headers: {
                 token,
                 ip: this.props.ip
+              },
+              // 'content-type': 'multipart/form-data; boundary=---011000010111000001101001',
+            })
+              .then(async ({ data }) => {
+                this.setState({ data: [], proses: false })
+                await this.props.fetchDataAddress()
+                swal('Ubah alamat sukses', '', 'success')
+                this.props.history.push('/setting/setting-perusahaan', this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
+                )
+              })
+              .catch(err => {
+                console.log(err)
+                this.setState({ proses: false })
+                swal('Ubah alamat gagal', '', 'error')
+              })
+          } else {
+            newData.forEach(async (data, index) => {
+              if (this.state.indexMainAddress !== null) {
+                if (index === this.state.indexMainAddress) {
+                  data.append('isMainAddress', true)
+                } else {
+                  data.append('isMainAddress', false)
+                }
               }
-            }))
-          })
-          Promise.all(promises)
-            .then(async ({ data }) => {
-              this.setState({ data: [], proses: false })
-              await this.props.fetchDataAddress()
-              swal('Ubah alamat sukses', '', 'success')
-              this.props.history.push('/setting/setting-perusahaan', this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
-              )
+              promises.push(API.put(`/address/${data.get('addressId')}`, data, {
+                headers: {
+                  token,
+                  ip: this.props.ip
+                },
+                'content-type': 'multipart/form-data; boundary=---011000010111000001101001',
+              }))
             })
-            .catch(err => {
-              this.setState({ proses: false })
-              swal('Ubah alamat gagal', '', 'error')
-            })
+            console.log("PROMISES", promises)
+            Promise.all(promises)
+              .then(async ({ data }) => {
+                this.setState({ data: [], proses: false })
+                await this.props.fetchDataAddress()
+                swal('Ubah alamat sukses', '', 'success')
+                this.props.history.push('/setting/setting-perusahaan', this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
+                )
+              })
+              .catch(err => {
+                console.log(err)
+                this.setState({ proses: false })
+                swal('Ubah alamat gagal', '', 'error')
+              })
+          }
         } else {
           this.setState({ tempDataForEdit: newData })
         }
@@ -214,6 +232,9 @@ class AddAddress extends Component {
   render() {
     return (
       <Grid>
+        {
+          this.state.proses && <Loading loading={this.state.proses} />
+        }
         <Grid style={{ display: 'flex' }}>
           <img src={process.env.PUBLIC_URL + '/location.png'} alt="Logo" style={{ width: 60, maxHeight: 60, alignSelf: 'center', marginBottom: 20 }} />
           <Grid style={{ display: 'flex', flexDirection: 'column', marginLeft: '15px' }}>
@@ -278,13 +299,14 @@ const mapDispatchToProps = {
   fetchDataAddress
 }
 
-const mapStateToProps = ({ dataCompanies, dinas, isAdminsuper, PIC, ip }) => {
+const mapStateToProps = ({ dataCompanies, isAdminsuper, ip, admin }) => {
   return {
     dataCompanies,
-    dinas,
     isAdminsuper,
-    PIC,
-    ip
+    ip,
+    admin
+    // dinas,
+    // PIC,
   }
 }
 

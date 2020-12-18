@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 // import Cookies from 'js-cookie';
 
 import {
-  Grid, CircularProgress, Paper, TextField, Button, TablePagination
+  Grid, CircularProgress, Paper, TextField, Button, TablePagination, Tabs, Tab, Divider
   // Checkbox
 } from '@material-ui/core';
 
@@ -21,8 +21,8 @@ class panelAdmin extends Component {
   state = {
     labelTab: ['Semua'],
     search: '',
-    valueA: 0,
-    valueB: 0,
+    value: 0,
+    // valueA: 0,
     index: 0,
     selectAll: false,
     check: false,
@@ -31,10 +31,11 @@ class panelAdmin extends Component {
     dataDinas: [],
     dataForDisplayDinas: [],
     dataForEdit: [],
-    listCompany: [],
+    optionCompany: [],
 
     openModalCreateEditMuchEmployee: false,
     isCreate: false,
+    company: '',
     page: 0,
     rowsPerPage: 10,
     proses: true,
@@ -43,17 +44,12 @@ class panelAdmin extends Component {
   }
 
   async componentDidMount() {
-    // this.setState({ proses: true })
+    await this.props.fetchDataCompanies()
     await this.props.fetchDataDesignation({ limit: this.state.rowsPerPage, page: this.state.page })
 
-    // await this.props.fetchDataCompanies()
-
-    // let newTab = [{ id: 0, label: 'Semua' }]
-    // await this.props.dataCompanies.forEach(company => {
-    //   newTab.push({ id: company.company_id, label: company.acronym })
-    // })
-
-    // this.setState({ proses: false, labelTab: newTab })
+    if (this.props.dataCompanies && this.props.admin) {
+      this.fetchOptionCompany()
+    }
     this.setState({ proses: false })
   }
 
@@ -62,12 +58,15 @@ class panelAdmin extends Component {
       this.setState({ dataForDisplay: this.state.data })
     }
 
-
-    if (this.state.valueA !== prevState.valueA) {
-      await this.props.fetchDataDesignation({ limit: 10, page: 0 })
-      this.setState({ proses: false, valueB: 0, page: 0, rowsPerPage: 10 })
+    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.admin !== prevProps.admin) {
+      if (this.state.optionCompany.length > 0) {
+        this.fetchOptionCompany()
+      }
     }
 
+    if (this.state.optionCompany !== prevState.optionCompany) {
+      console.log(this.state.optionCompany)
+    }
   }
 
   fetchData = async () => {
@@ -90,9 +89,31 @@ class panelAdmin extends Component {
     this.setState({ data: tempNewDataUsers, dataForDisplay: tempNewDataUsers, label })
   }
 
-  handleChangeTabA = (event, newValue) => {
-    this.setState({ valueA: newValue })
-  };
+  fetchOptionCompany = async () => {
+    if (this.props.isAdminsuper) {
+      console.log("MASUK 1", this.props.dataCompanies)
+      this.setState({ optionCompany: [{ acronym: 'Semua' }, ...this.props.dataCompanies] })
+    } else {
+      console.log("MASUK 2")
+      let optionCompany = []
+      if (this.props.admin.length > 1) {
+        optionCompany.push({ acronym: 'Semua' })
+      }
+
+      let idCompany = []
+      await this.props.admin.forEach(el => {
+        if (idCompany.indexOf(el.company_id) === -1) {
+          let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+          if (check) {
+            idCompany.push(el.company_id)
+            optionCompany.push(check)
+          }
+        }
+      })
+
+      this.setState({ optionCompany })
+    }
+  }
 
   handleChange = name => event => {
     this.setState({ [name]: event.target.value });
@@ -108,9 +129,8 @@ class panelAdmin extends Component {
   handleSearch = async () => {
     this.setState({ proses: true, page: 0 })
 
-    if (this.state.valueB !== 0) {
-      let companySelectedId = this.state.labelTab[this.state.valueB]
-      await this.props.fetchDataDesignation({ limit: this.state.rowsPerPage, page: this.state.page, company: companySelectedId.id, keyword: this.state.search })
+    if (this.state.value !== 0) {
+      await this.props.fetchDataDesignation({ limit: this.state.rowsPerPage, page: this.state.page, company: this.state.company, keyword: this.state.search })
     } else {
       await this.props.fetchDataDesignation({ limit: this.state.rowsPerPage, page: this.state.page, keyword: this.state.search })
     }
@@ -165,6 +185,18 @@ class panelAdmin extends Component {
     })
   }
 
+  handleChangeTab = async (event, newValue) => {
+    this.setState({ value: newValue, search: '', page: 0 })
+
+    if (newValue === 0) {
+      await this.props.fetchDataDesignation({ limit: this.state.rowsPerPage, page: 0 })
+      await this.fetchData()
+    } else {
+      await this.props.fetchDataDesignation({ limit: this.state.rowsPerPage, page: 0, company: this.state.company })
+      await this.fetchData()
+    }
+  };
+
   render() {
     return (
       <div style={{ width: '100%', paddingTop: 0 }}>
@@ -191,6 +223,19 @@ class panelAdmin extends Component {
               </Grid>
 
               <Paper id="search" style={{ padding: 10, paddingLeft: 20, paddingBottom: 20, marginBottom: 20 }}>
+                <Tabs
+                  value={this.state.value}
+                  indicatorColor="secondary"
+                  textColor="secondary"
+                  onChange={this.handleChangeTab}
+                >
+                  {
+                    this.state.optionCompany.map((el, index) =>
+                      <Tab key={index} label={el.acronym} style={{ marginRight: 10, minWidth: 80 }} />
+                    )
+                  }
+                </Tabs>
+                <Divider />
                 <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
                   {/* <form style={{ width: '100%', marginRight: 15, marginTop: 3 }}> */}
                   <TextField
@@ -235,8 +280,8 @@ class panelAdmin extends Component {
                   ? <div style={{ textAlign: 'center' }}>
                     <CircularProgress color="secondary" style={{ marginTop: 20 }} />
                   </div>
-                  : this.props.dataDesignation.map(designation =>
-                    <CardAdmin selectAll={this.state.selectAll} handleCheck={this.handleCheck} refresh={this.refresh} data={designation} />
+                  : this.props.dataDesignation.map((designation, index) =>
+                    <CardAdmin key={"admin" + index} selectAll={this.state.selectAll} handleCheck={this.handleCheck} refresh={this.refresh} data={designation} />
                   )
               }
 
@@ -274,14 +319,16 @@ const mapDispatchToProps = {
   fetchDataDesignation
 }
 
-const mapStateToProps = ({ loading, dataCompanies, dataDinas, allUser, dataDesignation, lengthAllDataDesignation }) => {
+const mapStateToProps = ({ loading, dataCompanies, dataDinas, allUser, dataDesignation, lengthAllDataDesignation, admin, isAdminsuper }) => {
   return {
     loading,
     dataCompanies,
     dataDinas,
     counterAllUser: allUser,
     dataDesignation,
-    lengthAllDataDesignation
+    lengthAllDataDesignation,
+    admin,
+    isAdminsuper
   }
 }
 

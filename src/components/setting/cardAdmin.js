@@ -18,10 +18,11 @@ import swal from 'sweetalert';
 
 class cardAdmin extends Component {
   state = {
-    notComplete: false
+    notComplete: false,
+    status: ''
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // 1=Berita Pola, 
     // 2=Alamat, 
     // 3=Struktur, 
@@ -31,30 +32,42 @@ class cardAdmin extends Component {
     // 7=KPIM&TAL, 
     // 8=HR
 
-    // let checkBeritaPola = this.props.data.tbl_designation.tbl_user_roles.find(el => el.menu_id === 1)
-    let checkAlamat = this.props.data.tbl_designation.tbl_user_roles.find(el => el.menu_id === 2)
-    let checkStruktur = this.props.data.tbl_designation.tbl_user_roles.find(el => el.menu_id === 3)
-    let checkKaryawan = this.props.data.tbl_designation.tbl_user_roles.find(el => el.menu_id === 4)
-    let checkAdmin = this.props.data.tbl_designation.tbl_user_roles.find(el => el.menu_id === 5)
-    let checkMeetingRoom = this.props.data.tbl_designation.tbl_user_roles.find(el => el.menu_id === 6)
-    let checkKPIM = this.props.data.tbl_designation.tbl_user_roles.find(el => el.menu_id === 7)
-    let checkHR = this.props.data.tbl_designation.tbl_user_roles.find(el => el.menu_id === 8)
-    let statusAdmin = []
+    let status = null
 
-    if (checkAlamat && checkStruktur && checkKaryawan && checkAdmin && checkMeetingRoom && checkKPIM && checkHR) {
-      statusAdmin.push('Semua')
-    } else {
-      // if (checkBeritaPola) statusAdmin.push('Berita')
-      if (checkAlamat) statusAdmin.push('Alamat')
-      if (checkStruktur) statusAdmin.push('Struktur')
-      if (checkKaryawan) statusAdmin.push('Karyawan')
-      if (checkAdmin) statusAdmin.push('Admin')
-      if (checkMeetingRoom) statusAdmin.push('Meeting Room')
-      if (checkKPIM) statusAdmin.push('KPIM & TAL')
-      if (checkHR) statusAdmin.push('HR')
-    }
+    console.log(this.props.data)
 
-    this.setState({ status: statusAdmin.join(', ') })
+    await this.props.data.tbl_admin_companies.forEach(element => {
+
+      let checkBeritaPola = element.tbl_designation.tbl_user_roles.find(el => el.menu_id === 1)
+      let checkAlamat = element.tbl_designation.tbl_user_roles.find(el => el.menu_id === 2)
+      let checkStruktur = element.tbl_designation.tbl_user_roles.find(el => el.menu_id === 3)
+      let checkKaryawan = element.tbl_designation.tbl_user_roles.find(el => el.menu_id === 4)
+      let checkAdmin = element.tbl_designation.tbl_user_roles.find(el => el.menu_id === 5)
+      let checkMeetingRoom = element.tbl_designation.tbl_user_roles.find(el => el.menu_id === 6)
+      let checkKPIM = element.tbl_designation.tbl_user_roles.find(el => el.menu_id === 7)
+      let checkHR = element.tbl_designation.tbl_user_roles.find(el => el.menu_id === 8)
+      let statusAdmin = []
+
+      if (checkAlamat && checkStruktur && checkKaryawan && checkAdmin && checkMeetingRoom && checkKPIM && checkHR) {
+        statusAdmin.push('Semua')
+      } else {
+        // if (checkBeritaPola) statusAdmin.push('Berita')
+        if (checkAlamat) statusAdmin.push('Alamat')
+        if (checkStruktur) statusAdmin.push('Struktur')
+        if (checkKaryawan) statusAdmin.push('Karyawan')
+        if (checkAdmin) statusAdmin.push('Admin')
+        if (checkMeetingRoom) statusAdmin.push('Meeting Room')
+        if (checkKPIM) statusAdmin.push('KPIM & TAL')
+        if (checkHR) statusAdmin.push('HR')
+      }
+
+      let statusTemp = `${element.tbl_company.acronym} (Admin: ${statusAdmin.join(', ')})`
+
+      if (status !== null) status = `${status}, ${statusTemp}`
+      else status = statusTemp
+
+    });
+    this.setState({ status })
   }
 
   delete = () => {
@@ -86,9 +99,9 @@ class cardAdmin extends Component {
   render() {
     return (
       <Paper style={{ display: 'flex', padding: '15px 20px', margin: 1, borderRadius: 0, alignItems: 'center' }}>
-        <Grid style={{ width: '25%', display: 'flex', flexDirection: 'column' }}>
-          <p style={{ margin: 0, color: 'gray', fontSize: 13 }}>NIK : {this.props.data.nik}</p>
-          <p style={{ margin: 0 }}>{this.props.data.fullname}</p>
+        <Grid style={{ width: '30%', display: 'flex', flexDirection: 'column' }}>
+          <p style={{ margin: 0, color: 'gray', fontSize: 13 }}>NIK : {this.props.data.tbl_account_detail.nik}</p>
+          <p style={{ margin: 0 }}>{this.props.data.tbl_account_detail.fullname}</p>
         </Grid>
         <p style={{ margin: 0, width: '50%' }}>{this.state.status}</p>
         <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '20%' }}>
@@ -99,9 +112,9 @@ class cardAdmin extends Component {
                 <ErrorOutlinedIcon style={{ color: 'red' }} />
               </Tooltip>
             }
-            <Tooltip title="Edit admin" aria-label="edit-data">
+            {/* <Tooltip title="Edit admin" aria-label="edit-data">
               <img src={process.env.PUBLIC_URL + '/edit.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-admin', { data: this.props.data })} />
-            </Tooltip>
+            </Tooltip> */}
             <Tooltip title="Hapus admin" aria-label="delete-data">
               <DeleteIcon style={{ color: 'red', cursor: 'pointer' }} onClick={this.delete} />
             </Tooltip>

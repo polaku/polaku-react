@@ -39,7 +39,7 @@ class panelAddress extends Component {
     await this.props.fetchDataAddress({ limit: this.state.rowsPerPage, page: this.state.page })
     await this.fetchData()
 
-    if (this.props.dataCompanies && this.props.dinas) {
+    if (this.props.dataCompanies && this.props.admin) {
       this.fetchOptionCompany()
     }
   }
@@ -63,7 +63,7 @@ class panelAddress extends Component {
       // console.log(this.state.dataForEdit)
     }
 
-    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.dinas !== prevProps.dinas) {
+    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.admin !== prevProps.admin) {
       this.fetchOptionCompany()
     }
   }
@@ -86,20 +86,12 @@ class panelAddress extends Component {
       this.setState({ optionCompany: [{ acronym: 'Semua' }, ...this.props.dataCompanies] })
     } else {
       let optionCompany = []
-      if (this.props.dinas.length > 1) {
+      if (this.props.admin.length > 1) {
         optionCompany.push({ acronym: 'Semua' })
       }
 
       let idCompany = []
-      await this.props.dinas.forEach(el => {
-        let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
-        if (check) {
-          idCompany.push(el.company_id)
-          optionCompany.push(check)
-        }
-      })
-
-      await this.props.PIC.forEach(el => {
+      await this.props.admin.forEach(el => {
         if (idCompany.indexOf(el.company_id) === -1) {
           let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
           if (check) {
@@ -212,11 +204,17 @@ class panelAddress extends Component {
     this.setState({ proses: false })
   }
 
+  refresh = async () => {
+    this.setState({ proses: true })
+    await this.props.fetchDataAddress({ limit: this.state.rowsPerPage, page: this.state.page })
+    await this.fetchData()
+  }
+
   render() {
     return (
       <div style={{ width: '100%', paddingTop: 0 }}>
         {
-          this.state.loading
+          this.state.proses
             ? <div style={{ textAlign: 'center' }}>
               <CircularProgress color="secondary" style={{ marginTop: 20 }} />
             </div>
@@ -292,7 +290,7 @@ class panelAddress extends Component {
 
               {
                 this.state.dataForDisplay.map((address, index) =>
-                  <CardAddress key={index} data={address} selectAll={this.state.selectAll} handleCheck={this.handleCheck} fetchData={this.fetchData} index={this.props.index} limit={this.state.rowsPerPage} page={this.state.page} />
+                  <CardAddress key={index} data={address} selectAll={this.state.selectAll} handleCheck={this.handleCheck} refresh={this.refresh} index={this.props.index} />
                 )
               }
               <TablePagination
@@ -326,16 +324,17 @@ const mapDispatchToProps = {
   fetchDataCompanies
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataAddress, totalDataAddress, dataCompanies, dinas, isAdminsuper, PIC }) => {
+const mapStateToProps = ({ loading, dataUsers, dataAddress, totalDataAddress, dataCompanies, isAdminsuper, admin }) => {
   return {
     loading,
     dataUsers,
     dataAddress,
     totalDataAddress,
     dataCompanies,
-    dinas,
     isAdminsuper,
-    PIC
+    admin
+    // dinas,
+    // PIC
   }
 }
 

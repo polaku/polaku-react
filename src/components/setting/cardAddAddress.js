@@ -319,7 +319,7 @@ export default class cardAddAddress extends Component {
     newData.append("phone", this.state.phone.join(','))
     newData.append("fax", this.state.fax.join(','))
     newData.append("operationalDay", operationalDay.join(','))
-
+console.log(this.state.files)
     if (this.state.files.length > 0) this.state.files.forEach(file => {
       newData.append("files", file)
     })
@@ -365,9 +365,14 @@ export default class cardAddAddress extends Component {
         <>
           <p style={{ margin: 0, fontSize: 11, color: '#adadad' }}><b style={{ fontSize: 14, color: 'black' }}>Foto lokasi</b>harap masuki 1 gambar tampilan depan, tampilan dalam kantor, apabila dak ada dapat dikosongkan</p>
           {
-            this.props.data && this.props.data.tbl_photo_addresses.length === 0 && <Grid style={{ backgroundColor: 'red', borderRadius: 5, padding: '3px 8px', width: 93 }}>
-              <b style={{ margin: 0, color: 'white', fontSize: 10 }}>Foto belum ada</b>
-            </Grid>
+            this.props.data && (
+              this.props.data.tbl_photo_addresses.length === 0
+                ? <Grid style={{ backgroundColor: 'red', borderRadius: 5, padding: '3px 8px', width: 93 }}>
+                  <b style={{ margin: 0, color: 'white', fontSize: 10 }}>Foto belum ada</b>
+                </Grid>
+                : <Grid style={{ backgroundColor: 'green', borderRadius: 5, padding: '3px 8px', width: 93 }}>
+                  <b style={{ margin: 0, color: 'white', fontSize: 10 }}>Foto sudah ada</b>
+                </Grid>)
           }
           <DragAndDrop handleFiles={this.handleFiles} />
         </>

@@ -54,9 +54,9 @@ class Login extends Component {
 
     try {
       data = await API.post('/users/signin', user, {
-        headers: {
-          ip: this.props.ip
-        }
+        // headers: {
+        //   ip: this.props.ip
+        // }
       })
       Cookies.set('POLAGROUP', data.data.token, { expires: 365 });
 
@@ -76,10 +76,51 @@ class Login extends Component {
           evaluator1: data.data.evaluator1,
           evaluator2: data.data.evaluator2,
           bawahan: data.data.bawahan,
-          designation: data.data.designation,
-          dinas: data.data.dinas,
-          PIC: data.data.PIC
+          admin: data.data.admin,
+          // ip: props.ip
         }
+
+
+        let checkPIC = data.data.admin.find(el => el.PIC)
+        let PIC = checkPIC ? true : false
+        newData.isPIC = PIC
+
+        let isAdminNews = false, isAdminAddress = false, isAdminStructure = false, isAdminEmployee = false, isAdminAdmin = false, isAdminRoom = false, isAdminKPIM = false, isAdminHR = false
+
+        await data.data.admin.forEach(admin => {
+          let checkNews = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 1)
+          if (checkNews) isAdminNews = true
+
+          let checkAddress = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 2)
+          if (checkAddress) isAdminAddress = true
+
+          let checkStructure = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 3)
+          if (checkStructure) isAdminStructure = true
+
+          let checkEmployee = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 4)
+          if (checkEmployee) isAdminEmployee = true
+
+          let checkAdmin = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 5)
+          if (checkAdmin) isAdminAdmin = true
+
+          let checkRoom = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 6)
+          if (checkRoom) isAdminRoom = true
+
+          let checkKPIM = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 7)
+          if (checkKPIM) isAdminKPIM = true
+
+          let checkHR = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 8)
+          if (checkHR) isAdminHR = true
+        })
+
+        newData.isAdminNews = isAdminNews
+        newData.isAdminAddress = isAdminAddress
+        newData.isAdminStructure = isAdminStructure
+        newData.isAdminEmployee = isAdminEmployee
+        newData.isAdminAdmin = isAdminAdmin
+        newData.isAdminRoom = isAdminRoom
+        newData.isAdminKPIM = isAdminKPIM
+        newData.isAdminHR = isAdminHR
 
         if (data.data.role_id === 1) {
           newData.isAdminsuper = true
