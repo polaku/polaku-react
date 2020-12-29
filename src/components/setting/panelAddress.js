@@ -77,7 +77,6 @@ class panelAddress extends Component {
         label.push(element.tbl_company.acronym)
       }
     });
-    console.log(this.props.dataAddress)
     this.setState({ data: this.props.dataAddress, dataForDisplay: this.props.dataAddress, label, proses: false })
   }
 

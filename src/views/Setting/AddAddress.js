@@ -133,7 +133,7 @@ class AddAddress extends Component {
                 )
               })
               .catch(err => {
-                console.log(err)
+                // console.log(err)
                 this.setState({ proses: false })
                 swal('Ubah alamat gagal', '', 'error')
               })
@@ -154,7 +154,6 @@ class AddAddress extends Component {
                 'content-type': 'multipart/form-data; boundary=---011000010111000001101001',
               }))
             })
-            console.log("PROMISES", promises)
             Promise.all(promises)
               .then(async ({ data }) => {
                 this.setState({ data: [], proses: false })
@@ -164,7 +163,7 @@ class AddAddress extends Component {
                 )
               })
               .catch(err => {
-                console.log(err)
+                // console.log(err)
                 this.setState({ proses: false })
                 swal('Ubah alamat gagal', '', 'error')
               })
@@ -173,14 +172,12 @@ class AddAddress extends Component {
           this.setState({ tempDataForEdit: newData })
         }
       } else {
-        console.log("MASUK 1")
         let newData = this.state.data
         newData.push(args)
         this.setState({ proses: true })
         let token = Cookies.get('POLAGROUP'), promises = []
 
         if (newData.length === this.state.alamat.length) {
-          console.log("MASUK 2")
           newData.forEach(async (data, index) => {
             if (this.state.indexMainAddress !== null) {
               if (index === this.state.indexMainAddress) {

@@ -57,7 +57,7 @@ class modalLogSetting
       })
       this.setState({ data: data.data })
     } catch (err) {
-      console.log(err)
+      // console.log(err)
       swal("Pengambilan data gagal", "Silahkan coba lagi", "warning")
     }
   }

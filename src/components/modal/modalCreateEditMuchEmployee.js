@@ -221,7 +221,7 @@ class modalCreateEditMuchEmployee extends Component {
         this.props.close()
       })
       .catch(err => {
-        console.log(err)
+        // console.log(err)
         swal('please try again')
       })
   }
@@ -245,7 +245,7 @@ class modalCreateEditMuchEmployee extends Component {
         this.props.close()
       })
       .catch(err => {
-        console.log(err)
+        // console.log(err)
         swal('please try again')
       })
   }
@@ -261,6 +261,7 @@ class modalCreateEditMuchEmployee extends Component {
   fetchDataReport = () => {
     let data = [], label = []
 
+    label.push({ label: 'id (tidak boleh diubah)', value: 'id' })
     label.push({ label: 'nik', value: 'nik' })
     if (this.state.semua || this.state.fullname) label.push({ label: 'fullname', value: 'fullname' })
     if (this.state.semua || this.state.nickname) label.push({ label: 'nickname', value: 'nickname' })
@@ -286,7 +287,7 @@ class modalCreateEditMuchEmployee extends Component {
     if (this.state.semua || this.state.nextLensaDate) label.push({ label: 'nextLensaDate', value: 'nextLensaDate' })
 
     this.state.rawData.forEach(element => {
-      let newData = { nik: element.tbl_account_detail.nik }
+      let newData = { id: element.user_id, nik: element.tbl_account_detail.nik }
       if (this.state.semua || this.state.fullname) newData.fullname = element.tbl_account_detail.fullname
       if (this.state.semua || this.state.nickname) newData.nickname = element.tbl_account_detail.nickname
       if (this.state.semua || this.state.initial) newData.initial = element.tbl_account_detail.initial

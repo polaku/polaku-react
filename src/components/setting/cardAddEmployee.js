@@ -70,7 +70,6 @@ class cardAddEmployee extends Component {
   }
 
   async componentDidMount() {
-    await this.props.fetchDataUsers()
     await this.props.fetchDataCompanies()
     await this.props.fetchDataStructure({ forOption: true })
     await this.props.fetchDataPosition()
@@ -85,14 +84,6 @@ class cardAddEmployee extends Component {
 
     if (this.props.proses !== prevProps.proses) {
       this.setState({ proses: this.props.proses })
-    }
-
-    if (this.props.dataUsers !== prevProps.dataUsers) {
-      let listUser = []
-      await this.props.dataUsers.forEach(user => {
-        listUser.push({ value: user.user_id, label: user.tbl_account_detail.fullname })
-      })
-      this.setState({ listUser })
     }
 
     // if (this.props.dataAddress !== prevProps.dataAddress) {
@@ -170,6 +161,10 @@ class cardAddEmployee extends Component {
         this.setState({ company: optionCompany[0].company_id })
       }
     }
+
+    if (this.props.data !== prevProps.data && this.props.optionUser !== prevProps.optionUser) {
+      await this.fetchDataEdit()
+    }
   }
 
   fetchDataEdit = async () => {
@@ -203,9 +198,9 @@ class cardAddEmployee extends Component {
       companyAddress: this.props.data.rawData.tbl_account_detail.building_id,
       nik: this.props.data.rawData.tbl_account_detail.nik,
       evaluator1: this.props.data.rawData.tbl_account_detail.name_evaluator_1,
-      evaluator1Selected: this.props.data.rawData.tbl_account_detail.name_evaluator_1 && this.state.listUser.find(user => user.value === +this.props.data.rawData.tbl_account_detail.name_evaluator_1),
+      evaluator1Selected: this.props.data.rawData.tbl_account_detail.name_evaluator_1 && this.props.optionUser.find(user => user.value === +this.props.data.rawData.tbl_account_detail.name_evaluator_1),
       evaluator2: this.props.data.rawData.tbl_account_detail.name_evaluator_2,
-      evaluator2Selected: this.props.data.rawData.tbl_account_detail.name_evaluator_2 && this.state.listUser.find(user => user.value === +this.props.data.rawData.tbl_account_detail.name_evaluator_2),
+      evaluator2Selected: this.props.data.rawData.tbl_account_detail.name_evaluator_2 && this.props.optionUser.find(user => user.value === +this.props.data.rawData.tbl_account_detail.name_evaluator_2),
       tanggalGabung: this.props.data.rawData.tbl_account_detail.join_date || null,
       dateOfBirth: this.props.data.rawData.tbl_account_detail.date_of_birth || null,
       statusKaryawan: this.props.data.rawData.tbl_account_detail.status_employee,
@@ -431,8 +426,9 @@ class cardAddEmployee extends Component {
           </Grid>
 
           <Grid id="nama-karyawan" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Nama</b>
+            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+              <b style={{ margin: 0 }}>Nama</b>
+              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
             </Grid>
 
             <OutlinedInput
@@ -452,8 +448,9 @@ class cardAddEmployee extends Component {
           </Grid>
 
           <Grid id="nama-panggilan" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Nama Panggilan</b>
+            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+              <b style={{ margin: 0 }}>Nama Panggilan</b>
+              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
             </Grid>
 
             <OutlinedInput
@@ -470,8 +467,9 @@ class cardAddEmployee extends Component {
               disabled={this.props.proses}
             />
             <Grid style={{ width: '2%' }} />
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Akronim</b>
+            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+              <b style={{ margin: 0 }}>Akronim</b>
+              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
             </Grid>
 
             <OutlinedInput
@@ -490,8 +488,9 @@ class cardAddEmployee extends Component {
           </Grid>
 
           <Grid id="tanggal-lahir" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>tanggal lahir</b>
+            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+              <b style={{ margin: 0 }}>tanggal lahir</b>
+              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
             </Grid>
             <TextField
               id="date"
@@ -513,8 +512,9 @@ class cardAddEmployee extends Component {
           </Grid>
 
           <Grid id="pt" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>PT</b>
+            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+              <b style={{ margin: 0 }}>PT</b>
+              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
             </Grid>
 
             <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
@@ -526,7 +526,7 @@ class cardAddEmployee extends Component {
               >
                 {
                   this.state.optionCompany.map((company, index) =>
-                    <MenuItem value={company.company_id} key={index}>{company.company_name}</MenuItem>
+                    <MenuItem value={company.company_id} key={'companies' + index}>{company.company_name}</MenuItem>
                   )
                 }
               </Select>
@@ -534,8 +534,9 @@ class cardAddEmployee extends Component {
 
             <Grid style={{ width: '2%' }} />
 
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>NIK</b>
+            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+              <b style={{ margin: 0 }}>NIK</b>
+              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
             </Grid>
 
             <OutlinedInput
@@ -555,7 +556,7 @@ class cardAddEmployee extends Component {
 
           {
             this.state.listDivisi.map((divisi, index) =>
-              <Grid id="divisi" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid id="divisi" style={{ display: 'flex', alignItems: 'center' }} key={'divisi' + index}>
                 <Grid style={{ width: '20%', marginRight: 10 }}>
                   <b style={{ marginBottom: 5 }}>Department</b>
                 </Grid>
@@ -592,7 +593,7 @@ class cardAddEmployee extends Component {
                     <MenuItem value={null}>Pilih posisi</MenuItem>
                     {
                       this.props.dataPositions && this.props.dataPositions.map((position, index) =>
-                        <MenuItem value={position.position_id} key={"department" + index}>{position.position}</MenuItem>
+                        <MenuItem value={position.position_id} key={"departments" + index}>{position.position}</MenuItem>
                       )
                     }
                   </Select>
@@ -608,15 +609,16 @@ class cardAddEmployee extends Component {
 
 
           <Grid id="evaluator" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Evaluator 1</b>
+            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+              <b style={{ margin: 0 }}>Evaluator 1</b>
+              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
             </Grid>
             <Grid style={{ width: '28%', height: 40, margin: '5px 0px' }}>
               <ReactSelect
                 isClearable
                 value={this.props.data && this.state.evaluator1Selected}
                 components={animatedComponents}
-                options={this.state.listUser}
+                options={this.props.optionUser}
                 onChange={(newValue) => this.handleChangeEvaluator({ ...newValue, eva1: true })}
                 disabled={this.props.proses}
               />
@@ -633,7 +635,7 @@ class cardAddEmployee extends Component {
                 isClearable
                 value={this.props.data && this.state.evaluator2Selected}
                 components={animatedComponents}
-                options={this.state.listUser}
+                options={this.props.optionUser}
                 onChange={(newValue) => this.handleChangeEvaluator({ ...newValue, eva1: false })}
                 disabled={this.props.proses}
               />
@@ -646,8 +648,9 @@ class cardAddEmployee extends Component {
         <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
 
           <Grid id="tanggal-bergabung" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>tanggal bergabung</b>
+            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+              <b style={{ margin: 0 }}>tanggal bergabung</b>
+              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
             </Grid>
             <TextField
               id="date"
@@ -669,8 +672,9 @@ class cardAddEmployee extends Component {
           </Grid>
 
           <Grid id="status-karyawan" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Status karyawan</b>
+            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+              <b style={{ margin: 0 }}>Status karyawan</b>
+              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
             </Grid>
 
             <FormControl variant="outlined" size="small" style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}>
@@ -688,8 +692,9 @@ class cardAddEmployee extends Component {
           </Grid>
 
           <Grid id="sisa-cuti" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Sisa Cuti</b>
+            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+              <b style={{ margin: 0 }}>Sisa Cuti</b>
+              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
             </Grid>
 
             <OutlinedInput
@@ -852,7 +857,7 @@ class cardAddEmployee extends Component {
 
             {
               this.state.listDivisiDinas.map((divisi, index) =>
-                <Grid id="divisi" style={{ display: 'flex', alignItems: 'center' }}>
+                <Grid id="divisi" style={{ display: 'flex', alignItems: 'center' }} key={'divisi-dinas' + index}>
                   <Grid style={{ width: '20%', marginRight: 10 }}>
                     <b style={{ marginBottom: 5 }}>Department</b>
                   </Grid>
@@ -867,7 +872,7 @@ class cardAddEmployee extends Component {
                       <MenuItem value={null}>Pilih department</MenuItem>
                       {
                         this.state.optionDivisiDinas.map((department, index) =>
-                          <MenuItem value={department.departments_id} key={"department" + index}>{department.deptname}</MenuItem>
+                          <MenuItem value={department.departments_id} key={"DivisiDinas" + index}>{department.deptname}</MenuItem>
                         )
                       }
                     </Select>
@@ -909,8 +914,9 @@ class cardAddEmployee extends Component {
         <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
 
           <Grid id="alamat-pt" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Lokasi</b>
+            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+              <b style={{ margin: 0 }}>Lokasi</b>
+              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
             </Grid>
 
             <FormControl variant="outlined" size="small" style={{ width: '50%', height: 40, margin: '5px 0px' }}>
@@ -935,8 +941,9 @@ class cardAddEmployee extends Component {
         <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
 
           <Grid id="username" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Username</b>
+            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+              <b style={{ margin: 0 }}>Username</b>
+              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
             </Grid>
 
             <OutlinedInput
@@ -957,8 +964,9 @@ class cardAddEmployee extends Component {
           {
             this.props.data &&
             <Grid id="password" style={{ display: 'flex', alignItems: 'center' }}>
-              <Grid style={{ width: '20%', marginRight: 10 }}>
-                <b style={{ marginBottom: 5 }}>Kata Sandi Baru</b>
+              <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                <b style={{ margin: 0 }}>Kata Sandi Baru</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
               </Grid>
 
               <OutlinedInput
@@ -978,8 +986,9 @@ class cardAddEmployee extends Component {
             </Grid>
           }
           <Grid id="email-pribadi" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Email Pribadi</b>
+            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+              <b style={{ margin: 0 }}>Email Pribadi</b>
+              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
             </Grid>
 
             <OutlinedInput
@@ -999,8 +1008,9 @@ class cardAddEmployee extends Component {
           </Grid>
 
           <Grid id="email-kantor" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Email Kantor</b>
+            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+              <b style={{ margin: 0 }}>Email Kantor</b>
+              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
             </Grid>
 
             <OutlinedInput
@@ -1020,8 +1030,9 @@ class cardAddEmployee extends Component {
           </Grid>
 
           <Grid id="telpon" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>No Telpon</b>
+            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+              <b style={{ margin: 0 }}>No Telpon</b>
+              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
             </Grid>
 
             <OutlinedInput
@@ -1040,8 +1051,9 @@ class cardAddEmployee extends Component {
           </Grid>
 
           <Grid id="alamat" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Alamat</b>
+            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+              <b style={{ margin: 0 }}>Alamat</b>
+              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
             </Grid>
 
             <OutlinedInput

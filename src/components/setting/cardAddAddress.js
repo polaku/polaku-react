@@ -319,7 +319,7 @@ export default class cardAddAddress extends Component {
     newData.append("phone", this.state.phone.join(','))
     newData.append("fax", this.state.fax.join(','))
     newData.append("operationalDay", operationalDay.join(','))
-console.log(this.state.files)
+
     if (this.state.files.length > 0) this.state.files.forEach(file => {
       newData.append("files", file)
     })
@@ -362,7 +362,7 @@ console.log(this.state.files)
       <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
 
         {/* FOTO LOKASI */}
-        <>
+        {/* <>
           <p style={{ margin: 0, fontSize: 11, color: '#adadad' }}><b style={{ fontSize: 14, color: 'black' }}>Foto lokasi</b>harap masuki 1 gambar tampilan depan, tampilan dalam kantor, apabila dak ada dapat dikosongkan</p>
           {
             this.props.data && (
@@ -375,14 +375,17 @@ console.log(this.state.files)
                 </Grid>)
           }
           <DragAndDrop handleFiles={this.handleFiles} />
-        </>
+        </> */}
 
         {/* ALAMAT */}
         <Grid style={{ margin: '10px 0px' }}>
           <b style={{ fontSize: 14 }}>Alamat</b>
           <Grid style={{ display: 'flex' }}>
             <Grid style={{ width: '20%', minWidth: '200px', marginRight: 10 }}>
-              <b style={{ fontSize: 12, marginBottom: 5 }}>lokasi alamat</b>
+              <Grid style={{ display: 'flex' }}>
+                <b style={{ fontSize: 12, marginBottom: 5 }}>lokasi alamat</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              </Grid>
               <p style={{ margin: 0, color: '#a5a5a5', fontSize: 10 }}>pastikan alamat tidak berulang, alamat ini akan digunakan sebagai Pusat</p>
             </Grid>
 
@@ -485,7 +488,10 @@ console.log(this.state.files)
           {/* HARI KERJA */}
           <Grid style={{ display: 'flex', margin: '10px 0px' }}>
             <Grid style={{ width: '20%', minWidth: '200px', marginRight: 10 }}>
-              <b style={{ fontSize: 12, marginBottom: 5 }}>Hari Kerja</b>
+              <Grid style={{ display: 'flex' }}>
+                <b style={{ fontSize: 12, marginBottom: 5 }}>Hari Kerja</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              </Grid>
               <p style={{ margin: 0, color: '#a5a5a5', fontSize: 10 }}>Pilih hari apa saja perushaaan beroperasi.</p>
             </Grid>
             <Grid>
@@ -527,7 +533,10 @@ console.log(this.state.files)
           {/* JAM OPERASI */}
           <Grid style={{ display: 'flex', margin: '10px 0px' }}>
             <Grid style={{ width: '20%', minWidth: '200px', marginRight: 10 }}>
-              <b style={{ fontSize: 12, marginBottom: 5 }}>Jam Operasi</b>
+              <Grid style={{ display: 'flex' }}>
+                <b style={{ fontSize: 12, marginBottom: 5 }}>Jam Operasi</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              </Grid>
               <p style={{ margin: 0, color: '#a5a5a5', fontSize: 10 }}>Pilih jam operasi perusahaan.</p>
             </Grid>
             <Grid>
@@ -603,7 +612,11 @@ console.log(this.state.files)
           {/* JAM ISTIRAHAT */}
           <Grid style={{ display: 'flex', margin: '10px 0px' }}>
             <Grid style={{ width: '20%', minWidth: '200px', marginRight: 10 }}>
-              <b style={{ fontSize: 12, marginBottom: 5 }}>Jam Istirahat</b>
+              <Grid style={{ display: 'flex' }}>
+                <b style={{ fontSize: 12, marginBottom: 5 }}>Jam Istirahat</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+
+              </Grid>
             </Grid>
             <Grid>
               {

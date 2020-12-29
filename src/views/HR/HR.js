@@ -125,7 +125,6 @@ class HR extends Component {
         if (new Date(el.date_ijin_absen_end) > new Date()) {
           tempDataIjinDisetujui.push(el)
         } else {
-          console.log("IA SUDAH LEWAT")
           tempDataIjinSudahLewat.push(el)
         }
       } else if (el.leave_request) {

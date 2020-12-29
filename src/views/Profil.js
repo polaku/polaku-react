@@ -54,7 +54,7 @@ class Profil extends Component {
       this.props.userLogout()
       this.props.history.push('/login')
     } catch (err) {
-      console.log(err)
+      // console.log(err)
     }
   }
 
@@ -89,7 +89,7 @@ class Profil extends Component {
         this.handleChangeUsername()
       })
       .catch(err => {
-        console.log(err)
+        // console.log(err)
       })
 
 

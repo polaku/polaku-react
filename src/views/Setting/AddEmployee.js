@@ -27,9 +27,13 @@ class AddEmployee extends Component {
     dataForEdit: [],
     tempDataForEdit: [],
     proses: false,
+
+    optionUser: [],
   }
 
   async componentDidMount() {
+    await this.fetchOptionUser()
+
     if (this.props.location.state) {
       if (this.props.location.state.data) {
         let data = [this.props.location.state.data]
@@ -40,6 +44,23 @@ class AddEmployee extends Component {
     }
 
     await this.props.fetchDataCompanies()
+  }
+
+  fetchOptionUser = async () => {
+    try {
+      let token = Cookies.get('POLAGROUP')
+
+      let getData = await API.get(`/users/for-option`, { headers: { token } })
+
+      let listUser = []
+      await getData.data.data.forEach(user => {
+        listUser.push({ value: user.user_id, label: user.tbl_account_detail.fullname })
+      })
+
+      this.setState({ optionUser: listUser })
+    } catch (err) {
+      // console.log(err)
+    }
   }
 
   handleChange = name => event => {
@@ -89,7 +110,7 @@ class AddEmployee extends Component {
         Promise.all(promises)
           .then(async ({ data }) => {
             this.setState({ data: [], proses: false, statusSubmit: false })
-            await this.props.fetchDataUsers()
+            await this.props.fetchDataUsers({ limit: 10, page: 0 })
             swal('Ubah karyawan sukses', '', 'success')
             this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
           })
@@ -119,7 +140,7 @@ class AddEmployee extends Component {
         Promise.all(promises)
           .then(async ({ data }) => {
             this.setState({ data: [], proses: false, statusSubmit: false })
-            await this.props.fetchDataUsers()
+            await this.props.fetchDataUsers({ limit: 10, page: 0 })
             swal('Tambah karyawan sukses', '', 'success')
             this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
           })
@@ -158,7 +179,7 @@ class AddEmployee extends Component {
                   </>
                 }
               </Grid>
-              <CardAddEmployee statusSubmit={this.state.statusSubmit} companyId={this.state.companyId} sendData={this.sendData} data={this.state.dataForEdit[index]} proses={this.state.proses} />
+              <CardAddEmployee statusSubmit={this.state.statusSubmit} companyId={this.state.companyId} sendData={this.sendData} data={this.state.dataForEdit[index]} proses={this.state.proses} optionUser={this.state.optionUser}/>
             </Grid>
           )
         }

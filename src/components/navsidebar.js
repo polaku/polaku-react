@@ -170,7 +170,7 @@ function Navsidebar(props) {
           }
         })
           .then(async ({ data }) => {
-            console.log(data)
+            // console.log(data)
             let newData = {
               user_id: data.user_id,
               isRoomMaster: data.isRoomMaster,
@@ -240,10 +240,10 @@ function Navsidebar(props) {
             await props.fetchDataNotification()
           })
           .catch(err => {
-            console.log(err)
-            // Cookies.remove('POLAGROUP')
+            // console.log(err)
+            Cookies.remove('POLAGROUP')
             // props.userLogout()
-            // props.history.push('/login')
+            props.history.push('/login')
           })
       } else {
         props.history.push('/login')

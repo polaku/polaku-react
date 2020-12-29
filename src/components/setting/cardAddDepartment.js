@@ -469,8 +469,9 @@ class cardAddDepartment extends Component {
       <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
 
         <Grid id="name-division" style={{ margin: '10px 0px', display: 'flex', alignItems: 'center' }}>
-          <Grid style={{ width: '20%', minWidth: '200px', marginRight: 10 }}>
+          <Grid style={{ width: '20%', minWidth: '200px', marginRight: 10, display: 'flex' }}>
             <b style={{ fontSize: 12, marginBottom: 5 }}>Nama Department</b>
+            <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
           </Grid>
 
           <Grid style={{ width: '50%' }}>
@@ -491,8 +492,9 @@ class cardAddDepartment extends Component {
         </Grid>
 
         <Grid id="level-hirarki" style={{ margin: '10px 0px', display: 'flex', alignItems: 'center' }}>
-          <Grid style={{ width: '20%', minWidth: '200px', marginRight: 10 }}>
+          <Grid style={{ width: '20%', minWidth: '200px', marginRight: 10, display: 'flex' }}>
             <b style={{ fontSize: 12, marginBottom: 5 }}>Level Hirarki</b>
+            <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
           </Grid>
 
           <Grid style={{ width: '50%', margin: 5, minWidth: 500, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

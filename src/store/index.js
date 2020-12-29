@@ -16,58 +16,25 @@ const api = store => next => async action => {
       type: 'FETCH_DATA_LOADING'
     })
 
-    let getData
     try {
-      if (action.payload) {
-        if (action.payload.company) {
-          if (action.payload.keyword) {
-            getData = await API.get(
-              `/users?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}&search=${action.payload.keyword}`,
-              {
-                headers: {
-                  token,
-                  ip: await publicIp.v4()
-                }
-              })
-          } else {
-            getData = await API.get(
-              `/users?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}`,
-              {
-                headers: {
-                  token,
-                  ip: await publicIp.v4()
-                }
-              })
-          }
-        } else {
-          if (action.payload.keyword) {
-            getData = await API.get(`/users?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, {
-              headers: {
-                token,
-                ip: await publicIp.v4()
-              }
-            })
-          } else {
-            getData = await API.get(`/users?limit=${action.payload.limit}&page=${action.payload.page}`, {
-              headers: {
-                token,
-                ip: await publicIp.v4()
-              }
-            })
-          }
-        }
-      } else {
-        getData = await API.get('/users', {
-          headers: {
-            token,
-            ip: await publicIp.v4()
-          }
-        })
-      }
-      console.log(getData.data.data)
-      let newData = await getData.data.data.filter(user => user.tbl_account_detail)
 
-      await newData.sort(compare)
+      let query = ''
+      if (action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
+      if (action.payload.company) query === '' ? query += `company=${action.payload.company}` : query += `&company=${action.payload.company}`
+      if (action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
+      if (action.payload.order) query === '' ? query += `order=${action.payload.order}` : query += `&order=${action.payload.order}`
+      if (action.payload.sort) query === '' ? query += `sort=${action.payload.sort}` : query += `&sort=${action.payload.sort}`
+      if (action.payload.status) query === '' ? query += `status=${action.payload.status}` : query += `&status=${action.payload.status}`
+      if (action.payload.forOption) query === '' ? query += `forOption=true` : query += `&forOption=true`
+
+      let getData = await API.get(`/users?${query}`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
+        }
+      })
+
+      let newData = await getData.data.data.filter(user => user.tbl_account_detail)
 
       next({
         type: 'FETCH_DATA_USERS_SUCCESS',
@@ -89,73 +56,20 @@ const api = store => next => async action => {
       type: 'FETCH_DATA_LOADING'
     })
 
-    let getData
     try {
-      if (action.payload) {
-        if (action.payload.forOption) {
-          getData = await API.get('/bookingRoom/rooms?forOption=true', {
-            headers: {
-              token,
-              ip: await publicIp.v4()
-            }
-          })
 
-        } else {
-          if (action.payload.company) {
-            if (action.payload.keyword) {
-              getData = await API.get(
-                `/bookingRoom/rooms?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}&search=${action.payload.keyword}`,
-                {
-                  headers: {
-                    token,
-                    ip: await publicIp.v4()
-                  }
-                })
-            } else {
-              if (action.payload.limit || action.payload.page) {
-                getData = await API.get(
-                  `/bookingRoom/rooms?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}`,
-                  {
-                    headers: {
-                      token,
-                      ip: await publicIp.v4()
-                    }
-                  })
-              } else {
-                getData = await API.get(`/bookingRoom/rooms?company=${action.payload.company}`, {
-                  headers: {
-                    token,
-                    ip: await publicIp.v4()
-                  }
-                })
-              }
-            }
-          } else {
-            if (action.payload.keyword) {
-              getData = await API.get(`/bookingRoom/rooms?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, {
-                headers: {
-                  token,
-                  ip: await publicIp.v4()
-                }
-              })
-            } else {
-              getData = await API.get(`/bookingRoom/rooms?limit=${action.payload.limit}&page=${action.payload.page}`, {
-                headers: {
-                  token,
-                  ip: await publicIp.v4()
-                }
-              })
-            }
-          }
+      let query = ''
+      if (action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
+      if (action.payload.forOption) query === '' ? query += `forOption=true` : query += `&forOption=true`
+      if (action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
+      if (action.payload.company) query === '' ? query += `company=${action.payload.company}` : query += `&company=${action.payload.company}`
+
+      let getData = await API.get(`/bookingRoom/rooms?${query}`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
         }
-      } else {
-        getData = await API.get('/bookingRoom/rooms', {
-          headers: {
-            token,
-            ip: await publicIp.v4()
-          }
-        })
-      }
+      })
 
       next({
         type: 'FETCH_DATA_ROOMS_SUCCESS',
@@ -458,7 +372,6 @@ const api = store => next => async action => {
     }
   }
   else if (action.type === 'FETCH_DATA_CONTACT_US') {
-    console.log("MASUK 1")
     next({
       type: 'FETCH_DATA_LOADING_CONTACT_US'
     })
@@ -493,11 +406,9 @@ const api = store => next => async action => {
       }
       // let newData = await getData.data.data.filter(el => el.user_id === action.payload)
       // let newDataStaff = await getData.data.data.filter(el => el.evaluator_1 === action.payload || el.evaluator_2 === action.payload  || action.payload === 1)
-      console.log("MASUK 2")
 
       let newData = [], newDataStaff = []
       if (action.payload) {
-        console.log(getData.data.data)
         await getData.data.data.forEach(el => {
 
           if (el.leave_date) {  // cuti
@@ -805,63 +716,20 @@ const api = store => next => async action => {
       type: 'FETCH_DATA_LOADING'
     })
 
-    let getData
     try {
-      if (action.payload) {
-        if (action.payload.forOption) {
-          getData = await API.get(`/address?forOption=true`, {
-            headers: {
-              token,
-              ip: await publicIp.v4()
-            }
-          })
-        } else {
-          if (action.payload.company) {
-            if (action.payload.keyword) {
-              getData = await API.get(
-                `/address?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}&search=${action.payload.keyword}`,
-                {
-                  headers: {
-                    token,
-                    ip: await publicIp.v4()
-                  }
-                })
-            } else {
-              getData = await API.get(
-                `/address?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}`,
-                {
-                  headers: {
-                    token,
-                    ip: await publicIp.v4()
-                  }
-                })
-            }
-          } else {
-            if (action.payload.keyword) {
-              getData = await API.get(`/address?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, {
-                headers: {
-                  token,
-                  ip: await publicIp.v4()
-                }
-              })
-            } else {
-              getData = await API.get(`/address?limit=${action.payload.limit}&page=${action.payload.page}`, {
-                headers: {
-                  token,
-                  ip: await publicIp.v4()
-                }
-              })
-            }
-          }
+
+      let query = ''
+      if (action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
+      if (action.payload.forOption) query === '' ? query += `forOption=true` : query += `&forOption=true`
+      if (action.payload.company) query === '' ? query += `company=${action.payload.company}` : query += `&company=${action.payload.company}`
+      if (action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
+
+      let getData = await API.get(`/address?${query}`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
         }
-      } else {
-        getData = await API.get('/address', {
-          headers: {
-            token,
-            ip: await publicIp.v4()
-          }
-        })
-      }
+      })
 
       next({
         type: 'FETCH_DATA_ADDRESS_SUCCESS',
@@ -880,73 +748,21 @@ const api = store => next => async action => {
       type: 'FETCH_DATA_LOADING'
     })
 
-    let getData
     try {
-      if (action.payload) {
-        if (action.payload.forOption) {
-          getData = await API.get('/structure?forOption=true', {
-            headers: {
-              token,
-              ip: await publicIp.v4()
-            }
-          })
 
-        } else {
-          if (action.payload.company) {
-            if (action.payload.keyword) {
-              getData = await API.get(
-                `/structure?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}&search=${action.payload.keyword}`,
-                {
-                  headers: {
-                    token,
-                    ip: await publicIp.v4()
-                  }
-                })
-            } else {
-              if (action.payload.limit || action.payload.page) {
-                getData = await API.get(
-                  `/structure?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}`,
-                  {
-                    headers: {
-                      token,
-                      ip: await publicIp.v4()
-                    }
-                  })
-              } else {
-                getData = await API.get(`/structure?company=${action.payload.company}`, {
-                  headers: {
-                    token,
-                    ip: await publicIp.v4()
-                  }
-                })
-              }
-            }
-          } else {
-            if (action.payload.keyword) {
-              getData = await API.get(`/structure?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, {
-                headers: {
-                  token,
-                  ip: await publicIp.v4()
-                }
-              })
-            } else {
-              getData = await API.get(`/structure?limit=${action.payload.limit}&page=${action.payload.page}`, {
-                headers: {
-                  token,
-                  ip: await publicIp.v4()
-                }
-              })
-            }
-          }
+      let query = ''
+      if (action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
+      if (action.payload.forOption) query === '' ? query += `forOption=true` : query += `&forOption=true`
+      if (action.payload.company) query === '' ? query += `company=${action.payload.company}` : query += `&company=${action.payload.company}`
+      if (action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
+
+      let getData = await API.get(`/structure?${query}`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
         }
-      } else {
-        getData = await API.get('/structure', {
-          headers: {
-            token,
-            ip: await publicIp.v4()
-          }
-        })
-      }
+      })
+
       next({
         type: 'FETCH_DATA_STRUCTURE_SUCCESS',
         payload: { dataStructure: getData.data.data, totalDataStructure: getData.data.totalData }
@@ -964,54 +780,19 @@ const api = store => next => async action => {
       type: 'FETCH_DATA_LOADING'
     })
 
-    let getData
     try {
-      if (action.payload) {
-        if (action.payload.status) {
-          if (action.payload.keyword) {
-            getData = await API.get(
-              `/dinas?limit=${action.payload.limit}&page=${action.payload.page}&status=${action.payload.status}&search=${action.payload.keyword}`,
-              {
-                headers: {
-                  token,
-                  ip: await publicIp.v4()
-                }
-              })
-          } else {
-            getData = await API.get(
-              `/dinas?limit=${action.payload.limit}&page=${action.payload.page}&status=${action.payload.status}`,
-              {
-                headers: {
-                  token,
-                  ip: await publicIp.v4()
-                }
-              })
-          }
-        } else {
-          if (action.payload.keyword) {
-            getData = await API.get(`/dinas?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, {
-              headers: {
-                token,
-                ip: await publicIp.v4()
-              }
-            })
-          } else {
-            getData = await API.get(`/dinas?limit=${action.payload.limit}&page=${action.payload.page}`, {
-              headers: {
-                token,
-                ip: await publicIp.v4()
-              }
-            })
-          }
+
+      let query = ''
+      if (action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
+      if (action.payload.status) query === '' ? query += `status=${action.payload.status}` : query += `&status=${action.payload.status}`
+      if (action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
+
+      let getData = await API.get(`/dinas?${query}`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
         }
-      } else {
-        getData = await API.get('/dinas', {
-          headers: {
-            token,
-            ip: await publicIp.v4()
-          }
-        })
-      }
+      })
 
       next({
         type: 'FETCH_DATA_DINAS_SUCCESS',
@@ -1038,98 +819,20 @@ const api = store => next => async action => {
       type: 'FETCH_DATA_LOADING'
     })
 
-    let getData
     try {
-      if (action.payload) {
-        if (action.payload.status) {
-          if (action.payload.keyword) {
-            console.log("MASUK 1")
-            if (action.payload.company) {
-              getData = await API.get(
-                `/designation?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}&status=${action.payload.status}&search=${action.payload.keyword}`,
-                {
-                  headers: {
-                    token,
-                    ip: await publicIp.v4()
-                  }
-                })
-            } else {
-              getData = await API.get(
-                `/designation?limit=${action.payload.limit}&page=${action.payload.page}&status=${action.payload.status}&search=${action.payload.keyword}`,
-                {
-                  headers: {
-                    token,
-                    ip: await publicIp.v4()
-                  }
-                })
-            }
-          } else {
-            console.log("MASUK 2")
-            if (action.payload.company) {
-              getData = await API.get(
-                `/designation?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}&status=${action.payload.status}`,
-                {
-                  headers: {
-                    token,
-                    ip: await publicIp.v4()
-                  }
-                })
-            } else {
-              getData = await API.get(
-                `/designation?limit=${action.payload.limit}&page=${action.payload.page}&status=${action.payload.status}`,
-                {
-                  headers: {
-                    token,
-                    ip: await publicIp.v4()
-                  }
-                })
-            }
-          }
-        } else {
-          if (action.payload.keyword) {
-            console.log("MASUK 3")
-            if (action.payload.company) {
-              getData = await API.get(`/designation?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}&company=${action.payload.company}`, {
-                headers: {
-                  token,
-                  ip: await publicIp.v4()
-                }
-              })
-            } else {
-              getData = await API.get(`/designation?limit=${action.payload.limit}&page=${action.payload.page}&search=${action.payload.keyword}`, {
-                headers: {
-                  token,
-                  ip: await publicIp.v4()
-                }
-              })
-            }
-          } else {
-            console.log("MASUK 4")
-            if (action.payload.company) {
-              getData = await API.get(`/designation?limit=${action.payload.limit}&page=${action.payload.page}&company=${action.payload.company}`, {
-                headers: {
-                  token,
-                  ip: await publicIp.v4()
-                }
-              })
-            } else {
-              getData = await API.get(`/designation?limit=${action.payload.limit}&page=${action.payload.page}`, {
-                headers: {
-                  token,
-                  ip: await publicIp.v4()
-                }
-              })
-            }
-          }
+
+      let query = ''
+      if (action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
+      if (action.payload.status) query === '' ? query += `status=${action.payload.status}` : query += `&status=${action.payload.status}`
+      if (action.payload.company) query === '' ? query += `company=${action.payload.company}` : query += `&company=${action.payload.company}`
+      if (action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
+
+      let getData = await API.get(`/designation?${query}`, {
+        headers: {
+          token,
+          ip: await publicIp.v4()
         }
-      } else {
-        getData = await API.get('/designation', {
-          headers: {
-            token,
-            ip: await publicIp.v4()
-          }
-        })
-      }
+      })
 
       next({
         type: 'FETCH_DATA_DESIGNATION_SUCCESS',
@@ -1149,16 +852,6 @@ const api = store => next => async action => {
   else {
     next(action)
   }
-}
-
-const compare = (a, b) => {
-  if (a.tbl_account_detail.fullname < b.tbl_account_detail.fullname) {
-    return -1;
-  }
-  if (a.tbl_account_detail.fullname > b.tbl_account_detail.fullname) {
-    return 1;
-  }
-  return 0;
 }
 
 const store = createStore(reducer, applyMiddleware(api))

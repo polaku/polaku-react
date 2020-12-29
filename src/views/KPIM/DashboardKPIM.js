@@ -91,7 +91,6 @@ class DashboardKPIM extends Component {
         await this.props.myRewardKPIM.sort(this.sortingReward)
 
       } else if (this.props.userId) {
-        console.log("MASUK")
         this.setState({
           weekSelected: this.getNumberOfWeek(new Date()),
           monthSelected: new Date().getMonth() + 1
@@ -397,7 +396,7 @@ class DashboardKPIM extends Component {
             proses: false
           })
           swal('please try again')
-          console.log(err)
+          // console.log(err)
         })
     } else {
       swal("Weight tal lebih dari 100", "", "warning")

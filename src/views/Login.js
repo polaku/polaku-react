@@ -88,28 +88,28 @@ class Login extends Component {
         let isAdminNews = false, isAdminAddress = false, isAdminStructure = false, isAdminEmployee = false, isAdminAdmin = false, isAdminRoom = false, isAdminKPIM = false, isAdminHR = false
 
         await data.data.admin.forEach(admin => {
-          let checkNews = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 1)
+          let checkNews = admin.tbl_designation ? admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 1) : null
           if (checkNews) isAdminNews = true
 
-          let checkAddress = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 2)
+          let checkAddress = admin.tbl_designation ? admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 2) : null
           if (checkAddress) isAdminAddress = true
 
-          let checkStructure = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 3)
+          let checkStructure = admin.tbl_designation ? admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 3) : null
           if (checkStructure) isAdminStructure = true
 
-          let checkEmployee = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 4)
+          let checkEmployee = admin.tbl_designation ? admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 4) : null
           if (checkEmployee) isAdminEmployee = true
 
-          let checkAdmin = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 5)
+          let checkAdmin = admin.tbl_designation ? admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 5) : null
           if (checkAdmin) isAdminAdmin = true
 
-          let checkRoom = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 6)
+          let checkRoom = admin.tbl_designation ? admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 6) : null
           if (checkRoom) isAdminRoom = true
 
-          let checkKPIM = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 7)
+          let checkKPIM = admin.tbl_designation ? admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 7) : null
           if (checkKPIM) isAdminKPIM = true
 
-          let checkHR = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 8)
+          let checkHR = admin.tbl_designation ? admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 8) : null
           if (checkHR) isAdminHR = true
         })
 
@@ -137,7 +137,8 @@ class Login extends Component {
         await this.props.fetchDataNotification()
       }
     } catch (err) {
-      swal('Error', `${err}`)
+      // console.log(err)
+      swal('Username atau Password Salah!', 'Username atau Password yang anda masukan tidak sesuai', 'error')
       this.setState({
         proses: false,
         editableInput: true

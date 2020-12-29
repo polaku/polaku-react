@@ -63,7 +63,7 @@ class cardEmployee extends Component {
         this.props.refresh()
       })
       .catch(err => {
-        console.log(err)
+        // console.log(err)
         swal('please try again')
       })
   }

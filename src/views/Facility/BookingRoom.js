@@ -27,8 +27,6 @@ class BookingRoom extends Component {
 
   async componentDidUpdate(prevProps, prevState) {
     if (this.state.building !== prevState.building) {
-      console.log(this.state.building)
-      console.log(this.state.dataForDisplay)
 
       if (this.state.building === 'semua') {
         this.setState({ dataForDisplay: this.state.data })
@@ -73,7 +71,6 @@ class BookingRoom extends Component {
   }
 
   refresh = () => {
-    console.log("MASUK 1")
     this.fetchData()
   }
 

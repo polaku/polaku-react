@@ -23,7 +23,7 @@ class AddAdmin extends Component {
     adminId: '',
     adminIdSelected: null,
     company: '',
-    optionCompany:[],
+    optionCompany: [],
     proses: false,
 
     semua: false,
@@ -217,14 +217,13 @@ class AddAdmin extends Component {
           ip: this.props.ip
         }
       })
-
       await data.data.forEach(el => {
         optionDesignation.push({ value: el.designations_id, label: el.designations })
       })
 
       this.setState({ dataDesignation: data.data, optionDesignation })
     } catch (err) {
-      console.log(err)
+      // console.log(err)
     }
   }
 
@@ -248,7 +247,6 @@ class AddAdmin extends Component {
   }
 
   handleChange = name => event => {
-    console.log(name)
     this.setState({ [name]: event.target.value });
   };
 

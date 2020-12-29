@@ -34,11 +34,9 @@ class cardAdmin extends Component {
 
     let status = null
 
-    console.log(this.props.data)
-
     await this.props.data.tbl_admin_companies.forEach(element => {
 
-      let checkBeritaPola = element.tbl_designation.tbl_user_roles.find(el => el.menu_id === 1)
+      // let checkBeritaPola = element.tbl_designation.tbl_user_roles.find(el => el.menu_id === 1)
       let checkAlamat = element.tbl_designation.tbl_user_roles.find(el => el.menu_id === 2)
       let checkStruktur = element.tbl_designation.tbl_user_roles.find(el => el.menu_id === 3)
       let checkKaryawan = element.tbl_designation.tbl_user_roles.find(el => el.menu_id === 4)

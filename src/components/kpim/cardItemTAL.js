@@ -104,7 +104,7 @@ class cardTAL extends Component {
             prosesAchievment: false,
             prosesLink: false
           })
-          console.log(err)
+          // console.log(err)
           swal('please try again')
         })
     }

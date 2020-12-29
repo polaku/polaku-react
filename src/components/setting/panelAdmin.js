@@ -65,7 +65,7 @@ class panelAdmin extends Component {
     }
 
     if (this.state.optionCompany !== prevState.optionCompany) {
-      console.log(this.state.optionCompany)
+      // console.log(this.state.optionCompany)
     }
   }
 
@@ -91,10 +91,8 @@ class panelAdmin extends Component {
 
   fetchOptionCompany = async () => {
     if (this.props.isAdminsuper) {
-      console.log("MASUK 1", this.props.dataCompanies)
       this.setState({ optionCompany: [{ acronym: 'Semua' }, ...this.props.dataCompanies] })
     } else {
-      console.log("MASUK 2")
       let optionCompany = []
       if (this.props.admin.length > 1) {
         optionCompany.push({ acronym: 'Semua' })

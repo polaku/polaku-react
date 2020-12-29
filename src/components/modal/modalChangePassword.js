@@ -67,7 +67,7 @@ class modalChangePassword extends Component {
           } else {
             swal('please try again')
           }
-          console.log(err)
+          // console.log(err)
           this.setState({
             proses: false
           })

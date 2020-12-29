@@ -48,8 +48,6 @@ class SettingMeetingRoom extends Component {
   fetchData = async () => {
     let dataBuilding = [{ acronym: 'Semua' }], idBuilding = ['-'], counter = 0
 
-    console.log(this.props.dataRooms)
-
     await this.props.dataRooms.forEach(element => {
       if (element.tbl_building) {
         if (idBuilding.indexOf(element.tbl_building.building_id) === -1) { //KALAU TIDAK ADA

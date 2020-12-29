@@ -10,13 +10,20 @@ import {
 
 import CardService from './cardService';
 import CardEmployee from './cardEmployee';
+import ArrowDropUpOutlinedIcon from '@material-ui/icons/ArrowDropUpOutlined';
+import ArrowDropDownOutlinedIcon from '@material-ui/icons/ArrowDropDownOutlined';
 // import SeCreatableSelect from 'react-select/creatable';
 // import makeAnimated from 'react-select/animated';
 
-import { fetchDataUsers, fetchDataCompanies, fetchDataDinas } from '../../store/action';
+import { fetchDataCompanies, fetchDataDinas, fetchDataUsers } from '../../store/action';
 
 import ModalCreateEditMuchEmployee from '../modal/modalCreateEditMuchEmployee';
 import ModalLogSetting from '../modal/modalLogSetting';
+
+const invertDirection = {
+  asc: "desc",
+  desc: "asc"
+}
 
 class panelEmployee extends Component {
   state = {
@@ -25,6 +32,7 @@ class panelEmployee extends Component {
     searchDinas: '',
     valueA: 0,
     valueB: 0,
+    valueStatus: 0,
     index: 0,
     selectAll: false,
     check: false,
@@ -42,7 +50,10 @@ class panelEmployee extends Component {
     optionCompany: [],
 
     openModalLogSetting: false,
-    type: ''
+    type: '',
+
+    columnToSort: "",
+    sortDirection: "desc",
   }
 
   async componentDidMount() {
@@ -67,7 +78,7 @@ class panelEmployee extends Component {
 
     if (this.state.valueA !== prevState.valueA) {
       if (this.state.valueA === 0) {
-        await this.props.fetchDataUsers({ limit: 10, page: 0 }) //limit:,skip:,company:
+        await this.props.fetchDataUsers({ limit: 10, page: 0 }) //limit:,skip:,company:   
       } else {
         await this.props.fetchDataDinas({ limit: 10, page: 0 })
       }
@@ -88,7 +99,6 @@ class panelEmployee extends Component {
     let label = this.state.labelTab, tempNewDataUsers = []
 
     if (this.state.valueA === 0) { //EMPLOYEE
-      console.log(this.props.dataUsers)
       await this.props.dataUsers.forEach(user => {
         let objUser = {
           userId: user.user_id,
@@ -161,18 +171,40 @@ class panelEmployee extends Component {
         await this.props.fetchDataUsers({ limit: this.state.rowsPerPage, page: 0 })
       } else {
         let companySelectedId = this.state.optionCompany[selected]
-        console.log("companySelectedId.company_id", companySelectedId.company_id)
         await this.props.fetchDataUsers({ limit: this.state.rowsPerPage, page: 0, company: companySelectedId.company_id })
-        console.log(this.props.dataUsers)
       }
     } else { //Dinas
       let status
-      if (selected === 1) status = 'tetap'
-      else if (selected === 2) status = 'kontrak'
-      else if (selected === 3) status = 'probation'
-      else if (selected === 4) status = 'berhenti'
+      if (selected === 1) status = 'Tetap'
+      else if (selected === 2) status = 'Kontrak'
+      else if (selected === 3) status = 'Probation'
+      else if (selected === 4) status = 'Berhenti'
       await this.props.fetchDataDinas({ limit: this.state.rowsPerPage, page: 0, status })
     }
+    this.setState({ proses: false })
+  };
+
+  handleChangeTabStatus = async (event, newValue) => {
+    let selected = newValue
+
+    await this.setState({ valueStatus: selected, proses: true, search: '', searchDinas: '', page: 0 })
+
+    let query = {
+      limit: this.state.rowsPerPage,
+      page: 0
+    }
+
+    if (selected === 1) {
+      query.status = 'Berhenti'
+    }
+
+    if (this.state.valueA !== 0) {
+      let companySelectedId = this.state.optionCompany[this.state.valueA]
+      query.company = companySelectedId.company_id
+    }
+
+    await this.props.fetchDataUsers(query)
+
     this.setState({ proses: false })
   };
 
@@ -297,6 +329,32 @@ class panelEmployee extends Component {
     }
   }
 
+  handleSort = async (columnName) => {
+    await this.setState(state => ({
+      columnToSort: columnName,
+      sortDirection: state.columnToSort === columnName
+        ? invertDirection[state.sortDirection]
+        : 'asc'
+    }))
+    this.sorting()
+  }
+
+  sorting = async () => {
+    let query = {}
+
+    if (this.state.search) {
+      query = { keyword: this.state.search }
+    }
+
+    if (this.state.valueB !== 0) {
+      let companySelected = this.state.optionCompany[this.state.valueB]
+      if (companySelected) query.company = companySelected.company_id
+    }
+
+    await this.props.fetchDataUsers({ limit: this.state.rowsPerPage, page: this.state.page, ...query, order: this.state.columnToSort, sort: this.state.sortDirection })
+  }
+
+
   render() {
     return (
       <div style={{ width: '100%', paddingTop: 0 }}>
@@ -352,6 +410,15 @@ class panelEmployee extends Component {
                           )
                         }
                       </Tabs>
+                      <Tabs
+                        value={this.state.valueStatus}
+                        indicatorColor="secondary"
+                        textColor="secondary"
+                        onChange={this.handleChangeTabStatus}
+                      >
+                        <Tab label={`Aktif`} style={{ marginRight: 10, minWidth: 80 }} />
+                        <Tab label={`Berhenti`} style={{ marginRight: 10, minWidth: 80 }} />
+                      </Tabs>
                       <Divider />
                       <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
                         {/* <form style={{ width: '100%', marginRight: 15, marginTop: 3 }}> */}
@@ -377,21 +444,39 @@ class panelEmployee extends Component {
                     </Paper>
 
                     <Paper id="header" style={{ display: 'flex', padding: '15px 20px', margin: 3, borderRadius: 0, alignItems: 'center' }}>
-                      <Grid style={{ display: 'flex', alignItems: 'center', width: '25%' }}>
-                        {/* <Checkbox
-                    checked={this.state.check}
-                    onChange={this.handleChangeCheck}
-                    value="secondary"
-                    color="secondary"
-                    size="small"
-                  /><p style={{ margin: 0 }}>pilih untuk lakukan aksi</p> */}
+                      <Grid style={{ display: 'flex', alignItems: 'center', width: '25%', cursor: 'pointer' }} onClick={() => this.handleSort('name')}>
                         <p style={{ margin: 0 }}>Karyawan</p>
+                        {
+                          this.state.columnToSort === 'name' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
+                        }
                       </Grid>
-                      <p style={{ margin: 0, width: '20%' }}>Department</p>
-                      <p style={{ margin: 0, width: '15%' }}>Evaluator 1</p>
-                      <p style={{ margin: 0, width: '15%' }}>Evaluator 2</p>
-                      <p style={{ margin: 0, width: '10%' }}>Status</p>
-                      <p style={{ margin: 0, width: '5%' }}>Aktif</p>
+                      <Grid style={{ display: 'flex', alignItems: 'center', width: '20%' }} >
+                        <p style={{ margin: 0 }}>Department</p>
+                      </Grid>
+                      <Grid style={{ display: 'flex', alignItems: 'center', width: '15%' }} onClick={() => this.handleSort('name')}>
+                        <p style={{ margin: 0 }}>Evaluator 1</p>
+                        {
+                          this.state.columnToSort === 'name' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
+                        }
+                      </Grid>
+                      <Grid style={{ display: 'flex', alignItems: 'center', width: '15%' }} onClick={() => this.handleSort('name')}>
+                        <p style={{ margin: 0 }}>Evaluator 2</p>
+                        {
+                          this.state.columnToSort === 'name' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
+                        }
+                      </Grid>
+                      <Grid style={{ display: 'flex', alignItems: 'center', width: '10%', cursor: 'pointer' }} onClick={() => this.handleSort('status_employee')}>
+                        <p style={{ margin: 0 }}>Status</p>
+                        {
+                          this.state.columnToSort === 'status_employee' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
+                        }
+                      </Grid>
+                      <Grid style={{ display: 'flex', alignItems: 'center', width: '5%', cursor: 'pointer' }} onClick={() => this.handleSort('status')}>
+                        <p style={{ margin: 0 }}>Aktif</p>
+                        {
+                          this.state.columnToSort === 'status' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
+                        }
+                      </Grid>
                       <p style={{ margin: 0, width: '10%', textAlign: 'center' }}>Aksi</p>
                     </Paper>
 

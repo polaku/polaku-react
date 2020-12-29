@@ -101,7 +101,7 @@ class modalOnBoarding extends Component {
         // this.props.history.push('/setting/setting-perusahaan/add-address', { company_id: data.data.company_id })
       })
       .catch(err => {
-        console.log(err)
+        // console.log(err)
         this.setState({ proses: false })
         swal('please try again')
       })
