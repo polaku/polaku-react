@@ -5,7 +5,7 @@ import { Grid, OutlinedInput, Button, Divider, FormControlLabel, Checkbox, Selec
 import CreatableSelect from 'react-select/creatable';
 
 import makeAnimated from 'react-select/animated';
-import DragAndDrop from '../DragAndDrop';
+// import DragAndDrop from '../DragAndDrop';
 
 const animatedComponents = makeAnimated();
 

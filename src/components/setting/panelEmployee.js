@@ -139,9 +139,6 @@ class panelEmployee extends Component {
       this.setState({ optionCompany: [{ acronym: 'Semua' }, ...this.props.dataCompanies] })
     } else {
       let optionCompany = []
-      if (this.props.admin.length > 1) {
-        optionCompany.push({ acronym: 'Semua' })
-      }
 
       let idCompany = []
       await this.props.admin.forEach(el => {
@@ -153,6 +150,11 @@ class panelEmployee extends Component {
           }
         }
       })
+
+      if (idCompany.length > 1) {
+        optionCompany.unshift({ acronym: 'Semua' })
+      }
+
       this.setState({ optionCompany })
     }
   }

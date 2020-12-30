@@ -687,6 +687,7 @@ class cardAddEmployee extends Component {
                 <MenuItem value="Tetap" >Tetap</MenuItem>
                 <MenuItem value="Kontrak" >Kontrak</MenuItem>
                 <MenuItem value="Probation" >Probation</MenuItem>
+                <MenuItem value="Berhenti" >Berhenti</MenuItem>
               </Select>
             </FormControl>
           </Grid>

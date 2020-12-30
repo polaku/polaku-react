@@ -229,9 +229,10 @@ class AddAdmin extends Component {
 
   fetchOptionCompany = async () => {
     if (this.props.isAdminsuper) {
-      this.setState({ optionCompany: this.props.dataCompanies })
+      this.setState({ optionCompany: [{ acronym: 'Semua' }, ...this.props.dataCompanies] })
     } else {
       let optionCompany = []
+
       let idCompany = []
       await this.props.admin.forEach(el => {
         if (idCompany.indexOf(el.company_id) === -1) {
@@ -242,6 +243,11 @@ class AddAdmin extends Component {
           }
         }
       })
+
+      if (idCompany.length > 1) {
+        optionCompany.unshift({ acronym: 'Semua' })
+      }
+
       this.setState({ optionCompany })
     }
   }

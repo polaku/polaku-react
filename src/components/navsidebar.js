@@ -780,6 +780,28 @@ function Navsidebar(props) {
                 </Collapse>
               </>
 
+              {/* Menu Helpdesk */}
+              {/* <>
+                {
+                  open
+                    ? <Link to="/helpdesk" onClick={event => handleListItemClick(event, 5)} style={{ textDecoration: 'none', color: 'black' }}>
+                      <ListItem button key="Helpdesk" selected={selectedIndex === 5} >
+                        <ListItemIcon>
+                          <SettingsOutlinedIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Helpdesk" />
+                      </ListItem>
+                    </Link>
+                    : <Link to="/setting" onClick={event => handleListItemClick(event, 5)}>
+                      <ListItem button key="Helpdesk" selected={selectedIndex === 5} >
+                        <ListItemIcon style={{ marginLeft: 8 }}>
+                          <SettingsOutlinedIcon />
+                        </ListItemIcon>
+                      </ListItem>
+                    </Link>
+                }
+              </> */}
+
               {/* Menu Setting */}
               <>
                 {
