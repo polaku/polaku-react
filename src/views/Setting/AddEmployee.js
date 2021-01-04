@@ -33,7 +33,7 @@ class AddEmployee extends Component {
 
   async componentDidMount() {
     await this.fetchOptionUser()
-console.log("MASUK SINI")
+// console.log("MASUK SINI")
     if (this.props.location.state) {
       if (this.props.location.state.data) {
         let data = [this.props.location.state.data]
@@ -56,7 +56,7 @@ console.log("MASUK SINI")
       await getData.data.data.forEach(user => {
         listUser.push({ value: user.user_id, label: user.tbl_account_detail.fullname })
       })
-console.log(listUser)
+// console.log(listUser)
       this.setState({ optionUser: listUser })
     } catch (err) {
       // console.log(err)

@@ -19,13 +19,13 @@ const api = store => next => async action => {
     try {
 
       let query = ''
-      if (action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
-      if (action.payload.company) query === '' ? query += `company=${action.payload.company}` : query += `&company=${action.payload.company}`
-      if (action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
-      if (action.payload.order) query === '' ? query += `order=${action.payload.order}` : query += `&order=${action.payload.order}`
-      if (action.payload.sort) query === '' ? query += `sort=${action.payload.sort}` : query += `&sort=${action.payload.sort}`
-      if (action.payload.status) query === '' ? query += `status=${action.payload.status}` : query += `&status=${action.payload.status}`
-      if (action.payload.forOption) query === '' ? query += `forOption=true` : query += `&forOption=true`
+      if (action.payload && action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
+      if (action.payload && action.payload.company) query === '' ? query += `company=${action.payload.company}` : query += `&company=${action.payload.company}`
+      if (action.payload && action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
+      if (action.payload && action.payload.order) query === '' ? query += `order=${action.payload.order}` : query += `&order=${action.payload.order}`
+      if (action.payload && action.payload.sort) query === '' ? query += `sort=${action.payload.sort}` : query += `&sort=${action.payload.sort}`
+      if (action.payload && action.payload.status) query === '' ? query += `status=${action.payload.status}` : query += `&status=${action.payload.status}`
+      if (action.payload && action.payload.forOption) query === '' ? query += `forOption=true` : query += `&forOption=true`
 
       let getData = await API.get(`/users?${query}`, {
         headers: {
@@ -55,14 +55,16 @@ const api = store => next => async action => {
     next({
       type: 'FETCH_DATA_LOADING'
     })
-
+    // console.log("MASUK SINI 1")
     try {
-
+      // console.log("MASUK SINI 2")
+ 
       let query = ''
-      if (action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
-      if (action.payload.forOption) query === '' ? query += `forOption=true` : query += `&forOption=true`
-      if (action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
-      if (action.payload.company) query === '' ? query += `company=${action.payload.company}` : query += `&company=${action.payload.company}`
+      if (action.payload && action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
+      if (action.payload && action.payload.forOption) query === '' ? query += `forOption=true` : query += `&forOption=true`
+      if (action.payload && action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
+      if (action.payload && action.payload.company) query === '' ? query += `company=${action.payload.company}` : query += `&company=${action.payload.company}`
+      // console.log("MASUK SINI 3")
 
       let getData = await API.get(`/bookingRoom/rooms?${query}`, {
         headers: {
@@ -70,7 +72,9 @@ const api = store => next => async action => {
           // ip: await publicIp.v4()
         }
       })
+      // console.log("MASUK SINI 4")
 
+      // console.log(getData.data.data)
       next({
         type: 'FETCH_DATA_ROOMS_SUCCESS',
         payload: getData.data.data
@@ -498,19 +502,19 @@ const api = store => next => async action => {
 
     let getDataKPIM
     try {
-      if (action.payload["for-setting"]) getDataKPIM = await API.get(`/kpim?for-setting=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}`, {
+      if (action.payload && action.payload["for-setting"]) getDataKPIM = await API.get(`/kpim?for-setting=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}`, {
         headers: {
           token,
           // ip: await publicIp.v4()
         }
       })
-      else if (action.payload["for-dashboard"]) getDataKPIM = await API.get(`/kpim?for-dashboard=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}&user-id=${action.payload.userId}`, {
+      else if (action.payload && action.payload["for-dashboard"]) getDataKPIM = await API.get(`/kpim?for-dashboard=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}&user-id=${action.payload.userId}`, {
         headers: {
           token,
           // ip: await publicIp.v4()
         }
       })
-      else if (action.payload["for-report"]) getDataKPIM = await API.get(`/kpim?for-report=true&year=${action.payload.year}&month=${action.payload.month}`, {
+      else if (action.payload && action.payload["for-report"]) getDataKPIM = await API.get(`/kpim?for-report=true&year=${action.payload.year}&month=${action.payload.month}`, {
         headers: {
           token,
           // ip: await publicIp.v4()
@@ -542,19 +546,19 @@ const api = store => next => async action => {
 
     let getData
     try {
-      if (action.payload["for-setting"]) getData = await API.get(`/tal?for-setting=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}`, {
+      if (action.payload && action.payload["for-setting"]) getData = await API.get(`/tal?for-setting=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}`, {
         headers: {
           token,
           // ip: await publicIp.v4()
         }
       })
-      else if (action.payload["for-dashboard"]) getData = await API.get(`/tal?for-dashboard=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}&user-id=${action.payload.userId}`, {
+      else if (action.payload && action.payload["for-dashboard"]) getData = await API.get(`/tal?for-dashboard=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}&user-id=${action.payload.userId}`, {
         headers: {
           token,
           // ip: await publicIp.v4()
         }
       })
-      else if (action.payload["for-tal-team"]) getData = await API.get(`/tal?for-tal-team=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}&user-id=${action.payload.userId}`, {
+      else if (action.payload && action.payload["for-tal-team"]) getData = await API.get(`/tal?for-tal-team=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}&user-id=${action.payload.userId}`, {
         headers: {
           token,
           // ip: await publicIp.v4()
@@ -719,10 +723,10 @@ const api = store => next => async action => {
     try {
 
       let query = ''
-      if (action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
-      if (action.payload.forOption) query === '' ? query += `forOption=true` : query += `&forOption=true`
-      if (action.payload.company) query === '' ? query += `company=${action.payload.company}` : query += `&company=${action.payload.company}`
-      if (action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
+      if (action.payload && action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
+      if (action.payload && action.payload.forOption) query === '' ? query += `forOption=true` : query += `&forOption=true`
+      if (action.payload && action.payload.company) query === '' ? query += `company=${action.payload.company}` : query += `&company=${action.payload.company}`
+      if (action.payload && action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
 
       let getData = await API.get(`/address?${query}`, {
         headers: {
@@ -751,10 +755,10 @@ const api = store => next => async action => {
     try {
 
       let query = ''
-      if (action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
-      if (action.payload.forOption) query === '' ? query += `forOption=true` : query += `&forOption=true`
-      if (action.payload.company) query === '' ? query += `company=${action.payload.company}` : query += `&company=${action.payload.company}`
-      if (action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
+      if (action.payload && action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
+      if (action.payload && action.payload.forOption) query === '' ? query += `forOption=true` : query += `&forOption=true`
+      if (action.payload && action.payload.company) query === '' ? query += `company=${action.payload.company}` : query += `&company=${action.payload.company}`
+      if (action.payload && action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
 
       let getData = await API.get(`/structure?${query}`, {
         headers: {
@@ -783,9 +787,9 @@ const api = store => next => async action => {
     try {
 
       let query = ''
-      if (action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
-      if (action.payload.status) query === '' ? query += `status=${action.payload.status}` : query += `&status=${action.payload.status}`
-      if (action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
+      if (action.payload && action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
+      if (action.payload && action.payload.status) query === '' ? query += `status=${action.payload.status}` : query += `&status=${action.payload.status}`
+      if (action.payload && action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
 
       let getData = await API.get(`/dinas?${query}`, {
         headers: {
@@ -822,10 +826,10 @@ const api = store => next => async action => {
     try {
 
       let query = ''
-      if (action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
-      if (action.payload.status) query === '' ? query += `status=${action.payload.status}` : query += `&status=${action.payload.status}`
-      if (action.payload.company) query === '' ? query += `company=${action.payload.company}` : query += `&company=${action.payload.company}`
-      if (action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
+      if (action.payload && action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
+      if (action.payload && action.payload.status) query === '' ? query += `status=${action.payload.status}` : query += `&status=${action.payload.status}`
+      if (action.payload && action.payload.company) query === '' ? query += `company=${action.payload.company}` : query += `&company=${action.payload.company}`
+      if (action.payload && action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
 
       let getData = await API.get(`/designation?${query}`, {
         headers: {

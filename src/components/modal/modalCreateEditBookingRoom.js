@@ -176,8 +176,13 @@ class modalCreateEditBookingRoom extends Component {
             this.props.closeModal()
           })
           .catch((err) => {
+            // console.log(err.response)
             if (err.message === 'Request failed with status code 400') {
-              swal('Waktu yang dipesan sudah terpesan oleh orang lain, harap menentukan waktu yang lain', "", "error");
+              if(err.response.data.error === 'Total person too much'){
+                swal('Total partisipan melebihi kapasitas ruangan', "", "error");
+              }else{
+                swal('Waktu yang dipesan sudah terpesan oleh orang lain, harap menentukan waktu yang lain', "", "error");
+              }
             } else if (err.message === 'Request failed with status code 403') {
               swal('Waktu login telah habis, silahkan login kembali', "", "error");
 
