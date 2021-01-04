@@ -2,8 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import {
-  Grid, TextField, Button, FormControl, Select, MenuItem
+  Grid, Button, FormControl, Select, MenuItem
 } from '@material-ui/core';
+
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 
 import CardRoomInBookingRoom from '../../components/facility/cardRoomInBookingRoom';
 
@@ -15,7 +21,7 @@ class BookingRoom extends Component {
     this.state = {
       data: [],
       dataForDisplay: [],
-      searchDate: '',
+      searchDate: null,
       building: 'semua',
       listBuilding: []
     }
@@ -112,20 +118,40 @@ class BookingRoom extends Component {
     })
   }
 
+  handleDateChange = (name, date) => {
+    this.setState({ [name]: date })
+  }
+
   render() {
     return (
       <Grid>
         <Grid style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Grid id="top-left" style={{ display: 'flex', alignItems: 'center' }}>
             <p>Cari berdasarkan Tanggal :</p>
-            <TextField
-              id="searchDate"
-              type="date"
-              value={this.state.searchDate}
-              onChange={this.handleChange('searchDate')}
-              disabled={this.state.proses}
-              style={{ marginLeft: 10, marginRight: 10 }}
-            />
+            <FormControl style={{ margin: 0, marginBottom: 5 }}>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardDatePicker
+                  margin="normal"
+                  id="date"
+                  format="dd/MM/yyyy"
+                  inputVariant="outlined"
+                  style={{ width: 300, margin: 0, minWidth: 150, marginLeft: 10, marginRight: 10 }}
+                  value={this.state.searchDate}
+                  onChange={(date) => this.handleDateChange('searchDate', date)}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                  inputProps={{
+                    style: {
+                      height: 20,
+                      paddingTop: 10,
+                      paddingBottom: 10
+                    }
+                  }}
+                  disabled={this.state.proses}
+                />
+              </MuiPickersUtilsProvider>
+            </FormControl>
             <Button variant="contained" size="small" color="primary" onClick={this.search}>
               Cari
             </Button>

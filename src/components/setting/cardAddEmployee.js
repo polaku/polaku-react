@@ -12,6 +12,12 @@ import ReactSelect from 'react-select';
 import makeAnimated from 'react-select/animated';
 // import DragAndDrop from '../DragAndDrop';
 
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+
 import { fetchDataCompanies, fetchDataDepartment, fetchDataPosition, fetchDataUsers, fetchDataAddress, fetchDataStructure } from '../../store/action';
 
 const animatedComponents = makeAnimated();
@@ -403,462 +409,171 @@ class cardAddEmployee extends Component {
     }
   };
 
+  handleDateChange = (name, date) => {
+    this.setState({ [name]: date })
+  }
+
   render() {
     return (
       <>
-        {/* 1 */}
-        <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
 
-          {/* <h3 style={{ margin: 0, marginBottom: 5 }}><b>A. Data Karyawan</b></h3> */}
+          {/* 1 */}
+          <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
 
-          <Grid id="foto-karyawan" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Foto Karyawan</b>
-            </Grid>
+            {/* <h3 style={{ margin: 0, marginBottom: 5 }}><b>A. Data Karyawan</b></h3> */}
 
-            <Grid style={{ width: '80%', display: 'flex', alignItems: 'center' }}>
-              <input type="file" label="avatar" onChange={(e) => this.handleFileSelect(e)} disabled={this.props.proses}
-                accept="image/png,image/jpeg"
-                style={{ border: this.state.newImageIsError ? '1px solid red' : null }}
-              />
-              <Avatar alt="Avatar" src={this.state.pathAvatar} />
-            </Grid>
-          </Grid>
-
-          <Grid id="nama-karyawan" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-              <b style={{ margin: 0 }}>Nama</b>
-              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
-            </Grid>
-
-            <OutlinedInput
-              placeholder="sesuai KTP"
-              value={this.state.name}
-              onChange={this.handleChange('name')}
-              variant="outlined"
-              style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
-              inputProps={{
-                style: {
-                  padding: '5px 8px',
-                  fontSize: 14
-                }
-              }}
-              disabled={this.props.proses}
-            />
-          </Grid>
-
-          <Grid id="nama-panggilan" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-              <b style={{ margin: 0 }}>Nama Panggilan</b>
-              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
-            </Grid>
-
-            <OutlinedInput
-              value={this.state.nickname}
-              onChange={this.handleChange('nickname')}
-              variant="outlined"
-              style={{ width: '28%', height: 40, margin: '5px 0px' }}
-              inputProps={{
-                style: {
-                  padding: '5px 8px',
-                  fontSize: 14
-                }
-              }}
-              disabled={this.props.proses}
-            />
-            <Grid style={{ width: '2%' }} />
-            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-              <b style={{ margin: 0 }}>Akronim</b>
-              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
-            </Grid>
-
-            <OutlinedInput
-              value={this.state.initial}
-              onChange={this.handleChange('initial')}
-              variant="outlined"
-              style={{ width: '28%', height: 40, margin: '5px 0px' }}
-              inputProps={{
-                style: {
-                  padding: '5px 8px',
-                  fontSize: 14
-                }
-              }}
-              disabled={this.props.proses}
-            />
-          </Grid>
-
-          <Grid id="tanggal-lahir" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-              <b style={{ margin: 0 }}>tanggal lahir</b>
-              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
-            </Grid>
-            <TextField
-              id="date"
-              type="date"
-              margin="normal"
-              variant="outlined"
-              format="dd/MM/yyyy"
-              style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
-              InputLabelProps={{
-                shrink: true,
-                required: true
-              }}
-              size="small"
-              onChange={this.handleChange('dateOfBirth')}
-              value={this.state.dateOfBirth}
-              required
-              disabled={this.props.proses}
-            />
-          </Grid>
-
-          <Grid id="pt" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-              <b style={{ margin: 0 }}>PT</b>
-              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
-            </Grid>
-
-            <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
-              <Select
-                value={this.state.company}
-                onChange={this.handleChange('company')}
-                disabled={this.props.proses || this.state.disableCompanyId}
-                style={{ width: '100%' }}
-              >
-                {
-                  this.state.optionCompany.map((company, index) =>
-                    <MenuItem value={company.company_id} key={'companies' + index}>{company.company_name}</MenuItem>
-                  )
-                }
-              </Select>
-            </FormControl>
-
-            <Grid style={{ width: '2%' }} />
-
-            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-              <b style={{ margin: 0 }}>NIK</b>
-              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
-            </Grid>
-
-            <OutlinedInput
-              value={this.state.nik}
-              onChange={this.handleChange('nik')}
-              variant="outlined"
-              style={{ width: '28%', height: 40, margin: '5px 0px' }}
-              inputProps={{
-                style: {
-                  padding: '5px 8px',
-                  fontSize: 14
-                }
-              }}
-              disabled={this.props.proses}
-            />
-          </Grid>
-
-          {
-            this.state.listDivisi.map((divisi, index) =>
-              <Grid id="divisi" style={{ display: 'flex', alignItems: 'center' }} key={'divisi' + index}>
-                <Grid style={{ width: '20%', marginRight: 10 }}>
-                  <b style={{ marginBottom: 5 }}>Department</b>
-                </Grid>
-
-                <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
-                  <Select
-                    value={divisi.divisi}
-                    onChange={this.handleChangeDivisi(index, 'divisi')}
-                    disabled={this.props.proses}
-                    style={{ width: '100%' }}
-                  >
-                    <MenuItem value={null}>Pilih Department</MenuItem>
-                    {
-                      this.state.optionDivisi.map((department, index) =>
-                        <MenuItem value={department.departments_id} key={"department" + index}>{department.deptname}</MenuItem>
-                      )
-                    }
-                  </Select>
-                </FormControl>
-
-                <Grid style={{ width: '2%' }} />
-
-                <Grid style={{ width: '20%', marginRight: 10 }}>
-                  <b style={{ marginBottom: 5 }}>Posisi</b>
-                </Grid>
-
-                <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
-                  <Select
-                    value={divisi.peran}
-                    onChange={this.handleChangeDivisi(index, 'peran')}
-                    disabled={this.props.proses || !divisi.divisi}
-                    style={{ width: '100%' }}
-                  >
-                    <MenuItem value={null}>Pilih posisi</MenuItem>
-                    {
-                      this.props.dataPositions && this.props.dataPositions.map((position, index) =>
-                        <MenuItem value={position.position_id} key={"departments" + index}>{position.position}</MenuItem>
-                      )
-                    }
-                  </Select>
-                </FormControl>
-
-                {
-                  this.state.listDivisi.length > 1 && <Button style={{ backgroundColor: '#ff1919', borderRadius: 30, minWidth: 30, color: 'white', marginLeft: '10px' }} size='small' onClick={() => this.deleteDivisi(index)} disabled={this.state.proses}>X</Button>
-                }
-              </Grid>
-            )
-          }
-          <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addDivisi} disabled={this.state.proses}>+ tambah department</p>
-
-
-          <Grid id="evaluator" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-              <b style={{ margin: 0 }}>Evaluator 1</b>
-              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
-            </Grid>
-            <Grid style={{ width: '28%', height: 40, margin: '5px 0px' }}>
-              <ReactSelect
-                isClearable
-                value={this.props.data && this.state.evaluator1Selected}
-                components={animatedComponents}
-                options={this.props.optionUser}
-                onChange={(newValue) => this.handleChangeEvaluator({ ...newValue, eva1: true })}
-                disabled={this.props.proses}
-              />
-            </Grid>
-
-            <Grid style={{ width: '2%' }} />
-
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Evaluator 2</b>
-            </Grid>
-
-            <Grid style={{ width: '28%', height: 40, margin: '5px 0px' }}>
-              <ReactSelect
-                isClearable
-                value={this.props.data && this.state.evaluator2Selected}
-                components={animatedComponents}
-                options={this.props.optionUser}
-                onChange={(newValue) => this.handleChangeEvaluator({ ...newValue, eva1: false })}
-                disabled={this.props.proses}
-              />
-            </Grid>
-          </Grid>
-
-        </Paper>
-
-        {/* 2 */}
-        <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
-
-          <Grid id="tanggal-bergabung" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-              <b style={{ margin: 0 }}>tanggal bergabung</b>
-              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
-            </Grid>
-            <TextField
-              id="date"
-              type="date"
-              margin="normal"
-              variant="outlined"
-              format="dd/MM/yyyy"
-              style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
-              InputLabelProps={{
-                shrink: true,
-                required: true
-              }}
-              size="small"
-              onChange={this.handleChange('tanggalGabung')}
-              value={this.state.tanggalGabung}
-              required
-              disabled={this.props.proses}
-            />
-          </Grid>
-
-          <Grid id="status-karyawan" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-              <b style={{ margin: 0 }}>Status karyawan</b>
-              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
-            </Grid>
-
-            <FormControl variant="outlined" size="small" style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}>
-              <Select
-                value={this.state.statusKaryawan}
-                onChange={this.handleChange('statusKaryawan')}
-                disabled={this.props.proses}
-                style={{ width: '100%' }}
-              >
-                <MenuItem value="Tetap" >Tetap</MenuItem>
-                <MenuItem value="Kontrak" >Kontrak</MenuItem>
-                <MenuItem value="Probation" >Probation</MenuItem>
-                <MenuItem value="Berhenti" >Berhenti</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid id="sisa-cuti" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-              <b style={{ margin: 0 }}>Sisa Cuti</b>
-              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
-            </Grid>
-
-            <OutlinedInput
-              value={this.state.sisaCuti}
-              onChange={this.handleChange('sisaCuti')}
-              variant="outlined"
-              style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
-              inputProps={{
-                style: {
-                  padding: '5px 8px',
-                  fontSize: 14
-                }
-              }}
-              disabled={this.props.proses}
-            />
-          </Grid>
-
-          <Grid id="tanggal-mulai-cuti" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Tanggal Mulai Cuti Besar</b>
-            </Grid>
-            <TextField
-              id="date"
-              type="date"
-              margin="normal"
-              variant="outlined"
-              format="dd/MM/yyyy"
-              style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
-              InputLabelProps={{
-                shrink: true,
-                required: true
-              }}
-              size="small"
-              onChange={this.handleChange('tanggalMulaiCutiBesar')}
-              value={this.state.tanggalMulaiCutiBesar}
-              required
-              disabled={this.props.proses}
-            />
-          </Grid>
-
-          <Grid id="sisa-cuti-besar" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Sisa Cuti Besar</b>
-            </Grid>
-
-            <OutlinedInput
-              value={this.state.sisaCutiBesar}
-              onChange={this.handleChange('sisaCutiBesar')}
-              variant="outlined"
-              style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
-              inputProps={{
-                style: {
-                  padding: '5px 8px',
-                  fontSize: 14
-                }
-              }}
-              disabled={this.props.proses}
-            />
-          </Grid>
-
-          <Grid id="next-frame" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Kacamata Frame berikutnya</b>
-            </Grid>
-            <TextField
-              id="date"
-              type="date"
-              margin="normal"
-              variant="outlined"
-              format="dd/MM/yyyy"
-              style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
-              InputLabelProps={{
-                shrink: true,
-                required: true
-              }}
-              size="small"
-              onChange={this.handleChange('nextFrame')}
-              value={this.state.nextFrame}
-              required
-              disabled={this.props.proses}
-            />
-          </Grid>
-
-          <Grid id="next-lensa" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10 }}>
-              <b style={{ marginBottom: 5 }}>Kacamata Lensa berikutnya</b>
-            </Grid>
-            <TextField
-              id="date"
-              type="date"
-              margin="normal"
-              variant="outlined"
-              format="dd/MM/yyyy"
-              style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
-              InputLabelProps={{
-                shrink: true,
-                required: true
-              }}
-              size="small"
-              onChange={this.handleChange('nextLensa')}
-              value={this.state.nextLensa}
-              required
-              disabled={this.props.proses}
-            />
-          </Grid>
-        </Paper>
-
-        {/* 3 */}
-        {
-          !this.props.data && <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
-            <Grid style={{ display: 'flex', alignItems: 'center' }}>
-              <FormControlLabel
-                control={<Checkbox checked={this.state.isDinas} onChange={this.handleChecked} size="small" name="dinas" disabled={this.props.proses} />}
-                label={<b style={{ margin: 0 }}>Dinas</b>}
-              />
-              <p style={{ margin: 0 }}>diabaikan apabila tidak dinas</p>
-            </Grid>
-
-            <Grid id="pt-dinas" style={{ display: 'flex', alignItems: 'center' }}>
+            <Grid id="foto-karyawan" style={{ display: 'flex', alignItems: 'center' }}>
               <Grid style={{ width: '20%', marginRight: 10 }}>
-                <b style={{ marginBottom: 5 }}>PT</b>
+                <b style={{ marginBottom: 5 }}>Foto Karyawan</b>
+              </Grid>
+
+              <Grid style={{ width: '80%', display: 'flex', alignItems: 'center' }}>
+                <input type="file" label="avatar" onChange={(e) => this.handleFileSelect(e)} disabled={this.props.proses}
+                  accept="image/png,image/jpeg"
+                  style={{ border: this.state.newImageIsError ? '1px solid red' : null }}
+                />
+                <Avatar alt="Avatar" src={this.state.pathAvatar} />
+              </Grid>
+            </Grid>
+
+            <Grid id="nama-karyawan" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                <b style={{ margin: 0 }}>Nama</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              </Grid>
+
+              <OutlinedInput
+                placeholder="sesuai KTP"
+                value={this.state.name}
+                onChange={this.handleChange('name')}
+                variant="outlined"
+                style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
+                inputProps={{
+                  style: {
+                    padding: '5px 8px',
+                    fontSize: 14
+                  }
+                }}
+                disabled={this.props.proses}
+              />
+            </Grid>
+
+            <Grid id="nama-panggilan" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                <b style={{ margin: 0 }}>Nama Panggilan</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              </Grid>
+
+              <OutlinedInput
+                value={this.state.nickname}
+                onChange={this.handleChange('nickname')}
+                variant="outlined"
+                style={{ width: '28%', height: 40, margin: '5px 0px' }}
+                inputProps={{
+                  style: {
+                    padding: '5px 8px',
+                    fontSize: 14
+                  }
+                }}
+                disabled={this.props.proses}
+              />
+              <Grid style={{ width: '2%' }} />
+              <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                <b style={{ margin: 0 }}>Akronim</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              </Grid>
+
+              <OutlinedInput
+                value={this.state.initial}
+                onChange={this.handleChange('initial')}
+                variant="outlined"
+                style={{ width: '28%', height: 40, margin: '5px 0px' }}
+                inputProps={{
+                  style: {
+                    padding: '5px 8px',
+                    fontSize: 14
+                  }
+                }}
+                disabled={this.props.proses}
+              />
+            </Grid>
+
+            <Grid id="tanggal-lahir" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                <b style={{ margin: 0 }}>tanggal lahir</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              </Grid>
+              <FormControl style={{ width: '75%', margin: 0, marginBottom: 5 }}>
+                <KeyboardDatePicker
+                  margin="normal"
+                  id="date"
+                  format="dd/MM/yyyy"
+                  inputVariant="outlined"
+                  style={{ margin: 0, minWidth: 150, padding: 0 }}
+                  value={this.state.dateOfBirth}
+                  onChange={(date) => this.handleDateChange('dateOfBirth', date)}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                  inputProps={{
+                    style: {
+                      height: 20,
+                      paddingTop: 10,
+                      paddingBottom: 10
+                    }
+                  }}
+                  disabled={this.state.proses}
+                />
+              </FormControl>
+            </Grid>
+
+            <Grid id="pt" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                <b style={{ margin: 0 }}>PT</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
               </Grid>
 
               <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
                 <Select
-                  value={this.state.companyDinas}
-                  onChange={this.handleChange('companyDinas')}
-                  disabled={this.props.proses || !this.state.isDinas}
+                  value={this.state.company}
+                  onChange={this.handleChange('company')}
+                  disabled={this.props.proses || this.state.disableCompanyId}
                   style={{ width: '100%' }}
                 >
                   {
-                    this.props.dataCompanies.map((company, index) =>
-                      <MenuItem value={company.company_id} key={index}>{company.company_name}</MenuItem>
+                    this.state.optionCompany.map((company, index) =>
+                      <MenuItem value={company.company_id} key={'companies' + index}>{company.company_name}</MenuItem>
                     )
                   }
                 </Select>
               </FormControl>
-            </Grid>
 
-            <Grid id="alamat-pt-dinas" style={{ display: 'flex', alignItems: 'center' }}>
-              <Grid style={{ width: '20%', marginRight: 10 }}>
-                <b style={{ marginBottom: 5 }}>Alamat</b>
+              <Grid style={{ width: '2%' }} />
+
+              <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                <b style={{ margin: 0 }}>NIK</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
               </Grid>
 
-              <FormControl variant="outlined" size="small" style={{ width: '50%', height: 40, margin: '5px 0px' }}>
-                <Select
-                  value={this.state.companyDinasAddress}
-                  onChange={this.handleChange('companyDinasAddress')}
-                  disabled={this.props.proses || !this.state.isDinas || !this.state.companyDinas}
-                  style={{ width: '100%' }}
-                >
-                  {
-                    this.state.dataAddressDinas.map((address, index) =>
-                      <MenuItem value={address.building_id} key={"companyDinasAddress" + index}>{address.building}</MenuItem>
-                    )
+              <OutlinedInput
+                value={this.state.nik}
+                onChange={this.handleChange('nik')}
+                variant="outlined"
+                style={{ width: '28%', height: 40, margin: '5px 0px' }}
+                inputProps={{
+                  style: {
+                    padding: '5px 8px',
+                    fontSize: 14
                   }
-                </Select>
-              </FormControl>
+                }}
+                disabled={this.props.proses}
+              />
             </Grid>
 
             {
-              this.state.listDivisiDinas.map((divisi, index) =>
-                <Grid id="divisi" style={{ display: 'flex', alignItems: 'center' }} key={'divisi-dinas' + index}>
+              this.state.listDivisi.map((divisi, index) =>
+                <Grid id="divisi" style={{ display: 'flex', alignItems: 'center' }} key={'divisi' + index}>
                   <Grid style={{ width: '20%', marginRight: 10 }}>
                     <b style={{ marginBottom: 5 }}>Department</b>
                   </Grid>
@@ -866,14 +581,14 @@ class cardAddEmployee extends Component {
                   <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
                     <Select
                       value={divisi.divisi}
-                      onChange={this.handleChangeDivisiDinas(index, 'divisi')}
-                      disabled={this.props.proses || !this.state.isDinas}
+                      onChange={this.handleChangeDivisi(index, 'divisi')}
+                      disabled={this.props.proses}
                       style={{ width: '100%' }}
                     >
-                      <MenuItem value={null}>Pilih department</MenuItem>
+                      <MenuItem value={null}>Pilih Department</MenuItem>
                       {
-                        this.state.optionDivisiDinas.map((department, index) =>
-                          <MenuItem value={department.departments_id} key={"DivisiDinas" + index}>{department.deptname}</MenuItem>
+                        this.state.optionDivisi.map((department, index) =>
+                          <MenuItem value={department.departments_id} key={"department" + index}>{department.deptname}</MenuItem>
                         )
                       }
                     </Select>
@@ -888,92 +603,126 @@ class cardAddEmployee extends Component {
                   <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
                     <Select
                       value={divisi.peran}
-                      onChange={this.handleChangeDivisiDinas(index, 'peran')}
-                      disabled={this.props.proses || !this.state.isDinas || !divisi.divisi}
+                      onChange={this.handleChangeDivisi(index, 'peran')}
+                      disabled={this.props.proses || !divisi.divisi}
                       style={{ width: '100%' }}
                     >
                       <MenuItem value={null}>Pilih posisi</MenuItem>
                       {
                         this.props.dataPositions && this.props.dataPositions.map((position, index) =>
-                          <MenuItem value={position.position_id} key={"department" + index}>{position.position}</MenuItem>
+                          <MenuItem value={position.position_id} key={"departments" + index}>{position.position}</MenuItem>
                         )
                       }
                     </Select>
                   </FormControl>
 
                   {
-                    this.state.listDivisiDinas.length > 1 && <Button style={{ backgroundColor: '#ff1919', borderRadius: 30, minWidth: 30, color: 'white', marginLeft: '10px' }} size='small' onClick={() => this.deleteDivisiDinas(index)} disabled={this.state.proses}>X</Button>
+                    this.state.listDivisi.length > 1 && <Button style={{ backgroundColor: '#ff1919', borderRadius: 30, minWidth: 30, color: 'white', marginLeft: '10px' }} size='small' onClick={() => this.deleteDivisi(index)} disabled={this.state.proses}>X</Button>
                   }
                 </Grid>
               )
             }
-            <p style={{ margin: 0, color: '#d91b51', cursor: !this.state.isDinas ? null : 'pointer' }} onClick={!this.state.isDinas ? null : this.addDivisiDinas} disabled={this.state.proses}>+ tambah department</p>
-          </Paper>
-        }
+            <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addDivisi} disabled={this.state.proses}>+ tambah department</p>
 
-        {/* 4 */}
-        <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
 
-          <Grid id="alamat-pt" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-              <b style={{ margin: 0 }}>Lokasi</b>
-              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
-            </Grid>
-
-            <FormControl variant="outlined" size="small" style={{ width: '50%', height: 40, margin: '5px 0px' }}>
-              <Select
-                value={this.state.companyAddress}
-                onChange={this.handleChange('companyAddress')}
-                disabled={this.props.proses || !this.state.company}
-                style={{ width: '100%' }}
-              >
-                {
-                  this.state.dataAddress.map((address, index) =>
-                    <MenuItem value={address.building_id} key={"companyAddress" + index}>{address.building}</MenuItem>
-                  )
-                }
-              </Select>
-            </FormControl>
-          </Grid>
-
-        </Paper>
-
-        {/* 5 */}
-        <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
-
-          <Grid id="username" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-              <b style={{ margin: 0 }}>Username</b>
-              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
-            </Grid>
-
-            <OutlinedInput
-              value={this.state.username}
-              onChange={this.handleChange('username')}
-              variant="outlined"
-              style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
-              inputProps={{
-                style: {
-                  padding: '5px 8px',
-                  fontSize: 14
-                }
-              }}
-              disabled={this.props.proses}
-            />
-          </Grid>
-
-          {
-            this.props.data &&
-            <Grid id="password" style={{ display: 'flex', alignItems: 'center' }}>
+            <Grid id="evaluator" style={{ display: 'flex', alignItems: 'center' }}>
               <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-                <b style={{ margin: 0 }}>Kata Sandi Baru</b>
+                <b style={{ margin: 0 }}>Evaluator 1</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              </Grid>
+              <Grid style={{ width: '28%', height: 40, margin: '5px 0px' }}>
+                <ReactSelect
+                  isClearable
+                  value={this.props.data && this.state.evaluator1Selected}
+                  components={animatedComponents}
+                  options={this.props.optionUser}
+                  onChange={(newValue) => this.handleChangeEvaluator({ ...newValue, eva1: true })}
+                  disabled={this.props.proses}
+                />
+              </Grid>
+
+              <Grid style={{ width: '2%' }} />
+
+              <Grid style={{ width: '20%', marginRight: 10 }}>
+                <b style={{ marginBottom: 5 }}>Evaluator 2</b>
+              </Grid>
+
+              <Grid style={{ width: '28%', height: 40, margin: '5px 0px' }}>
+                <ReactSelect
+                  isClearable
+                  value={this.props.data && this.state.evaluator2Selected}
+                  components={animatedComponents}
+                  options={this.props.optionUser}
+                  onChange={(newValue) => this.handleChangeEvaluator({ ...newValue, eva1: false })}
+                  disabled={this.props.proses}
+                />
+              </Grid>
+            </Grid>
+
+          </Paper>
+
+          {/* 2 */}
+          <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
+
+            <Grid id="tanggal-bergabung" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                <b style={{ margin: 0 }}>tanggal bergabung</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              </Grid>
+              <FormControl style={{ margin: 0, marginBottom: 5 }}>
+                <KeyboardDatePicker
+                  margin="normal"
+                  id="date"
+                  format="dd/MM/yyyy"
+                  inputVariant="outlined"
+                  style={{ width: 300, margin: 0, minWidth: 150, padding: 0 }}
+                  value={this.state.tanggalGabung}
+                  onChange={(date) => this.handleDateChange('tanggalGabung', date)}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                  inputProps={{
+                    style: {
+                      height: 20,
+                      paddingTop: 10,
+                      paddingBottom: 10
+                    }
+                  }}
+                  disabled={this.state.proses}
+                />
+              </FormControl>
+            </Grid>
+
+            <Grid id="status-karyawan" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                <b style={{ margin: 0 }}>Status karyawan</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              </Grid>
+
+              <FormControl variant="outlined" size="small" style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}>
+                <Select
+                  value={this.state.statusKaryawan}
+                  onChange={this.handleChange('statusKaryawan')}
+                  disabled={this.props.proses}
+                  style={{ width: '100%' }}
+                >
+                  <MenuItem value="Tetap" >Tetap</MenuItem>
+                  <MenuItem value="Kontrak" >Kontrak</MenuItem>
+                  <MenuItem value="Probation" >Probation</MenuItem>
+                  <MenuItem value="Berhenti" >Berhenti</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid id="sisa-cuti" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                <b style={{ margin: 0 }}>Sisa Cuti</b>
                 <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
               </Grid>
 
               <OutlinedInput
-                type="password"
-                value={this.state.password}
-                onChange={this.handleChange('password')}
+                value={this.state.sisaCuti}
+                onChange={this.handleChange('sisaCuti')}
                 variant="outlined"
                 style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
                 inputProps={{
@@ -985,93 +734,385 @@ class cardAddEmployee extends Component {
                 disabled={this.props.proses}
               />
             </Grid>
+
+            <Grid id="tanggal-mulai-cuti" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10 }}>
+                <b style={{ marginBottom: 5 }}>Tanggal Mulai Cuti Besar</b>
+              </Grid>
+              <FormControl style={{ margin: 0, marginBottom: 5 }}>
+                <KeyboardDatePicker
+                  margin="normal"
+                  id="date"
+                  format="dd/MM/yyyy"
+                  inputVariant="outlined"
+                  style={{ width: 300, margin: 0, minWidth: 150, padding: 0 }}
+                  value={this.state.tanggalMulaiCutiBesar}
+                  onChange={(date) => this.handleDateChange('tanggalMulaiCutiBesar', date)}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                  inputProps={{
+                    style: {
+                      height: 20,
+                      paddingTop: 10,
+                      paddingBottom: 10
+                    }
+                  }}
+                  disabled={this.state.proses}
+                />
+              </FormControl>
+            </Grid>
+
+            <Grid id="sisa-cuti-besar" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10 }}>
+                <b style={{ marginBottom: 5 }}>Sisa Cuti Besar</b>
+              </Grid>
+
+              <OutlinedInput
+                value={this.state.sisaCutiBesar}
+                onChange={this.handleChange('sisaCutiBesar')}
+                variant="outlined"
+                style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
+                inputProps={{
+                  style: {
+                    padding: '5px 8px',
+                    fontSize: 14
+                  }
+                }}
+                disabled={this.props.proses}
+              />
+            </Grid>
+
+            <Grid id="next-frame" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10 }}>
+                <b style={{ marginBottom: 5 }}>Kacamata Frame berikutnya</b>
+              </Grid>
+              <FormControl style={{ margin: 0, marginBottom: 5 }}>
+                <KeyboardDatePicker
+                  margin="normal"
+                  id="date"
+                  format="dd/MM/yyyy"
+                  inputVariant="outlined"
+                  style={{ width: 300, margin: 0, minWidth: 150, padding: 0 }}
+                  value={this.state.nextFrame}
+                  onChange={(date) => this.handleDateChange('nextFrame', date)}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                  inputProps={{
+                    style: {
+                      height: 20,
+                      paddingTop: 10,
+                      paddingBottom: 10
+                    }
+                  }}
+                  required
+                  disabled={this.state.proses}
+                />
+              </FormControl>
+            </Grid>
+
+            <Grid id="next-lensa" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10 }}>
+                <b style={{ marginBottom: 5 }}>Kacamata Lensa berikutnya</b>
+              </Grid>
+              <FormControl style={{ margin: 0, marginBottom: 5 }}>
+                <KeyboardDatePicker
+                  margin="normal"
+                  id="date"
+                  format="dd/MM/yyyy"
+                  inputVariant="outlined"
+                  style={{ width: 300, margin: 0, minWidth: 150, padding: 0 }}
+                  value={this.state.nextLensa}
+                  onChange={(date) => this.handleDateChange('nextLensa', date)}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                  inputProps={{
+                    style: {
+                      height: 20,
+                      paddingTop: 10,
+                      paddingBottom: 10
+                    }
+                  }}
+                  required
+                  disabled={this.state.proses}
+                />
+              </FormControl>
+            </Grid>
+          </Paper>
+
+          {/* 3 */}
+          {
+            !this.props.data && <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
+              <Grid style={{ display: 'flex', alignItems: 'center' }}>
+                <FormControlLabel
+                  control={<Checkbox checked={this.state.isDinas} onChange={this.handleChecked} size="small" name="dinas" disabled={this.props.proses} />}
+                  label={<b style={{ margin: 0 }}>Dinas</b>}
+                />
+                <p style={{ margin: 0 }}>diabaikan apabila tidak dinas</p>
+              </Grid>
+
+              <Grid id="pt-dinas" style={{ display: 'flex', alignItems: 'center' }}>
+                <Grid style={{ width: '20%', marginRight: 10 }}>
+                  <b style={{ marginBottom: 5 }}>PT</b>
+                </Grid>
+
+                <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
+                  <Select
+                    value={this.state.companyDinas}
+                    onChange={this.handleChange('companyDinas')}
+                    disabled={this.props.proses || !this.state.isDinas}
+                    style={{ width: '100%' }}
+                  >
+                    {
+                      this.props.dataCompanies.map((company, index) =>
+                        <MenuItem value={company.company_id} key={index}>{company.company_name}</MenuItem>
+                      )
+                    }
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid id="alamat-pt-dinas" style={{ display: 'flex', alignItems: 'center' }}>
+                <Grid style={{ width: '20%', marginRight: 10 }}>
+                  <b style={{ marginBottom: 5 }}>Alamat</b>
+                </Grid>
+
+                <FormControl variant="outlined" size="small" style={{ width: '50%', height: 40, margin: '5px 0px' }}>
+                  <Select
+                    value={this.state.companyDinasAddress}
+                    onChange={this.handleChange('companyDinasAddress')}
+                    disabled={this.props.proses || !this.state.isDinas || !this.state.companyDinas}
+                    style={{ width: '100%' }}
+                  >
+                    {
+                      this.state.dataAddressDinas.map((address, index) =>
+                        <MenuItem value={address.building_id} key={"companyDinasAddress" + index}>{address.building}</MenuItem>
+                      )
+                    }
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              {
+                this.state.listDivisiDinas.map((divisi, index) =>
+                  <Grid id="divisi" style={{ display: 'flex', alignItems: 'center' }} key={'divisi-dinas' + index}>
+                    <Grid style={{ width: '20%', marginRight: 10 }}>
+                      <b style={{ marginBottom: 5 }}>Department</b>
+                    </Grid>
+
+                    <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
+                      <Select
+                        value={divisi.divisi}
+                        onChange={this.handleChangeDivisiDinas(index, 'divisi')}
+                        disabled={this.props.proses || !this.state.isDinas}
+                        style={{ width: '100%' }}
+                      >
+                        <MenuItem value={null}>Pilih department</MenuItem>
+                        {
+                          this.state.optionDivisiDinas.map((department, index) =>
+                            <MenuItem value={department.departments_id} key={"DivisiDinas" + index}>{department.deptname}</MenuItem>
+                          )
+                        }
+                      </Select>
+                    </FormControl>
+
+                    <Grid style={{ width: '2%' }} />
+
+                    <Grid style={{ width: '20%', marginRight: 10 }}>
+                      <b style={{ marginBottom: 5 }}>Posisi</b>
+                    </Grid>
+
+                    <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
+                      <Select
+                        value={divisi.peran}
+                        onChange={this.handleChangeDivisiDinas(index, 'peran')}
+                        disabled={this.props.proses || !this.state.isDinas || !divisi.divisi}
+                        style={{ width: '100%' }}
+                      >
+                        <MenuItem value={null}>Pilih posisi</MenuItem>
+                        {
+                          this.props.dataPositions && this.props.dataPositions.map((position, index) =>
+                            <MenuItem value={position.position_id} key={"department" + index}>{position.position}</MenuItem>
+                          )
+                        }
+                      </Select>
+                    </FormControl>
+
+                    {
+                      this.state.listDivisiDinas.length > 1 && <Button style={{ backgroundColor: '#ff1919', borderRadius: 30, minWidth: 30, color: 'white', marginLeft: '10px' }} size='small' onClick={() => this.deleteDivisiDinas(index)} disabled={this.state.proses}>X</Button>
+                    }
+                  </Grid>
+                )
+              }
+              <p style={{ margin: 0, color: '#d91b51', cursor: !this.state.isDinas ? null : 'pointer' }} onClick={!this.state.isDinas ? null : this.addDivisiDinas} disabled={this.state.proses}>+ tambah department</p>
+            </Paper>
           }
-          <Grid id="email-pribadi" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-              <b style={{ margin: 0 }}>Email Pribadi</b>
-              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+
+          {/* 4 */}
+          <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
+
+            <Grid id="alamat-pt" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                <b style={{ margin: 0 }}>Lokasi</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              </Grid>
+
+              <FormControl variant="outlined" size="small" style={{ width: '50%', height: 40, margin: '5px 0px' }}>
+                <Select
+                  value={this.state.companyAddress}
+                  onChange={this.handleChange('companyAddress')}
+                  disabled={this.props.proses || !this.state.company}
+                  style={{ width: '100%' }}
+                >
+                  {
+                    this.state.dataAddress.map((address, index) =>
+                      <MenuItem value={address.building_id} key={"companyAddress" + index}>{address.building}</MenuItem>
+                    )
+                  }
+                </Select>
+              </FormControl>
             </Grid>
 
-            <OutlinedInput
-              type="email"
-              value={this.state.emailPribadi}
-              onChange={this.handleChange('emailPribadi')}
-              variant="outlined"
-              style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
-              inputProps={{
-                style: {
-                  padding: '5px 8px',
-                  fontSize: 14
-                }
-              }}
-              disabled={this.props.proses}
-            />
-          </Grid>
+          </Paper>
 
-          <Grid id="email-kantor" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-              <b style={{ margin: 0 }}>Email Kantor</b>
-              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+          {/* 5 */}
+          <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
+
+            <Grid id="username" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                <b style={{ margin: 0 }}>Username</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              </Grid>
+
+              <OutlinedInput
+                value={this.state.username}
+                onChange={this.handleChange('username')}
+                variant="outlined"
+                style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
+                inputProps={{
+                  style: {
+                    padding: '5px 8px',
+                    fontSize: 14
+                  }
+                }}
+                disabled={this.props.proses}
+              />
             </Grid>
 
-            <OutlinedInput
-              type="email"
-              value={this.state.emailKantor}
-              onChange={this.handleChange('emailKantor')}
-              variant="outlined"
-              style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
-              inputProps={{
-                style: {
-                  padding: '5px 8px',
-                  fontSize: 14
-                }
-              }}
-              disabled={this.props.proses}
-            />
-          </Grid>
+            {
+              this.props.data &&
+              <Grid id="password" style={{ display: 'flex', alignItems: 'center' }}>
+                <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                  <b style={{ margin: 0 }}>Kata Sandi Baru</b>
+                  <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+                </Grid>
 
-          <Grid id="telpon" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-              <b style={{ margin: 0 }}>No Telpon</b>
-              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+                <OutlinedInput
+                  type="password"
+                  value={this.state.password}
+                  onChange={this.handleChange('password')}
+                  variant="outlined"
+                  style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
+                  inputProps={{
+                    style: {
+                      padding: '5px 8px',
+                      fontSize: 14
+                    }
+                  }}
+                  disabled={this.props.proses}
+                />
+              </Grid>
+            }
+            <Grid id="email-pribadi" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                <b style={{ margin: 0 }}>Email Pribadi</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              </Grid>
+
+              <OutlinedInput
+                type="email"
+                value={this.state.emailPribadi}
+                onChange={this.handleChange('emailPribadi')}
+                variant="outlined"
+                style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
+                inputProps={{
+                  style: {
+                    padding: '5px 8px',
+                    fontSize: 14
+                  }
+                }}
+                disabled={this.props.proses}
+              />
             </Grid>
 
-            <OutlinedInput
-              value={this.state.telepon}
-              onChange={this.handleChange('telepon')}
-              variant="outlined"
-              style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
-              inputProps={{
-                style: {
-                  padding: '5px 8px',
-                  fontSize: 14
-                }
-              }}
-              disabled={this.props.proses}
-            />
-          </Grid>
+            <Grid id="email-kantor" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                <b style={{ margin: 0 }}>Email Kantor</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              </Grid>
 
-          <Grid id="alamat" style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-              <b style={{ margin: 0 }}>Alamat</b>
-              <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              <OutlinedInput
+                type="email"
+                value={this.state.emailKantor}
+                onChange={this.handleChange('emailKantor')}
+                variant="outlined"
+                style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
+                inputProps={{
+                  style: {
+                    padding: '5px 8px',
+                    fontSize: 14
+                  }
+                }}
+                disabled={this.props.proses}
+              />
             </Grid>
 
-            <OutlinedInput
-              value={this.state.alamat}
-              onChange={this.handleChange('alamat')}
-              variant="outlined"
-              style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
-              inputProps={{
-                style: {
-                  padding: '5px 8px',
-                  fontSize: 14
-                }
-              }}
-              disabled={this.props.proses}
-            />
-          </Grid>
-        </Paper>
+            <Grid id="telpon" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                <b style={{ margin: 0 }}>No Telpon</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              </Grid>
+
+              <OutlinedInput
+                value={this.state.telepon}
+                onChange={this.handleChange('telepon')}
+                variant="outlined"
+                style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
+                inputProps={{
+                  style: {
+                    padding: '5px 8px',
+                    fontSize: 14
+                  }
+                }}
+                disabled={this.props.proses}
+              />
+            </Grid>
+
+            <Grid id="alamat" style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                <b style={{ margin: 0 }}>Alamat</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              </Grid>
+
+              <OutlinedInput
+                value={this.state.alamat}
+                onChange={this.handleChange('alamat')}
+                variant="outlined"
+                style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
+                inputProps={{
+                  style: {
+                    padding: '5px 8px',
+                    fontSize: 14
+                  }
+                }}
+                disabled={this.props.proses}
+              />
+            </Grid>
+          </Paper>
+
+        </MuiPickersUtilsProvider>
       </>
     )
   }
