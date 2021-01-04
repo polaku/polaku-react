@@ -45,6 +45,8 @@ class panelSetting extends Component {
       batasAtas = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.bulan, 0))
       batasBawah = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.bulan - 1, 1))
 
+      if (batasBawah >= 52) batasBawah = 1
+
       for (batasBawah; batasBawah <= batasAtas; batasBawah++) {
         loopingWeek.push(batasBawah)
       }

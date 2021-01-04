@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 
 import {
   Grid, OutlinedInput, Button,
-  // Divider, 
-  FormControlLabel, Checkbox, Select, MenuItem, Paper, FormControl, TextField, Avatar
+  // Divider, TextField,
+  FormControlLabel, Checkbox, Select, MenuItem, Paper, FormControl, Avatar
 } from '@material-ui/core';
 // import SeReactSelect from 'react-select/creatable';
 import ReactSelect from 'react-select';
