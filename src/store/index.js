@@ -58,7 +58,7 @@ const api = store => next => async action => {
     // console.log("MASUK SINI 1")
     try {
       // console.log("MASUK SINI 2")
- 
+
       let query = ''
       if (action.payload && action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
       if (action.payload && action.payload.forOption) query === '' ? query += `forOption=true` : query += `&forOption=true`
@@ -497,11 +497,12 @@ const api = store => next => async action => {
   }
   else if (action.type === 'FETCH_DATA_ALL_KPIM') {
     next({
-      type: 'FETCH_DATA_LOADING'
+      type: 'FETCH_DATA_ALL_KPIM_LOADING'
     })
 
     let getDataKPIM
     try {
+
       if (action.payload && action.payload["for-setting"]) getDataKPIM = await API.get(`/kpim?for-setting=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}`, {
         headers: {
           token,

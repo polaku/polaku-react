@@ -34,6 +34,7 @@ import ReportKPIM from './views/KPIM/ReportKPIM';
 import SettingKPIM from './views/KPIM/SettingKPIM';
 import Profil from './views/Profil';
 import Polanews from './views/Polanews/Polanews';
+import Helpdesk from './views/Helpdesk/Helpdesk';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -87,6 +88,7 @@ function Routes() {
         <AuthenticatedRoute path="/kpim" component={KPIM} />
         <AuthenticatedRoute path="/profil" component={Profil} />
         <AuthenticatedRoute path="/polanews" component={Polanews} />
+        <AuthenticatedRoute path="/helpdesk" component={Helpdesk} />
         <Redirect from="/" to="/login" />
       </Switch>
     </main>

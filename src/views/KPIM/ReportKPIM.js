@@ -53,9 +53,11 @@ class ReportIjin extends Component {
   state = {
     loading: false,
     month: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
-    monthSelected: 0,
-    weekSelected: 0,
+    yearSelected: new Date().getFullYear(),
+    monthSelected: null,
+    weekSelected: null,
     optionMinggu: [],
+    optionYear: [],
 
     value: 0,
     index: 0,
@@ -130,6 +132,12 @@ class ReportIjin extends Component {
       }, {
         label: "Nama Evaluator",
         value: "namaEvaluator"
+      }, {
+        label: "Bulan",
+        value: "bulan"
+      }, {
+        label: "Tahun",
+        value: "tahun"
       },
     ],
     labelValueKPIM: [
@@ -151,6 +159,12 @@ class ReportIjin extends Component {
       }, {
         label: "Nama Evaluator",
         value: "namaEvaluator"
+      }, {
+        label: "Bulan",
+        value: "bulan"
+      }, {
+        label: "Tahun",
+        value: "tahun"
       },
     ],
     labelValueTAL: [
@@ -187,8 +201,15 @@ class ReportIjin extends Component {
   };
 
   async componentDidMount() {
+    let optionYear = []
+
+    for (let i = new Date().getFullYear(); i > new Date().getFullYear() - 3; i--) {
+      optionYear.push(i)
+    }
+
     this.setState({
-      monthSelected: new Date().getMonth()
+      monthSelected: new Date().getMonth(),
+      optionYear
     })
   };
 
@@ -229,12 +250,18 @@ class ReportIjin extends Component {
     }
 
     if (prevState.monthSelected !== this.state.monthSelected) {
+
       let batasAtas, batasBawah, loopingWeek = []
       this.setState({
-        loading: true
+        loading: true,
+        selectAll: false,
+        statusCheckAll: false,
+        counterCeklis: 0,
       })
       batasAtas = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.monthSelected + 1, 0))
       batasBawah = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.monthSelected, 1))
+
+      if (batasBawah >= 52) batasBawah = 1
 
       for (let i = batasBawah; i <= batasAtas; i++) {
         loopingWeek.push(i)
@@ -254,11 +281,16 @@ class ReportIjin extends Component {
       })
     }
 
-    if (prevState.weekSelected !== this.state.weekSelected) {
+    if (prevState.weekSelected !== this.state.weekSelected || prevState.yearSelected !== this.state.yearSelected) {
       this.setState({
-        loading: true
+        loading: true,
+        selectAll: false,
+        statusCheckAll: false,
+        counterCeklis: 0,
+        dataForDisplay: []
       })
-      this.fetchData()
+
+      await this.fetchData()
       this.setState({
         loading: false
       })
@@ -268,42 +300,48 @@ class ReportIjin extends Component {
 
   fetchData = async () => {
     let tempData = [], forDisplay = []
-    await this.props.fetchDataAllKPIM({ 'for-report': true, year: new Date().getFullYear(), month: new Date().getMonth() + 1 })
+    await this.props.fetchDataAllKPIM({ 'for-report': true, year: this.state.yearSelected, month: this.state.monthSelected + 1 })
 
     await this.props.dataAllKPIM.sort(this.sortingUser)
+    if (this.props.dataAllKPIM.length > 0) {
+      let tempUser = this.props.dataAllKPIM[0].user_id, temp = []
+      await this.props.dataAllKPIM.forEach((kpim, index) => {
+        if (tempUser !== kpim.user_id) {
+          tempUser = kpim.user_id
+          tempData.push(temp)
+          temp = []
+        }
+        temp.push(kpim)
+        if (index === this.props.dataAllKPIM.length - 1) {
+          tempData.push(temp)
+        }
+      });
 
-    let tempUser = this.props.dataAllKPIM[0].user_id, temp = []
-    this.props.dataAllKPIM.forEach((kpim, index) => {
-      if (tempUser !== kpim.user_id) {
-        tempUser = kpim.user_id
-        tempData.push(temp)
-        temp = []
-      }
-      temp.push(kpim)
-      if (index === this.props.dataAllKPIM.length - 1) {
-        tempData.push(temp)
-      }
-    });
+      tempData.forEach(async (el, index) => {
+        let a = await this.fetchDataForDisplay(el)
 
-    tempData.forEach(async (el, index) => {
-      let a = await this.fetchDataForDisplay(el)
+        if ((a.kpim && a.kpim.length > 0) || (a.tal && a.tal.dataTAL.length > 0)) {
+          a.isVisible = true
+        } else {
+          a.isVisible = false
+        }
 
-      if ((a.kpim && a.kpim.length > 0) || (a.tal && a.tal.dataTAL.length > 0)) {
-        a.isVisible = true
-      } else {
-        a.isVisible = false
-      }
+        a.isCheck = false
+        forDisplay.push(a)
 
-      a.isCheck = false
-      forDisplay.push(a)
-
-      if (index === tempData.length - 1) {
-        this.setState({
-          dataForDisplay: forDisplay,
-          data: forDisplay
-        })
-      }
-    })
+        if (index === tempData.length - 1) {
+          this.setState({
+            dataForDisplay: forDisplay,
+            data: forDisplay
+          })
+        }
+      })
+    } else {
+      this.setState({
+        dataForDisplay: [],
+        data: []
+      })
+    }
   };
 
   fetchDataForDisplay = async args => {
@@ -409,7 +447,9 @@ class ReportIjin extends Component {
         kpim3: Math.round(newArr[2]),
         kpim4: Math.round(newArr[3]),
         kpim5: Math.round(newArr[4]),
-        totalNilai: Math.round(tempTotalNilai)
+        totalNilai: Math.round(tempTotalNilai),
+        bulan: this.state.monthSelected + 1,
+        tahun: this.state.yearSelected
       }
     ]
 
@@ -424,7 +464,9 @@ class ReportIjin extends Component {
         nikEvaluator: nikEvaluator,
         namaEvaluator: evaluatorFullname,
         indikator: el ? el.indicator_kpim : "",
-        nilai: el ? Math.round(el.score_kpim_monthly) : ""
+        nilai: el ? Math.round(el.score_kpim_monthly) : "",
+        bulan: this.state.monthSelected + 1,
+        tahun: this.state.yearSelected
       }
       tempDataKPIM.push(tempObj)
     })
@@ -632,17 +674,6 @@ class ReportIjin extends Component {
             </Tabs>
             <Grid style={{ display: 'flex', alignItems: 'center' }}>
               <SelectOption
-                value={this.state.monthSelected}
-                onChange={this.handleChange('monthSelected')}
-              >
-                {
-                  this.state.month.map((month, index) =>
-                    <MenuItem value={index} key={index}>{month} {new Date().getFullYear()}</MenuItem>
-                  )
-                }
-              </SelectOption>
-
-              <SelectOption
                 value={this.state.weekSelected}
                 onChange={this.handleChange('weekSelected')}
                 style={{ width: 130, marginRight: 10, marginLeft: 10 }}
@@ -653,6 +684,29 @@ class ReportIjin extends Component {
                 {
                   this.state.optionMinggu.map((el, index) =>
                     <MenuItem value={el} key={index}>{el}</MenuItem>
+                  )
+                }
+              </SelectOption>
+
+              <SelectOption
+                value={this.state.monthSelected}
+                onChange={this.handleChange('monthSelected')}
+              >
+                {
+                  this.state.month.map((month, index) =>
+                    <MenuItem value={index} key={index}>{month}</MenuItem>
+                  )
+                }
+              </SelectOption>
+
+              <SelectOption
+                value={this.state.yearSelected}
+                onChange={this.handleChange('yearSelected')}
+                style={{ marginLeft: 10 }}
+              >
+                {
+                  this.state.optionYear.map((year, index) =>
+                    <MenuItem value={year} key={"year" + index}>{year}</MenuItem>
                   )
                 }
               </SelectOption>
@@ -727,7 +781,9 @@ class ReportIjin extends Component {
             {
               this.state.loading
                 ? <p style={{ textAlign: 'center' }}>Mengambil data</p>
-                : this.state.dataForDisplay.map((el, index) => <CardReportKPIM data={el} key={index} allSelected={this.state.selectAll} handleCheck={this.handleCheck} refresh={this.fetchData} />)
+                : this.state.dataForDisplay.length === 0
+                  ? <p style={{ textAlign: 'center', color: 'red' }}>Tidak ada data</p>
+                  : this.state.dataForDisplay.map((el, index) => <CardReportKPIM data={el} key={index} allSelected={this.state.selectAll} handleCheck={this.handleCheck} refresh={this.fetchData} />)
             }
 
           </TabPanel>
@@ -794,7 +850,7 @@ class ReportIjin extends Component {
                 </MenuItem>
               )
             } */}
-            <MenuItem style={{height:'50px'}}>
+            <MenuItem style={{ height: '50px' }}>
               <Download
                 title="semua"
                 report="kpim"

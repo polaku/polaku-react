@@ -26,6 +26,7 @@ import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import ImportContactsRoundedIcon from '@material-ui/icons/ImportContactsRounded';
+import ContactSupportIcon from '@material-ui/icons/ContactSupport';
 
 import { setUser, fetchDataNotification, userLogout } from '../store/action';
 import { API } from '../config/API';
@@ -187,11 +188,10 @@ function Navsidebar(props) {
             let checkPIC = data.admin.find(el => el.PIC)
             let PIC = checkPIC ? true : false
             newData.isPIC = PIC
-
             let isAdminNews = false, isAdminAddress = false, isAdminStructure = false, isAdminEmployee = false, isAdminAdmin = false, isAdminRoom = false, isAdminKPIM = false, isAdminHR = false
 
-            if (!PIC) {
-              await data.admin.forEach(admin => {
+            await data.admin.forEach(admin => {
+              if (admin.tbl_designation) {
                 let checkNews = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 1)
                 if (checkNews) isAdminNews = true
 
@@ -215,8 +215,10 @@ function Navsidebar(props) {
 
                 let checkHR = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 8)
                 if (checkHR) isAdminHR = true
-              })
-            }
+              }
+
+            })
+
             newData.isAdminNews = isAdminNews
             newData.isAdminAddress = isAdminAddress
             newData.isAdminStructure = isAdminStructure
@@ -235,7 +237,6 @@ function Navsidebar(props) {
             if (data.adminContactCategori) {
               newData.adminContactCategori = data.adminContactCategori
             }
-
             await props.setUser(newData)
             await props.fetchDataNotification()
           })
@@ -304,6 +305,8 @@ function Navsidebar(props) {
       }
     } else if (props.location.pathname === '/kpim/setting') {
       setSelectedIndex(4.3)
+    } else if (props.location.pathname === '/helpdesk') {
+      setSelectedIndex(5)
     } else if (props.location.pathname === '/setting' ||
       props.location.pathname === '/setting/setting-user' ||
       props.location.pathname === '/setting/setting-perusahaan' ||
@@ -760,19 +763,21 @@ function Navsidebar(props) {
                       </ListItem>
                     </Link> */}
                     {
-                      isAtasan && <>
+                      (isAtasan || props.isAdminsuper) && <>
                         {
-                          (isAtasan || props.isAdminKPIM) && <Link to="/kpim/report" onClick={event => handleListItemClick(event, 4.2)} style={{ textDecoration: 'none', color: 'black' }}>
+                          (isAtasan || props.isAdminKPIM || props.isAdminsuper) && <Link to="/kpim/report" onClick={event => handleListItemClick(event, 4.2)} style={{ textDecoration: 'none', color: 'black' }}>
                             <ListItem button className={classes.nested} selected={selectedIndex === 4.2}>
                               <ListItemText primary="Laporan" />
                             </ListItem>
                           </Link>
                         }
-                        <Link to="/kpim/setting" onClick={event => handleListItemClick(event, 4.3)} style={{ textDecoration: 'none', color: 'black' }}>
-                          <ListItem button className={classes.nested} selected={selectedIndex === 4.3}>
-                            <ListItemText primary="Pengaturan KPIM" />
-                          </ListItem>
-                        </Link>
+                        {
+                          (!props.isAdminsuper) && <Link to="/kpim/setting" onClick={event => handleListItemClick(event, 4.3)} style={{ textDecoration: 'none', color: 'black' }}>
+                            <ListItem button className={classes.nested} selected={selectedIndex === 4.3}>
+                              <ListItemText primary="Pengaturan KPIM" />
+                            </ListItem>
+                          </Link>
+                        }
                       </>
                     }
 
@@ -787,15 +792,15 @@ function Navsidebar(props) {
                     ? <Link to="/helpdesk" onClick={event => handleListItemClick(event, 5)} style={{ textDecoration: 'none', color: 'black' }}>
                       <ListItem button key="Helpdesk" selected={selectedIndex === 5} >
                         <ListItemIcon>
-                          <SettingsOutlinedIcon />
+                          <ContactSupportIcon />
                         </ListItemIcon>
                         <ListItemText primary="Helpdesk" />
                       </ListItem>
                     </Link>
-                    : <Link to="/setting" onClick={event => handleListItemClick(event, 5)}>
+                    : <Link to="/helpdesk" onClick={event => handleListItemClick(event, 5)}>
                       <ListItem button key="Helpdesk" selected={selectedIndex === 5} >
                         <ListItemIcon style={{ marginLeft: 8 }}>
-                          <SettingsOutlinedIcon />
+                          <ContactSupportIcon />
                         </ListItemIcon>
                       </ListItem>
                     </Link>

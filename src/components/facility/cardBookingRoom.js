@@ -119,7 +119,7 @@ class cardBookingRoom extends Component {
           </div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <PersonIcon />
-            <p style={{ margin: 0, marginLeft: 5 }}>{this.props.data.tbl_user.tbl_account_detail.fullname}</p>
+            <p style={{ margin: 0, marginLeft: 5 }}>{this.props.data.tbl_user ? this.props.data.tbl_user.tbl_account_detail.fullname : '-'}</p>
           </div>
           {
             (this.state.owner || this.props.isAdminRoom || this.props.isAdminsuper) &&

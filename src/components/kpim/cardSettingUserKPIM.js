@@ -580,10 +580,13 @@ class cardSettingUserKPIM extends Component {
                       ((!this.state.statusCreateKPIM && this.state.KPIM.length < 4 && this.props.weekCurrent <= (this.getNumberOfWeek(new Date(new Date().getFullYear(), this.props.month - 1, 1)) + 1)) && !this.state.statusSudahKirimNilai)
 
                     ) &&  */}
-                  <Button onClick={this.handleCreateKPIM}
-                    style={{ borderRadius: 15, minWidth: 24, backgroundColor: '#e0e0e0', padding: 0 }} disabled={this.state.proses}>
-                    <AddIcon />
-                  </Button>
+                  {
+                    this.state.KPIM.length < 6 && <Button onClick={this.handleCreateKPIM}
+                      style={{ borderRadius: 15, minWidth: 24, backgroundColor: '#e0e0e0', padding: 0 }} disabled={this.state.proses}>
+                      <AddIcon />
+                    </Button>
+                  }
+
                   {/* } */}
                   {
                     this.state.KPIM.length === 0 && !this.state.TALMonth && <>

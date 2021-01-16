@@ -8,6 +8,14 @@ const defaultState = {
   isCreatorAssistant: false,
   admin: [],
   isPIC: false,
+  isAdminNews: false,
+  isAdminAddress: false,
+  isAdminStructure: false,
+  isAdminEmployee: false,
+  isAdminAdmin: false,
+  isAdminRoom: false,
+  isAdminKPIM: false,
+  isAdminHR: false,
   // PIC: [],
   // dinas: [],
   adminContactCategori: null,
@@ -75,7 +83,15 @@ function reducer(state = defaultState, action) {
         // PIC: action.payload.PIC,admin
         admin: action.payload.admin,
         ip: action.payload.ip,
-        isPIC: action.payload.isPIC
+        isPIC: action.payload.isPIC,
+        isAdminNews: action.payload.isAdminNews,
+        isAdminAddress: action.payload.isAdminAddress,
+        isAdminStructure: action.payload.isAdminStructure,
+        isAdminEmployee: action.payload.isAdminEmployee,
+        isAdminAdmin: action.payload.isAdminAdmin,
+        isAdminRoom: action.payload.isAdminRoom,
+        isAdminKPIM: action.payload.isAdminKPIM,
+        isAdminHR: action.payload.isAdminHR,
       }
     }
     case 'FETCH_DATA_USER_DETAIL_SUCCESS': {
@@ -220,6 +236,13 @@ function reducer(state = defaultState, action) {
         ...state,
         dataAllKPIM: action.payload.dataAllKPIM,
         loading: false
+      }
+    }
+    case 'FETCH_DATA_ALL_KPIM_LOADING': {
+      return {
+        ...state,
+        dataAllKPIM: [],
+        loading: true
       }
     }
     case 'FETCH_DATA_ALL_TAL_SUCCESS': {

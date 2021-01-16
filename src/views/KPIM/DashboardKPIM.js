@@ -345,7 +345,7 @@ class DashboardKPIM extends Component {
   }
 
   saveNewTal = async () => {
-    if ((Number(this.state.totalWeight) + Number(this.state.weight)) <= 100 && Number(this.state.load) <= 10) {
+    if ((Number(this.state.totalWeight) + Number(this.state.weight)) <= 100) {
       this.setState({
         proses: true
       })
@@ -575,7 +575,7 @@ class DashboardKPIM extends Component {
                       Item
                     </TableCell>
                     <TableCell style={{ width: '10%', padding: '14px 16px 14px 16px' }} align="center">
-                      Load
+                      Jam
                     </TableCell>
                     <TableCell style={{ width: '15%', padding: '14px 16px 14px 16px' }} align="center">
                       When
@@ -614,14 +614,12 @@ class DashboardKPIM extends Component {
                           </TableCell>
                           <TableCell align="center" style={{ padding: '0px 10px' }} >
                             <TextField
-                              type="number"
                               value={this.state.load}
                               onChange={this.handleChange('load')}
                               variant="outlined"
                               InputProps={{
                                 style: { height: 35, padding: 0 }
                               }}
-                              error={this.state.load > 10}
                             />
                           </TableCell>
                           <TableCell align="center" style={{ padding: '0px 10px' }} >
@@ -682,6 +680,11 @@ class DashboardKPIM extends Component {
               {
                 this.state.prosesTAL && <Grid style={{ width: '100%', textAlign: 'center' }}>
                   <CircularProgress color="secondary" style={{ marginTop: 10 }} />
+                </Grid>
+              }
+              {
+                !this.state.prosesTAL && this.state.talSelected.length === 0 && <Grid style={{ width: '100%', textAlign: 'center' }}>
+                  <p>harap komunikasi ke atasan untuk membuat TAL</p>
                 </Grid>
               }
               {
