@@ -7,6 +7,7 @@ import {
 } from '@material-ui/core';
 import ReactSelect from 'react-select';
 import makeAnimated from 'react-select/animated';
+import Loading from '../../components/Loading';
 
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -70,6 +71,7 @@ class AddService extends Component {
   }
 
   async componentDidMount() {
+    this.setState({ proses: true })
     await this.props.fetchDataCompanies()
     await this.props.fetchDataUsers()
     await this.props.fetchDataAddress()
@@ -261,6 +263,7 @@ class AddService extends Component {
         )
       // == END == FETCH STRUCTURE (DEPARTMENT AND POSITION) DINAS 
     })
+    this.setState({ proses: false })
   }
 
   handleChange = name => event => {
@@ -268,7 +271,8 @@ class AddService extends Component {
   };
 
   navigateBack = () => {
-    this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
+    console.log("NAVIGATE SINI")
+    this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index, indexTab: 1 })
   }
 
   handleChangeDinas = (name, index) => async (event) => {
@@ -557,6 +561,8 @@ class AddService extends Component {
       .then(async ({ data }) => {
         // this.setState({ data: [], proses: false })
         swal('Simpan data dinas sukses', '', 'success')
+        await this.props.fetchDataDinas({ limit: 10, page: 0 })
+        this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index, indexTab: 1 })
       })
       .catch(err => {
         this.setState({ proses: false, statusSubmit: false })
@@ -565,6 +571,8 @@ class AddService extends Component {
   }
 
   render() {
+    if (this.state.proses) return <Loading loading={this.state.proses} />;
+
     return (
       <Grid>
         <Grid style={{ display: 'flex' }}>

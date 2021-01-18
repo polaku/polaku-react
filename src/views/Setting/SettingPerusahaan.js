@@ -121,7 +121,7 @@ class SettingPerusahaan extends Component {
                 </>
                 : this.state.label[this.state.value] === 'Alamat' ? <PanelAddress index={this.state.value} />
                   : this.state.label[this.state.value] === 'Struktur' ? <PanelStructure index={this.state.value} />
-                    : this.state.label[this.state.value] === 'Karyawan' ? <PanelEmployee index={this.state.value} />
+                    : this.state.label[this.state.value] === 'Karyawan' ? <PanelEmployee index={this.state.value} indexTab={this.props.location.state ? this.props.location.state.indexTab : 0} />
                       : this.state.label[this.state.value] === 'Admin' && <PanelAdmin index={this.state.value} />
             }
           </TabPanel>
@@ -138,7 +138,7 @@ class SettingPerusahaan extends Component {
                 </>
                 : this.state.label[this.state.value] === 'Alamat' ? <PanelAddress index={this.state.value} />
                   : this.state.label[this.state.value] === 'Struktur' ? <PanelStructure index={this.state.value} />
-                    : this.state.label[this.state.value] === 'Karyawan' ? <PanelEmployee index={this.state.value} />
+                    : this.state.label[this.state.value] === 'Karyawan' ? <PanelEmployee index={this.state.value} indexTab={this.props.location.state ? this.props.location.state.indexTab : 0} />
                       : this.state.label[this.state.value] === 'Admin' && <PanelAdmin index={this.state.value} />
             }
           </TabPanel>
@@ -155,7 +155,7 @@ class SettingPerusahaan extends Component {
                 </>
                 : this.state.label[this.state.value] === 'Alamat' ? <PanelAddress index={this.state.value} />
                   : this.state.label[this.state.value] === 'Struktur' ? <PanelStructure index={this.state.value} />
-                    : this.state.label[this.state.value] === 'Karyawan' ? <PanelEmployee index={this.state.value} />
+                    : this.state.label[this.state.value] === 'Karyawan' ? <PanelEmployee index={this.state.value} indexTab={this.props.location.state ? this.props.location.state.indexTab : 0} />
                       : this.state.label[this.state.value] === 'Admin' && <PanelAdmin index={this.state.value} />
             }
           </TabPanel>
@@ -171,7 +171,7 @@ class SettingPerusahaan extends Component {
                 </>
                 : this.state.label[this.state.value] === 'Alamat' ? <PanelAddress index={this.state.value} />
                   : this.state.label[this.state.value] === 'Struktur' ? <PanelStructure index={this.state.value} />
-                    : this.state.label[this.state.value] === 'Karyawan' ? <PanelEmployee index={this.state.value} />
+                    : this.state.label[this.state.value] === 'Karyawan' ? <PanelEmployee index={this.state.value} indexTab={this.props.location.state ? this.props.location.state.indexTab : 0} />
                       : this.state.label[this.state.value] === 'Admin' && <PanelAdmin index={this.state.value} />
             }
           </TabPanel>
@@ -187,7 +187,7 @@ class SettingPerusahaan extends Component {
                 </>
                 : this.state.label[this.state.value] === 'Alamat' ? <PanelAddress index={this.state.value} />
                   : this.state.label[this.state.value] === 'Struktur' ? <PanelStructure index={this.state.value} />
-                    : this.state.label[this.state.value] === 'Karyawan' ? <PanelEmployee index={this.state.value} />
+                    : this.state.label[this.state.value] === 'Karyawan' ? <PanelEmployee index={this.state.value} indexTab={this.props.location.state ? this.props.location.state.indexTab : 0} />
                       : this.state.label[this.state.value] === 'Admin' && <PanelAdmin index={this.state.value} />
             }
           </TabPanel>

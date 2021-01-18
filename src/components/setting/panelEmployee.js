@@ -30,7 +30,7 @@ class panelEmployee extends Component {
     labelTab: ['Semua'],
     search: '',
     searchDinas: '',
-    valueA: 0,
+    valueA: this.props.indexTab ? this.props.indexTab :0,
     valueB: 0,
     valueStatus: 0,
     index: 0,
@@ -57,6 +57,7 @@ class panelEmployee extends Component {
   }
 
   async componentDidMount() {
+    console.log('kepanggil')
     this.setState({ proses: true })
     if (this.state.valueA === 0) {
       await this.props.fetchDataUsers({ limit: this.state.rowsPerPage, page: this.state.page })
