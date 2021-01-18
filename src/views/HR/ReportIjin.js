@@ -109,7 +109,7 @@ class ReportIjin extends Component {
     this._isMounted = true
 
     if (this._isMounted) {
-      await this.props.fetchDataContactUs({ startDate: this.state.monthStart, endDate: this.state.monthEnd })
+      await this.props.fetchDataContactUs({ limit: this.state.rowsPerPage, page: this.state.page, startDate: this.state.monthStart, endDate: this.state.monthEnd })
       await this.fetchData()
     }
   }
@@ -227,22 +227,27 @@ class ReportIjin extends Component {
       monthEnd: this.state.newMonthEnd,
       dataForDisplay: [],
       data: [],
+      page: 0
     })
-    await this.props.fetchDataContactUs({ startDate: this.state.newMonthStart, endDate: this.state.newMonthEnd })
+    await this.props.fetchDataContactUs({ limit: this.state.rowsPerPage, page: 0, startDate: this.state.newMonthStart, endDate: this.state.newMonthEnd })
     await this.fetchData()
   }
 
-  handleChangePage = (event, newPage) => {
+  handleChangePage = async (event, newPage) => {
     this.setState({
       page: newPage
     })
+    await this.props.fetchDataContactUs({ limit: this.state.rowsPerPage, page: newPage, startDate: this.state.newMonthStart, endDate: this.state.newMonthEnd })
+    await this.fetchData()
   }
 
-  handleChangeRowsPerPage = event => {
+  handleChangeRowsPerPage = async (event) => {
     this.setState({
       rowsPerPage: event.target.value,
       page: 0
     })
+    await this.props.fetchDataContactUs({ limit: event.target.value, page: 0, startDate: this.state.newMonthStart, endDate: this.state.newMonthEnd })
+    await this.fetchData()
   }
 
   handleSort = columnName => {

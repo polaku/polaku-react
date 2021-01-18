@@ -11,7 +11,7 @@ import Loading from '../../components/Loading';
 
 import swal from 'sweetalert';
 
-import { fetchDataCompanies, fetchDataDepartment, fetchDataPosition, fetchDataUsers, fetchDataStructure } from '../../store/action';
+import { fetchDataCompanies, fetchDataDepartment, fetchDataPosition, fetchDataStructure } from '../../store/action';
 
 import { API } from '../../config/API';
 
@@ -44,7 +44,6 @@ class AddDepartment extends Component {
     }
 
     await this.props.fetchDataCompanies()
-    await this.props.fetchDataUsers()
     await this.props.fetchDataDepartment()
     await this.props.fetchDataPosition()
     this.setState({ loading: false })
@@ -239,7 +238,6 @@ const mapDispatchToProps = {
   fetchDataCompanies,
   fetchDataDepartment,
   fetchDataPosition,
-  fetchDataUsers,
   fetchDataStructure
 }
 

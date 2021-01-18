@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Cookies from 'js-cookie';
 
 import {
   Grid, Button, Select, MenuItem, Paper, InputLabel
@@ -11,6 +12,8 @@ import makeAnimated from 'react-select/animated';
 // import CloseIcon from '@material-ui/icons/Close';
 
 import swal from 'sweetalert';
+
+import {API} from '../../config/API';
 
 const animatedComponents = makeAnimated();
 
@@ -85,10 +88,6 @@ class cardAddDepartment extends Component {
         await this.fetchDataForEdit()
       }
     }
-
-    if (this.props.dataUsers !== prevProps.dataUsers) {
-      await this.fetchOptionUser()
-    }
   }
 
   fetchOptionDepartment = async () => {
@@ -109,11 +108,20 @@ class cardAddDepartment extends Component {
   }
 
   fetchOptionUser = async () => {
-    let listUser = []
-    await this.props.dataUsers.forEach(user => {
-      listUser.push({ value: user.user_id, label: user.tbl_account_detail.fullname })
-    })
-    this.setState({ listUser })
+    try {
+      let token = Cookies.get('POLAGROUP')
+
+      let getData = await API.get(`/users/for-option`, { headers: { token } })
+
+      let listUser = []
+      await getData.data.data.forEach(user => {
+        listUser.push({ value: user.user_id, label: user.tbl_account_detail.fullname, nik: user.tbl_account_detail.nik })
+      })
+
+      this.setState({ listUser })
+    } catch (err) {
+      // console.log(err)
+    }
   }
 
   fetchDataForEdit = async () => {
@@ -572,6 +580,7 @@ class cardAddDepartment extends Component {
                       value={this.props.data && this.state.selectedUserPosition[index]}
                       components={animatedComponents}
                       options={this.state.listUser}
+                      getOptionLabel={(option) => `${option.nik} - ${option.label}`}
                       onChange={(newValue) => this.handleChangePosition({ ...newValue, index, name: 'user' })}
                       disabled={this.state.proses}
                     />
@@ -694,11 +703,10 @@ class cardAddDepartment extends Component {
   }
 }
 
-const mapStateToProps = ({ dataDepartments, dataPositions, dataUsers }) => {
+const mapStateToProps = ({ dataDepartments, dataPositions }) => {
   return {
     dataDepartments,
-    dataPositions,
-    dataUsers
+    dataPositions
   }
 }
 
