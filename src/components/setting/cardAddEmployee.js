@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Cookies from 'js-cookie';
 
 import {
   Grid, OutlinedInput, Button,
@@ -19,6 +20,8 @@ import {
 } from '@material-ui/pickers';
 
 import { fetchDataCompanies, fetchDataDepartment, fetchDataPosition, fetchDataUsers, fetchDataAddress, fetchDataStructure } from '../../store/action';
+
+import { API } from '../../config/API';
 
 const animatedComponents = makeAnimated();
 
@@ -72,7 +75,9 @@ class cardAddEmployee extends Component {
     password: '',
     optionCompany: [],
     optionDivisi: [],
+    optionPosisi: [],
     optionDivisiDinas: [],
+    optionPosisiDinas: [],
   }
 
   async componentDidMount() {
@@ -97,7 +102,7 @@ class cardAddEmployee extends Component {
     // }
 
     if (this.state.company !== prevState.company) {
-      let dataAddress = [], idBuilding = [], optionDivisi = [], idDivisi = []
+      let dataAddress = [], idBuilding = [], token = Cookies.get('POLAGROUP')
 
       await this.props.dataAddress.forEach(address => {
         if ((address.company_id === this.state.company) || (this.props.data && address.company_id === this.props.data.companyId)) {
@@ -108,20 +113,41 @@ class cardAddEmployee extends Component {
         }
       });
 
-      await this.props.dataStructure.forEach(structure => {
-        if (structure.company_id === this.state.company) {
-          if (idDivisi.indexOf(structure.departments_id) < 0) {
-            idDivisi.push(structure.departments_id)
-            optionDivisi.push(structure.department)
-          }
-        }
-      });
+      API.get(`/structure?company=${this.state.company}`, { headers: { token } })
+        .then(async ({ data }) => {
+          let optionPosisi = [], idDepart = [], optionDivisi = [], positions = []
 
-      this.setState({ dataAddress, optionDivisi })
+          //Looping depart
+          await data.data.forEach(async structure => {
+            await structure.tbl_department_positions.forEach(el => {
+              let checkAvailableBefore = positions.find(position => position.department === structure.departments_id && position.position === el.position_id)
+
+              if (el.user_id === null && !checkAvailableBefore) {
+                optionPosisi.push({ value: el.position_id, label: el.tbl_position.position, departments_id: structure.departments_id, departmentPositionId: el.id })
+
+                let checkDepart = idDepart.find(id => id === structure.departments_id)
+
+                if (!checkDepart) {
+                  optionDivisi.push({ value: structure.departments_id, label: structure.department.deptname })
+                  idDepart.push(structure.departments_id)
+                }
+              }
+
+            })
+          })
+
+          this.setState({ optionDivisi, optionPosisi })
+
+        })
+        .catch(err => { }
+          // console.log(err)
+        )
+
+      this.setState({ dataAddress })
     }
 
     if (this.state.companyDinas !== prevState.companyDinas) {
-      let dataAddressDinas = [], idBuilding = [], optionDivisiDinas = [], idDivisi = []
+      let dataAddressDinas = [], idBuilding = [], token = Cookies.get('POLAGROUP')
       await this.props.dataAddress.forEach(address => {
         if (address.company_id === this.state.companyDinas) {
           if (idBuilding.indexOf(address.building_id) < 0) {
@@ -131,15 +157,37 @@ class cardAddEmployee extends Component {
         }
       });
 
-      await this.props.dataStructure.forEach(structure => {
-        if (structure.company_id === this.state.companyDinas) {
-          if (idDivisi.indexOf(structure.departments_id) < 0) {
-            idDivisi.push(structure.departments_id)
-            optionDivisiDinas.push(structure.department)
-          }
-        }
-      });
-      this.setState({ dataAddressDinas, optionDivisiDinas })
+      API.get(`/structure?company=${this.state.companyDinas}`, { headers: { token } })
+        .then(async ({ data }) => {
+          let optionPosisiDinas = [], idDepart = [], optionDivisiDinas = [], positions = []
+
+          //Looping depart
+          await data.data.forEach(async structure => {
+            await structure.tbl_department_positions.forEach(el => {
+              let checkAvailableBefore = positions.find(position => position.department === structure.departments_id && position.position === el.position_id)
+
+              if (el.user_id === null && !checkAvailableBefore) {
+                optionPosisiDinas.push({ value: el.position_id, label: el.tbl_position.position, departments_id: structure.departments_id, departmentPositionId: el.id })
+
+                let checkDepart = idDepart.find(id => id === structure.departments_id)
+
+                if (!checkDepart) {
+                  optionDivisiDinas.push({ value: structure.departments_id, label: structure.department.deptname })
+                  idDepart.push(structure.departments_id)
+                }
+              }
+
+            })
+          })
+
+          this.setState({ optionDivisiDinas, optionPosisiDinas })
+
+        })
+        .catch(err => { }
+          // console.log(err)
+        )
+
+      this.setState({ dataAddressDinas })
     }
 
     if (this.props.statusSubmit !== prevProps.statusSubmit && this.props.statusSubmit) {
@@ -588,7 +636,7 @@ class cardAddEmployee extends Component {
                       <MenuItem value={null}>Pilih Department</MenuItem>
                       {
                         this.state.optionDivisi.map((department, index) =>
-                          <MenuItem value={department.departments_id} key={"department" + index}>{department.deptname}</MenuItem>
+                          <MenuItem value={department.value} key={"department" + index}>{department.label}</MenuItem>
                         )
                       }
                     </Select>
@@ -609,8 +657,8 @@ class cardAddEmployee extends Component {
                     >
                       <MenuItem value={null}>Pilih posisi</MenuItem>
                       {
-                        this.props.dataPositions && this.props.dataPositions.map((position, index) =>
-                          <MenuItem value={position.position_id} key={"departments" + index}>{position.position}</MenuItem>
+                        this.state.optionPosisi.map((position, index) =>
+                          position.departments_id === divisi.divisi && <MenuItem value={position.value} key={"departments" + index}>{position.label}</MenuItem>
                         )
                       }
                     </Select>
@@ -912,7 +960,7 @@ class cardAddEmployee extends Component {
                         <MenuItem value={null}>Pilih department</MenuItem>
                         {
                           this.state.optionDivisiDinas.map((department, index) =>
-                            <MenuItem value={department.departments_id} key={"DivisiDinas" + index}>{department.deptname}</MenuItem>
+                            <MenuItem value={department.value} key={"DivisiDinas" + index}>{department.label}</MenuItem>
                           )
                         }
                       </Select>
@@ -933,8 +981,8 @@ class cardAddEmployee extends Component {
                       >
                         <MenuItem value={null}>Pilih posisi</MenuItem>
                         {
-                          this.props.dataPositions && this.props.dataPositions.map((position, index) =>
-                            <MenuItem value={position.position_id} key={"department" + index}>{position.position}</MenuItem>
+                          this.state.optionPosisiDinas.map((position, index) =>
+                            divisi.divisi === position.departments_id && <MenuItem value={position.value} key={"posisi-dinas" + index}>{position.label}</MenuItem>
                           )
                         }
                       </Select>
