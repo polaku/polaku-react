@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 import { Grid, Breadcrumbs, Link, List, ListItem, Divider, Button } from '@material-ui/core';
-import { EditorState, convertToRaw } from 'draft-js';
-import draftToHtml from 'draftjs-to-html';
+// import { EditorState, convertToRaw } from 'draft-js';
+// import draftToHtml from 'draftjs-to-html';
 
 import ThumbDownOutlinedIcon from '@material-ui/icons/ThumbDownOutlined';
 import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
