@@ -188,7 +188,7 @@ function Navsidebar(props) {
             let checkPIC = data.admin.find(el => el.PIC)
             let PIC = checkPIC ? true : false
             newData.isPIC = PIC
-            let isAdminNews = false, isAdminAddress = false, isAdminStructure = false, isAdminEmployee = false, isAdminAdmin = false, isAdminRoom = false, isAdminKPIM = false, isAdminHR = false
+            let isAdminNews = false, isAdminAddress = false, isAdminStructure = false, isAdminEmployee = false, isAdminAdmin = false, isAdminRoom = false, isAdminKPIM = false, isAdminHR = false, isAdminHelpdesk= false
 
             await data.admin.forEach(admin => {
               if (admin.tbl_designation) {
@@ -215,6 +215,9 @@ function Navsidebar(props) {
 
                 let checkHR = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 8)
                 if (checkHR) isAdminHR = true
+
+                let checkHelpdesk = admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 9)
+                if (checkHelpdesk) isAdminHelpdesk = true
               }
 
             })
@@ -227,6 +230,7 @@ function Navsidebar(props) {
             newData.isAdminRoom = isAdminRoom
             newData.isAdminKPIM = isAdminKPIM
             newData.isAdminHR = isAdminHR
+            newData.isAdminHelpdesk = isAdminHelpdesk
 
             if (data.role_id === 1) {
               newData.isAdminsuper = true
@@ -786,7 +790,7 @@ function Navsidebar(props) {
               </>
 
               {/* Menu Helpdesk */}
-              {/* <>
+              <>
                 {
                   open
                     ? <Link to="/helpdesk" onClick={event => handleListItemClick(event, 5)} style={{ textDecoration: 'none', color: 'black' }}>
@@ -805,7 +809,7 @@ function Navsidebar(props) {
                       </ListItem>
                     </Link>
                 }
-              </> */}
+              </>
 
               {/* Menu Setting */}
               <>

@@ -352,7 +352,10 @@ class cardAddEmployee extends Component {
 
     if (this.props.data) newData.append("userId", this.props.data.userId)
     newData.append("username", this.state.username)
-    if (!this.props.data) newData.append("password", this.state.dateOfBirth.split('-').reverse().join(''))
+    if (!this.props.data) {
+      if (this.state.dateOfBirth) newData.append("password", `${this.state.dateOfBirth.getDate() < 10 ? `0${this.state.dateOfBirth.getDate()}` : this.state.dateOfBirth.getDate()}${this.state.dateOfBirth.getMonth() + 1 < 10 ? `0${this.state.dateOfBirth.getMonth() + 1}` : this.state.dateOfBirth.getMonth() + 1}${this.state.dateOfBirth.getFullYear()}`)
+      else newData.append("password", '12345678')
+    }
     if (this.props.data && this.state.password) newData.append("password", this.state.password)
     newData.append("email", this.state.emailPribadi)
     newData.append("fullname", this.state.name)
@@ -758,6 +761,7 @@ class cardAddEmployee extends Component {
                   <MenuItem value="Kontrak" >Kontrak</MenuItem>
                   <MenuItem value="Probation" >Probation</MenuItem>
                   <MenuItem value="Berhenti" >Berhenti</MenuItem>
+                  <MenuItem value="Intern">Intern</MenuItem>
                 </Select>
               </FormControl>
             </Grid>

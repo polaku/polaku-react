@@ -73,7 +73,6 @@ class AddService extends Component {
   async componentDidMount() {
     this.setState({ proses: true })
     await this.props.fetchDataCompanies()
-    await this.props.fetchDataUsers()
     await this.props.fetchDataAddress()
     await this.fetchOptionUser()
 
@@ -81,6 +80,7 @@ class AddService extends Component {
       let userSelected = this.state.listUser.find(user => user.value === this.props.location.state.user_id)
       await this.setState({ employee: this.props.location.state.user_id, employeeSelected: userSelected })
     }
+    this.setState({ proses: false })
   }
 
   async componentDidUpdate(prevProps, prevState) {

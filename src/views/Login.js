@@ -85,7 +85,7 @@ class Login extends Component {
         let PIC = checkPIC ? true : false
         newData.isPIC = PIC
 
-        let isAdminNews = false, isAdminAddress = false, isAdminStructure = false, isAdminEmployee = false, isAdminAdmin = false, isAdminRoom = false, isAdminKPIM = false, isAdminHR = false
+        let isAdminNews = false, isAdminAddress = false, isAdminStructure = false, isAdminEmployee = false, isAdminAdmin = false, isAdminRoom = false, isAdminKPIM = false, isAdminHR = false, isAdminHelpdesk= false
 
         await data.data.admin.forEach(admin => {
           let checkNews = admin.tbl_designation ? admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 1) : null
@@ -111,6 +111,9 @@ class Login extends Component {
 
           let checkHR = admin.tbl_designation ? admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 8) : null
           if (checkHR) isAdminHR = true
+
+          let checkHelpdesk = admin.tbl_designation ? admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 9) : null
+          if (checkHelpdesk) isAdminHelpdesk = true
         })
 
         newData.isAdminNews = isAdminNews
@@ -121,7 +124,8 @@ class Login extends Component {
         newData.isAdminRoom = isAdminRoom
         newData.isAdminKPIM = isAdminKPIM
         newData.isAdminHR = isAdminHR
-
+        newData.isAdminHelpdesk = isAdminHelpdesk
+        
         if (data.data.role_id === 1) {
           newData.isAdminsuper = true
         } else {

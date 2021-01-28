@@ -165,3 +165,9 @@ export function fetchDataDesignation(payload) {
     payload
   }
 }
+
+export function fetchDataTopicsHelpdesk() {
+  return {
+    type: 'FETCH_DATA_TOPICS_HELPDESK'
+  }
+}

@@ -13,7 +13,7 @@ import makeAnimated from 'react-select/animated';
 
 import swal from 'sweetalert';
 
-import {API} from '../../config/API';
+import { API } from '../../config/API';
 
 const animatedComponents = makeAnimated();
 
@@ -48,6 +48,8 @@ class cardAddDepartment extends Component {
     selectedUserPosition: [],
     selectedTeamPosition: [],
     selectedReportTo: null,
+
+    proses: false
   }
 
   async componentDidMount() {
@@ -61,8 +63,11 @@ class cardAddDepartment extends Component {
   }
 
   async componentDidUpdate(prevProps, prevState) {
-    if (this.props.statusSubmit !== prevProps.statusSubmit && this.props.statusSubmit) {
-      this.submit()
+    if (this.props.statusSubmit !== prevProps.statusSubmit) {
+      if (this.props.statusSubmit) this.submit()
+      else {
+        console.log("MASUK CANCEL")
+        this.setState({ proses: false })}
     }
 
     if (this.props.proses !== prevProps.proses) {
@@ -317,6 +322,7 @@ class cardAddDepartment extends Component {
     if (this.state.nameDepartment === '' || this.state.levelHirarki === '') {
       swal("Data belum lengkap", "", "warning")
       this.props.cancelSubmit()
+      this.setState({ proses: false })
     } else {
       let newData = {
         nameDepartment: this.state.nameDepartment,
@@ -512,7 +518,7 @@ class cardAddDepartment extends Component {
                 value={this.state.levelHirarki}
                 onChange={this.handleChange('levelHirarki')}
                 style={{ width: 80, marginRight: 10 }}
-                disabled={this.state.proses}
+                // disabled={this.state.proses}
               >
                 <MenuItem value="">
                   <em>Hirarki</em>

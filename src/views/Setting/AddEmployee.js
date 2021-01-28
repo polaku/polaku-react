@@ -126,11 +126,12 @@ class AddEmployee extends Component {
       newData.push(args)
       this.setState({ proses: true })
       let token = Cookies.get('POLAGROUP'), promises = []
-
+console.log("MASUK 1")
 
       if (newData.length === this.state.department.length) {
         newData.forEach(async (data, index) => {
-          promises.push(API.post(`/users/register`, data, {
+console.log("MASUK 2")
+promises.push(API.post(`/users/register`, data, {
             headers: {
               token,
               ip: this.props.ip
@@ -139,6 +140,8 @@ class AddEmployee extends Component {
         })
         Promise.all(promises)
           .then(async ({ data }) => {
+console.log("MASUK 3")
+
             this.setState({ data: [], proses: false, statusSubmit: false })
             await this.props.fetchDataUsers({ limit: 10, page: 0 })
             swal('Tambah karyawan sukses', '', 'success')

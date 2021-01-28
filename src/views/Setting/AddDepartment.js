@@ -116,6 +116,7 @@ class AddDepartment extends Component {
         this.setState({ proses: true })
         newData.forEach(async (data, index) => {
           data.companyId = this.state.companyId
+          console.log(data)
           promises.push(API.put(`/structure/${data.id}`, data, {
             headers: {
               token,
@@ -146,6 +147,7 @@ class AddDepartment extends Component {
       if (newData.length === this.state.department.length) {
         newData.forEach(async (data, index) => {
           data.companyId = this.state.companyId
+          console.log(data)
           promises.push(API.post('/structure', data, {
             headers: {
               token,
@@ -169,6 +171,10 @@ class AddDepartment extends Component {
     }
   }
 
+  cancelSubmit = () => {
+    this.setState({ statusSubmit: false, proses: false })
+  }
+  
   render() {
     if (this.state.loading) return <Loading loading={this.state.loading} />;
     return (
@@ -195,7 +201,7 @@ class AddDepartment extends Component {
             <Select
               value={this.state.companyId}
               onChange={this.handleChange('companyId')}
-              disabled={this.state.proses || this.state.disableCompanyId}
+              disabled={(this.state.proses && this.state.statusSubmit) || this.state.disableCompanyId}
               style={{ width: 130 }}
             >
               {
@@ -217,16 +223,16 @@ class AddDepartment extends Component {
                   </>
                 }
               </Grid>
-              <CardAddDepartment statusSubmit={this.state.statusSubmit} companyId={this.state.companyId} sendData={this.sendData} data={this.state.dataForEdit[index]} proses={this.state.proses} cancelSubmit={() => this.setState({ statusSubmit: false })} />
+              <CardAddDepartment statusSubmit={this.state.statusSubmit} companyId={this.state.companyId} sendData={this.sendData} data={this.state.dataForEdit[index]} proses={this.state.proses && this.state.statusSubmit} cancelSubmit={this.cancelSubmit} />
             </Grid>
           )
         }
         {
-          this.state.dataForEdit.length === 0 && <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addDivisi} disabled={this.state.proses}>+ tambah department baru</p>
+          this.state.dataForEdit.length === 0 && <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addDivisi} disabled={this.state.proses && this.state.statusSubmit}>+ tambah department baru</p>
         }
 
-        <Button variant="outlined" color="secondary" style={{ width: 150, margin: 10 }} onClick={() => this.props.history.goBack()} disabled={this.state.proses}>batalkan</Button>
-        <Button variant="contained" color="secondary" style={{ width: 150, margin: 10 }} onClick={this.submit} disabled={this.state.proses}>simpan</Button>
+        <Button variant="outlined" color="secondary" style={{ width: 150, margin: 10 }} onClick={() => this.props.history.goBack()} disabled={this.state.proses && this.state.statusSubmit}>batalkan</Button>
+        <Button variant="contained" color="secondary" style={{ width: 150, margin: 10 }} onClick={this.submit} disabled={this.state.proses && this.state.statusSubmit}>simpan</Button>
       </Grid>
     )
   }

@@ -10,7 +10,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import swal from 'sweetalert';
 
-import { fetchDataUsers, fetchDataDesignation, fetchDataCompanies } from '../../store/action';
+import { fetchDataDesignation, fetchDataCompanies } from '../../store/action';
 
 import { API } from '../../config/API';
 
@@ -24,6 +24,7 @@ class AddAdmin extends Component {
     adminIdSelected: null,
     company: '',
     optionCompany: [],
+    listUser: [],
     proses: false,
 
     semua: false,
@@ -55,6 +56,7 @@ class AddAdmin extends Component {
     meeting: false,
     kpim: false,
     hr: false,
+    helpdesk: false,
 
     optionDesignation: [],
     dataDesignation: [],
@@ -66,14 +68,14 @@ class AddAdmin extends Component {
 
   async componentDidMount() {
     await this.props.fetchDataCompanies()
-    await this.props.fetchDataUsers()
     await this.fetchOptionDesignation()
+    await this.fetchOptionUser()
     await this.fetchOptionCompany()
 
     if (this.props.location.state) {
       // console.log(this.props.location.state.data)
       if (this.props.location.state.data) {
-        let adminIdSelected = this.props.dataUsers.find(el => el.user_id === this.props.location.state.data.user_id)
+        let adminIdSelected = this.state.listUser.find(el => el.value === this.props.location.state.data.user_id)
         let adminTypeSelected = this.state.optionDesignation.find(el => el.value === this.props.location.state.data.designations_id)
         this.setState({
           disabledUser: true,
@@ -136,14 +138,15 @@ class AddAdmin extends Component {
       }
     }
 
-    if ((this.state.alamat !== prevState.alamat) || (this.state.struktur !== prevState.struktur) || (this.state.karyawan !== prevState.karyawan) || (this.state.admin !== prevState.admin) || (this.state.meeting !== prevState.meeting) || (this.state.kpim !== prevState.kpim) || (this.state.hr !== prevState.hr)) {
+    if ((this.state.alamat !== prevState.alamat) || (this.state.struktur !== prevState.struktur) || (this.state.karyawan !== prevState.karyawan) || (this.state.admin !== prevState.admin) || (this.state.meeting !== prevState.meeting) || (this.state.kpim !== prevState.kpim) || (this.state.hr !== prevState.hr) || (this.state.helpdesk !== prevState.helpdesk)) {
       if (this.state.alamat
         && this.state.struktur
         && this.state.karyawan
         && this.state.admin
         && this.state.meeting
         && this.state.kpim
-        && this.state.hr) {
+        && this.state.hr
+        && this.state.helpdesk) {
         this.setState({ semua: true })
       } else {
         this.setState({ semua: false })
@@ -203,6 +206,10 @@ class AddAdmin extends Component {
         let hr = tbl_user_roles.find(menu => menu.menu_id === 8)
         if (hr) data.hr = true
 
+        // Helpdesk
+        let helpdesk = tbl_user_roles.find(menu => menu.menu_id === 9)
+        if (helpdesk) data.helpdesk = true
+
         this.setState({ statusDesignation: true, ...data })
       }
     }
@@ -252,6 +259,23 @@ class AddAdmin extends Component {
     }
   }
 
+  fetchOptionUser = async () => {
+    try {
+      let token = Cookies.get('POLAGROUP')
+
+      let getData = await API.get(`/users/for-option`, { headers: { token } })
+
+      let listUser = []
+      await getData.data.data.forEach(user => {
+        listUser.push({ value: user.user_id, label: user.tbl_account_detail.fullname, nik: user.tbl_account_detail.nik })
+      })
+
+      this.setState({ listUser })
+    } catch (err) {
+      // console.log(err)
+    }
+  }
+
   handleChange = name => event => {
     this.setState({ [name]: event.target.value });
   };
@@ -279,7 +303,8 @@ class AddAdmin extends Component {
         admin: event.target.checked,
         meeting: event.target.checked,
         kpim: event.target.checked,
-        hr: event.target.checked
+        hr: event.target.checked,
+        helpdesk: event.target.checked,
       })
     }
     else if (event.target.name === 'alamat') {
@@ -325,6 +350,7 @@ class AddAdmin extends Component {
   };
 
   handleChangeSelect = (name, newValue, actionMeta) => {
+    console.log(newValue)
     if (newValue) {
       if (name === 'adminType') {
         this.resetCheckbox()
@@ -334,7 +360,7 @@ class AddAdmin extends Component {
         })
       } else {
         this.setState({
-          adminId: newValue.user_id,
+          adminId: newValue.value,
           adminIdSelected: newValue
         })
       }
@@ -384,6 +410,7 @@ class AddAdmin extends Component {
       meeting: false,
       kpim: false,
       hr: false,
+      helpdesk: false,
     })
   }
 
@@ -401,6 +428,7 @@ class AddAdmin extends Component {
     // 6=Meeting Room, 
     // 7=KPIM&TAL, 
     // 8=HR
+    // 9=Helpdesk
 
     try {
       this.setState({ proses: true })
@@ -417,6 +445,7 @@ class AddAdmin extends Component {
             { menuId: 6, view: 1, created: 1, edited: 1, deleted: 1, download: 1 },
             { menuId: 7, view: 1, created: 1, edited: 1, deleted: 1, download: 1 },
             { menuId: 8, view: 1, created: 1, edited: 1, deleted: 1, download: 1 },
+            { menuId: 9, view: 1, created: 1, edited: 1, deleted: 1, download: 1 },
           ]
         } else {
           // ALAMAT
@@ -493,6 +522,11 @@ class AddAdmin extends Component {
           if (this.state.hr) {
             roles.push({ menuId: 8, view: 1, created: 1, edited: 1, deleted: 1, download: 1 })
           }
+
+          // HELPDESK
+          if (this.state.helpdesk) {
+            roles.push({ menuId: 9, view: 1, created: 1, edited: 1, deleted: 1, download: 1 })
+          }
         }
       }
 
@@ -563,10 +597,9 @@ class AddAdmin extends Component {
                 <ReactSelect
                   value={this.state.adminIdSelected}
                   components={animatedComponents}
-                  options={this.props.dataUsers}
+                  options={this.state.listUser}
                   onChange={value => this.handleChangeSelect('adminId', value)}
-                  getOptionLabel={(option) => `${option.tbl_account_detail.nik} - ${option.tbl_account_detail.fullname}`}
-                  getOptionValue={(option) => option.user_id}
+                  getOptionLabel={(option) => `${option.nik} - ${option.label}`}
                   isDisabled={this.state.proses || this.state.disabledUser}
                 />
               </Grid>
@@ -786,6 +819,11 @@ class AddAdmin extends Component {
                   disabled={this.state.statusDesignation}
                 />
 
+                <FormControlLabel
+                  control={<Checkbox checked={this.state.helpdesk} onChange={this.handleCheck} name="helpdesk" />}
+                  label="Helpdesk"
+                  disabled={this.state.statusDesignation}
+                />
               </FormGroup>
             </Paper>
           </Grid>
@@ -806,14 +844,12 @@ class AddAdmin extends Component {
 }
 
 const mapDispatchToProps = {
-  fetchDataUsers,
   fetchDataDesignation,
   fetchDataCompanies
 }
 
-const mapStateToProps = ({ dataUsers, ip, isAdminsuper, admin, dataCompanies }) => {
+const mapStateToProps = ({ ip, isAdminsuper, admin, dataCompanies }) => {
   return {
-    dataUsers,
     ip,
     isAdminsuper,
     admin,

@@ -55,10 +55,7 @@ class cardTAL extends Component {
   submitData = args => async (event) => {
     event.preventDefault()
     let token = Cookies.get('POLAGROUP'), newData
-    if (this.state.load > 10 || this.state.achievement > 100) {
-      if (args === 'load') {
-        swal('load melebihi 10')
-      }
+    if (this.state.achievement > 100) {
       if (args === 'achievement') {
         swal('achievement melebihi 100')
       }
@@ -150,7 +147,6 @@ class cardTAL extends Component {
                           InputProps={{
                             style: { height: 35, padding: 0 }
                           }}
-                          error={this.state.load > 10}
                           disabled={this.state.proses}
                         />
                       </form>
@@ -171,7 +167,6 @@ class cardTAL extends Component {
                       InputProps={{
                         style: { height: 35, padding: 0 }
                       }}
-                      error={this.state.load > 10}
                       disabled={this.state.proses}
                     />
                   </form>

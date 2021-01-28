@@ -117,19 +117,25 @@ class HR extends Component {
 
       if (el.date_imp) {
         if (new Date(el.date_imp) > new Date()) {
-          tempDataIjinDisetujui.push(el)
+          if (el.status === 'approved') {
+            tempDataIjinDisetujui.push(el)
+          }
         } else {
           tempDataIjinSudahLewat.push(el)
         }
       } else if (el.date_ijin_absen_end) {
         if (new Date(el.date_ijin_absen_end) > new Date()) {
-          tempDataIjinDisetujui.push(el)
+          if (el.status === 'approved') {
+            tempDataIjinDisetujui.push(el)
+          }
         } else {
           tempDataIjinSudahLewat.push(el)
         }
       } else if (el.leave_request) {
         if (new Date(el.leave_date_in.slice(0, 4), el.leave_date_in.slice(5, 7) - 1, el.leave_date_in.slice(8, 10), 0, 0, 0) > new Date()) {
-          tempDataIjinDisetujui.push(el)
+          if (el.status === 'approved') {
+            tempDataIjinDisetujui.push(el)
+          }
         } else {
           tempDataIjinSudahLewat.push(el)
         }

@@ -16,6 +16,7 @@ const defaultState = {
   isAdminRoom: false,
   isAdminKPIM: false,
   isAdminHR: false,
+  isAdminHelpdesk: false,
   // PIC: [],
   // dinas: [],
   adminContactCategori: null,
@@ -61,7 +62,8 @@ const defaultState = {
   counterEmployeeProbation: 0,
   counterEmployeeBerhenti: 0,
   dataDesignation: [],
-  lengthAllDataDesignation: 0
+  lengthAllDataDesignation: 0,
+  dataTopicsHelpdesk: []
 }
 
 function reducer(state = defaultState, action) {
@@ -92,6 +94,7 @@ function reducer(state = defaultState, action) {
         isAdminRoom: action.payload.isAdminRoom,
         isAdminKPIM: action.payload.isAdminKPIM,
         isAdminHR: action.payload.isAdminHR,
+        isAdminHelpdesk: action.payload.isAdminHelpdesk,
       }
     }
     case 'FETCH_DATA_USER_DETAIL_SUCCESS': {
@@ -133,7 +136,17 @@ function reducer(state = defaultState, action) {
         dataAllKPIM: [],
         dataAllTAL: [],
         dataAllRewardKPIM: [],
-        myRewardKPIM: []
+        myRewardKPIM: [],
+        isPIC: false,
+        isAdminNews: false,
+        isAdminAddress: false,
+        isAdminStructure: false,
+        isAdminEmployee: false,
+        isAdminAdmin: false,
+        isAdminRoom: false,
+        isAdminKPIM: false,
+        isAdminHR: false,
+        isAdminHelpdesk: false,
       }
     }
     case 'FETCH_DATA_USERS_SUCCESS': {
@@ -316,6 +329,13 @@ function reducer(state = defaultState, action) {
         loading: false,
         dataDesignation: action.payload.dataDesignation,
         lengthAllDataDesignation: action.payload.lengthAllDataDesignation,
+      }
+    }
+    case 'FETCH_DATA_TOPICS_HELPDESK_SUCCESS': {
+      return {
+        ...state,
+        loading: false,
+        dataTopicsHelpdesk: action.payload.dataTopicsHelpdesk
       }
     }
     case 'FETCH_DATA_LOADING_CONTACT_US': {

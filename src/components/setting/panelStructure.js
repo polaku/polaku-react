@@ -86,7 +86,7 @@ class panelStructure extends Component {
       }
     });
 
-    this.setState({ data: this.props.dataStructure, dataForDisplay: this.props.dataStructure, label, page: 0 })
+    this.setState({ data: this.props.dataStructure, dataForDisplay: this.props.dataStructure, label })
   }
 
   fetchOptionCompany = async () => {
@@ -359,7 +359,7 @@ class panelStructure extends Component {
                 )
               }
               <TablePagination
-                rowsPerPageOptions={1}
+                rowsPerPageOptions={[10, 20, 50]}
                 component="div"
                 count={this.props.totalDataStructure}
                 rowsPerPage={this.state.rowsPerPage}

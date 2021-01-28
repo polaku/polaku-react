@@ -852,6 +852,40 @@ const api = store => next => async action => {
       })
     }
   }
+  else if (action.type === 'FETCH_DATA_TOPICS_HELPDESK') {
+    next({
+      type: 'FETCH_DATA_LOADING'
+    })
+
+    try {
+
+      let query = ''
+      // if (action.payload && action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
+      // if (action.payload && action.payload.status) query === '' ? query += `status=${action.payload.status}` : query += `&status=${action.payload.status}`
+      // if (action.payload && action.payload.company) query === '' ? query += `company=${action.payload.company}` : query += `&company=${action.payload.company}`
+      // if (action.payload && action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
+
+      let getData = await API.get(`/helpdesk/topics?${query}`, {
+        headers: {
+          token,
+          // ip: await publicIp.v4()
+        }
+      })
+
+      next({
+        type: 'FETCH_DATA_TOPICS_HELPDESK_SUCCESS',
+        payload: {
+          dataTopicsHelpdesk: getData.data.data || []
+        }
+      })
+
+    } catch (err) {
+      next({
+        type: 'FETCH_DATA_ERROR',
+        payload: err
+      })
+    }
+  }
   else {
     next(action)
   }
