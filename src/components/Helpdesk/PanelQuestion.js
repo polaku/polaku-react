@@ -44,7 +44,7 @@ class PanelQuestion extends Component {
           if (data.data) this.setState({ like: data.data.like, unlike: data.data.unlike })
           else this.setState({ like: false, unlike: false })
         } catch (err) {
-          console.log(err)
+          // console.log(err)
           this.setState({ like: false, unlike: false })
         }
       } else {
@@ -81,7 +81,6 @@ class PanelQuestion extends Component {
           //   proses: true
           // })
           let token = Cookies.get('POLAGROUP'), dataListQuestion = this.state.listQuestion
-          console.log(dataListQuestion[index])
 
           API.delete(`/helpdesk/question/${dataListQuestion[index].id}`, { headers: { token } })
             .then(async () => {
@@ -91,14 +90,13 @@ class PanelQuestion extends Component {
             })
             .catch(err => {
               swal('Hapus pertanyaan gagal', '', 'error')
-              console.log(err)
+              // console.log(err)
             })
         }
       });
   }
 
   handleShowDetailQuestion = (data) => {
-    console.log(data)
     this.setState({ showDetailQuestion: !this.state.showDetailQuestion, questionSelected: data })
   }
 
@@ -108,7 +106,7 @@ class PanelQuestion extends Component {
       let token = Cookies.get('POLAGROUP')
       await API.put(`/helpdesk/question/like-unlike/${this.state.questionSelected.id}`, { like: this.state.like, unlike: this.state.unlike }, { headers: { token } })
     } catch (err) {
-      console.log(err)
+      // console.log(err)
       this.setState({ like: !this.state.like, unlike: false })
     }
   }
@@ -119,7 +117,7 @@ class PanelQuestion extends Component {
       let token = Cookies.get('POLAGROUP')
       await API.put(`/helpdesk/question/like-unlike/${this.state.questionSelected.id}`, { like: this.state.like, unlike: this.state.unlike }, { headers: { token } })
     } catch (err) {
-      console.log(err)
+      // console.log(err)
       this.setState({ like: false, unlike: !this.state.unlike })
     }
   }

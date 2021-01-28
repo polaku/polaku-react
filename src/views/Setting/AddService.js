@@ -271,7 +271,6 @@ class AddService extends Component {
   };
 
   navigateBack = () => {
-    console.log("NAVIGATE SINI")
     this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index, indexTab: 1 })
   }
 

@@ -57,7 +57,6 @@ class panelEmployee extends Component {
   }
 
   async componentDidMount() {
-    console.log('kepanggil')
     this.setState({ proses: true })
     if (this.state.valueA === 0) {
       await this.props.fetchDataUsers({ limit: this.state.rowsPerPage, page: this.state.page })

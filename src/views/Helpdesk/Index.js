@@ -40,7 +40,6 @@ class Helpdesk extends Component {
   };
 
   handleUploadFile = (e) => {
-    console.log(e.target.files[0])
     this.setState({ icon: e.target.files[0], iconPath: URL.createObjectURL(e.target.files[0]) })
   }
 
@@ -61,7 +60,7 @@ class Helpdesk extends Component {
       swal('Tambah topik berhasil', '', 'success')
     } catch (err) {
       swal('Tambah topik gagal', '', 'error')
-      console.log(err)
+      // console.log(err)
     }
   }
 

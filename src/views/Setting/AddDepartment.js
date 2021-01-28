@@ -116,7 +116,6 @@ class AddDepartment extends Component {
         this.setState({ proses: true })
         newData.forEach(async (data, index) => {
           data.companyId = this.state.companyId
-          console.log(data)
           promises.push(API.put(`/structure/${data.id}`, data, {
             headers: {
               token,
@@ -147,7 +146,6 @@ class AddDepartment extends Component {
       if (newData.length === this.state.department.length) {
         newData.forEach(async (data, index) => {
           data.companyId = this.state.companyId
-          console.log(data)
           promises.push(API.post('/structure', data, {
             headers: {
               token,

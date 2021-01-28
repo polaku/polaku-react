@@ -65,9 +65,7 @@ class cardAddDepartment extends Component {
   async componentDidUpdate(prevProps, prevState) {
     if (this.props.statusSubmit !== prevProps.statusSubmit) {
       if (this.props.statusSubmit) this.submit()
-      else {
-        console.log("MASUK CANCEL")
-        this.setState({ proses: false })}
+      else this.setState({ proses: false })
     }
 
     if (this.props.proses !== prevProps.proses) {
@@ -518,7 +516,7 @@ class cardAddDepartment extends Component {
                 value={this.state.levelHirarki}
                 onChange={this.handleChange('levelHirarki')}
                 style={{ width: 80, marginRight: 10 }}
-                // disabled={this.state.proses}
+              // disabled={this.state.proses}
               >
                 <MenuItem value="">
                   <em>Hirarki</em>

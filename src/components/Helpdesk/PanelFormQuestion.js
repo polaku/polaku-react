@@ -37,7 +37,6 @@ class PanelFormQuestion extends Component {
     await this.fetchOptionUser()
 
     if (this.props.questionSelectedForEdit) {
-      console.log(this.props.questionSelectedForEdit)
       let company = [], department = [], employee = []
 
       if (this.props.questionSelectedForEdit.tbl_question_fors[0].option === 'company') {
@@ -46,7 +45,6 @@ class PanelFormQuestion extends Component {
 
           if (companySelected) company.push(companySelected)
         })
-        console.log(company)
       } else if (this.props.questionSelectedForEdit.tbl_question_fors[0].option === 'department') {
         await this.props.questionSelectedForEdit.tbl_question_fors.forEach(el => {
           let departmentSelected = this.props.dataDepartments.find(element => el.departments_id === element.departments_id)
@@ -54,7 +52,6 @@ class PanelFormQuestion extends Component {
           if (departmentSelected) department.push(departmentSelected)
         })
       } else if (this.props.questionSelectedForEdit.tbl_question_fors[0].option === 'employee') {
-        console.log(this.state.listUser)
         await this.props.questionSelectedForEdit.tbl_question_fors.forEach(el => {
           let employeeSelected = this.state.listUser.find(user => el.user_id === user.value)
 
@@ -88,7 +85,6 @@ class PanelFormQuestion extends Component {
       await getData.data.data.forEach(user => {
         listUser.push({ value: user.user_id, label: user.tbl_account_detail.fullname, nik: user.tbl_account_detail.nik })
       })
-      console.log(listUser)
       this.setState({ listUser })
     } catch (err) {
       // console.log(err)
@@ -149,8 +145,7 @@ class PanelFormQuestion extends Component {
     } catch (err) {
       if (this.props.questionSelectedForEdit) swal('Edit pertanyaan berhasil', '', 'success')
       else swal('Tambah pertanyaan gagal', '', 'error')
-
-      console.log(err)
+      // console.log(err)
     }
   }
 

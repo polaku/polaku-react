@@ -57,7 +57,7 @@ class CardTopics extends Component {
       swal('Ubah topik berhasil', '', 'success')
     } catch (err) {
       swal('Ubah topik gagal', '', 'error')
-      console.log(err)
+      // console.log(err)
     }
   }
 
@@ -85,7 +85,7 @@ class CardTopics extends Component {
             })
             .catch(err => {
               swal('Hapus topik gagal', '', 'error')
-              console.log(err)
+              // console.log(err)
             })
         }
       });
@@ -109,7 +109,7 @@ class CardTopics extends Component {
         swal('Ubah topik berhasil', '', 'success')
       } catch (err) {
         swal('Ubah topik gagal', '', 'error')
-        console.log(err)
+        // console.log(err)
       }
     }
   }

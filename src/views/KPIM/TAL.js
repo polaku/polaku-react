@@ -55,8 +55,6 @@ class TAL extends Component {
     await this.props.fetchDataAllTAL({ "for-dashboard": true, year: new Date().getFullYear(), month: monthSelected, week: null, 'user-id': this.props.userId })
 
     let tempTAL = [], isEmpty = true, tempPersenanTALMonth = 0, pembagi = 0
-    console.log(this.props.dataAllTAL)
-
 
     for (let week = this.state.mingguAwalBulan; week <= this.state.mingguAkhirBulan; week++) { //fetch tal per minggu
       let tempTALweek = [], persenWeek = 0, newObj;
@@ -105,7 +103,7 @@ class TAL extends Component {
 
   handleChange = name => async event => {
     let mingguAwalBulan = this.getNumberOfWeek(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
-      if (mingguAwalBulan >= 52) mingguAwalBulan = 1
+    if (mingguAwalBulan >= 52) mingguAwalBulan = 1
     this.setState({
       mingguAwalBulan,
       mingguAkhirBulan: this.getNumberOfWeek(new Date(new Date().getFullYear(), event.target.value + 1, 0)),

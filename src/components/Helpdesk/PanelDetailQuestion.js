@@ -30,8 +30,6 @@ class PanelDetailQuestion extends Component {
     await this.props.fetchDataCompanies()
     await this.props.fetchDataDepartment()
     await this.fetchOptionUser()
-    console.log(this.props.dataDepartments)
-
   }
 
   fetchOptionUser = async () => {

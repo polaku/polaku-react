@@ -60,7 +60,7 @@ class DetailTopics extends Component {
         subTopicsSelected: data.data.tbl_sub_topics_helpdesks.length > 0 ? data.data.tbl_sub_topics_helpdesks[0] : null
       })
     } catch (err) {
-      console.log(err)
+      // console.log(err)
     }
   }
 
@@ -85,7 +85,7 @@ class DetailTopics extends Component {
       swal('Tambah topik berhasil', '', 'success')
     } catch (err) {
       swal('Tambah topik gagal', '', 'error')
-      console.log(err)
+      // console.log(err)
     }
   }
 
@@ -107,7 +107,7 @@ class DetailTopics extends Component {
         swal('Ubah topik berhasil', '', 'success')
       } catch (err) {
         swal('Ubah topik gagal', '', 'error')
-        console.log(err)
+        // console.log(err)
       }
     }
   }
@@ -149,7 +149,7 @@ class DetailTopics extends Component {
             })
             .catch(err => {
               swal('Hapus sub topik gagal', '', 'error')
-              console.log(err)
+              // console.log(err)
             })
         }
       });
@@ -184,7 +184,7 @@ class DetailTopics extends Component {
 
       swal('Edit sub topik berhasil', '', 'success')
     } catch (err) {
-      console.log(err)
+      // console.log(err)
       swal('Edit sub topik gagal', '', 'error')
     }
   }

@@ -33,7 +33,7 @@ class AddEmployee extends Component {
 
   async componentDidMount() {
     await this.fetchOptionUser()
-// console.log("MASUK SINI")
+    // console.log("MASUK SINI")
     if (this.props.location.state) {
       if (this.props.location.state.data) {
         let data = [this.props.location.state.data]
@@ -56,7 +56,7 @@ class AddEmployee extends Component {
       await getData.data.data.forEach(user => {
         listUser.push({ value: user.user_id, label: user.tbl_account_detail.fullname })
       })
-// console.log(listUser)
+      // console.log(listUser)
       this.setState({ optionUser: listUser })
     } catch (err) {
       // console.log(err)
@@ -126,12 +126,10 @@ class AddEmployee extends Component {
       newData.push(args)
       this.setState({ proses: true })
       let token = Cookies.get('POLAGROUP'), promises = []
-console.log("MASUK 1")
 
       if (newData.length === this.state.department.length) {
         newData.forEach(async (data, index) => {
-console.log("MASUK 2")
-promises.push(API.post(`/users/register`, data, {
+          promises.push(API.post(`/users/register`, data, {
             headers: {
               token,
               ip: this.props.ip
@@ -140,8 +138,6 @@ promises.push(API.post(`/users/register`, data, {
         })
         Promise.all(promises)
           .then(async ({ data }) => {
-console.log("MASUK 3")
-
             this.setState({ data: [], proses: false, statusSubmit: false })
             await this.props.fetchDataUsers({ limit: 10, page: 0 })
             swal('Tambah karyawan sukses', '', 'success')
@@ -182,7 +178,7 @@ console.log("MASUK 3")
                   </>
                 }
               </Grid>
-              <CardAddEmployee statusSubmit={this.state.statusSubmit} companyId={this.state.companyId} sendData={this.sendData} data={this.state.dataForEdit[index]} proses={this.state.proses} optionUser={this.state.optionUser}/>
+              <CardAddEmployee statusSubmit={this.state.statusSubmit} companyId={this.state.companyId} sendData={this.sendData} data={this.state.dataForEdit[index]} proses={this.state.proses} optionUser={this.state.optionUser} />
             </Grid>
           )
         }

@@ -350,7 +350,6 @@ class AddAdmin extends Component {
   };
 
   handleChangeSelect = (name, newValue, actionMeta) => {
-    console.log(newValue)
     if (newValue) {
       if (name === 'adminType') {
         this.resetCheckbox()
