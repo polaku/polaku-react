@@ -16,7 +16,8 @@ class Helpdesk extends Component {
     newTopics: null,
     newIcon: null,
     iconPath: null,
-    dataTopicsHelpdesk: []
+    dataTopicsHelpdesk: [],
+    listQuestion: []
   }
 
   async componentDidMount() {
@@ -25,7 +26,20 @@ class Helpdesk extends Component {
 
   async componentDidUpdate(prevProps, prevState) {
     if (this.props.dataTopicsHelpdesk !== prevProps.dataTopicsHelpdesk) {
-      this.setState({ dataTopicsHelpdesk: this.props.dataTopicsHelpdesk })
+      console.log(this.props.dataTopicsHelpdesk)
+
+      let listQuestion = []
+
+      await this.props.dataTopicsHelpdesk.forEach(async (topics) => {
+        await topics.tbl_sub_topics_helpdesks.forEach(async (subTopics) => {
+          await subTopics.tbl_question_helpdesks.forEach(question => {
+            listQuestion.push({ ...question, ...topics })
+          })
+        })
+      });
+
+      this.setState({ dataTopicsHelpdesk: this.props.dataTopicsHelpdesk, listQuestion })
+      console.log(listQuestion)
     }
 
     if (this.state.keyword !== prevState.keyword) {
@@ -56,7 +70,7 @@ class Helpdesk extends Component {
       await API.post('/helpdesk/topics', formData, { headers: { token } })
       await this.props.fetchDataTopicsHelpdesk()
 
-      this.setState({ topics: null, icon: null, iconPath: null })
+      this.setState({ newTopics: null, icon: null, iconPath: null })
       swal('Tambah topik berhasil', '', 'success')
     } catch (err) {
       swal('Tambah topik gagal', '', 'error')

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { Grid, Breadcrumbs, Link, List, ListItem, Divider, Button } from '@material-ui/core';
 // import { EditorState, convertToRaw } from 'draft-js';
@@ -13,6 +14,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import swal from 'sweetalert';
 
 import { API } from '../../config/API';
+import { fetchDataTopicsHelpdesk } from '../../store/action';
 
 class PanelQuestion extends Component {
   state = {
@@ -31,7 +33,11 @@ class PanelQuestion extends Component {
 
   async componentDidUpdate(prevProps, prevState) {
     if (this.props.data !== prevProps.data) {
-      await this.fetchData()
+      if (this.props.data) {
+        await this.fetchData()
+      } else {
+        this.setState({ listQuestion: [] })
+      }
       this.setState({ showDetailQuestion: false, questionSelected: null })
     }
 
@@ -116,6 +122,7 @@ class PanelQuestion extends Component {
     try {
       let token = Cookies.get('POLAGROUP')
       await API.put(`/helpdesk/question/like-unlike/${this.state.questionSelected.id}`, { like: this.state.like, unlike: this.state.unlike }, { headers: { token } })
+      await this.props.fetchDataTopicsHelpdesk()
     } catch (err) {
       // console.log(err)
       this.setState({ like: false, unlike: !this.state.unlike })
@@ -123,12 +130,11 @@ class PanelQuestion extends Component {
   }
 
   render() {
-
+    // DETAIL QUESTION
     if (this.state.showDetailQuestion) return (
       <Grid item style={{ width: '70%', minWidth: 550 }}>
         <Breadcrumbs aria-label="breadcrumb" style={{ fontSize: 15, marginBottom: 10 }}>
-          <Link style={{ color: '#d71149' }} href="/helpdesk" >Helpdesk</Link>
-          <Link style={{ color: '#d71149' }} href="/" >Topik</Link>
+          <Link style={{ color: '#d71149', cursor: 'pointer' }} onClick={() => this.props.history.push('/helpdesk')} >Helpdesk</Link>
           <Link style={{ color: '#d71149', cursor: 'pointer' }} onClick={this.handleShowDetailQuestion} >{this.props.data.sub_topics}</Link>
         </Breadcrumbs>
         <h1 style={{ margin: 0 }}>{this.state.questionSelected.question}</h1>
@@ -155,7 +161,9 @@ class PanelQuestion extends Component {
                 ? window.open(
                   `https://api.whatsapp.com/send?phone=${this.state.questionSelected.help[0] === '0'
                     ? `62${this.state.questionSelected.help.slice(1)}`
-                    : this.state.questionSelected.help.slice(1)
+                    : this.state.questionSelected.help.slice(0, 2) === '62'
+                      ? this.state.questionSelected.help
+                      : `62${this.state.questionSelected.help}`
                   }`
                 )
                 : null
@@ -170,8 +178,7 @@ class PanelQuestion extends Component {
     else return (
       <Grid item style={{ width: '70%', minWidth: 550 }}>
         <Breadcrumbs aria-label="breadcrumb" style={{ fontSize: 15, marginBottom: 10 }}>
-          <Link style={{ color: '#d71149' }} href="/helpdesk" >Helpdesk</Link>
-          <Link style={{ color: '#d71149' }} href="/" >Topik</Link>
+          <Link style={{ color: '#d71149', cursor: 'pointer' }} onClick={() => this.props.history.push('/helpdesk')} >Helpdesk</Link>
         </Breadcrumbs>
         <h1 style={{ margin: 0 }}>Yang sering ditanyakan</h1>
         <List component="nav" aria-label="secondary mailbox folders">
@@ -179,8 +186,8 @@ class PanelQuestion extends Component {
             this.state.listQuestion.length > 0
               ? this.state.listQuestion.map((question, index) =>
                 <>
-                  <ListItem button style={{ padding: 5, paddingLeft: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} onClick={() => this.handleShowDetailQuestion(question)}>
-                    <p style={{ margin: 0 }}>{question.question}</p>
+                  <ListItem button style={{ padding: 5, paddingLeft: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} >
+                    <p style={{ margin: 0, cursor: 'pointer' }} onClick={() => this.handleShowDetailQuestion(question)}>{question.question}</p>
                     <Grid style={{ minWidth: 100, display: 'flex', alignItems: 'center' }}>
                       {/* LIKE OR UNLIKE */}
                       {
@@ -188,9 +195,9 @@ class PanelQuestion extends Component {
                         <>
                           <Grid style={{ minWidth: 50, display: 'flex', alignItems: 'center', }}>
                             <p style={{ margin: 0, marginRight: 2, fontSize: 11 }}>{question.totalLikes}</p>
-                            <ThumbDownOutlinedIcon style={{ color: '#737373', width: 20, height: 18, marginRight: 8 }} />
-                            <p style={{ margin: 0, marginRight: 2, fontSize: 11 }}>{question.totalUnlikes}</p>
                             <ThumbUpOutlinedIcon style={{ color: '#737373', width: 20, height: 18 }} />
+                            <p style={{ margin: 0, marginRight: 2, fontSize: 11 }}>{question.totalUnlikes}</p>
+                            <ThumbDownOutlinedIcon style={{ color: '#737373', width: 20, height: 18, marginRight: 8 }} />
                           </Grid>
 
 
@@ -222,10 +229,14 @@ class PanelQuestion extends Component {
   }
 }
 
+const mapDispatchToProps = {
+  fetchDataTopicsHelpdesk
+}
+
 const mapStateToProps = ({ isAdminHelpdesk, isAdminsuper }) => {
   return {
     isAdminsuper,
     isAdminHelpdesk
   }
 }
-export default connect(mapStateToProps)(PanelQuestion)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(PanelQuestion))

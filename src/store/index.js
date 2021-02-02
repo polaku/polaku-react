@@ -245,7 +245,7 @@ const api = store => next => async action => {
       })
 
       let newDataEvent = await getData.data.data.filter(event => event.status === 1)
-
+console.log(getData.data.data)
       await newDataEvent.forEach(data => {
         data.start_date = new Date(data.start_date)
         data.end_date = new Date(data.end_date)

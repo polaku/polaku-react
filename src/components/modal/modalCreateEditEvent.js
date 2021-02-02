@@ -118,7 +118,7 @@ class modalCreateEditRoom extends Component {
   };
 
   handleChangeRadio = event => {
-    this.setState({ inviteOption: event.target.value });
+    this.setState({ inviteOption: event.target.value, company: [], department: [], user: [] });
   };
 
   handleChangeSelect = (name, newValue, actionMeta) => {
