@@ -11,22 +11,14 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  TextField,
   Button,
+  MenuItem,
+  Select as SelectOption,
   CircularProgress,
-  Paper,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  TableContainer,
-  TableFooter,
 } from "@material-ui/core";
 
-import MenuIcon from "@material-ui/icons/Menu";
-import AddIcon from "@material-ui/icons/Add";
+import BarChartIcon from "@material-ui/icons/BarChart";
 
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -42,7 +34,6 @@ import {
 import { API } from "../../config/API";
 
 import swal from "sweetalert";
-import { ExpandMore } from "@material-ui/icons";
 
 class DashboardKPIM extends Component {
   constructor(props) {
@@ -640,277 +631,362 @@ class DashboardKPIM extends Component {
     const { classes } = this.props;
     return (
       <Grid>
-        <Grid container style={{ marginBottom: 10 }}>
-          <Grid item xs={12}>
-            <p style={{ margin: 0, fontWeight: "bold", fontSize: 20 }}>
+        <Grid
+          container
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 10,
+          }}
+        >
+          <Grid item style={{ display: "flex", alignItems: "center" }}>
+            <BarChartIcon />
+            <p style={{ margin: 0, fontSize: 20 }}>
               KEY PERFORMANCE INDICATOR MATRIX{" "}
               {this.props.location.state &&
                 `(${this.props.location.state.fullname})`}
             </p>
-          </Grid>
-        </Grid>
-        <Grid container spacing={3} style={{ marginBottom: 10 }}>
-          <Grid item md={6} sm={12}>
-            <Paper style={{ padding: 10 }}>
-              <p style={{ margin: "0px 0px 5px 0px", fontSize: 18 }}>
-                Performa KPIM
-              </p>
-              <p style={{ margin: 0, fontSize: 12 }}>performa bulan ini</p>
-              <LinearProgress
-                variant="determinate"
-                value={this.state.persenKPIM}
-                classes={{
-                  colorPrimary: classes.colorPrimary,
-                  barColorPrimary: classes.barColorPrimary,
-                }}
-              />
-              <Grid
-                style={{ display: "flex", justifyContent: "space-between" }}
+            {/* {
+              this.props.location.state && <SelectOption
+                value={this.state.idBawahanSelected}
+                onChange={this.handleChange('idBawahanSelected')}
+                style={{ marginLeft: 10 }}
               >
-                <p style={{ margin: 0, fontSize: 12 }}>statistik bulan ini</p>
-                <p
-                  style={{ margin: 0, fontSize: 15 }}
-                >{`${this.state.persenKPIM}/100`}</p>
-              </Grid>
-            </Paper>
+                {
+                  this.state.listBawahan.map(user =>
+                    <MenuItem value={user.user_id} key={user.user_id}>{user.fullname}</MenuItem>
+                  )
+                }
+              </SelectOption>
+            } */}
           </Grid>
-          <Grid item md={6} sm={12}>
-            <Paper style={{ padding: 10 }}>
-              <p style={{ margin: "0px 0px 5px 0px", fontSize: 18 }}>
-                Rewards & Consequences
-              </p>
-              <p style={{ margin: 0, fontSize: 12 }}>30%: SP1</p>
-              <LinearProgress
-                variant="determinate"
-                value={this.state.persenKPIM}
-                classes={{
-                  colorPrimary: classes.colorPrimary,
-                  barColorPrimary: classes.barColorPrimary,
-                }}
-              />
-              <Grid
-                style={{ display: "flex", justifyContent: "space-between" }}
-              >
-                <p style={{ margin: 0, fontSize: 12 }}>
-                  lihat lebih lanjut &gt;
-                </p>
-                <p
-                  style={{ margin: 0, fontSize: 15 }}
-                >{`${this.state.persenKPIM}/100`}</p>
-              </Grid>
-            </Paper>
-          </Grid>
+          {this.state.monthSelected !== null && (
+            <SelectOption
+              value={this.state.monthSelected}
+              onChange={this.handleChange("monthSelected")}
+            >
+              {this.state.months.map((month, index) => (
+                <MenuItem value={index} key={index}>
+                  {month} {new Date().getFullYear()}
+                </MenuItem>
+              ))}
+            </SelectOption>
+          )}
         </Grid>
-        <Grid container spacing={3} style={{ marginBottom: 10 }}>
-          <Grid item md={2} sm={6}>
-            <Paper style={{ padding: 10 }}>
-              {this.state.prosesKPIM ? (
-                <Grid
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: 128,
-                    width: "100%",
-                  }}
-                >
-                  <CircularProgress color="secondary" />
-                </Grid>
-              ) : (
-                this.state.kpimSelected.map((element, index) => (
-                  <CardIndicator
-                    data={element}
-                    key={index}
-                    refresh={this.refresh}
-                    weekSelected={this.state.weekSelected}
-                    monthSelected={this.state.monthSelected}
-                    lastUpdate={this.state.lastUpdate}
-                  />
-                ))
-              )}
-            </Paper>
-          </Grid>
-          <Grid item md={2} sm={6}>
-            <Paper style={{ padding: 10 }}>
-              {this.state.prosesKPIM ? (
-                <Grid
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: 128,
-                    width: "100%",
-                  }}
-                >
-                  <CircularProgress color="secondary" />
-                </Grid>
-              ) : (
-                this.state.kpimSelected.map((element, index) => (
-                  <CardIndicator
-                    data={element}
-                    key={index}
-                    refresh={this.refresh}
-                    weekSelected={this.state.weekSelected}
-                    monthSelected={this.state.monthSelected}
-                    lastUpdate={this.state.lastUpdate}
-                  />
-                ))
-              )}
-            </Paper>
-          </Grid>
-          <Grid item md={2} sm={6}>
-            <Paper style={{ padding: 10 }}>
-              {this.state.prosesKPIM ? (
-                <Grid
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: 128,
-                    width: "100%",
-                  }}
-                >
-                  <CircularProgress color="secondary" />
-                </Grid>
-              ) : (
-                this.state.kpimSelected.map((element, index) => (
-                  <CardIndicator
-                    data={element}
-                    key={index}
-                    refresh={this.refresh}
-                    weekSelected={this.state.weekSelected}
-                    monthSelected={this.state.monthSelected}
-                    lastUpdate={this.state.lastUpdate}
-                  />
-                ))
-              )}
-            </Paper>
-          </Grid>
-        </Grid>
-
-        <AppBar position="static" style={{ backgroundColor: "transparent" }}>
-          <Toolbar>
-            <IconButton edge="start" aria-label="menu">
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" style={{ color: "black" }}>
-              Perusahaan
-            </Typography>
-            &emsp;&emsp;&emsp;
-            <IconButton edge="start" aria-label="menu">
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" style={{ color: "black" }}>
-              Departemen
-            </Typography>
-          </Toolbar>
-        </AppBar>
-
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMore />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
+        <Grid
+          container
+          style={{
+            display: "flex",
+            marginBottom: 10,
+            border: "1px solid black",
+            borderRadius: 5,
+          }}
+        >
+          <Grid
+            item
+            xs={12}
+            md={8}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              borderRight: "1px solid black",
+              padding: 10,
+            }}
           >
-            <Typography>Minggu 2 (3 tugas)</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <TableContainer component={Paper}>
-              <Table aria-label="simple table">
-                <TableHead>
+            <p style={{ margin: "0px 0px 5px 0px", fontSize: 18 }}>
+              Performa KPIM
+            </p>
+            <p style={{ margin: 0, fontSize: 12 }}>performa bulan ini</p>
+            <LinearProgress
+              variant="determinate"
+              value={this.state.persenKPIM}
+              classes={{
+                colorPrimary: classes.colorPrimary,
+                barColorPrimary: classes.barColorPrimary,
+              }}
+            />
+            <Grid style={{ display: "flex", justifyContent: "space-between" }}>
+              <p style={{ margin: 0, fontSize: 12 }}>statistik bulan ini</p>
+              <p
+                style={{ margin: 0, fontSize: 15 }}
+              >{`${this.state.persenKPIM}/100`}</p>
+            </Grid>
+          </Grid>
+          <Grid item style={{ padding: 10 }}>
+            <p style={{ margin: 0, fontSize: 18 }}>Reward & Cosequences :</p>
+            <p style={{ margin: "5px 0px 0px 10px", fontSize: 15 }}>
+              {this.state.currentReward}
+            </p>
+          </Grid>
+        </Grid>
+        <Grid container style={{ display: "flex" }}>
+          {this.state.prosesKPIM ? (
+            <Grid
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: 128,
+                width: "100%",
+              }}
+            >
+              <CircularProgress color="secondary" />
+            </Grid>
+          ) : (
+            this.state.kpimSelected.map((element, index) => (
+              <CardIndicator
+                data={element}
+                key={index}
+                refresh={this.refresh}
+                weekSelected={this.state.weekSelected}
+                monthSelected={this.state.monthSelected}
+                lastUpdate={this.state.lastUpdate}
+              />
+            ))
+          )}
+        </Grid>
+
+        {/* TAL */}
+        <Grid style={{ marginTop: 10, border: "1px solid black" }}>
+          <Grid
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              backgroundColor: "#d71149",
+              padding: 10,
+            }}
+          >
+            <p style={{ margin: 0, color: "white" }}>
+              TAL week {this.state.weekSelected}
+            </p>
+            {!this.props.location.state && (
+              <Button
+                style={{
+                  backgroundColor: "white",
+                  color: "#d71149",
+                  height: 30,
+                  padding: "0px 10px",
+                }}
+                onClick={() => this.props.history.push("/kpim/tal")}
+              >
+                lihat minggu lainnya
+              </Button>
+            )}
+          </Grid>
+          <Grid style={{ display: "flex" }}>
+            <Grid
+              style={{
+                width: "18%",
+                padding: 15,
+                paddingTop: 10,
+                borderRight: "1px solid black",
+              }}
+            >
+              {/* <p style={{ margin: 0, marginBottom: 10, textAlign: 'center' }}>Bobot: {this.state.kpimTAL ? this.state.kpimTAL.bobot : 0}</p> */}
+              <CircularProgressbar
+                value={this.state.persenTAL}
+                text={`${this.state.persenTAL}%`}
+              />
+            </Grid>
+            <Grid style={{ width: "90%" }}>
+              <Table style={{ padding: "14px 16px 14px 16px" }}>
+                <TableHead style={{ backgroundColor: "#f8f8f8" }}>
                   <TableRow>
-                    <TableCell>Tugas</TableCell>
-                    <TableCell align="right">Tenggat</TableCell>
-                    <TableCell align="right">Bobot</TableCell>
-                    <TableCell align="right">Status</TableCell>
-                    <TableCell align="right">Pencapaian</TableCell>
-                    <TableCell align="right">Perusahaan</TableCell>
-                    <TableCell align="right">Waktu</TableCell>
-                    <TableCell align="right">Oleh</TableCell>
+                    <TableCell
+                      style={{ width: "30%", padding: "14px 16px 14px 16px" }}
+                    >
+                      Item
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "10%", padding: "14px 16px 14px 16px" }}
+                      align="center"
+                    >
+                      Jam
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "15%", padding: "14px 16px 14px 16px" }}
+                      align="center"
+                    >
+                      When
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      style={{ width: "10%", padding: "14px 16px 14px 16px" }}
+                    >
+                      Weight
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      style={{ width: "15%", padding: "14px 16px 14px 16px" }}
+                    >
+                      Pencapaian
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      style={{ width: "20%", padding: "14px 16px 14px 16px" }}
+                    >
+                      Link
+                    </TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell component="th" scope="row">
-                      Judul design 2
-                    </TableCell>
-                    <TableCell align="right">Selasa</TableCell>
-                    <TableCell align="right">10%</TableCell>
-                    <TableCell align="right">Menunggu</TableCell>
-                    <TableCell align="right">lorem ipsum</TableCell>
-                    <TableCell align="right">lorem ipsum</TableCell>
-                    <TableCell align="right">3'15''</TableCell>
-                    <TableCell align="right">lorem ipsum</TableCell>
-                  </TableRow>
-                </TableBody>
-                <TableFooter>
-                  <Grid style={{ padding: 10 }}>
-                    <Button
-                      variant="contained"
-                      style={{ backgroundColor: "transparent" }}
-                      startIcon={<AddIcon />}
-                    >
-                      Tugas Baru
-                    </Button>
-                  </Grid>
-                </TableFooter>
+                {!this.state.prosesTAL && (
+                  <TableBody>
+                    {this.state.talSelected.map((el, index) => (
+                      <CardItemTAL
+                        data={el}
+                        key={index}
+                        refresh={this.refresh}
+                        weekCurrent={this.state.weekSelected}
+                      />
+                    ))}
+                    {this.state.statusAddNewTal && (
+                      <TableRow style={{ height: 50, marginBottom: 30 }}>
+                        <TableCell
+                          align="center"
+                          style={{ padding: "0px 10px" }}
+                        >
+                          <TextField
+                            value={this.state.indicator_tal}
+                            onChange={this.handleChange("indicator_tal")}
+                            variant="outlined"
+                            InputProps={{
+                              style: { height: 35, padding: 0 },
+                            }}
+                            style={{ width: "100%" }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          style={{ padding: "0px 10px" }}
+                        >
+                          <TextField
+                            value={this.state.load}
+                            onChange={this.handleChange("load")}
+                            variant="outlined"
+                            InputProps={{
+                              style: { height: 35, padding: 0 },
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          style={{ padding: "0px 10px" }}
+                        >
+                          <SelectOption
+                            value={this.state.when}
+                            onChange={this.handleChange("when")}
+                            disabled={this.state.proses}
+                            style={{ width: "100%" }}
+                          >
+                            {this.state.chooseWhen.map((el, index) => (
+                              <MenuItem value={el} key={index}>
+                                {el}
+                              </MenuItem>
+                            ))}
+                          </SelectOption>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          style={{ padding: "0px 10px" }}
+                        >
+                          <TextField
+                            type="number"
+                            value={this.state.weight}
+                            onChange={this.handleChange("weight")}
+                            variant="outlined"
+                            InputProps={{
+                              style: { height: 35, padding: 0 },
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          style={{ padding: "0px 10px" }}
+                        />
+                        {/* <TextField
+                          value={this.state.achievement}
+                          onChange={this.handleChange('achievement')}
+                          variant="outlined"
+                          InputProps={{
+                            style: { height: 35, padding: 0 }
+                          }}
+                        /> */}
+                        {/* </TableCell> */}
+                        <TableCell
+                          align="center"
+                          style={{ padding: "0px 10px" }}
+                        >
+                          {/* <TextField
+                          value={this.state.link}
+                          onChange={this.handleChange('link')}
+                          variant="outlined"
+                          InputProps={{
+                            style: { height: 35, padding: 0 }
+                          }}
+                        /> */}
+                          <Grid
+                            style={{
+                              display: "flex",
+                              justifyContent: "flex-end",
+                              margin: "15px",
+                            }}
+                          >
+                            <Button
+                              color="secondary"
+                              onClick={this.addNewTal}
+                              style={{ height: 40, marginRight: 15 }}
+                              disabled={this.state.proses}
+                            >
+                              batal
+                            </Button>
+                            <Button
+                              color="primary"
+                              onClick={this.saveNewTal}
+                              style={{ height: 40 }}
+                              disabled={this.state.proses}
+                            >
+                              simpan
+                            </Button>
+                          </Grid>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                )}
               </Table>
-            </TableContainer>
-          </AccordionDetails>
-        </Accordion>
-
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMore />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography>Backlog</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <TableContainer component={Paper}>
-              <Table aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Tugas</TableCell>
-                    <TableCell align="right">Tenggat</TableCell>
-                    <TableCell align="right">Bobot</TableCell>
-                    <TableCell align="right">Status</TableCell>
-                    <TableCell align="right">Pencapaian</TableCell>
-                    <TableCell align="right">Perusahaan</TableCell>
-                    <TableCell align="right">Waktu</TableCell>
-                    <TableCell align="right">Oleh</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell component="th" scope="row">
-                      Judul design 2
-                    </TableCell>
-                    <TableCell align="right">Selasa</TableCell>
-                    <TableCell align="right">10%</TableCell>
-                    <TableCell align="right">Menunggu</TableCell>
-                    <TableCell align="right">lorem ipsum</TableCell>
-                    <TableCell align="right">lorem ipsum</TableCell>
-                    <TableCell align="right">3'15''</TableCell>
-                    <TableCell align="right">lorem ipsum</TableCell>
-                  </TableRow>
-                </TableBody>
-                <TableFooter>
-                  <Grid style={{ padding: 10 }}>
-                    <Button
-                      variant="contained"
-                      style={{ backgroundColor: "transparent" }}
-                      startIcon={<AddIcon />}
-                    >
-                      Tugas Baru
-                    </Button>
-                  </Grid>
-                </TableFooter>
-              </Table>
-            </TableContainer>
-          </AccordionDetails>
-        </Accordion>
+              {this.state.prosesTAL && (
+                <Grid style={{ width: "100%", textAlign: "center" }}>
+                  <CircularProgress
+                    color="secondary"
+                    style={{ marginTop: 10 }}
+                  />
+                </Grid>
+              )}
+              {!this.state.prosesTAL && this.state.talSelected.length === 0 && (
+                <Grid style={{ width: "100%", textAlign: "center" }}>
+                  <p>harap komunikasi ke atasan untuk membuat TAL</p>
+                </Grid>
+              )}
+              {this.state.kpimTAL &&
+                this.state.validateCreateTAL &&
+                !this.state.statusAddNewTal && (
+                  <p
+                    style={{
+                      margin: "10px 0px 30px 10px",
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                      width: 70,
+                    }}
+                    onClick={this.addNewTal}
+                  >
+                    + tal baru
+                  </p>
+                )}
+            </Grid>
+          </Grid>
+        </Grid>
       </Grid>
     );
   }
