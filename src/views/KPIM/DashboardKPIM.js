@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import Cookies from "js-cookie";
+import PropTypes from "prop-types";
 
 import {
   Grid,
@@ -23,10 +24,26 @@ import {
   AccordionDetails,
   TableContainer,
   TableFooter,
+  Collapse,
+  List,
+  ListItem,
+  TextField,
+  MenuItem,
+  InputAdornment,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  Dialog,
+  DialogActions,
+  Tabs,
+  Tab,
+  Box,
 } from "@material-ui/core";
 
 import MenuIcon from "@material-ui/icons/Menu";
 import AddIcon from "@material-ui/icons/Add";
+import ClearIcon from "@material-ui/icons/Clear";
+import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -42,13 +59,15 @@ import {
 import { API } from "../../config/API";
 
 import swal from "sweetalert";
-import { ExpandMore } from "@material-ui/icons";
+import { AccountCircle, CalendarToday, ExpandMore } from "@material-ui/icons";
 
 class DashboardKPIM extends Component {
   constructor(props) {
     super(props);
     this._isMounted = false;
     this.state = {
+      openAddRow: true,
+      openPerulangan: false,
       proses: false,
       months: [
         "",
@@ -896,20 +915,147 @@ class DashboardKPIM extends Component {
                     <TableCell align="right">lorem ipsum</TableCell>
                   </TableRow>
                 </TableBody>
-                <TableFooter>
-                  <Grid style={{ padding: 10 }}>
-                    <Button
-                      variant="contained"
-                      style={{ backgroundColor: "transparent" }}
-                      startIcon={<AddIcon />}
-                    >
-                      Tugas Baru
-                    </Button>
-                  </Grid>
-                </TableFooter>
               </Table>
             </TableContainer>
           </AccordionDetails>
+
+          <AccordionDetails>
+            <Button
+              variant="contained"
+              style={{ backgroundColor: "transparent" }}
+              startIcon={this.state.openAddRow ? <AddIcon /> : <ClearIcon />}
+              onClick={() =>
+                this.setState({ openAddRow: !this.state.openAddRow })
+              }
+            >
+              {this.state.openAddRow ? "Tugas Baru" : "Batal"}
+            </Button>
+          </AccordionDetails>
+          <Collapse in={!this.state.openAddRow} timeout="auto" unmountOnExit>
+            <AccordionDetails>
+              <TableContainer component={Paper}>
+                <Table aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>
+                        <TextField id="standard-basic" label="Tugas" />
+                      </TableCell>
+
+                      <TableCell align="right">
+                        <TextField
+                          id="standard-select-currency"
+                          select
+                          label={" "}
+                          value=""
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <CalendarToday />
+                              </InputAdornment>
+                            ),
+                          }}
+                          style={{ width: 100 }}
+                        >
+                          <MenuItem>Senin</MenuItem>
+                          <MenuItem>Selasa</MenuItem>
+                          <MenuItem>Rabu</MenuItem>
+                          <MenuItem>Kamis</MenuItem>
+                          <MenuItem>Jumat</MenuItem>
+                          <MenuItem>Sabtu</MenuItem>
+                          <MenuItem>Minggu</MenuItem>
+                          <MenuItem>Pengulangan</MenuItem>
+                          <MenuItem>Tanggal</MenuItem>
+                        </TextField>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          onClick={() =>
+                            this.setState({
+                              openPerulangan: !this.state.openPerulangan,
+                            })
+                          }
+                        >
+                          Perulangan
+                        </Button>
+                        <Dialog
+                          open={() =>
+                            this.setState({
+                              openPerulangan: this.state.openPerulangan,
+                            })
+                          }
+                          onClose={() =>
+                            this.setState({
+                              openPerulangan: this.state.openPerulangan,
+                            })
+                          }
+                          aria-labelledby="form-dialog-title"
+                        >
+                          <DialogTitle id="form-dialog-title">
+                            Subscribe
+                          </DialogTitle>
+                          <DialogContent>
+                            <DialogContentText>
+                              To subscribe to this website, please enter your
+                              email address here. We will send updates
+                              occasionally.
+                            </DialogContentText>
+                            <TextField
+                              autoFocus
+                              margin="dense"
+                              id="name"
+                              label="Email Address"
+                              type="email"
+                              fullWidth
+                            />
+                          </DialogContent>
+                          <DialogActions>
+                            <Button
+                              onClick={() =>
+                                this.setState({
+                                  openPerulangan: !this.state.openPerulangan,
+                                })
+                              }
+                              color="primary"
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              onClick={() =>
+                                this.setState({
+                                  openPerulangan: !this.state.openPerulangan,
+                                })
+                              }
+                              color="primary"
+                            >
+                              Subscribe
+                            </Button>
+                          </DialogActions>
+                        </Dialog>
+                      </TableCell>
+                      <TableCell align="right">
+                        <TextField
+                          id="standard-select-currency"
+                          select
+                          label="Oleh"
+                          style={{ width: 100 }}
+                        >
+                          <MenuItem>A</MenuItem>
+                          <MenuItem>A</MenuItem>
+                        </TextField>
+                      </TableCell>
+                      <TableCell align="right">
+                        <IconButton color="success" aria-label="add an alarm">
+                          <PlayArrowIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                </Table>
+              </TableContainer>
+            </AccordionDetails>
+          </Collapse>
         </Accordion>
       </Grid>
     );
