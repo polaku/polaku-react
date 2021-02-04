@@ -204,6 +204,8 @@ class HR extends Component {
                     }
                     <p style={{ margin: 0, fontSize: 12, color: 'gray', marginTop: 10, marginLeft: 10, fontStyle: 'italic' }}>* hubungi HRD untuk konfigurasi apabila evaluatornya berbeda</p>
                   </Grid>
+                  <p style={{ margin: 20, marginTop: 5 }}>Sisa cuti anda sebanyak {this.props.sisaCuti}</p>
+
                   <Grid style={{ display: 'flex', alignItems: 'center', marginBottom: 15 }}>
                     <Tabs
                       value={this.state.ijinTabs}
@@ -355,10 +357,11 @@ const mapDispatchToProps = {
   fetchDataContactUs,
 }
 
-const mapStateToProps = ({ loading, userId, dataContactUs, dataContactUsStaff, evaluator1, evaluator2, bawahan }) => {
+const mapStateToProps = ({ loading, userId, sisaCuti, dataContactUs, dataContactUsStaff, evaluator1, evaluator2, bawahan }) => {
   return {
     loading,
     userId,
+    sisaCuti,
     dataContactUs,
     dataContactUsStaff,
     evaluator1,

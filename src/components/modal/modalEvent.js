@@ -124,6 +124,8 @@ class modalEvent extends Component {
             token
           }
         })
+
+      await this.props.closeModal()
       await this.props.fetchDataEvent()
       swal('Hapus acara berhasil', '', 'success')
     } catch (err) {
