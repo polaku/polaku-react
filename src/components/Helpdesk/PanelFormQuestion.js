@@ -207,20 +207,24 @@ class PanelFormQuestion extends Component {
 
           <Grid id="form-bantuan" style={{ display: 'flex', flexDirection: 'column', marginTop: 15 }}>
             <b style={{ margin: 0, fontSize: 15 }} htmlFor="bantuan">bantuan lanjut hubungi</b>
-            <TextField
-              id="bantuan"
-              value={this.state.help}
-              onChange={this.handleChange('help')}
-              margin="normal"
-              variant="outlined"
-              disabled={this.state.proses}
-              style={{ marginTop: 10 }}
-              inputProps={{
-                style: {
-                  padding: '13px 10px'
-                }
-              }}
-            />
+            <Grid style={{ display: 'flex', alignItems: 'center' }}>
+              <p style={{ marginRight: 10, fontSize: 18 }}>+62</p>
+              <TextField
+                id="bantuan"
+                value={this.state.help}
+                onChange={this.handleChange('help')}
+                margin="normal"
+                variant="outlined"
+                disabled={this.state.proses}
+                style={{ marginTop: 10 }}
+                inputProps={{
+                  style: {
+                    padding: '13px 10px'
+                  }
+                }}
+                placeholder='contoh: 812345678'
+              />
+            </Grid>
           </Grid>
 
           <Grid id="form-for" style={{ display: 'flex', flexDirection: 'column', marginTop: 15 }}>

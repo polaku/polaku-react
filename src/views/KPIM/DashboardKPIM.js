@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import Cookies from "js-cookie";
-import PropTypes from "prop-types";
 
 import {
   Grid,
@@ -118,6 +117,7 @@ class DashboardKPIM extends Component {
       prosesTAL: true,
       prosesKPIM: true,
       listBawahan: this.props.bawahan,
+
     };
   }
 
@@ -578,6 +578,16 @@ class DashboardKPIM extends Component {
     return weekNr;
   };
 
+  // CALENDER GOOGLE
+  // getNumberOfWeek = date => {
+  //   //yyyy-mm-dd (first date in week)
+  //   var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  //   var dayNum = d.getUTCDay() || 7;
+  //   d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  //   var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  //   return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+  // }
+
   refresh = async () => {
     await this.fetchData(
       this.state.monthSelected,
@@ -736,17 +746,17 @@ class DashboardKPIM extends Component {
                   <CircularProgress color="secondary" />
                 </Grid>
               ) : (
-                this.state.kpimSelected.map((element, index) => (
-                  <CardIndicator
-                    data={element}
-                    key={index}
-                    refresh={this.refresh}
-                    weekSelected={this.state.weekSelected}
-                    monthSelected={this.state.monthSelected}
-                    lastUpdate={this.state.lastUpdate}
-                  />
-                ))
-              )}
+                  this.state.kpimSelected.map((element, index) => (
+                    <CardIndicator
+                      data={element}
+                      key={index}
+                      refresh={this.refresh}
+                      weekSelected={this.state.weekSelected}
+                      monthSelected={this.state.monthSelected}
+                      lastUpdate={this.state.lastUpdate}
+                    />
+                  ))
+                )}
             </Paper>
           </Grid>
           <Grid item md={2} sm={6}>
@@ -764,17 +774,17 @@ class DashboardKPIM extends Component {
                   <CircularProgress color="secondary" />
                 </Grid>
               ) : (
-                this.state.kpimSelected.map((element, index) => (
-                  <CardIndicator
-                    data={element}
-                    key={index}
-                    refresh={this.refresh}
-                    weekSelected={this.state.weekSelected}
-                    monthSelected={this.state.monthSelected}
-                    lastUpdate={this.state.lastUpdate}
-                  />
-                ))
-              )}
+                  this.state.kpimSelected.map((element, index) => (
+                    <CardIndicator
+                      data={element}
+                      key={index}
+                      refresh={this.refresh}
+                      weekSelected={this.state.weekSelected}
+                      monthSelected={this.state.monthSelected}
+                      lastUpdate={this.state.lastUpdate}
+                    />
+                  ))
+                )}
             </Paper>
           </Grid>
           <Grid item md={2} sm={6}>
@@ -792,17 +802,17 @@ class DashboardKPIM extends Component {
                   <CircularProgress color="secondary" />
                 </Grid>
               ) : (
-                this.state.kpimSelected.map((element, index) => (
-                  <CardIndicator
-                    data={element}
-                    key={index}
-                    refresh={this.refresh}
-                    weekSelected={this.state.weekSelected}
-                    monthSelected={this.state.monthSelected}
-                    lastUpdate={this.state.lastUpdate}
-                  />
-                ))
-              )}
+                  this.state.kpimSelected.map((element, index) => (
+                    <CardIndicator
+                      data={element}
+                      key={index}
+                      refresh={this.refresh}
+                      weekSelected={this.state.weekSelected}
+                      monthSelected={this.state.monthSelected}
+                      lastUpdate={this.state.lastUpdate}
+                    />
+                  ))
+                )}
             </Paper>
           </Grid>
         </Grid>
@@ -919,18 +929,7 @@ class DashboardKPIM extends Component {
             </TableContainer>
           </AccordionDetails>
 
-          <AccordionDetails>
-            <Button
-              variant="contained"
-              style={{ backgroundColor: "transparent" }}
-              startIcon={this.state.openAddRow ? <AddIcon /> : <ClearIcon />}
-              onClick={() =>
-                this.setState({ openAddRow: !this.state.openAddRow })
-              }
-            >
-              {this.state.openAddRow ? "Tugas Baru" : "Batal"}
-            </Button>
-          </AccordionDetails>
+
           <Collapse in={!this.state.openAddRow} timeout="auto" unmountOnExit>
             <AccordionDetails>
               <TableContainer component={Paper}>
@@ -979,15 +978,12 @@ class DashboardKPIM extends Component {
                         >
                           Perulangan
                         </Button>
+
                         <Dialog
-                          open={() =>
-                            this.setState({
-                              openPerulangan: this.state.openPerulangan,
-                            })
-                          }
+                          open={this.state.openPerulangan}
                           onClose={() =>
                             this.setState({
-                              openPerulangan: this.state.openPerulangan,
+                              openPerulangan: false,
                             })
                           }
                           aria-labelledby="form-dialog-title"
@@ -1056,6 +1052,19 @@ class DashboardKPIM extends Component {
               </TableContainer>
             </AccordionDetails>
           </Collapse>
+          <AccordionDetails>
+            <Button
+              variant="contained"
+              style={{ backgroundColor: "transparent" }}
+              startIcon={this.state.openAddRow ? <AddIcon /> : <ClearIcon />}
+              onClick={() =>
+                this.setState({ openAddRow: !this.state.openAddRow })
+              }
+            >
+              {this.state.openAddRow ? "Tugas Baru" : "Batal"}
+            </Button>
+          </AccordionDetails>
+
         </Accordion>
       </Grid>
     );

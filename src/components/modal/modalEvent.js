@@ -8,6 +8,7 @@ import {
 
 import swal from 'sweetalert';
 
+import { fetchDataEvent } from '../../store/action';
 import { API } from '../../config/API';
 
 class modalEvent extends Component {
@@ -113,6 +114,25 @@ class modalEvent extends Component {
     this.joinEvent("Cancel Join")
   }
 
+  deleteEvent = async () => {
+    try {
+      let token = Cookies.get('POLAGROUP')
+
+      await API.delete(`/events/${this.props.data.event_id}`,
+        {
+          headers: {
+            token
+          }
+        })
+
+      await this.props.closeModal()
+      await this.props.fetchDataEvent()
+      swal('Hapus acara berhasil', '', 'success')
+    } catch (err) {
+      swal('Hapus acara gagal', '', 'error')
+    }
+  }
+
   render() {
     function getMonth(args) {
       let months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
@@ -140,7 +160,13 @@ class modalEvent extends Component {
         <Fade in={this.props.status}>
           <Paper style={{ width: 600, padding: '30px 100px' }}>
             <Typography variant="subtitle2">{this.props.data.keterangan}</Typography>
-            <Typography variant="h4" style={{ marginBottom: 20 }}>{this.props.data.event_name}</Typography>
+            <Grid style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <Typography variant="h4">{this.props.data.event_name}</Typography>
+              {
+                (this.props.userId === this.props.data.user_id || this.props.isAdminsuper) && <Button style={{ textDecoration: 'none' }} variant="contained" color="secondary" onClick={this.deleteEvent}>Hapus Acara</Button>
+              }
+
+            </Grid>
             <Divider />
             <Grid>
               <Grid container>
@@ -240,11 +266,17 @@ class modalEvent extends Component {
   }
 }
 
-const mapStateToProps = ({ userId, ip }) => {
+
+const mapDispatchToProps = {
+  fetchDataEvent
+}
+
+const mapStateToProps = ({ isAdminsuper, userId, ip }) => {
   return {
+    isAdminsuper,
     userId,
     ip
   }
 }
 
-export default connect(mapStateToProps)(modalEvent)
+export default connect(mapStateToProps, mapDispatchToProps)(modalEvent)

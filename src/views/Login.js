@@ -85,7 +85,7 @@ class Login extends Component {
         let PIC = checkPIC ? true : false
         newData.isPIC = PIC
 
-        let isAdminNews = false, isAdminAddress = false, isAdminStructure = false, isAdminEmployee = false, isAdminAdmin = false, isAdminRoom = false, isAdminKPIM = false, isAdminHR = false, isAdminHelpdesk= false
+        let isAdminNews = false, isAdminAddress = false, isAdminStructure = false, isAdminEmployee = false, isAdminAdmin = false, isAdminRoom = false, isAdminKPIM = false, isAdminHR = false, isAdminHelpdesk = false
 
         await data.data.admin.forEach(admin => {
           let checkNews = admin.tbl_designation ? admin.tbl_designation.tbl_user_roles.find(menu => menu.menu_id === 1) : null
@@ -125,7 +125,7 @@ class Login extends Component {
         newData.isAdminKPIM = isAdminKPIM
         newData.isAdminHR = isAdminHR
         newData.isAdminHelpdesk = isAdminHelpdesk
-        
+
         if (data.data.role_id === 1) {
           newData.isAdminsuper = true
         } else {
@@ -184,7 +184,7 @@ class Login extends Component {
               disabled={this.state.proses}
             />
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography style={{ fontSize: 12 }}>Forgot password?</Typography>
+              <Typography style={{ fontSize: 12 }}><Link to='/forget-password'>Forgot password?</Link></Typography>
               <div style={{ position: 'relative', }}>
                 <Button
                   type="submit"
