@@ -6,49 +6,15 @@ import Cookies from "js-cookie";
 import {
   Grid,
   LinearProgress,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Button,
   CircularProgress,
   Paper,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  TableContainer,
-  TableFooter,
-  Collapse,
-  List,
-  ListItem,
-  TextField,
-  MenuItem,
-  InputAdornment,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  Dialog,
-  DialogActions,
-  Tabs,
-  Tab,
-  Box,
 } from "@material-ui/core";
-
-import MenuIcon from "@material-ui/icons/Menu";
-import AddIcon from "@material-ui/icons/Add";
-import ClearIcon from "@material-ui/icons/Clear";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
 import CardIndicator from "../../components/kpim/cardIndicatorKPIM";
-import CardItemTAL from "../../components/kpim/cardItemTAL";
+import Tugasku from "../../components/kpim/tugasku";
 
 import {
   fetchDataAllKPIM,
@@ -58,7 +24,6 @@ import {
 import { API } from "../../config/API";
 
 import swal from "sweetalert";
-import { AccountCircle, CalendarToday, ExpandMore } from "@material-ui/icons";
 
 class DashboardKPIM extends Component {
   constructor(props) {
@@ -117,7 +82,6 @@ class DashboardKPIM extends Component {
       prosesTAL: true,
       prosesKPIM: true,
       listBawahan: this.props.bawahan,
-
     };
   }
 
@@ -578,16 +542,6 @@ class DashboardKPIM extends Component {
     return weekNr;
   };
 
-  // CALENDER GOOGLE
-  // getNumberOfWeek = date => {
-  //   //yyyy-mm-dd (first date in week)
-  //   var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  //   var dayNum = d.getUTCDay() || 7;
-  //   d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-  //   var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  //   return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
-  // }
-
   refresh = async () => {
     await this.fetchData(
       this.state.monthSelected,
@@ -746,17 +700,17 @@ class DashboardKPIM extends Component {
                   <CircularProgress color="secondary" />
                 </Grid>
               ) : (
-                  this.state.kpimSelected.map((element, index) => (
-                    <CardIndicator
-                      data={element}
-                      key={index}
-                      refresh={this.refresh}
-                      weekSelected={this.state.weekSelected}
-                      monthSelected={this.state.monthSelected}
-                      lastUpdate={this.state.lastUpdate}
-                    />
-                  ))
-                )}
+                this.state.kpimSelected.map((element, index) => (
+                  <CardIndicator
+                    data={element}
+                    key={index}
+                    refresh={this.refresh}
+                    weekSelected={this.state.weekSelected}
+                    monthSelected={this.state.monthSelected}
+                    lastUpdate={this.state.lastUpdate}
+                  />
+                ))
+              )}
             </Paper>
           </Grid>
           <Grid item md={2} sm={6}>
@@ -774,17 +728,17 @@ class DashboardKPIM extends Component {
                   <CircularProgress color="secondary" />
                 </Grid>
               ) : (
-                  this.state.kpimSelected.map((element, index) => (
-                    <CardIndicator
-                      data={element}
-                      key={index}
-                      refresh={this.refresh}
-                      weekSelected={this.state.weekSelected}
-                      monthSelected={this.state.monthSelected}
-                      lastUpdate={this.state.lastUpdate}
-                    />
-                  ))
-                )}
+                this.state.kpimSelected.map((element, index) => (
+                  <CardIndicator
+                    data={element}
+                    key={index}
+                    refresh={this.refresh}
+                    weekSelected={this.state.weekSelected}
+                    monthSelected={this.state.monthSelected}
+                    lastUpdate={this.state.lastUpdate}
+                  />
+                ))
+              )}
             </Paper>
           </Grid>
           <Grid item md={2} sm={6}>
@@ -802,270 +756,22 @@ class DashboardKPIM extends Component {
                   <CircularProgress color="secondary" />
                 </Grid>
               ) : (
-                  this.state.kpimSelected.map((element, index) => (
-                    <CardIndicator
-                      data={element}
-                      key={index}
-                      refresh={this.refresh}
-                      weekSelected={this.state.weekSelected}
-                      monthSelected={this.state.monthSelected}
-                      lastUpdate={this.state.lastUpdate}
-                    />
-                  ))
-                )}
+                this.state.kpimSelected.map((element, index) => (
+                  <CardIndicator
+                    data={element}
+                    key={index}
+                    refresh={this.refresh}
+                    weekSelected={this.state.weekSelected}
+                    monthSelected={this.state.monthSelected}
+                    lastUpdate={this.state.lastUpdate}
+                  />
+                ))
+              )}
             </Paper>
           </Grid>
         </Grid>
 
-        <AppBar position="static" style={{ backgroundColor: "transparent" }}>
-          <Toolbar>
-            <IconButton edge="start" aria-label="menu">
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" style={{ color: "black" }}>
-              Perusahaan
-            </Typography>
-            &emsp;&emsp;&emsp;
-            <IconButton edge="start" aria-label="menu">
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" style={{ color: "black" }}>
-              Departemen
-            </Typography>
-          </Toolbar>
-        </AppBar>
-
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMore />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography>Minggu 2 (3 tugas)</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <TableContainer component={Paper}>
-              <Table aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Tugas</TableCell>
-                    <TableCell align="right">Tenggat</TableCell>
-                    <TableCell align="right">Bobot</TableCell>
-                    <TableCell align="right">Status</TableCell>
-                    <TableCell align="right">Pencapaian</TableCell>
-                    <TableCell align="right">Perusahaan</TableCell>
-                    <TableCell align="right">Waktu</TableCell>
-                    <TableCell align="right">Oleh</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell component="th" scope="row">
-                      Judul design 2
-                    </TableCell>
-                    <TableCell align="right">Selasa</TableCell>
-                    <TableCell align="right">10%</TableCell>
-                    <TableCell align="right">Menunggu</TableCell>
-                    <TableCell align="right">lorem ipsum</TableCell>
-                    <TableCell align="right">lorem ipsum</TableCell>
-                    <TableCell align="right">3'15''</TableCell>
-                    <TableCell align="right">lorem ipsum</TableCell>
-                  </TableRow>
-                </TableBody>
-                <TableFooter>
-                  <Grid style={{ padding: 10 }}>
-                    <Button
-                      variant="contained"
-                      style={{ backgroundColor: "transparent" }}
-                      startIcon={<AddIcon />}
-                    >
-                      Tugas Baru
-                    </Button>
-                  </Grid>
-                </TableFooter>
-              </Table>
-            </TableContainer>
-          </AccordionDetails>
-        </Accordion>
-
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMore />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography>Backlog</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <TableContainer component={Paper}>
-              <Table aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Tugas</TableCell>
-                    <TableCell align="right">Tenggat</TableCell>
-                    <TableCell align="right">Bobot</TableCell>
-                    <TableCell align="right">Status</TableCell>
-                    <TableCell align="right">Pencapaian</TableCell>
-                    <TableCell align="right">Perusahaan</TableCell>
-                    <TableCell align="right">Waktu</TableCell>
-                    <TableCell align="right">Oleh</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell component="th" scope="row">
-                      Judul design 2
-                    </TableCell>
-                    <TableCell align="right">Selasa</TableCell>
-                    <TableCell align="right">10%</TableCell>
-                    <TableCell align="right">Menunggu</TableCell>
-                    <TableCell align="right">lorem ipsum</TableCell>
-                    <TableCell align="right">lorem ipsum</TableCell>
-                    <TableCell align="right">3'15''</TableCell>
-                    <TableCell align="right">lorem ipsum</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </AccordionDetails>
-
-
-          <Collapse in={!this.state.openAddRow} timeout="auto" unmountOnExit>
-            <AccordionDetails>
-              <TableContainer component={Paper}>
-                <Table aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>
-                        <TextField id="standard-basic" label="Tugas" />
-                      </TableCell>
-
-                      <TableCell align="right">
-                        <TextField
-                          id="standard-select-currency"
-                          select
-                          label={" "}
-                          value=""
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <CalendarToday />
-                              </InputAdornment>
-                            ),
-                          }}
-                          style={{ width: 100 }}
-                        >
-                          <MenuItem>Senin</MenuItem>
-                          <MenuItem>Selasa</MenuItem>
-                          <MenuItem>Rabu</MenuItem>
-                          <MenuItem>Kamis</MenuItem>
-                          <MenuItem>Jumat</MenuItem>
-                          <MenuItem>Sabtu</MenuItem>
-                          <MenuItem>Minggu</MenuItem>
-                          <MenuItem>Pengulangan</MenuItem>
-                          <MenuItem>Tanggal</MenuItem>
-                        </TextField>
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          variant="outlined"
-                          color="primary"
-                          onClick={() =>
-                            this.setState({
-                              openPerulangan: !this.state.openPerulangan,
-                            })
-                          }
-                        >
-                          Perulangan
-                        </Button>
-
-                        <Dialog
-                          open={this.state.openPerulangan}
-                          onClose={() =>
-                            this.setState({
-                              openPerulangan: false,
-                            })
-                          }
-                          aria-labelledby="form-dialog-title"
-                        >
-                          <DialogTitle id="form-dialog-title">
-                            Subscribe
-                          </DialogTitle>
-                          <DialogContent>
-                            <DialogContentText>
-                              To subscribe to this website, please enter your
-                              email address here. We will send updates
-                              occasionally.
-                            </DialogContentText>
-                            <TextField
-                              autoFocus
-                              margin="dense"
-                              id="name"
-                              label="Email Address"
-                              type="email"
-                              fullWidth
-                            />
-                          </DialogContent>
-                          <DialogActions>
-                            <Button
-                              onClick={() =>
-                                this.setState({
-                                  openPerulangan: !this.state.openPerulangan,
-                                })
-                              }
-                              color="primary"
-                            >
-                              Cancel
-                            </Button>
-                            <Button
-                              onClick={() =>
-                                this.setState({
-                                  openPerulangan: !this.state.openPerulangan,
-                                })
-                              }
-                              color="primary"
-                            >
-                              Subscribe
-                            </Button>
-                          </DialogActions>
-                        </Dialog>
-                      </TableCell>
-                      <TableCell align="right">
-                        <TextField
-                          id="standard-select-currency"
-                          select
-                          label="Oleh"
-                          style={{ width: 100 }}
-                        >
-                          <MenuItem>A</MenuItem>
-                          <MenuItem>A</MenuItem>
-                        </TextField>
-                      </TableCell>
-                      <TableCell align="right">
-                        <IconButton color="success" aria-label="add an alarm">
-                          <PlayArrowIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                </Table>
-              </TableContainer>
-            </AccordionDetails>
-          </Collapse>
-          <AccordionDetails>
-            <Button
-              variant="contained"
-              style={{ backgroundColor: "transparent" }}
-              startIcon={this.state.openAddRow ? <AddIcon /> : <ClearIcon />}
-              onClick={() =>
-                this.setState({ openAddRow: !this.state.openAddRow })
-              }
-            >
-              {this.state.openAddRow ? "Tugas Baru" : "Batal"}
-            </Button>
-          </AccordionDetails>
-
-        </Accordion>
+        <Tugasku />
       </Grid>
     );
   }
