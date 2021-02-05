@@ -68,7 +68,8 @@ class HR extends Component {
 
     let tempDataStaff = await this.props.dataContactUsStaff.filter(el => el.date_ijin_absen_start !== null || el.date_imp !== null || el.leave_date !== null)
 
-    let tempDataPengajuanStaff = await tempDataStaff.filter(el => el.status === 'new' || el.status === 'new2')
+    // let tempDataPengajuanStaff = await tempDataStaff.filter(el => el.status === 'new' || el.status === 'new2')
+    let tempDataPengajuanStaff = []
 
     let tempDataStaffSedangIjin = [], tempDataIjinSudahLewat = [], tempDataIjinDisetujui = []
     await tempDataStaff.forEach(el => {
@@ -119,6 +120,8 @@ class HR extends Component {
         if (new Date(el.date_imp) > new Date()) {
           if (el.status === 'approved') {
             tempDataIjinDisetujui.push(el)
+          } else if (el.status === 'new' || el.status === 'new2') {
+            tempDataPengajuanStaff.push(el)
           }
         } else {
           tempDataIjinSudahLewat.push(el)
@@ -127,6 +130,8 @@ class HR extends Component {
         if (new Date(el.date_ijin_absen_end) > new Date()) {
           if (el.status === 'approved') {
             tempDataIjinDisetujui.push(el)
+          } else if (el.status === 'new' || el.status === 'new2') {
+            tempDataPengajuanStaff.push(el)
           }
         } else {
           tempDataIjinSudahLewat.push(el)
@@ -135,6 +140,8 @@ class HR extends Component {
         if (new Date(el.leave_date_in.slice(0, 4), el.leave_date_in.slice(5, 7) - 1, el.leave_date_in.slice(8, 10), 0, 0, 0) > new Date()) {
           if (el.status === 'approved') {
             tempDataIjinDisetujui.push(el)
+          } else if (el.status === 'new' || el.status === 'new2') {
+            tempDataPengajuanStaff.push(el)
           }
         } else {
           tempDataIjinSudahLewat.push(el)

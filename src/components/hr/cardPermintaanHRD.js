@@ -102,6 +102,10 @@ class cardPermintaanHRD extends Component {
       this.setState({
         status: 'Disetujui'
       })
+    } else if (this.props.data.status === 'rejected') {
+      this.setState({
+        status: 'Ditolak'
+      })
     }
   }
 
@@ -330,7 +334,7 @@ class cardPermintaanHRD extends Component {
               )
           }
           {
-            this.props.ijinTabs === 0 && this.props.ijinTab === 0 && ((this.props.data.status === 'new' && this.props.data.evaluator_1 === this.props.userId) || (this.props.data.status === 'new2' && this.props.data.evaluator_2 === this.props.userId))
+            this.props.ijinTabs === 0 && (this.props.ijinTab === 0 || this.props.ijinTab === 2) && ((this.props.data.status === 'new' && this.props.data.evaluator_1 === this.props.userId) || (this.props.data.status === 'new2' && this.props.data.evaluator_2 === this.props.userId))
             && <Grid style={{ textAlign: 'right', margin: '0px 10px 15px' }}>
               <Button color="secondary" onClick={this.rejected}>
                 tolak

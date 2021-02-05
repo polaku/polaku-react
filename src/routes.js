@@ -37,6 +37,7 @@ import Polanews from './views/Polanews/Polanews';
 import Helpdesk from './views/Helpdesk/Index';
 import DetailTopics from './views/Helpdesk/DetailTopics';
 import ForgetPassword from './views/ForgetPassword';
+import ResetPassword from './views/ResetPassword';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -60,7 +61,8 @@ function Routes() {
       <div className={classes.toolbar} />
       <Switch>
         <Route path="/login" component={Login} />
-        <Route path="/forget-password" component={ForgetPassword} />
+        <Route path="/reset-password/:token" component={ResetPassword} />
+        <Route path="/forget-password" component={ForgetPassword} />        
         <AuthenticatedRoute path="/booking-room/room-master/assign-room-master" component={AssignRoomMaster} />
         <AuthenticatedRoute path="/booking-room/room-master" component={RoomMaster} />
         <AuthenticatedRoute path="/booking-room/room-assistant" component={AssignRoomAssistant} />
