@@ -2,7 +2,6 @@ import {
   AppBar,
   Grid,
   IconButton,
-  Menu,
   Toolbar,
   Typography,
 } from "@material-ui/core";
@@ -10,6 +9,8 @@ import React, { Component } from "react";
 
 import TaskWeek from "./taskWeek";
 import Backlog from "./backlog";
+
+import MenuIcon from "@material-ui/icons/Menu";
 
 export default class tugasku extends Component {
   constructor(props) {
@@ -24,14 +25,14 @@ export default class tugasku extends Component {
         <AppBar position="static" style={{ backgroundColor: "transparent" }}>
           <Toolbar>
             <IconButton edge="start" aria-label="menu">
-              <Menu />
+              <MenuIcon style={{ color: "black" }} />
             </IconButton>
             <Typography variant="h6" style={{ color: "black" }}>
               Perusahaan
             </Typography>
             &emsp;&emsp;&emsp;
             <IconButton edge="start" aria-label="menu">
-              <Menu />
+              <MenuIcon style={{ color: "black" }} />
             </IconButton>
             <Typography variant="h6" style={{ color: "black" }}>
               Departemen

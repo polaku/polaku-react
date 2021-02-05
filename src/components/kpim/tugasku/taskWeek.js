@@ -110,9 +110,7 @@ export default class taskWeek extends Component {
                         <MenuItem>Jumat</MenuItem>
                         <MenuItem>Sabtu</MenuItem>
                         <MenuItem>Minggu</MenuItem>
-                        <MenuItem>
-                          <FormPerulangan />
-                        </MenuItem>
+                        <FormPerulangan />
                         <MenuItem>Tanggal</MenuItem>
                       </TextField>
                     </TableCell>
