@@ -297,7 +297,7 @@ class AddMeetingRoom extends Component {
     return (
       <>
         <Grid style={{ display: 'flex', flexDirection: 'column', marginLeft: '15px' }}>
-          <b style={{ fontSize: 20 }}>Tambah ruang</b>
+          <b style={{ fontSize: 20 }}>{this.props.location.state.data ? 'Ubah ruangan' : 'Tambah ruang'}</b>
           <p style={{ margin: 0, fontSize: 12, color: '#d71149', cursor: 'pointer' }} onClick={() => this.props.history.goBack()}>{'<'} kembali ke booking room</p>
         </Grid>
         <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
@@ -604,7 +604,7 @@ class AddMeetingRoom extends Component {
             </Grid>
           </Grid>
 
-          <Button color="secondary" variant="outlined" style={{ marginTop: 20 }} onClick={this.submit}>Tambahkan</Button>
+          <Button color="secondary" variant="outlined" style={{ marginTop: 20 }} onClick={this.submit}>{this.props.location.state.data ? 'Ubah' : 'Tambahkan'}</Button>
 
         </Paper>
       </>
