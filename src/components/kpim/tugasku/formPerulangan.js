@@ -5,14 +5,11 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
-  DialogTitle,
   List,
   ListItem,
   MenuItem,
   Tab,
   Tabs,
-  TextField,
   Typography,
 } from "@material-ui/core";
 
@@ -27,24 +24,6 @@ export default class formPerulangan extends Component {
       open: true,
       value: 0,
       mingguan: "",
-      clocks: [
-        {
-          value: "12:00",
-          label: "12:00",
-        },
-        {
-          value: "11:00",
-          label: "11:00",
-        },
-        {
-          value: "09:00",
-          label: "09:00",
-        },
-        {
-          value: "08:00",
-          label: "08:00",
-        },
-      ],
     };
   }
   render() {
@@ -90,7 +69,7 @@ export default class formPerulangan extends Component {
           aria-labelledby="form-dialog-title"
         >
           <DialogContent>
-            <AppBar position="static">
+            <AppBar position="static" color="transparent">
               <Tabs
                 value={this.state.value}
                 onChange={(event, newValue) =>
@@ -104,24 +83,13 @@ export default class formPerulangan extends Component {
               </Tabs>
             </AppBar>
             <TabPanel value={this.state.value} index={0}>
-              Setiap <input type="text" /> Hari
-              <TextField
-                id="outlined-select-currency"
-                select
-                label="Select"
-                value={this.state.clocks}
-                onChange={(event) =>
-                  this.setState({ clocks: event.target.value })
-                }
-                helperText="Please select your currency"
-                variant="outlined"
-              >
-                {this.state.clocks.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
+              Setiap <input type="text" /> Hari di{" "}
+              <select name="cars" id="cars">
+                <option value="volvo">09:00</option>
+                <option value="saab">10:00</option>
+                <option value="opel">10:00</option>
+                <option value="audi">12:00</option>
+              </select>
             </TabPanel>
             <TabPanel value={this.state.value} index={1}>
               <List
@@ -136,24 +104,13 @@ export default class formPerulangan extends Component {
                 <ListItem>Min</ListItem>
               </List>
               <br />
-              Setiap <input type="text" /> Minggu
-              <TextField
-                id="outlined-select-currency"
-                select
-                label="Select"
-                value={this.state.clocks}
-                onChange={(event) =>
-                  this.setState({ clocks: event.target.value })
-                }
-                helperText="Please select your currency"
-                variant="outlined"
-              >
-                {this.state.clocks.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
+              Setiap <input type="text" /> Minggu di{" "}
+              <select name="cars" id="cars">
+                <option value="volvo">09:00</option>
+                <option value="saab">10:00</option>
+                <option value="opel">10:00</option>
+                <option value="audi">12:00</option>
+              </select>
             </TabPanel>
             <TabPanel value={this.state.value} index={2}>
               <List
@@ -210,24 +167,13 @@ export default class formPerulangan extends Component {
                 <ListItem>Akhir</ListItem>
               </List>
               <br />
-              Setiap <input type="text" /> bulan
-              <TextField
-                id="outlined-select-currency"
-                select
-                label="Select"
-                value={this.state.clocks}
-                onChange={(event) =>
-                  this.setState({ clocks: event.target.value })
-                }
-                helperText="Please select your currency"
-                variant="outlined"
-              >
-                {this.state.clocks.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
+              Setiap <input type="text" /> bulan di{" "}
+              <select name="cars" id="cars">
+                <option value="volvo">09:00</option>
+                <option value="saab">10:00</option>
+                <option value="opel">10:00</option>
+                <option value="audi">12:00</option>
+              </select>
             </TabPanel>
           </DialogContent>
           <DialogActions>

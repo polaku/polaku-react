@@ -4,6 +4,7 @@ import {
   AccordionSummary,
   Button,
   Collapse,
+  Grid,
   IconButton,
   InputAdornment,
   MenuItem,
@@ -23,10 +24,13 @@ import {
   Clear,
   ExpandMore,
   PlayArrow,
+  AccountCircleRounded,
 } from "@material-ui/icons";
 import React, { Component } from "react";
 
 import FormPerulangan from "./formPerulangan";
+
+import QuestionAnswerOutlinedIcon from "@material-ui/icons/QuestionAnswerOutlined";
 
 export default class taskWeek extends Component {
   constructor(props) {
@@ -51,13 +55,14 @@ export default class taskWeek extends Component {
               <TableHead>
                 <TableRow>
                   <TableCell>Tugas</TableCell>
-                  <TableCell align="right">Tenggat</TableCell>
-                  <TableCell align="right">Bobot</TableCell>
-                  <TableCell align="right">Status</TableCell>
-                  <TableCell align="right">Pencapaian</TableCell>
-                  <TableCell align="right">Perusahaan</TableCell>
-                  <TableCell align="right">Waktu</TableCell>
-                  <TableCell align="right">Oleh</TableCell>
+                  <TableCell></TableCell>
+                  <TableCell>Tenggat</TableCell>
+                  <TableCell>Bobot</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Pencapaian</TableCell>
+                  <TableCell>Perusahaan</TableCell>
+                  <TableCell>Waktu</TableCell>
+                  <TableCell>Oleh</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -65,13 +70,20 @@ export default class taskWeek extends Component {
                   <TableCell component="th" scope="row">
                     Judul design 2
                   </TableCell>
-                  <TableCell align="right">Selasa</TableCell>
-                  <TableCell align="right">10%</TableCell>
-                  <TableCell align="right">Menunggu</TableCell>
-                  <TableCell align="right">lorem ipsum</TableCell>
-                  <TableCell align="right">lorem ipsum</TableCell>
-                  <TableCell align="right">3'15''</TableCell>
-                  <TableCell align="right">lorem ipsum</TableCell>
+                  <TableCell>
+                    <QuestionAnswerOutlinedIcon />
+                  </TableCell>
+                  <TableCell>Selasa</TableCell>
+                  <TableCell>10%</TableCell>
+                  <TableCell
+                    style={{ backgroundColor: "green", color: "white" }}
+                  >
+                    Menunggu
+                  </TableCell>
+                  <TableCell>lorem ipsum</TableCell>
+                  <TableCell>lorem ipsum</TableCell>
+                  <TableCell>3'15''</TableCell>
+                  <TableCell>lorem ipsum</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -80,60 +92,57 @@ export default class taskWeek extends Component {
 
         <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
           <AccordionDetails>
-            <TableContainer component={Paper}>
-              <Table aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>
-                      <TextField id="standard-basic" label="Tugas" />
-                    </TableCell>
-
-                    <TableCell align="right">
-                      <TextField
-                        id="standard-select-currency"
-                        select
-                        label={" "}
-                        value=""
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <CalendarToday />
-                            </InputAdornment>
-                          ),
-                        }}
-                        style={{ width: 100 }}
-                      >
-                        <MenuItem>Senin</MenuItem>
-                        <MenuItem>Selasa</MenuItem>
-                        <MenuItem>Rabu</MenuItem>
-                        <MenuItem>Kamis</MenuItem>
-                        <MenuItem>Jumat</MenuItem>
-                        <MenuItem>Sabtu</MenuItem>
-                        <MenuItem>Minggu</MenuItem>
-                        <FormPerulangan />
-                        <MenuItem>Tanggal</MenuItem>
-                      </TextField>
-                    </TableCell>
-                    <TableCell align="right">
-                      <TextField
-                        id="standard-select-currency"
-                        select
-                        label="Oleh"
-                        style={{ width: 100 }}
-                      >
-                        <MenuItem>A</MenuItem>
-                        <MenuItem>A</MenuItem>
-                      </TextField>
-                    </TableCell>
-                    <TableCell align="right">
-                      <IconButton color="success" aria-label="add an alarm">
-                        <PlayArrow />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-              </Table>
-            </TableContainer>
+            <Grid>
+              <TextField
+                style={{ marginRight: 20 }}
+                id="standard-basic"
+                label="Tugas"
+              />
+              <TextField
+                style={{ marginRight: 20 }}
+                id="standard-select-currency"
+                select
+                label={" "}
+                value=""
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <CalendarToday />
+                    </InputAdornment>
+                  ),
+                }}
+              >
+                <MenuItem>Senin</MenuItem>
+                <MenuItem>Selasa</MenuItem>
+                <MenuItem>Rabu</MenuItem>
+                <MenuItem>Kamis</MenuItem>
+                <MenuItem>Jumat</MenuItem>
+                <MenuItem>Sabtu</MenuItem>
+                <MenuItem>Minggu</MenuItem>
+                <FormPerulangan />
+                <MenuItem>Tanggal</MenuItem>
+              </TextField>
+              <TextField
+                style={{ marginRight: 20 }}
+                id="standard-select-currency"
+                select
+                label={" "}
+                value=""
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AccountCircleRounded />
+                    </InputAdornment>
+                  ),
+                }}
+              >
+                <MenuItem>A</MenuItem>
+                <MenuItem>A</MenuItem>
+              </TextField>
+              <IconButton color="success" aria-label="add an alarm">
+                <PlayArrow />
+              </IconButton>
+            </Grid>
           </AccordionDetails>
         </Collapse>
 
