@@ -533,7 +533,7 @@ function Navsidebar(props) {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      {Cookies.get("POLAGROUP") && (
+      {Cookies.get("POLAGROUP") && !props.location.pathname.match('/reset-password') && (
         <>
           <AppBar
             position="fixed"

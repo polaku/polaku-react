@@ -20,9 +20,16 @@ export default class ForgetPassword extends Component {
     try {
       await API.get(`/users/forget-password?email=${this.state.email}`)
       swal('Berhasil', 'Silahkan check email anda', 'success')
+      this.setState({ email: null })
+      this.props.history.push('/login')
     } catch (err) {
-      console.log(err.response)
-      console.log(err)
+      if (err.message) {
+        if (err.response.data.message === "failed") {
+          swal('Error', 'Email tidak ditemukan', 'error')
+        }
+      } else {
+        swal('Error', 'Silahkan coba lagi', 'error')
+      }
     }
   }
 
