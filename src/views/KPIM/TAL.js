@@ -101,6 +101,16 @@ class TAL extends Component {
     return weekNr;
   }
 
+  // CALENDER GOOGLE
+  // getNumberOfWeek = date => {
+  //   //yyyy-mm-dd (first date in week)
+  //   var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  //   var dayNum = d.getUTCDay() || 7;
+  //   d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  //   var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  //   return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+  // }
+
   handleChange = name => async event => {
     let mingguAwalBulan = this.getNumberOfWeek(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
     if (mingguAwalBulan >= 52) mingguAwalBulan = 1

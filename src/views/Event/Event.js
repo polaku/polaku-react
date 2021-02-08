@@ -20,6 +20,7 @@ class Event extends Component {
 
   async componentDidMount() {
     await this.props.fetchDataEvent()
+    console.log(this.props.dataEvents)
   }
 
   openModal = () => {

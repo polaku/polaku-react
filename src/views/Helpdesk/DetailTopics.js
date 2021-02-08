@@ -39,6 +39,7 @@ class DetailTopics extends Component {
 
   fetchData = async () => {
     try {
+      this.setState({ proses: true })
       let token = Cookies.get('POLAGROUP')
       let { data } = await API.get(`/helpdesk/topics/${this.props.match.params.id}`, { headers: { token } })
 
@@ -52,11 +53,11 @@ class DetailTopics extends Component {
         data.data.tbl_sub_topics_helpdesks[0].isSelected = true
       }
       this.setState({
+        proses: false,
         topics: data.data.topics,
         iconPath: data.data.icon ? `${BaseURL}/${data.data.icon}` : null,
         listSubTopics: data.data.tbl_sub_topics_helpdesks,
         optionListSubTopics,
-        proses: false,
         subTopicsSelected: data.data.tbl_sub_topics_helpdesks.length > 0 ? data.data.tbl_sub_topics_helpdesks[0] : null
       })
     } catch (err) {
@@ -69,25 +70,6 @@ class DetailTopics extends Component {
     listSubTopicsSelected[index].sub_topics = event.target.value
     this.setState({ listSubTopics: listSubTopicsSelected });
   };
-
-  createSubTopics = async (e) => {
-    e.preventDefault();
-
-    try {
-      let token = Cookies.get('POLAGROUP')
-      let formData = new FormData()
-
-      formData.append('topics', this.state.newTopics)
-
-      await API.post('/helpdesk/sub-topics', formData, { headers: { token } })
-      await this.props.fetchDataTopicsHelpdesk()
-
-      swal('Tambah topik berhasil', '', 'success')
-    } catch (err) {
-      swal('Tambah topik gagal', '', 'error')
-      // console.log(err)
-    }
-  }
 
   handleUploadFile = async (e) => {
     let file = e.target.files[0]
@@ -146,6 +128,8 @@ class DetailTopics extends Component {
               dataListSubTopics.splice(index, 1)
               this.setState({ isEdit: false, proses: false, listSubTopics: dataListSubTopics })
               swal('Hapus sub topik berhasil', '', 'success')
+              await this.fetchData()
+
             })
             .catch(err => {
               swal('Hapus sub topik gagal', '', 'error')
@@ -202,6 +186,7 @@ class DetailTopics extends Component {
   cancel = () => {
     this.setState({ addNewQuestion: false })
   }
+
   render() {
     return (
       <Grid container style={{ maxWidth: 900, margin: '0px auto', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -237,7 +222,7 @@ class DetailTopics extends Component {
           <List component="nav" aria-label="secondary mailbox folders">
             {
               this.state.listSubTopics.length === 0
-                ? <p style={{ margin: 0, fontSize: 14 }}>Belum ada sub topik</p>
+                ? !this.state.proses && <p style={{ margin: 0, fontSize: 14 }}>Belum ada sub topik</p>
                 : this.state.listSubTopics.map((subTopics, index) =>
                   !subTopics.isEdit
                     ? <ListItem button style={{ padding: 5, borderLeft: '1px solid #c2c2c2', paddingLeft: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: subTopics.isSelected ? '#f0f0f0' : null }} onClick={() => this.changeSubTopicsSelected(index)}>

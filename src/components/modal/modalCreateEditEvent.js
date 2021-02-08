@@ -15,7 +15,7 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 
-import { fetchDataEvent, fetchDataDepartment, fetchDataCompanies, fetchDataUsers } from '../../store/action';
+import { fetchDataEvent, fetchDataDepartment, fetchDataCompanies } from '../../store/action';
 
 import { API } from '../../config/API';
 
@@ -33,7 +33,7 @@ class modalCreateEditRoom extends Component {
       startDate: new Date(),
       endDate: new Date(),
       location: '',
-      users: [],
+      listUser: [],
       inviteOption: 'default',
       user: [],
       department: [],
@@ -42,22 +42,36 @@ class modalCreateEditRoom extends Component {
   }
 
   async componentDidMount() {
-    let temp = []
     await this.props.fetchDataDepartment()
     await this.props.fetchDataCompanies()
 
-    await this.props.fetchDataUsers()
-    this.props.dataUsers.forEach(element => {
-      let newData = {
-        user_id: element.user_id,
-      }
-      if (element.tbl_account_detail) newData.fullname = element.tbl_account_detail.fullname
-      temp.push(newData)
-    });
+    this.fetchOptionUser()
+  }
 
-    this.setState({
-      users: temp,
-    })
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.inviteOption !== prevState.inviteOption) {
+      this.setState({
+        user: [],
+        department: [],
+        company: [],
+      })
+    }
+  }
+
+  fetchOptionUser = async () => {
+    try {
+      let token = Cookies.get('POLAGROUP')
+
+      let getData = await API.get(`/users/for-option`, { headers: { token } })
+
+      let listUser = []
+      await getData.data.data.forEach(user => {
+        listUser.push({ value: user.user_id, label: user.tbl_account_detail.fullname, nik: user.tbl_account_detail.nik })
+      })
+      this.setState({ listUser })
+    } catch (err) {
+      // console.log(err)
+    }
   }
 
   save = async () => {
@@ -82,7 +96,7 @@ class modalCreateEditRoom extends Component {
       this.state.department.forEach(department => { newArray.push(department.departments_id) })
       formData.append("invited", JSON.stringify(newArray))
     } else if (this.state.inviteOption === 'user') {
-      this.state.user.forEach(user => { newArray.push(user.user_id) })
+      this.state.user.forEach(user => { newArray.push(user.value) })
       formData.append("invited", JSON.stringify(newArray))
     }
 
@@ -92,9 +106,9 @@ class modalCreateEditRoom extends Component {
         ip: this.props.ip
       }
     })
-      .then(() => {
-        this.props.fetchDataEvent()
-        this.props.closeModal()
+      .then(async () => {
+        await this.props.fetchDataEvent()
+        await this.props.closeModal()
         this.setState({
           proses: false,
           eventName: '',
@@ -104,6 +118,7 @@ class modalCreateEditRoom extends Component {
           location: '',
           inviteOption: 'default',
         })
+        swal('Tambah acara berhasil', '', 'success')
       })
       .catch(err => {
         swal('please try again')
@@ -118,7 +133,7 @@ class modalCreateEditRoom extends Component {
   };
 
   handleChangeRadio = event => {
-    this.setState({ inviteOption: event.target.value });
+    this.setState({ inviteOption: event.target.value, company: [], department: [], user: [] });
   };
 
   handleChangeSelect = (name, newValue, actionMeta) => {
@@ -249,6 +264,7 @@ class modalCreateEditRoom extends Component {
                   <div style={{ marginLeft: 25 }}>
                     <SeCreatableSelect
                       isMulti
+                      value={this.state.company}
                       components={animatedComponents}
                       options={this.props.dataCompanies}
                       onChange={value => this.handleChangeSelect('company', value)}
@@ -266,6 +282,7 @@ class modalCreateEditRoom extends Component {
                   <div style={{ marginLeft: 25 }}>
                     <SeCreatableSelect
                       isMulti
+                      value={this.state.department}
                       components={animatedComponents}
                       options={this.props.dataDepartments}
                       onChange={value => this.handleChangeSelect('department', value)}
@@ -283,11 +300,11 @@ class modalCreateEditRoom extends Component {
                   <div style={{ marginLeft: 25 }}>
                     <SeCreatableSelect
                       isMulti
+                      value={this.state.user}
                       components={animatedComponents}
-                      options={this.state.users}
+                      options={this.state.listUser}
                       onChange={value => this.handleChangeSelect('user', value)}
-                      getOptionLabel={(option) => option.fullname}
-                      getOptionValue={(option) => option.user_id}
+                      getOptionLabel={(option) => `${option.nik} - ${option.label}`}
                       disabled={this.state.proses}
                       isDisabled={this.state.inviteOption !== 'user'}
                     />
@@ -347,14 +364,12 @@ class modalCreateEditRoom extends Component {
 const mapDispatchToProps = {
   fetchDataEvent,
   fetchDataDepartment,
-  fetchDataCompanies,
-  fetchDataUsers
+  fetchDataCompanies
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataDepartments, dataCompanies, ip }) => {
+const mapStateToProps = ({ loading, dataDepartments, dataCompanies, ip }) => {
   return {
     loading,
-    dataUsers,
     dataCompanies,
     dataDepartments,
     ip

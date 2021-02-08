@@ -63,41 +63,21 @@ class modalCreateEditMuchEmployee extends Component {
     let companySelectedId = this.props.optionCompany[this.props.indexCompany]
 
     let token = Cookies.get('POLAGROUP')
-    let getData
     try {
-      if (companySelectedId.company_id) {
-        if (this.props.keyword) {
-          getData = await API.get(`/users?search=${this.props.keyword}&company=${companySelectedId.company_id}`, {
-            headers: {
-              token,
-              ip: this.props.ip
-            }
-          })
-        } else {
-          getData = await API.get(`/users?company=${companySelectedId.company_id}`, {
-            headers: {
-              token,
-              ip: this.props.ip
-            }
-          })
+      let query = ''
+      if (this.props.keyword) query += `?search=${this.props.keyword}`
+
+      if (companySelectedId.company_id)
+        if (query !== '') query += `&company=${companySelectedId.company_id}`
+        else query += `?company=${companySelectedId.company_id}`
+
+
+      let getData = await API.get(`/users${query}`, {
+        headers: {
+          token,
+          ip: this.props.ip
         }
-      } else {
-        if (this.props.keyword) {
-          getData = await API.get(`/users?search=${this.props.keyword}`, {
-            headers: {
-              token,
-              ip: this.props.ip
-            }
-          })
-        } else {
-          getData = await API.get(`/users`, {
-            headers: {
-              token,
-              ip: this.props.ip
-            }
-          })
-        }
-      }
+      })
 
       this.setState({ rawData: getData.data.data })
       //company
