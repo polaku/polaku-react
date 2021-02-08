@@ -30,8 +30,6 @@ class DashboardKPIM extends Component {
     super(props);
     this._isMounted = false;
     this.state = {
-      openAddRow: true,
-      openPerulangan: false,
       proses: false,
       months: [
         "",
