@@ -4,11 +4,13 @@ import {
   AccordionSummary,
   Button,
   Collapse,
+  FormControl,
   Grid,
   IconButton,
   InputAdornment,
   MenuItem,
   Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
@@ -38,18 +40,19 @@ export default class taskWeek extends Component {
     this.state = {
       expanded: false,
       task: "IT",
-      when: null
+      when: null,
+      time: "",
     };
   }
-  render() {
+  render(props) {
     const tasks = [
       {
         value: "TAL",
-        backgroundColor: "#0EA647",
+        backgroundColor: "#D71149",
       },
       {
         value: "IT",
-        backgroundColor: "#D71149",
+        backgroundColor: "#0EA647",
       },
       {
         value: "Polaku",
@@ -64,6 +67,19 @@ export default class taskWeek extends Component {
         backgroundColor: "#3100FF",
       },
     ];
+
+    const times = [
+      { value: "Senin" },
+      { value: "Selasa" },
+      { value: "Rabu" },
+      { value: "Kamis" },
+      { value: "Jumat" },
+      { value: "Sabtu" },
+      { value: "Minggu" },
+      { value: "Perulangan" },
+      { value: "Tanggal" },
+    ];
+
     return (
       <Accordion>
         <AccordionSummary
@@ -118,34 +134,45 @@ export default class taskWeek extends Component {
         <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
           <AccordionDetails>
             <Grid>
-              <TextField
-                style={{
-                  marginRight: 20, backgroundColor:
-                    this.state.task === "TAL"
-                      ? "#0EA647"
-                      : null
-                }}
-                id="standard-select-currency"
-                select
-                value={this.state.task}
-                onChange={(event) =>
-                  this.setState({ task: event.target.value })
-                }
-              >
-                {tasks.map((option) => (
-                  <MenuItem
-                    key={option.value}
-                    value={option.value}
-                    style={{
-                      backgroundColor: option.backgroundColor,
-                      margin: 5,
-                      color: "white",
-                    }}
-                  >
-                    {option.value}
-                  </MenuItem>
-                ))}
-              </TextField>
+              <FormControl>
+                <Select
+                  style={{
+                    marginRight: 20,
+                    padding: "0 5px",
+                    backgroundColor:
+                      this.state.task === "TAL"
+                        ? "#D71149"
+                        : this.state.task === "IT"
+                        ? "#0EA647"
+                        : this.state.task === "Polaku"
+                        ? "#FF0000"
+                        : this.state.task === "Desain"
+                        ? "#FFC300"
+                        : this.state.task === "Karyawan"
+                        ? "#3100FF"
+                        : "#D71149",
+                    color: "white",
+                  }}
+                  value={this.state.task}
+                  onChange={(event) =>
+                    this.setState({ task: event.target.value })
+                  }
+                >
+                  {tasks.map((option) => (
+                    <MenuItem
+                      key={option.value}
+                      value={option.value}
+                      style={{
+                        backgroundColor: option.backgroundColor,
+                        margin: 5,
+                        color: "white",
+                      }}
+                    >
+                      {option.value}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               <TextField
                 style={{ marginRight: 20, width: "18rem" }}
                 id="standard-basic"
@@ -155,7 +182,6 @@ export default class taskWeek extends Component {
                 style={{ marginRight: 20 }}
                 id="standard-select-currency"
                 select
-                value=""
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -164,15 +190,11 @@ export default class taskWeek extends Component {
                   ),
                 }}
               >
-                <MenuItem>Senin</MenuItem>
-                <MenuItem>Selasa</MenuItem>
-                <MenuItem>Rabu</MenuItem>
-                <MenuItem>Kamis</MenuItem>
-                <MenuItem>Jumat</MenuItem>
-                <MenuItem>Sabtu</MenuItem>
-                <MenuItem>Minggu</MenuItem>
-                <MenuItem>Perulangan</MenuItem>
-                <MenuItem>Tanggal</MenuItem>
+                {times.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
               </TextField>
               <TextField
                 style={{ marginRight: 20 }}
@@ -187,7 +209,6 @@ export default class taskWeek extends Component {
                   ),
                 }}
               >
-                <MenuItem>A</MenuItem>
                 <MenuItem>A</MenuItem>
               </TextField>
               <IconButton color="success" aria-label="add an alarm">
@@ -210,9 +231,7 @@ export default class taskWeek extends Component {
           </Button>
         </AccordionDetails>
 
-        {
-          this.state.when === 'Perulangan' && <FormPerulangan />
-        }
+        {this.state.when === "Perulangan" && <FormPerulangan />}
       </Accordion>
     );
   }
