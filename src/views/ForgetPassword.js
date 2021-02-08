@@ -9,7 +9,6 @@ import swal from 'sweetalert';
 
 import { API } from '../config/API';
 
-
 export default class ForgetPassword extends Component {
   state = {
     email: null
