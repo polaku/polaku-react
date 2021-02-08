@@ -37,9 +37,32 @@ export default class taskWeek extends Component {
     super(props);
     this.state = {
       expanded: false,
+      task: "IT",
     };
   }
   render() {
+    const tasks = [
+      {
+        value: "TAL",
+        backgroundColor: "#0EA647",
+      },
+      {
+        value: "IT",
+        backgroundColor: "#D71149",
+      },
+      {
+        value: "Polaku",
+        backgroundColor: "#FF0000",
+      },
+      {
+        value: "Desain",
+        backgroundColor: "#FFC300",
+      },
+      {
+        value: "Karyawan",
+        backgroundColor: "#3100FF",
+      },
+    ];
     return (
       <Accordion>
         <AccordionSummary
@@ -55,7 +78,7 @@ export default class taskWeek extends Component {
               <TableHead>
                 <TableRow>
                   <TableCell>Tugas</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell>&nbsp;</TableCell>
                   <TableCell>Tenggat</TableCell>
                   <TableCell>Bobot</TableCell>
                   <TableCell>Status</TableCell>
@@ -67,7 +90,8 @@ export default class taskWeek extends Component {
               </TableHead>
               <TableBody>
                 <TableRow>
-                  <TableCell component="th" scope="row">
+                  <TableCell>
+                    <span style={{ backgroundColor: "red" }}>&nbsp;</span>&nbsp;
                     Judul design 2
                   </TableCell>
                   <TableCell>
@@ -95,14 +119,36 @@ export default class taskWeek extends Component {
             <Grid>
               <TextField
                 style={{ marginRight: 20 }}
+                id="standard-select-currency"
+                select
+                value={this.state.task}
+                onChange={(event) =>
+                  this.setState({ task: event.target.value })
+                }
+              >
+                {tasks.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                    style={{
+                      backgroundColor: option.backgroundColor,
+                      margin: 5,
+                      color: "white",
+                    }}
+                  >
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                style={{ marginRight: 20, width: "18rem" }}
                 id="standard-basic"
-                label="Tugas"
+                placeholder="Tugas apa yang ingin Anda kerjakan?"
               />
               <TextField
                 style={{ marginRight: 20 }}
                 id="standard-select-currency"
                 select
-                label={" "}
                 value=""
                 InputProps={{
                   startAdornment: (
@@ -126,7 +172,6 @@ export default class taskWeek extends Component {
                 style={{ marginRight: 20 }}
                 id="standard-select-currency"
                 select
-                label={" "}
                 value=""
                 InputProps={{
                   startAdornment: (
