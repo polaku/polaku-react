@@ -189,6 +189,10 @@ export default class taskWeek extends Component {
                     </InputAdornment>
                   ),
                 }}
+                value={this.state.time}
+                onChange={(event) =>
+                  this.setState({ time: event.target.value })
+                }
               >
                 {times.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -231,7 +235,7 @@ export default class taskWeek extends Component {
           </Button>
         </AccordionDetails>
 
-        {this.state.when === "Perulangan" && <FormPerulangan />}
+        {this.state.time === "Perulangan" && <FormPerulangan />}
       </Accordion>
     );
   }

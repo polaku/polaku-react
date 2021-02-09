@@ -7,7 +7,6 @@ import {
   DialogContent,
   List,
   ListItem,
-  MenuItem,
   Tab,
   Tabs,
   Typography,
@@ -62,7 +61,6 @@ export default class formPerulangan extends Component {
 
     return (
       <>
-        <MenuItem onClick={this.state.open}>Perulangan</MenuItem>
         <Dialog
           open={this.state.open}
           onClose={() => this.setState({ open: !this.state.open })}
