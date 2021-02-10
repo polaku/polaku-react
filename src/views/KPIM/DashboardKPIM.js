@@ -14,7 +14,6 @@ import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
 import CardIndicator from "../../components/kpim/cardIndicatorKPIM";
-import Tugasku from "../../components/kpim/tugasku";
 
 import {
   fetchDataAllKPIM,
@@ -24,6 +23,9 @@ import {
 import { API } from "../../config/API";
 
 import swal from "sweetalert";
+import NavTugasku from "../../components/navigation/navTugasku";
+import TableTaskWeek from "../../components/kpim/tableTaskWeek";
+import TableBacklog from "../../components/kpim/tableBacklog";
 
 class DashboardKPIM extends Component {
   constructor(props) {
@@ -769,7 +771,12 @@ class DashboardKPIM extends Component {
           </Grid>
         </Grid>
 
-        <Tugasku />
+        {/* TUGASKU */}
+        <Grid>
+          <NavTugasku />
+          <TableTaskWeek />
+          <TableBacklog />
+        </Grid>
       </Grid>
     );
   }

@@ -1,5 +1,6 @@
 import {
   AppBar,
+  Avatar,
   Button,
   Grid,
   IconButton,
@@ -13,19 +14,17 @@ import PropTypes from "prop-types";
 
 import React, { Component } from "react";
 
-import TaskWeek from "./taskWeek";
-import Backlog from "./backlog";
-
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
+import PersonOutlinedIcon from "@material-ui/icons/PersonOutlined";
 
 const theme = () => ({
   direction: "rtl",
 });
 
-class tugasku extends Component {
+class navTugasku extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -35,7 +34,7 @@ class tugasku extends Component {
   }
   render(props) {
     return (
-      <Grid>
+      <>
         <AppBar position="static" style={{ backgroundColor: "transparent" }}>
           <Toolbar>
             <IconButton edge="start" aria-label="menu">
@@ -93,7 +92,7 @@ class tugasku extends Component {
         <Grid style={{ margin: "10px 0" }}>
           <Button
             style={{ backgroundColor: "transparent" }}
-            startIcon={<AccountCircleRoundedIcon />}
+            startIcon={<PersonOutlinedIcon />}
           >
             Orang
           </Button>
@@ -104,17 +103,13 @@ class tugasku extends Component {
             Filter
           </Button>
         </Grid>
-
-        <TaskWeek />
-
-        <Backlog />
-      </Grid>
+      </>
     );
   }
 }
 
-tugasku.propTypes = {
+navTugasku.propTypes = {
   theme: PropTypes.object.isRequired,
 };
 
-export default withTheme(tugasku);
+export default withTheme(navTugasku);

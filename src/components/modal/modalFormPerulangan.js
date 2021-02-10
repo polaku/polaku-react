@@ -16,7 +16,7 @@ import React, { Component } from "react";
 
 import PropTypes from "prop-types";
 
-export default class formPerulangan extends Component {
+export default class modalFormPerulangan extends Component {
   constructor(props) {
     super(props);
     this.state = {
