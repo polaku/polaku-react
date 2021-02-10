@@ -3,16 +3,13 @@ import {
   AccordionDetails,
   AccordionSummary,
   Avatar,
-  Backdrop,
   Button,
   Collapse,
-  Fade,
   FormControl,
   Grid,
   IconButton,
   InputAdornment,
   MenuItem,
-  Modal,
   Paper,
   Select,
   Table,
@@ -21,7 +18,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextareaAutosize,
   TextField,
   Typography,
 } from "@material-ui/core";
@@ -37,11 +33,11 @@ import React, { Component } from "react";
 
 import FormPerulangan from "../modal/modalFormPerulangan";
 import ChatTugasku from "../chat/chatTugasku";
+import Ulasan from "../modal/modalUlasan";
 
 import QuestionAnswerOutlinedIcon from "@material-ui/icons/QuestionAnswerOutlined";
 import PersonOutlinedIcon from "@material-ui/icons/PersonOutlined";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
-import ModeCommentOutlinedIcon from "@material-ui/icons/ModeCommentOutlined";
 
 export default class tableTaskWeek extends Component {
   constructor(props) {
@@ -123,11 +119,6 @@ export default class tableTaskWeek extends Component {
                   </TableCell>
                   <TableCell>
                     <ChatTugasku />
-                    {/* <IconButton aria-label="testimoni">
-                      <QuestionAnswerOutlinedIcon
-                        style={{ color: "#d71149" }}
-                      />
-                    </IconButton> */}
                   </TableCell>
                   <TableCell>Selasa</TableCell>
                   <TableCell>10%</TableCell>
@@ -193,67 +184,7 @@ export default class tableTaskWeek extends Component {
                   <TableCell>&nbsp;</TableCell>
                   <TableCell>&nbsp;</TableCell>
                   <TableCell>
-                    <Avatar style={{ backgroundColor: "transparent" }}>
-                      <IconButton
-                        aria-label="testimoni"
-                        onClick={() =>
-                          this.setState({ open: !this.state.open })
-                        }
-                      >
-                        <ModeCommentOutlinedIcon />
-                      </IconButton>
-                      <Modal
-                        open={this.state.open}
-                        onClose={() => this.setState({ open: false })}
-                        closeAfterTransition
-                        BackdropComponent={Backdrop}
-                        BackdropProps={{
-                          timeout: 500,
-                        }}
-                        aria-labelledby="transition-modal-title"
-                        aria-describedby="transition-modal-description"
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Fade in={this.state.open}>
-                          <div
-                            style={{
-                              backgroundColor: "white",
-                              boxShadow:
-                                "0px 3px 5px -1px rgb(0 0 0 / 20%), 0px 5px 8px 0px rgb(0 0 0 / 14%), 0px 1px 14px 0px rgb(0 0 0 / 12%)",
-                              padding: "16px 32px 24px",
-                            }}
-                          >
-                            <h2 id="transition-modal-title">Ulasan</h2>
-                            <p id="transition-modal-description">
-                              Terima kasih atas penilaiannya
-                            </p>
-                            <TextareaAutosize
-                              aria-label="minimum height"
-                              rowsMin={5}
-                              style={{ width: "20rem" }}
-                              placeholder="Berikan ulasan untuk kinerjanya"
-                            />
-                            <Grid>
-                              <Button variant="outlined">Batal</Button>
-                              <Button
-                                variant="contained"
-                                style={{
-                                  backgroundColor: "grey",
-                                  color: "white",
-                                  marginLeft: "5px",
-                                }}
-                              >
-                                Kirim
-                              </Button>
-                            </Grid>
-                          </div>
-                        </Fade>
-                      </Modal>
-                    </Avatar>
+                    <Ulasan />
                   </TableCell>
                 </TableRow>
               </TableBody>
