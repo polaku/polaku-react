@@ -204,7 +204,8 @@ class cardSettingUserKPIM extends Component {
           score: kpimCurrentMonth.score,
           kpimScore: kpim.kpimScore,
           user_id: kpim.user_id,
-          hasConfirm: kpimCurrentMonth.hasConfirm
+          hasConfirm: kpimCurrentMonth.hasConfirm,
+          targetInverse: kpim.is_inverse
         }
         tempKPIM.push(newScoreKPIM)
 
