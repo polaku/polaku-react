@@ -1,10 +1,8 @@
 import {
   AppBar,
-  Avatar,
   Button,
   Grid,
   IconButton,
-  MobileStepper,
   Toolbar,
   Typography,
   withTheme,
@@ -15,22 +13,29 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 
 import MenuIcon from "@material-ui/icons/Menu";
-import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
 import PersonOutlinedIcon from "@material-ui/icons/PersonOutlined";
-
-const theme = () => ({
-  direction: "rtl",
-});
 
 class navTugasku extends Component {
   constructor(props) {
     super(props);
     this.state = {
       expanded: false,
-      activeStep: 0,
+      count: 1,
     };
+  }
+
+  increment() {
+    this.setState({
+      count: this.state.count + 1,
+    });
+  }
+
+  decrement() {
+    if (this.state.count > 1) {
+      this.setState((prevState) => ({ count: prevState.count - 1 }));
+    }
   }
   render(props) {
     return (
@@ -50,7 +55,16 @@ class navTugasku extends Component {
             <Typography variant="h6" style={{ color: "black", flexGrow: 1 }}>
               Departemen
             </Typography>
-            <MobileStepper
+            <Button onClick={this.decrement.bind(this)}>
+              <KeyboardArrowLeft />
+            </Button>
+            <Typography style={{ color: "black" }}>
+              Minggu {this.state.count}: Jan 01 - Jan 07
+            </Typography>
+            <Button onClick={this.increment.bind(this)}>
+              <KeyboardArrowRight />
+            </Button>
+            {/* <MobileStepper
               variant="text"
               steps={6}
               position="static"
@@ -85,7 +99,7 @@ class navTugasku extends Component {
                   )}
                 </Button>
               }
-            />
+            /> */}
           </Toolbar>
         </AppBar>
 
