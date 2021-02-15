@@ -14,7 +14,7 @@ import {
 import { ExpandMore } from "@material-ui/icons";
 import React, { Component } from "react";
 
-export default class backlog extends Component {
+export default class tableBacklog extends Component {
   constructor(props) {
     super(props);
     this.state = {

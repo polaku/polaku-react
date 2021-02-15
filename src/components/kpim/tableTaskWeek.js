@@ -2,6 +2,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Avatar,
   Button,
   Collapse,
   FormControl,
@@ -30,11 +31,15 @@ import {
 } from "@material-ui/icons";
 import React, { Component } from "react";
 
-import FormPerulangan from "./formPerulangan";
+import FormPerulangan from "../modal/modalFormPerulangan";
+import ChatTugasku from "../chat/chatTugasku";
+import Ulasan from "../modal/modalUlasan";
 
 import QuestionAnswerOutlinedIcon from "@material-ui/icons/QuestionAnswerOutlined";
+import PersonOutlinedIcon from "@material-ui/icons/PersonOutlined";
+import StarBorderIcon from "@material-ui/icons/StarBorder";
 
-export default class taskWeek extends Component {
+export default class tableTaskWeek extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -42,6 +47,7 @@ export default class taskWeek extends Component {
       task: "IT",
       when: null,
       time: "",
+      open: false,
     };
   }
   render(props) {
@@ -112,19 +118,74 @@ export default class taskWeek extends Component {
                     Judul design 2
                   </TableCell>
                   <TableCell>
-                    <QuestionAnswerOutlinedIcon />
+                    <ChatTugasku />
                   </TableCell>
                   <TableCell>Selasa</TableCell>
                   <TableCell>10%</TableCell>
                   <TableCell
-                    style={{ backgroundColor: "green", color: "white" }}
+                    style={{ backgroundColor: "#BBBBBB", color: "white" }}
                   >
                     Menunggu
                   </TableCell>
                   <TableCell>lorem ipsum</TableCell>
                   <TableCell>lorem ipsum</TableCell>
+                  <TableCell>&nbsp;</TableCell>
+                  <TableCell>
+                    <Avatar>HI</Avatar>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <span style={{ backgroundColor: "red" }}>&nbsp;</span>&nbsp;
+                    Judul design 2
+                  </TableCell>
+                  <TableCell>
+                    <IconButton aria-label="testimoni">
+                      <QuestionAnswerOutlinedIcon />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell>Selasa</TableCell>
+                  <TableCell>&nbsp;</TableCell>
+                  <TableCell
+                    style={{ backgroundColor: "green", color: "white" }}
+                  >
+                    Selesai
+                  </TableCell>
+                  <TableCell>&nbsp;</TableCell>
+                  <TableCell>&nbsp;</TableCell>
                   <TableCell>3'15''</TableCell>
-                  <TableCell>lorem ipsum</TableCell>
+                  <TableCell>
+                    <Avatar>
+                      <PersonOutlinedIcon />
+                    </Avatar>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <span style={{ backgroundColor: "#FFC300" }}>&nbsp;</span>
+                    &nbsp; Judul design 2
+                  </TableCell>
+                  <TableCell>
+                    <IconButton aria-label="testimoni">
+                      <QuestionAnswerOutlinedIcon />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell>Selasa</TableCell>
+                  <TableCell>&nbsp;</TableCell>
+                  <TableCell
+                    style={{ backgroundColor: "green", color: "white" }}
+                  >
+                    Selesai
+                  </TableCell>
+                  <TableCell>
+                    <StarBorderIcon /> <StarBorderIcon /> <StarBorderIcon />
+                    <StarBorderIcon /> <StarBorderIcon />
+                  </TableCell>
+                  <TableCell>&nbsp;</TableCell>
+                  <TableCell>&nbsp;</TableCell>
+                  <TableCell>
+                    <Ulasan />
+                  </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -137,7 +198,7 @@ export default class taskWeek extends Component {
               <FormControl>
                 <Select
                   style={{
-                    marginRight: 20,
+                    marginRight: 40,
                     padding: "0 5px",
                     backgroundColor:
                       this.state.task === "TAL"
@@ -174,12 +235,12 @@ export default class taskWeek extends Component {
                 </Select>
               </FormControl>
               <TextField
-                style={{ marginRight: 20, width: "18rem" }}
+                style={{ marginRight: 40, width: "18rem" }}
                 id="standard-basic"
                 placeholder="Tugas apa yang ingin Anda kerjakan?"
               />
               <TextField
-                style={{ marginRight: 20 }}
+                style={{ marginRight: 40 }}
                 id="standard-select-currency"
                 select
                 InputProps={{
@@ -201,7 +262,7 @@ export default class taskWeek extends Component {
                 ))}
               </TextField>
               <TextField
-                style={{ marginRight: 20 }}
+                style={{ marginRight: 40 }}
                 id="standard-select-currency"
                 select
                 value=""
