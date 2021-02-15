@@ -64,42 +64,6 @@ class navTugasku extends Component {
             <Button onClick={this.increment.bind(this)}>
               <KeyboardArrowRight />
             </Button>
-            {/* <MobileStepper
-              variant="text"
-              steps={6}
-              position="static"
-              activeStep={this.state.activeStep}
-              nextButton={
-                <Button
-                  size="small"
-                  onClick={(prevActiveStep) =>
-                    this.setState({ activeStep: prevActiveStep + 1 })
-                  }
-                  disabled={this.state.activeStep === 5}
-                >
-                  {theme.direction === "rtl" ? (
-                    <KeyboardArrowLeft />
-                  ) : (
-                    <KeyboardArrowRight />
-                  )}
-                </Button>
-              }
-              backButton={
-                <Button
-                  size="small"
-                  onClick={(prevActiveStep) =>
-                    this.setState({ activeStep: prevActiveStep - 1 })
-                  }
-                  disabled={this.state.activeStep === 0}
-                >
-                  {theme.direction === "rtl" ? (
-                    <KeyboardArrowRight />
-                  ) : (
-                    <KeyboardArrowLeft />
-                  )}
-                </Button>
-              }
-            /> */}
           </Toolbar>
         </AppBar>
 
