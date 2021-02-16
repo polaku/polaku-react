@@ -8,7 +8,6 @@ import {
   FormControl,
   Grid,
   IconButton,
-  InputAdornment,
   MenuItem,
   Paper,
   Select,
@@ -28,6 +27,7 @@ import {
   ExpandMore,
   PlayArrow,
   AccountCircleRounded,
+  Business,
 } from "@material-ui/icons";
 import React, { Component } from "react";
 
@@ -38,6 +38,7 @@ import Ulasan from "../modal/modalUlasan";
 import QuestionAnswerOutlinedIcon from "@material-ui/icons/QuestionAnswerOutlined";
 import PersonOutlinedIcon from "@material-ui/icons/PersonOutlined";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
+import { Autocomplete } from "@material-ui/lab";
 
 export default class tableTaskWeek extends Component {
   constructor(props) {
@@ -47,10 +48,12 @@ export default class tableTaskWeek extends Component {
       task: "IT",
       when: null,
       time: "",
+      user: "",
+      company: "",
       open: false,
     };
   }
-  render(props) {
+  render() {
     const tasks = [
       {
         value: "TAL",
@@ -86,6 +89,18 @@ export default class tableTaskWeek extends Component {
       { value: "Tanggal" },
     ];
 
+    const users = [
+      { value: "User 1" },
+      { value: "User 2" },
+      { value: "User 3" },
+    ];
+
+    const companies = [
+      { value: "Company 1" },
+      { value: "Company 2" },
+      { value: "Company 3" },
+    ];
+
     return (
       <Accordion>
         <AccordionSummary
@@ -97,7 +112,7 @@ export default class tableTaskWeek extends Component {
         </AccordionSummary>
         <AccordionDetails>
           <TableContainer component={Paper}>
-            <Table aria-label="simple table">
+            <Table aria-label="simple table" size="small">
               <TableHead>
                 <TableRow>
                   <TableCell>Tugas</TableCell>
@@ -194,91 +209,125 @@ export default class tableTaskWeek extends Component {
 
         <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
           <AccordionDetails>
-            <Grid>
-              <FormControl>
-                <Select
-                  style={{
-                    marginRight: 40,
-                    padding: "0 5px",
-                    backgroundColor:
-                      this.state.task === "TAL"
-                        ? "#D71149"
-                        : this.state.task === "IT"
-                        ? "#0EA647"
-                        : this.state.task === "Polaku"
-                        ? "#FF0000"
-                        : this.state.task === "Desain"
-                        ? "#FFC300"
-                        : this.state.task === "Karyawan"
-                        ? "#3100FF"
-                        : "#D71149",
-                    color: "white",
-                  }}
-                  value={this.state.task}
+            <Grid container spacing={1}>
+              <Grid item>
+                <FormControl>
+                  <Select
+                    style={{
+                      marginRight: 40,
+                      padding: "0 5px",
+                      backgroundColor:
+                        this.state.task === "TAL"
+                          ? "#D71149"
+                          : this.state.task === "IT"
+                          ? "#0EA647"
+                          : this.state.task === "Polaku"
+                          ? "#FF0000"
+                          : this.state.task === "Desain"
+                          ? "#FFC300"
+                          : this.state.task === "Karyawan"
+                          ? "#3100FF"
+                          : "#D71149",
+                      color: "white",
+                    }}
+                    value={this.state.task}
+                    onChange={(event) =>
+                      this.setState({ task: event.target.value })
+                    }
+                  >
+                    {tasks.map((option) => (
+                      <MenuItem
+                        key={option.value}
+                        value={option.value}
+                        style={{
+                          backgroundColor: option.backgroundColor,
+                          margin: 5,
+                          color: "white",
+                        }}
+                      >
+                        {option.value}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
+            <Grid container spacing={1}>
+              <Grid item>
+                <TextField
+                  id="standard-basic"
+                  placeholder="Tugas apa yang ingin Anda kerjakan?"
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={1}>
+              <Grid item>
+                <CalendarToday />
+              </Grid>
+              <Grid item>
+                <TextField
+                  id="standard-select-currency"
+                  select
+                  value={this.state.time}
                   onChange={(event) =>
-                    this.setState({ task: event.target.value })
+                    this.setState({ time: event.target.value })
                   }
                 >
-                  {tasks.map((option) => (
-                    <MenuItem
-                      key={option.value}
-                      value={option.value}
-                      style={{
-                        backgroundColor: option.backgroundColor,
-                        margin: 5,
-                        color: "white",
-                      }}
-                    >
+                  {times.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
                       {option.value}
                     </MenuItem>
                   ))}
-                </Select>
-              </FormControl>
-              <TextField
-                style={{ marginRight: 40, width: "18rem" }}
-                id="standard-basic"
-                placeholder="Tugas apa yang ingin Anda kerjakan?"
-              />
-              <TextField
-                style={{ marginRight: 40 }}
-                id="standard-select-currency"
-                select
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <CalendarToday />
-                    </InputAdornment>
-                  ),
-                }}
-                value={this.state.time}
-                onChange={(event) =>
-                  this.setState({ time: event.target.value })
-                }
-              >
-                {times.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.value}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <TextField
-                style={{ marginRight: 40 }}
-                id="standard-select-currency"
-                select
-                value=""
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <AccountCircleRounded />
-                    </InputAdornment>
-                  ),
-                }}
-              >
-                <MenuItem>A</MenuItem>
-              </TextField>
-              <IconButton color="success" aria-label="add an alarm">
-                <PlayArrow />
-              </IconButton>
+                </TextField>
+              </Grid>
+            </Grid>
+            <Grid container spacing={1}>
+              <Grid item>
+                <PersonOutlinedIcon />
+              </Grid>
+              <Grid item>
+                <Autocomplete
+                  id="combo-box-demo"
+                  options={users}
+                  getOptionLabel={(option) => option.value}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={1}>
+              <Grid item>
+                <Business />
+              </Grid>
+              <Grid item>
+                <TextField
+                  id="standard-select-currency"
+                  select
+                  value={this.state.company}
+                  onChange={(event) =>
+                    this.setState({ company: event.target.value })
+                  }
+                >
+                  {companies.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.value}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+            </Grid>
+            <Grid container spacing={1}>
+              <Grid item>
+                <Button
+                  size="small"
+                  style={{
+                    backgroundColor: "transparent",
+                    maxWidth: "30px",
+                    minWidth: "30px",
+                  }}
+                >
+                  <PlayArrow />
+                </Button>
+              </Grid>
             </Grid>
           </AccordionDetails>
         </Collapse>
