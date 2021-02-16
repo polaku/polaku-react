@@ -153,25 +153,28 @@ class PanelQuestion extends Component {
           </Grid>
         </Grid>
 
-        <Grid style={{ display: 'flex', flexDirection: 'column', marginBottom: 30 }}>
-          <b style={{ fontSize: 12, marginBottom: 5 }}>Butuh bantuan lebih lanjut</b>
-          <Button variant="contained" color="secondary" size="small" style={{ textTransform: 'none', width: 70, fontSize: 11 }} onClick={() =>
-            this.state.questionSelected.help
-              ? !isNaN(Number(this.state.questionSelected.help[1]))
-                ? window.open(
-                  `https://api.whatsapp.com/send?phone=${this.state.questionSelected.help[0] === '0'
-                    ? `62${this.state.questionSelected.help.slice(1)}`
-                    : this.state.questionSelected.help.slice(0, 2) === '62'
-                      ? this.state.questionSelected.help
-                      : `62${this.state.questionSelected.help}`
-                  }`
-                )
+        {
+          this.state.questionSelected.help && <Grid style={{ display: 'flex', flexDirection: 'column', marginBottom: 30 }}>
+            <b style={{ fontSize: 12, marginBottom: 5 }}>Butuh bantuan lebih lanjut</b>
+            <Button variant="contained" color="secondary" size="small" style={{ textTransform: 'none', width: 70, fontSize: 11 }} onClick={() =>
+              this.state.questionSelected.help
+                ? !isNaN(Number(this.state.questionSelected.help[1]))
+                  ? window.open(
+                    `https://api.whatsapp.com/send?phone=${this.state.questionSelected.help[0] === '0'
+                      ? `62${this.state.questionSelected.help.slice(1)}`
+                      : this.state.questionSelected.help.slice(0, 2) === '62'
+                        ? this.state.questionSelected.help
+                        : `62${this.state.questionSelected.help}`
+                    }`
+                  )
+                  : null
                 : null
-              : null
-          }>
-            Hubungi
-          </Button>
-        </Grid>
+            }>
+              Hubungi
+            </Button>
+          </Grid>
+        }
+
       </Grid>
     )
 
