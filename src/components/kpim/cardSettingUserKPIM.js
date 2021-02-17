@@ -92,9 +92,11 @@ class cardSettingUserKPIM extends Component {
         isVisible: false,
       })
     }
-
+console.log(this.props.month)
     // if ((new Date().getDate() < 27 && (new Date().getMonth() + 1) === Number(this.props.month)) ||
-    //   ((new Date().getMonth() + 1) > Number(this.props.month) && this.props.lastWeekInMonth !== this.props.week)) {
+    //   ((new Date().getMonth() + 1) > Number(this.props.month) && this.props.lastWeekInMonth !== this.props.week)
+    //  new Date(2021, 2, -2) <= new Date(2021, 2, 8) && new Date(2021, 2, 8) <= new Date(2021, 2, 7)
+    // ) {
     if ((new Date().getDate() <= 20 && ((new Date().getMonth() + 1) === Number(this.props.month)) && thereDate20)) {
       this.setState({
         statusValid: false
@@ -571,11 +573,12 @@ class cardSettingUserKPIM extends Component {
                 <StarsIcon style={{ color: 'white' }} />
               </Button>
             </Grid>
-            {
-              !this.state.statusSudahKirimNilai && this.state.statusValid && <Button style={{ margin: '0px 0px 0px 30px' }} variant="contained" color="secondary" onClick={this.kirimNilai} disabled={this.state.proses}>
+            {/* {
+              !this.state.statusSudahKirimNilai && this.state.statusValid &&  */}
+              <Button style={{ margin: '0px 0px 0px 30px' }} variant="contained" color="secondary" onClick={this.kirimNilai} disabled={this.state.proses}>
                 Kirim Nilai
             </Button>
-            }
+            {/* } */}
           </Grid>
 
           <Grid style={{ marginLeft: 20 }}>
