@@ -338,22 +338,22 @@ class cardSettingIndicator extends Component {
     event.preventDefault()
     this.setState({ proses: true })
     let statusOverWeight = false
-    let listDate = await this.fetchOptionDateInWeek()
-    let thereDate20 = listDate.includes(20)
+    // let listDate = await this.fetchOptionDateInWeek()
+    // let thereDate20 = listDate.includes(20)
 
-    if (!thereDate20) {
-      if (!this.props.data.weight || Number(this.props.data.weight) === 0) {
-        if ((Number(this.props.bobotTAL) + Number(this.state.weight)) > 100) {
-          statusOverWeight = true
-        }
-      } else {
-        let newWeight = Number(this.props.bobotTAL) - Number(this.props.data.weight) + Number(this.state.weight)
+    // if (!thereDate20) {
+    if (!this.props.data.weight || Number(this.props.data.weight) === 0) {
+      if ((Number(this.props.bobotTAL) + Number(this.state.weight)) > 100) {
+        statusOverWeight = true
+      }
+    } else {
+      let newWeight = Number(this.props.bobotTAL) - Number(this.props.data.weight) + Number(this.state.weight)
 
-        if (newWeight > 100) {
-          statusOverWeight = true
-        }
+      if (newWeight > 100) {
+        statusOverWeight = true
       }
     }
+    // }
 
     if (!statusOverWeight) {
       let newData = {
@@ -635,7 +635,7 @@ class cardSettingIndicator extends Component {
                         </>
                       }
                       {
-                        !this.props.data.hasConfirm &&
+                        (!this.props.data.hasConfirm && new Date() <= new Date(new Date().getFullYear(), this.props.data.month, 7)) &&
                         <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick} disabled={this.state.proses}>
                           <MoreHorizIcon />
                         </Button>
@@ -774,7 +774,7 @@ class cardSettingIndicator extends Component {
                         }
                       </Grid>
                       {
-                        !this.props.data.hasConfirm &&
+                       (!this.props.data.hasConfirm && new Date() <= new Date(new Date().getFullYear(), this.props.data.month, 7)) &&
                         <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick}>
                           <MoreHorizIcon />
                         </Button>
