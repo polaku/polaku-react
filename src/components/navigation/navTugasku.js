@@ -17,21 +17,6 @@ import FilterListIcon from "@material-ui/icons/FilterList";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
 import PersonOutlinedIcon from "@material-ui/icons/PersonOutlined";
 
-let months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
-
 class navTugasku extends Component {
   constructor(props) {
     super(props);
