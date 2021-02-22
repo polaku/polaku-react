@@ -9,6 +9,8 @@ import {
 import { CalendarToday, PlayArrow, Business } from "@material-ui/icons";
 import React, { Component } from "react";
 
+import FormPerulangan from "../../modal/modalFormPerulangan";
+
 export default class Index extends Component {
   constructor(props) {
     super(props);
@@ -31,7 +33,7 @@ export default class Index extends Component {
       { value: "Jumat" },
       { value: "Sabtu" },
       { value: "Minggu" },
-      { value: "Pengulangan" },
+      { value: "Perulangan" },
       { value: "Tanggal" },
     ];
 
@@ -86,13 +88,14 @@ export default class Index extends Component {
               marginRight: 40,
             }}
           >
-            <FormControl style={{ width: "10rem", border: "1px solid red" }}>
-              <Input
-                id="my-input"
-                aria-describedby="my-helper-text"
-                placeholder="Bobot"
-              />
-            </FormControl>
+            <input
+              type="text"
+              style={{
+                border: "1px solid red",
+                height: 30,
+                width: 70,
+              }}
+            />
           </Grid>
           <Grid item>
             <Business />
@@ -126,12 +129,15 @@ export default class Index extends Component {
                 backgroundColor: "transparent",
                 maxWidth: "30px",
                 minWidth: "30px",
+                color: "#06BF69",
               }}
             >
               <PlayArrow />
             </Button>
           </Grid>
         </Grid>
+
+        {this.state.time === "Perulangan" && <FormPerulangan />}
       </form>
     );
   }
