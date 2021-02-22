@@ -1104,11 +1104,19 @@ function Navsidebar(props) {
                         <ListItemText primary="Tugasku" />
                       </ListItem>
                     </Link>
-                    {/* <Link to="/kpim/tal" onClick={event => handleListItemClick(event, 4.1)} style={{ textDecoration: 'none', color: 'black' }}>
-                      <ListItem button className={classes.nested} selected={selectedIndex === 4.1}>
-                        <ListItemText primary="TAL" />
+                    <Link
+                      to="/kpim/tal"
+                      onClick={(event) => handleListItemClick(event, 4.1)}
+                      style={{ textDecoration: "none", color: "black" }}
+                    >
+                      <ListItem
+                        button
+                        className={classes.nested}
+                        selected={selectedIndex === 4.1}
+                      >
+                        <ListItemText primary="Timku" />
                       </ListItem>
-                    </Link> */}
+                    </Link>
                     {(isAtasan || props.isAdminsuper) && (
                       <>
                         {(isAtasan ||

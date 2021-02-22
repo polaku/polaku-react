@@ -20,42 +20,45 @@ import PersonOutlinedIcon from "@material-ui/icons/PersonOutlined";
 class navTugasku extends Component {
   constructor(props) {
     super(props);
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-    var today = new Date(),
-      date = today.getDay(),
-      month = months[today.getMonth()];
+
     this.state = {
       expanded: false,
       count: 1,
-      date: date,
-      month: month,
+      weekNr: this.getNumberOfWeek(new Date()),
     };
+  }
+
+  getNumberOfWeek(date) {
+    //yyyy-mm-dd
+    let theDay = date;
+    var target = new Date(theDay);
+    var dayNr = (new Date(theDay).getDay() + 6) % 7;
+
+    target.setDate(target.getDate() - dayNr + 3);
+
+    var reference = new Date(target.getFullYear(), 0, 4);
+    var dayDiff = (target - reference) / 86400000;
+    var weekNr = 1 + Math.ceil(dayDiff / 7);
+
+    return weekNr;
+  }
+
+  componentDidMount() {
+    this.getNumberOfWeek();
   }
 
   increment() {
     this.setState({
-      count: this.state.count + 1,
+      weekNr: this.state.weekNr + 1,
     });
   }
 
   decrement() {
-    if (this.state.count > 1) {
-      this.setState((prevState) => ({ count: prevState.count - 1 }));
+    if (this.state.weekNr > 1) {
+      this.setState((prevState) => ({ weekNr: prevState.weekNr - 1 }));
     }
   }
+
   render(props) {
     return (
       <>
@@ -78,8 +81,7 @@ class navTugasku extends Component {
               <KeyboardArrowLeft />
             </Button>
             <Typography style={{ color: "black" }}>
-              Minggu {this.state.count}: {this.state.month} {this.state.date} -{" "}
-              {this.state.month} {this.state.date + 7}
+              Minggu {this.state.weekNr}
             </Typography>
             <Button onClick={this.increment.bind(this)}>
               <KeyboardArrowRight />
