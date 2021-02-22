@@ -128,13 +128,15 @@ export default function Index() {
             marginRight: 40,
           }}
         >
-          <FormControl style={{ width: "10rem", border: "1px solid red" }}>
-            <Input
-              id="my-input"
-              aria-describedby="my-helper-text"
-              placeholder="Bobot"
-            />
-          </FormControl>
+          <input
+            type="text"
+            style={{
+              border: "1px solid red",
+              height: 30,
+              width: 70,
+            }}
+            placeholder="Bobot"
+          />
         </Grid>
         <Grid item>
           <TrackChanges />
