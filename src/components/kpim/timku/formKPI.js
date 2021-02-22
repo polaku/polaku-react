@@ -134,6 +134,7 @@ export default function Index() {
               border: "1px solid red",
               height: 30,
               width: 70,
+              backgroundColor: "transparent",
             }}
             placeholder="Bobot"
           />
