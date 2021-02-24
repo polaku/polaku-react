@@ -85,7 +85,7 @@ class pencapaianKPIM extends Component {
           this.props.indicator && (
             this.props.indicator.toLowerCase() === "tal" || this.props.indicator.toLowerCase() === "kpim team"
               ? <Grid style={{ display: 'flex', justifyContent: 'space-between' }} >
-                <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)} {this.props.year.slice(2, 4)}</p>
+                <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)}</p>
                 <p style={{ margin: 0, fontSize: 13 }}>{isNaN(this.props.data.score_kpim_monthly) ? 0 : Math.ceil(this.props.data.score_kpim_monthly)} %</p>
               </Grid>
 
@@ -99,7 +99,7 @@ class pencapaianKPIM extends Component {
                 : this.props.data.pencapaian_monthly
                   ? this.state.editIndicator
                     ? <Grid style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} >
-                      <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)} {this.props.year.slice(2, 4)}</p>
+                      <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)}</p>
                       <Grid style={{ display: 'flex', alignItems: 'center' }}>
                         <form onSubmit={this.addCapaian(this.props.data.kpim_score_id)}>
                           <TextField
@@ -115,7 +115,7 @@ class pencapaianKPIM extends Component {
                       </Grid>
                     </Grid>
                     : <Grid style={{ display: 'flex', justifyContent: 'space-between', cursor: this.props.index === 1 && 'pointer' }} onClick={this.editIndicator}>
-                      <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)} {this.props.year.slice(2, 4)}</p>
+                      <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)}</p>
                       {
                         this.props.data.unit === "Rp"
                           ? <p style={{ margin: 0, fontSize: 13 }}>{this.props.data.unit} {formatRupiah(this.props.data.pencapaian_monthly)}</p>
@@ -123,7 +123,7 @@ class pencapaianKPIM extends Component {
                       }
                     </Grid>
                   : <Grid style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} >
-                    <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)} {this.props.year.slice(2, 4)}</p>
+                    <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)}</p>
                     <form onSubmit={this.addCapaian(this.props.data.kpim_score_id)}>
                       <TextField
                         id="pencapaian"

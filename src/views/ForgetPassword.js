@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
-import { Grid, Typography, TextField, Button, CircularProgress, InputAdornment, Link } from '@material-ui/core'
-import Cookies from 'js-cookie';
+import { Grid, Typography, TextField, Button, CircularProgress, InputAdornment } from '@material-ui/core';
 
 import MailIcon from '@material-ui/icons/Mail';
-import LockIcon from '@material-ui/icons/Lock';
 
 import swal from 'sweetalert';
 
@@ -22,9 +20,16 @@ export default class ForgetPassword extends Component {
     try {
       await API.get(`/users/forget-password?email=${this.state.email}`)
       swal('Berhasil', 'Silahkan check email anda', 'success')
+      this.setState({ email: null })
+      this.props.history.push('/login')
     } catch (err) {
-      console.log(err.response)
-      console.log(err)
+      if (err.message) {
+        if (err.response.data.message === "failed") {
+          swal('Error', 'Email tidak ditemukan', 'error')
+        }
+      } else {
+        swal('Error', 'Silahkan coba lagi', 'error')
+      }
     }
   }
 
@@ -32,7 +37,8 @@ export default class ForgetPassword extends Component {
     return (
       <Grid style={{ display: 'flex', justifyContent: 'center', margin: '5% 0 0 auto' }}>
         <Grid style={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
-          <Typography style={{ margin: 10, fontSize: 15, fontWeight: 'bold' }}>LUPA PASSWORD</Typography>
+          <img src={process.env.PUBLIC_URL + '/logo.png'} alt="Logo" />
+          <Typography style={{ margin: 10, fontSize: 15, fontWeight: 'bold', marginBottom: 0 }}>LUPA PASSWORD</Typography>
           <TextField
             id="username"
             label="Email"

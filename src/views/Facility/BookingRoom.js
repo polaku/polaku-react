@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Cookies from 'js-cookie';
 
 import {
   Grid, Button, FormControl, Select, MenuItem
@@ -15,6 +16,8 @@ import CardRoomInBookingRoom from '../../components/facility/cardRoomInBookingRo
 
 import { fetchDataBookingRooms, fetchDataMyBookingRooms, fetchDataRooms } from '../../store/action';
 
+import { API } from '../../config/API';
+
 class BookingRoom extends Component {
   constructor(props) {
     super(props)
@@ -27,8 +30,25 @@ class BookingRoom extends Component {
     }
   }
 
-  componentDidMount() {
-    this.fetchData()
+  async componentDidMount() {
+    console.log("MASUK SINI")
+    let token = Cookies.get('POLAGROUP')
+    // let check = await API.get("/users/check-token", {
+    //   headers: {
+    //     token,
+    //     // ip: ip || null
+    //   },
+    // })
+    // console.log(check)
+    await this.fetchData()
+    // let getData = await API.get('/bookingRoom', {
+    //   headers: {
+    //     token,
+    //     // ip: await publicIp.v4()
+    //   }
+    // })
+    // console.log(getData.data.data)
+
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -48,6 +68,7 @@ class BookingRoom extends Component {
   };
 
   async fetchData() {
+    console.log("KEPANGGIL")
     this.setState({
       data: [],
       dataForDisplay: []
@@ -78,6 +99,7 @@ class BookingRoom extends Component {
 
   refresh = () => {
     this.fetchData()
+    console.log("MASUK REFRESH")
   }
 
   search = async () => {

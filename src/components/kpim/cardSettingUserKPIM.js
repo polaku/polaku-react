@@ -58,7 +58,7 @@ class cardSettingUserKPIM extends Component {
     adaWeightTALYangKosong: false,
 
     statusSudahKirimNilai: false,
-    statusValid: true,
+    statusValid: false,
     openModalSendGrade: false,
 
     editBobotTAL: false
@@ -66,13 +66,13 @@ class cardSettingUserKPIM extends Component {
 
   async componentDidMount() {
     await this.fetchData()
-
+    let tahun = new Date().getFullYear()
     let listDate = await this.fetchOptionDateInWeek()
-    let thereDate20 = listDate.includes(20)
+    // let thereDate20 = listDate.includes(20)
     let day = []
 
     listDate.forEach(el => {
-      let date = new Date(new Date().getFullYear(), this.props.month - 1, el).getDay()
+      let date = new Date(tahun, this.props.month - 1, el).getDay()
       let listDay = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
 
       day.push(listDay[date])
@@ -92,12 +92,12 @@ class cardSettingUserKPIM extends Component {
         isVisible: false,
       })
     }
+    // // UNTUK TANGGAL PENILAIAN 21 - 20
+    // if ((new Date().getDate() <= 20 && ((new Date().getMonth() + 1) === Number(this.props.month)) && thereDate20)) {
 
-    // if ((new Date().getDate() < 27 && (new Date().getMonth() + 1) === Number(this.props.month)) ||
-    //   ((new Date().getMonth() + 1) > Number(this.props.month) && this.props.lastWeekInMonth !== this.props.week)) {
-    if ((new Date().getDate() <= 20 && ((new Date().getMonth() + 1) === Number(this.props.month)) && thereDate20)) {
+    if (new Date(tahun, this.props.month, -2) <= new Date() && new Date() <= new Date(tahun, this.props.month, 7)) {
       this.setState({
-        statusValid: false
+        statusValid: true
       })
     }
   }
@@ -121,8 +121,9 @@ class cardSettingUserKPIM extends Component {
 
     if (prevProps.data !== this.props.data) {
       await this.fetchData()
-      let listDate = await this.fetchOptionDateInWeek()
-      let thereDate20 = listDate.includes(20)
+      let tahun = new Date().getFullYear()
+      // let listDate = await this.fetchOptionDateInWeek()
+      // let thereDate20 = listDate.includes(20)
 
       if ((this.state.KPIM.length === 0 && this.state.TAL.length === 0) || this.state.bobotKPIM < 100 || this.state.bobotTAL < 100 || this.state.adaBobotKPIMYangKosong || this.state.adaWeightTALYangKosong) {
         this.props.setNeedAction(this.props.data.user_id)
@@ -136,16 +137,15 @@ class cardSettingUserKPIM extends Component {
         })
       }
 
-      // if ((new Date().getDate() < 27 && (new Date().getMonth() + 1) === Number(this.props.month)) ||
-      //   ((new Date().getMonth() + 1) > Number(this.props.month) && this.props.lastWeekInMonth !== this.props.week)) {
-      if (((new Date().getDate() <= 20 || !thereDate20) && ((new Date().getMonth() + 1) === Number(this.props.month))) || ((new Date().getMonth() + 1) > Number(this.props.month) && !thereDate20) || (new Date().getMonth() + 1) < Number(this.props.month)) {
+      // if (((new Date().getDate() <= 20 || !thereDate20) && ((new Date().getMonth() + 1) === Number(this.props.month))) || ((new Date().getMonth() + 1) > Number(this.props.month) && !thereDate20) || (new Date().getMonth() + 1) < Number(this.props.month)) {
+      if (new Date(tahun, this.props.month, -2) <= new Date() && new Date() <= new Date(tahun, this.props.month, 7)) {
         this.setState({
-          statusValid: false
+          statusValid: true
         })
       }
       else {
         this.setState({
-          statusValid: true
+          statusValid: false
         })
       }
     }
@@ -204,7 +204,8 @@ class cardSettingUserKPIM extends Component {
           score: kpimCurrentMonth.score,
           kpimScore: kpim.kpimScore,
           user_id: kpim.user_id,
-          hasConfirm: kpimCurrentMonth.hasConfirm
+          hasConfirm: kpimCurrentMonth.hasConfirm,
+          targetInverse: kpim.is_inverse
         }
         tempKPIM.push(newScoreKPIM)
 
@@ -378,10 +379,11 @@ class cardSettingUserKPIM extends Component {
     this.setState({ proses: true })
 
     let newWeight = Number(this.state.bobotTAL) + Number(this.state.newBobotTAL)
-    let listDate = await this.fetchOptionDateInWeek()
-    let thereDate20 = listDate.includes(20)
+    // let listDate = await this.fetchOptionDateInWeek()
+    // let thereDate20 = listDate.includes(20)
 
-    if (newWeight > 100 && !thereDate20) {
+    // if (newWeight > 100 && !thereDate20) {
+    if (newWeight > 100) {
       statusOverBobot = true
     }
 
@@ -591,7 +593,7 @@ class cardSettingUserKPIM extends Component {
 
                     ) &&  */}
                   {
-                    this.state.KPIM.length < 6 && <Button onClick={this.handleCreateKPIM}
+                    this.state.KPIM.length < 5 && !this.state.statusSudahKirimNilai && <Button onClick={this.handleCreateKPIM}
                       style={{ borderRadius: 15, minWidth: 24, backgroundColor: '#e0e0e0', padding: 0 }} disabled={this.state.proses}>
                       <AddIcon />
                     </Button>
@@ -703,10 +705,12 @@ class cardSettingUserKPIM extends Component {
                       {/* (this.state.TAL.length === 0 || (!this.state.statusCreateTAL && this.props.weekCurrent <= this.props.week)) && <Button onClick={this.handleCreateTAL} */}
 
                       {/* (!this.state.statusCreateTAL && this.props.weekCurrent <= this.props.week && !this.state.statusSudahKirimNilai) &&  */}
-                      <Button onClick={this.handleCreateTAL}
-                        style={{ borderRadius: 15, minWidth: 24, backgroundColor: '#e0e0e0', padding: 0 }} disabled={this.state.proses}>
-                        <AddIcon />
-                      </Button>
+                      {
+                        !this.state.statusSudahKirimNilai && <Button onClick={this.handleCreateTAL}
+                          style={{ borderRadius: 15, minWidth: 24, backgroundColor: '#e0e0e0', padding: 0 }} disabled={this.state.proses}>
+                          <AddIcon />
+                        </Button>
+                      }
                       {/* } */}
                       <p style={{ margin: '0px 0px 0px 20px' }}>Total bobot TAL saat ini : {this.state.bobotTAL}</p>
                     </Grid>
@@ -715,11 +719,13 @@ class cardSettingUserKPIM extends Component {
                       {
                         ((this.state.TALMonth && this.state.TALMonth.bobot > 0) && !this.state.editBobotTAL) && <Grid style={{ display: 'flex', margin: '0px 20px 0px 0px', alignItems: 'center' }}>
                           <p style={{ margin: '0px 5px 0px 0px' }}>bobot: {this.state.TALMonth.bobot}</p>
-                          <Tooltip title="Edit" aria-label="edit">
-                            <Button style={{ borderRadius: 3, minWidth: 24, padding: 3 }} onClick={this.handleEditIndicatorTAL} disabled={this.state.proses}>
-                              <EditIcon />
-                            </Button>
-                          </Tooltip>
+                          {
+                            !this.state.statusSudahKirimNilai && <Tooltip title="Edit" aria-label="edit">
+                              <Button style={{ borderRadius: 3, minWidth: 24, padding: 3 }} onClick={this.handleEditIndicatorTAL} disabled={this.state.proses}>
+                                <EditIcon />
+                              </Button>
+                            </Tooltip>
+                          }
                         </Grid>
                       }
                       {
