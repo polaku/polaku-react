@@ -25,9 +25,9 @@ class PanelQuestion extends Component {
     unlike: false
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     if (this.props.data) {
-      this.fetchData()
+      await this.fetchData()
     }
   }
 
@@ -35,10 +35,27 @@ class PanelQuestion extends Component {
     if (this.props.data !== prevProps.data) {
       if (this.props.data) {
         await this.fetchData()
+
+        if (this.props.match.params.idQuestion) {
+          let questionSelected = this.props.data.tbl_question_helpdesks.find(el => el.id = this.props.match.params.idQuestion)
+          this.setState({ showDetailQuestion: !this.state.showDetailQuestion, questionSelected: questionSelected })
+        }else{
+        this.setState({ showDetailQuestion: false, questionSelected: null })
+
+        }
       } else {
         this.setState({ listQuestion: [] })
       }
-      this.setState({ showDetailQuestion: false, questionSelected: null })
+
+      if (!this.props.match.params.idQuestion) {
+        this.setState({ showDetailQuestion: false, questionSelected: null })
+      }
+    }
+
+    if (prevProps.match.params.idQuestion !== this.props.match.params.idQuestion) {
+      if(!this.props.match.params.idQuestion){
+        this.setState({ showDetailQuestion: false, questionSelected: null })
+      }
     }
 
     if (this.state.questionSelected !== prevState.questionSelected) {
@@ -103,6 +120,12 @@ class PanelQuestion extends Component {
   }
 
   handleShowDetailQuestion = (data) => {
+    if (data.id) {
+      this.props.history.push(`/helpdesk/detail/${this.props.match.params.id}/sub-topics/${this.props.match.params.idSub}/question/${data.id}`)
+    } else {
+      this.props.history.push(`/helpdesk/detail/${this.props.match.params.id}/sub-topics/${this.props.match.params.idSub}`)
+    }
+
     this.setState({ showDetailQuestion: !this.state.showDetailQuestion, questionSelected: data })
   }
 

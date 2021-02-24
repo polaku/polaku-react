@@ -16,7 +16,7 @@ export default class cardRoomInBookingRoom extends Component {
   }
 
   refresh = () => {
-    this.props.refresh()
+    
   }
 
   openModal = () => {
@@ -38,7 +38,7 @@ export default class cardRoomInBookingRoom extends Component {
         <CardContent style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
           {
             this.props.data && this.props.data.tbl_booking_rooms.length > 0 && this.props.data.tbl_booking_rooms.map((el, index) => (
-              <CardBookingRoom data={el} key={index} refresh={this.refresh} />
+              <CardBookingRoom data={el} key={index} refresh={this.props.refresh} />
             ))
           }
           <Button size="small" variant="contained" color="primary" onClick={this.openModal}>

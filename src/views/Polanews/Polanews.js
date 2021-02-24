@@ -51,7 +51,7 @@ class Polanews extends Component {
         <Grid container style={{ display: 'flex' }} spacing={2}>
           {
             this.props.dataPolanews && this.props.dataPolanews.map(berita =>
-              <Grid item xs={12} sm={6} md={4} lg={2} key={berita.polanews_id} style={{ width: '100%' }}>
+              <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={berita.polanews_id} style={{ width: '100%' }}>
                 <CardPolanews data={berita} refresh={this.refresh} />
               </Grid>
             )

@@ -17,7 +17,9 @@ class Helpdesk extends Component {
     newIcon: null,
     iconPath: null,
     dataTopicsHelpdesk: [],
-    listQuestion: []
+    listQuestion: [],
+    keyword: '',
+    listSearching: []
   }
 
   async componentDidMount() {
@@ -29,10 +31,12 @@ class Helpdesk extends Component {
       console.log(this.props.dataTopicsHelpdesk)
 
       let listQuestion = []
-
+      console.log(this.props.dataTopicsHelpdesk)
       await this.props.dataTopicsHelpdesk.forEach(async (topics) => {
-        await topics.tbl_sub_topics_helpdesks.forEach(async (subTopics) => {
-          await subTopics.tbl_question_helpdesks.forEach(question => {
+        topics.tbl_sub_topics_helpdesks.length > 0 && await topics.tbl_sub_topics_helpdesks.forEach(async (subTopics) => {
+          subTopics.tbl_question_helpdesks.length > 0 && await subTopics.tbl_question_helpdesks.forEach(question => {
+            question.topics_id = topics.id
+            question.sub_topics = subTopics.sub_topics
             listQuestion.push({ ...question, ...topics })
           })
         })
@@ -45,7 +49,10 @@ class Helpdesk extends Component {
     if (this.state.keyword !== prevState.keyword) {
       // console.log(this.props.dataTopicsHelpdesk)
       let data = await this.props.dataTopicsHelpdesk.filter(el => el.topics.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())))
-      this.setState({ dataTopicsHelpdesk: data })
+console.log(this.state.listQuestion)
+      let searchQuestion = await this.state.listQuestion.filter(el => el.question && el.question.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())))
+      console.log(searchQuestion)
+      this.setState({ dataTopicsHelpdesk: data, listSearching: searchQuestion })
     }
   }
 
@@ -118,17 +125,29 @@ class Helpdesk extends Component {
 
           <Grid container spacing={2}>
             {
-              this.state.dataTopicsHelpdesk.length > 0
-                ? this.state.dataTopicsHelpdesk.map((topics, index) =>
-                  <CardTopics key={'topics' + index} data={topics} />
+              this.state.keyword
+                ? this.state.listSearching.map((question, index) =>
+                  <Grid item xs={12}>
+                    <Paper style={{ padding: 15, cursor: 'pointer' }}
+                      onClick={() => this.props.history.push(`/helpdesk/detail/${question.topics_id}/sub-topics/${question.sub_topics_id}/question/${question.id}`)}
+                    >
+                      <h3 style={{ margin: 0 }}>Pertanyaan:</h3>
+                      <p style={{ marginTop: 3, marginBottom: 5 }}>{question.question}</p>
+                      <p style={{ margin: 0, fontSize: 12, fontWeight: 'bold' }}>Sub topik : {question.sub_topics} ( {question.topics} )</p>
+                    </Paper>
+                  </Grid>
                 )
-                : <Grid style={{ width: '100%', textAlign: 'center' }}>
-                  <p style={{ letterSpacing: 2 }}>BELUM ADA TOPIK</p>
-                </Grid>
+                : this.state.dataTopicsHelpdesk.length > 0
+                  ? this.state.dataTopicsHelpdesk.map((topics, index) =>
+                    <CardTopics key={'topics' + index} data={topics} />
+                  )
+                  : <Grid style={{ width: '100%', textAlign: 'center' }}>
+                    <p style={{ letterSpacing: 2 }}>BELUM ADA TOPIK</p>
+                  </Grid>
             }
 
             {
-              (this.props.isAdminHelpdesk || this.props.isAdminsuper) && <Grid item xs={12} sm={6} md={4} lg={3}  >
+              (this.props.isAdminHelpdesk || this.props.isAdminsuper) && !this.state.keyword && <Grid item xs={12} sm={6} md={4} lg={3}  >
                 <Paper style={{ display: 'flex', padding: 10, borderRadius: 10, alignItems: 'center', minHeight: 55 }}>
                   <Button
                     component="label"

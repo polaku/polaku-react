@@ -94,6 +94,8 @@ function Routes() {
         <AuthenticatedRoute path="/kpim" component={KPIM} />
         <AuthenticatedRoute path="/profil" component={Profil} />
         <AuthenticatedRoute path="/polanews" component={Polanews} />
+        <AuthenticatedRoute path="/helpdesk/detail/:id/sub-topics/:idSub/question/:idQuestion" component={DetailTopics} />
+        <AuthenticatedRoute path="/helpdesk/detail/:id/sub-topics/:idSub" component={DetailTopics} />
         <AuthenticatedRoute path="/helpdesk/detail/:id" component={DetailTopics} />
         <AuthenticatedRoute path="/helpdesk" component={Helpdesk} />
         <Redirect from="/" to="/login" />
