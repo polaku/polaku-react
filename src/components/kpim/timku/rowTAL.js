@@ -16,6 +16,7 @@ import {
   LinearProgress,
   Menu,
   MenuItem,
+  TextField,
 } from "@material-ui/core";
 
 import FormDesainOrderForm from "./formDesainOrderForm";
@@ -100,7 +101,14 @@ export default function Index() {
                       Menunggu
                     </TableCell>
                     <TableCell align="center">
-                      <Grid style={{ border: "1px solid red" }}>&nbsp;</Grid>
+                      <input
+                        type="text"
+                        style={{
+                          border: "1px solid red",
+                          height: 30,
+                          width: 70,
+                        }}
+                      />
                     </TableCell>
                     <TableCell align="center">lorem ipsum</TableCell>
                     <TableCell align="center">PIP</TableCell>
@@ -145,13 +153,9 @@ export default function Index() {
                 ) : null}
               </Grid>
               <br />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => setShow(!show)}
-              >
+              <div onClick={() => setShow(!show)} style={{ cursor: "pointer" }}>
                 {show ? "Batal" : "+ TAL Baru"}
-              </Button>
+              </div>
             </Box>
           </Collapse>
         </TableCell>

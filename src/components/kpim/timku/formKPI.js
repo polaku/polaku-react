@@ -44,22 +44,34 @@ export default function Index() {
   const [selected2, setSelected2] = useState(0);
 
   const nextMonth1 = () => {
+    if (selected1 === months.length - 1) return;
+
     setSelected1((prev) => {
-      if (prev === months.length - 1) {
-        return 0;
-      } else {
-        return prev + 1;
-      }
+      return prev + 1;
+    });
+  };
+
+  const prevMonth1 = () => {
+    if (selected1 === 0) return;
+
+    setSelected1((prev) => {
+      return prev - 1;
     });
   };
 
   const nextMonth2 = () => {
+    if (selected2 === months.length - 1) return;
+
     setSelected2((prev) => {
-      if (prev === months.length - 1) {
-        return 0;
-      } else {
-        return prev + 1;
-      }
+      return prev + 1;
+    });
+  };
+
+  const prevMonth2 = () => {
+    if (selected2 === 0) return;
+
+    setSelected2((prev) => {
+      return prev - 1;
     });
   };
 
@@ -92,7 +104,7 @@ export default function Index() {
           item
           style={{ marginRight: 40, backgroundColor: "grey", paddingTop: 5 }}
         >
-          <Button style={{ padding: 0, minWidth: 37 }}>
+          <Button onClick={prevMonth1} style={{ padding: 0, minWidth: 37 }}>
             <KeyboardArrowLeft />
           </Button>
           <TextField
@@ -107,7 +119,7 @@ export default function Index() {
             <KeyboardArrowRight />
           </Button>
           -
-          <Button style={{ padding: 0, minWidth: 37 }}>
+          <Button onClick={prevMonth2} style={{ padding: 0, minWidth: 37 }}>
             <KeyboardArrowLeft />
           </Button>
           <TextField
@@ -128,13 +140,16 @@ export default function Index() {
             marginRight: 40,
           }}
         >
-          <FormControl style={{ width: "10rem", border: "1px solid red" }}>
-            <Input
-              id="my-input"
-              aria-describedby="my-helper-text"
-              placeholder="Bobot"
-            />
-          </FormControl>
+          <input
+            type="text"
+            style={{
+              border: "1px solid red",
+              height: 30,
+              width: 70,
+              backgroundColor: "transparent",
+            }}
+            placeholder="Bobot"
+          />
         </Grid>
         <Grid item>
           <TrackChanges />

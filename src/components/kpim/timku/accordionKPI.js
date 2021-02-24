@@ -61,13 +61,9 @@ export default function Index() {
       ) : null}
 
       <AccordionDetails>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setShow(!show)}
-        >
+        <div onClick={() => setShow(!show)} style={{ cursor: "pointer" }}>
           {show ? "Batal" : "+ KPI Baru"}
-        </Button>
+        </div>
       </AccordionDetails>
     </Accordion>
   );
