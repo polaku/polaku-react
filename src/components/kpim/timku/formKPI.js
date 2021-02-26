@@ -1,18 +1,12 @@
-import {
-  Button,
-  FormControl,
-  Grid,
-  Input,
-  MenuItem,
-  TextField,
-} from "@material-ui/core";
+import { Button, FormControl, Grid, Input, TextField } from "@material-ui/core";
 import {
   KeyboardArrowLeft,
   KeyboardArrowRight,
   PlayArrow,
-  TrackChanges,
 } from "@material-ui/icons";
 import React, { useState } from "react";
+
+import ModalKPI from "../../modal/modalKPI";
 
 const months = [
   "Jan",
@@ -28,17 +22,6 @@ const months = [
   "Dec",
 ];
 
-const targets = [
-  {
-    value: "1",
-  },
-  {
-    value: "2",
-  },
-  {
-    value: "3",
-  },
-];
 export default function Index() {
   const [selected1, setSelected1] = useState(0);
   const [selected2, setSelected2] = useState(0);
@@ -75,11 +58,6 @@ export default function Index() {
     });
   };
 
-  const [target, setTarget] = useState("");
-
-  const handleChange = (event) => {
-    setTarget(event.target.value);
-  };
   return (
     <form noValidate autoComplete="off">
       <Grid container>
@@ -151,29 +129,13 @@ export default function Index() {
             placeholder="Bobot"
           />
         </Grid>
-        <Grid item>
-          <TrackChanges />
-          &nbsp;
-        </Grid>
         <Grid
           item
           style={{
             marginRight: 40,
           }}
         >
-          <TextField
-            id="standard-select-currency"
-            select
-            value={target}
-            onChange={handleChange}
-            style={{ color: "#06BF69" }}
-          >
-            {targets.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.value}
-              </MenuItem>
-            ))}
-          </TextField>
+          <ModalKPI />
         </Grid>
         <Grid item>
           <Button
