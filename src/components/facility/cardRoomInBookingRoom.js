@@ -15,16 +15,12 @@ export default class cardRoomInBookingRoom extends Component {
     }
   }
 
-  refresh = () => {
-    
-  }
-
   openModal = () => {
     this.setState({ openModal: true })
   }
 
-  closeModal = () => {
-    this.props.refresh()
+  closeModal = async () => {
+    await this.props.refresh()
     this.setState({ openModal: false })
   }
 
@@ -45,7 +41,7 @@ export default class cardRoomInBookingRoom extends Component {
             Pesan Ruangan
             </Button>
           {
-            this.state.openModal && <ModalCreateEditBookingRoom status={this.state.openModal} closeModal={this.closeModal} refresh={this.refresh} room_id={this.props.data.room_id} statusCreate={true} />
+            this.state.openModal && <ModalCreateEditBookingRoom status={this.state.openModal} closeModal={this.closeModal} refresh={this.props.refresh} room_id={this.props.data.room_id} statusCreate={true} />
           }
         </CardContent>
       </Card>

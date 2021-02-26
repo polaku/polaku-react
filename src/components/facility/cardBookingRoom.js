@@ -11,6 +11,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 import ModalCreateEditBookingRoom from '../modal/modalCreateEditBookingRoom';
 import { API } from '../../config/API';
+import { setBookingRoom } from '../../store/action';
 
 import swal from 'sweetalert';
 
@@ -62,21 +63,12 @@ class cardBookingRoom extends Component {
                 ip: this.props.ip
               }
             })
-            .then(async () => {
+            .then(async ({ data }) => {
               swal("Pesanan berhasil dihapus !", "", "success")
-              await this.props.refresh()
+              // await this.props.refresh()
 
+              await this.props.setBookingRoom(data.data)
 
-              // let getData = await API.get('/bookingRoom', {
-              //   headers: {
-              //     token,
-              //     // ip: await publicIp.v4()
-              //   }
-              // })
-              // console.log(getData.data.data)
-
-
-              
               this.setState({
                 proses: false
               })
@@ -157,6 +149,10 @@ class cardBookingRoom extends Component {
   }
 }
 
+const mapDispatchToProps = {
+  setBookingRoom
+}
+
 const mapStateToProps = ({ loading, userId, error, isAdminsuper, ip, isAdminRoom }) => {
   return {
     loading,
@@ -167,4 +163,5 @@ const mapStateToProps = ({ loading, userId, error, isAdminsuper, ip, isAdminRoom
     isAdminRoom
   }
 }
-export default connect(mapStateToProps)(cardBookingRoom)
+
+export default connect(mapStateToProps, mapDispatchToProps)(cardBookingRoom)

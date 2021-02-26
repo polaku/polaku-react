@@ -294,7 +294,7 @@ class panelAddress extends Component {
                 )
               }
               <TablePagination
-                rowsPerPageOptions={1}
+                rowsPerPageOptions={[10, 25, 50]}
                 component="div"
                 count={this.props.totalDataAddress}
                 rowsPerPage={this.state.rowsPerPage}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 
 import {
   Grid, Button, FormControl, Select, MenuItem
@@ -16,7 +16,7 @@ import CardRoomInBookingRoom from '../../components/facility/cardRoomInBookingRo
 
 import { fetchDataBookingRooms, fetchDataMyBookingRooms, fetchDataRooms } from '../../store/action';
 
-import { API } from '../../config/API';
+// import { API } from '../../config/API';
 
 class BookingRoom extends Component {
   constructor(props) {
@@ -31,24 +31,10 @@ class BookingRoom extends Component {
   }
 
   async componentDidMount() {
-    console.log("MASUK SINI")
-    let token = Cookies.get('POLAGROUP')
-    // let check = await API.get("/users/check-token", {
-    //   headers: {
-    //     token,
-    //     // ip: ip || null
-    //   },
-    // })
-    // console.log(check)
+    await this.props.fetchDataBookingRooms()
+    await this.props.fetchDataRooms()
+    console.log(this.props.dataBookingRooms)
     await this.fetchData()
-    // let getData = await API.get('/bookingRoom', {
-    //   headers: {
-    //     token,
-    //     // ip: await publicIp.v4()
-    //   }
-    // })
-    // console.log(getData.data.data)
-
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -61,21 +47,22 @@ class BookingRoom extends Component {
         this.setState({ dataForDisplay: data })
       }
     }
+
+    if (this.props.dataBookingRooms !== prevProps.dataBookingRooms) {
+      this.fetchData()
+    }
   }
 
   handleChange = name => event => {
     this.setState({ [name]: event.target.value });
   };
 
-  async fetchData() {
-    console.log("KEPANGGIL")
+  fetchData = async () => {
+    // console.log("KEPANGGIL fetchData")
     this.setState({
       data: [],
       dataForDisplay: []
     })
-
-    await this.props.fetchDataBookingRooms()
-    await this.props.fetchDataRooms()
 
     let datas = this.props.dataRooms
 
@@ -97,9 +84,11 @@ class BookingRoom extends Component {
     })
   }
 
-  refresh = () => {
-    this.fetchData()
-    console.log("MASUK REFRESH")
+  refresh = async () => {
+    // console.log("MASUK REFRESH in BookingRoom")
+    await this.props.fetchDataBookingRooms()
+    await this.props.fetchDataRooms()
+    await this.fetchData()
   }
 
   search = async () => {
@@ -119,8 +108,10 @@ class BookingRoom extends Component {
     })
   }
 
-  allBookingRoom = () => {
-    this.fetchData()
+  allBookingRoom = async () => {
+    await this.props.fetchDataBookingRooms()
+    await this.props.fetchDataRooms()
+    await this.fetchData()
   }
 
   allMyBookingRoom = async () => {

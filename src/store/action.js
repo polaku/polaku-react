@@ -171,3 +171,10 @@ export function fetchDataTopicsHelpdesk() {
     type: 'FETCH_DATA_TOPICS_HELPDESK'
   }
 }
+
+export function setBookingRoom(payload){
+  return{
+    type: 'FETCH_DATA_BOOKING_ROOMS_SUCCESS',
+    payload    
+  }
+}
