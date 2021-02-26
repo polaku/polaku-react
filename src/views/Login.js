@@ -184,7 +184,7 @@ class Login extends Component {
               disabled={this.state.proses}
             />
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              {/* <Typography style={{ fontSize: 12 }}><Link to='/forget-password'>Forgot password?</Link></Typography> */}
+              <Typography style={{ fontSize: 12 }}><Link to='/forget-password'>Forgot password?</Link></Typography>
               <div style={{ position: 'relative', }}>
                 <Button
                   type="submit"

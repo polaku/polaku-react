@@ -9,7 +9,7 @@ import { API } from '../config/API';
 
 export default class ForgetPassword extends Component {
   state = {
-    email: null
+    email: 'mprasetiodc@gmail.com'
   }
 
   handleChange = name => event => {
