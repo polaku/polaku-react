@@ -25,6 +25,8 @@ class navTugasku extends Component {
       expanded: false,
       count: 1,
       weekNr: this.getNumberOfWeek(new Date()),
+      monDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - (new Date().getDay() - 1)),
+      sunDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + (7 - new Date().getDay()))
     };
   }
 
@@ -48,18 +50,31 @@ class navTugasku extends Component {
   }
 
   increment() {
+    let newMonDate = new Date(this.state.monDate.getFullYear(), this.state.monDate.getMonth(), this.state.monDate.getDate() + 7)
+    let newSunDate = new Date(this.state.sunDate.getFullYear(), this.state.sunDate.getMonth(), this.state.sunDate.getDate() + 7)
+
     this.setState({
-      weekNr: this.state.weekNr + 1,
+      weekNr: this.state.weekNr + 1, monDate: newMonDate, sunDate: newSunDate
     });
   }
 
   decrement() {
     if (this.state.weekNr > 1) {
-      this.setState((prevState) => ({ weekNr: prevState.weekNr - 1 }));
+      // this.fetchDate('decrement')
+      let newMonDate = new Date(this.state.monDate.getFullYear(), this.state.monDate.getMonth(), this.state.monDate.getDate() - 7)
+      let newSunDate = new Date(this.state.sunDate.getFullYear(), this.state.sunDate.getMonth(), this.state.sunDate.getDate() - 7)
+
+      this.setState((prevState) => ({ weekNr: prevState.weekNr - 1, monDate: newMonDate, sunDate: newSunDate }));
     }
   }
 
-  render(props) {
+  render() {
+    function getFormatDate(args) {
+      let months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
+
+      return `${args.getDate()} ${months[args.getMonth()]}`
+    }
+
     return (
       <>
         <AppBar position="static" style={{ backgroundColor: "transparent" }}>
@@ -81,7 +96,7 @@ class navTugasku extends Component {
               <KeyboardArrowLeft />
             </Button>
             <Typography style={{ color: "black" }}>
-              Minggu {this.state.weekNr}
+              Minggu {this.state.weekNr} ( {getFormatDate(this.state.monDate)} - {getFormatDate(this.state.sunDate)} )
             </Typography>
             <Button onClick={this.increment.bind(this)}>
               <KeyboardArrowRight />
