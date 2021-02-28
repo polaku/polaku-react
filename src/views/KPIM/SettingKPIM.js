@@ -45,6 +45,7 @@ export default class SettingKPIM extends Component {
   componentDidMount() {
     let numberWeekCurrent = this.getNumberOfWeek(new Date())
     let lastNumberWeekCurrent = this.getNumberOfWeek(new Date(new Date().getFullYear() + new Date().getMonth() + 1, 0))
+    
 
     if (numberWeekCurrent === lastNumberWeekCurrent) {
       this.setState({

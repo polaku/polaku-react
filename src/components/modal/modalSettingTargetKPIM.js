@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import {
-  Modal, Fade, Grid, Backdrop, Typography, Button, TextField, Select as SelectOption, MenuItem
+  Modal, Fade, Grid, Backdrop, Typography, Button, TextField, Select as SelectOption, MenuItem, Checkbox, FormControlLabel
 } from '@material-ui/core';
 
 import swal from 'sweetalert';
@@ -15,6 +15,7 @@ export default class modalSettingTargetKPIM extends Component {
     tahunSelected: new Date().getFullYear(),
     targetTahunan: '',
     unit: '',
+    targetInverse: false,
 
     Jan: '',
     Feb: '',
@@ -93,12 +94,53 @@ export default class modalSettingTargetKPIM extends Component {
     // }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.targetInverse !== prevState.targetInverse || this.state.targetTahunan !== prevState.targetTahunan) {
+      this.fetchTargetInverse()
+    }
+  }
+
+  fetchTargetInverse = () => {
+    if (this.state.targetInverse) {
+      let targetMonth = {}
+
+      months.forEach((element, index) => {
+        if (this.state.batasBulan <= index) {
+          targetMonth[element] = this.state.targetTahunan
+        }
+      });
+
+      this.setState({
+        ...targetMonth
+      })
+    } else {
+      this.setState({
+        Jan: '',
+        Feb: '',
+        Mar: '',
+        Apr: '',
+        May: '',
+        Jun: '',
+        Jul: '',
+        Aug: '',
+        Sep: '',
+        Oct: '',
+        Nov: '',
+        Dec: '',
+      })
+    }
+  }
+
   closeModal = () => {
     this.props.closeModal()
   }
 
   handleChange = name => event => {
     this.setState({ [name]: event.target.value });
+  };
+
+  handleCheck = (event) => {
+    this.setState({ [event.target.name]: event.target.checked });
   };
 
   submitForm = async () => {
@@ -112,12 +154,13 @@ export default class modalSettingTargetKPIM extends Component {
       perbandingan = Number(this.state.Jan) + Number(this.state.Feb) + Number(this.state.Mar) + Number(this.state.Apr) + Number(this.state.May) + Number(this.state.Jun) + Number(this.state.Jul) + Number(this.state.Aug) + Number(this.state.Sep) + Number(this.state.Oct) + Number(this.state.Nov) + Number(this.state.Dec)
     }
 
-    if (Number(this.state.targetTahunan) === Number(perbandingan)) {
+    if (Number(this.state.targetTahunan) === Number(perbandingan) || this.state.targetInverse) {
       let newData = {
         indicator_kpim: this.props.indicator,
         target: this.state.targetTahunan,
         unit: this.state.unit,
         year: this.state.tahunSelected,
+        is_inverse: this.state.targetInverse,
         monthly: [
           { month: 1, target_monthly: this.state.Jan || 0 },
           { month: 2, target_monthly: this.state.Feb || 0 },
@@ -246,10 +289,11 @@ export default class modalSettingTargetKPIM extends Component {
             backgroundColor: 'white',
             boxShadow: 5,
             width: 700,
-            minHeight: 450,
+            maxHeight: '90%',
             display: 'flex',
             flexDirection: 'column',
-            padding: '40px 30px'
+            padding: '30px',
+            overflowY: 'auto'
           }}>
             <Grid style={{ display: 'flex', margin: '10px auto 20px auto' }}>
               <Typography style={{ alignSelf: 'center', fontSize: 35, fontWeight: 'bold', marginRight: 20 }}>Set target untuk</Typography>
@@ -273,7 +317,7 @@ export default class modalSettingTargetKPIM extends Component {
 
             <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '70%', margin: '0px auto' }}>
               <TextField
-                label="Target tahunan"
+                label={this.state.targetInverse ? "Target bulanan" : "Target tahunan"}
                 value={this.state.targetTahunan}
                 onChange={this.handleChange('targetTahunan')}
                 variant="outlined"
@@ -289,6 +333,12 @@ export default class modalSettingTargetKPIM extends Component {
                 disabled={this.state.tahunSelected === "" || this.props.data != null}
               />
             </Grid>
+            <Grid style={{ width: '70%', margin: '0px auto' }}>
+              <FormControlLabel
+                control={<Checkbox checked={this.state.targetInverse} onChange={this.handleCheck} name="targetInverse" />}
+                label="Target Inverse (seperti keluhan, reject, kerugian, dll)"
+              />
+            </Grid>
 
             <p style={{ marginBottom: 0 }}>Target bulanan</p>
             <Grid style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
@@ -302,14 +352,19 @@ export default class modalSettingTargetKPIM extends Component {
                     onChange={this.handleChange(el)}
                     variant="outlined"
                     style={{ width: '32%', marginTop: 13 }}
-                    disabled={this.state.batasBulan > index || this.state.targetTahunan === "" || (this.props.data && this.state[el] === 0)}
+                    disabled={this.state.batasBulan > index || this.state.targetTahunan === "" || (this.props.data && this.state[el] === 0) || this.state.targetInverse}
                   />
                 )
               }
             </Grid>
-            <p style={{ fontStyle: 'italic', color: 'red' }}>* Apabila disetting menjadi 0, maka kedepannya tidak bisa diubah kembali</p>
+            {
+              this.state.targetInverse
+                ? <p style={{ fontStyle: 'italic', color: 'red' }}>* Untuk target inverse apabila melebihi target nilai dianggap 0</p>
+                : <p style={{ fontStyle: 'italic', color: 'red' }}>* Apabila disetting menjadi 0, maka kedepannya tidak bisa diubah kembali</p>
+
+            }
             {/* <Grid style={{width:'100%'}} > */}
-            <Button variant="outlined" color="secondary" style={{ margin: '30px auto 0px auto' }} onClick={this.submitForm} >
+            <Button variant="outlined" color="secondary" style={{ margin: '2  0px auto 0px auto' }} onClick={this.submitForm} >
               Simpan
             </Button>
             {/* </Grid> */}

@@ -68,7 +68,8 @@ class HR extends Component {
 
     let tempDataStaff = await this.props.dataContactUsStaff.filter(el => el.date_ijin_absen_start !== null || el.date_imp !== null || el.leave_date !== null)
 
-    let tempDataPengajuanStaff = await tempDataStaff.filter(el => el.status === 'new' || el.status === 'new2')
+    // let tempDataPengajuanStaff = await tempDataStaff.filter(el => el.status === 'new' || el.status === 'new2')
+    let tempDataPengajuanStaff = []
 
     let tempDataStaffSedangIjin = [], tempDataIjinSudahLewat = [], tempDataIjinDisetujui = []
     await tempDataStaff.forEach(el => {
@@ -119,6 +120,8 @@ class HR extends Component {
         if (new Date(el.date_imp) > new Date()) {
           if (el.status === 'approved') {
             tempDataIjinDisetujui.push(el)
+          } else if (el.status === 'new' || el.status === 'new2') {
+            tempDataPengajuanStaff.push(el)
           }
         } else {
           tempDataIjinSudahLewat.push(el)
@@ -127,6 +130,8 @@ class HR extends Component {
         if (new Date(el.date_ijin_absen_end) > new Date()) {
           if (el.status === 'approved') {
             tempDataIjinDisetujui.push(el)
+          } else if (el.status === 'new' || el.status === 'new2') {
+            tempDataPengajuanStaff.push(el)
           }
         } else {
           tempDataIjinSudahLewat.push(el)
@@ -135,6 +140,8 @@ class HR extends Component {
         if (new Date(el.leave_date_in.slice(0, 4), el.leave_date_in.slice(5, 7) - 1, el.leave_date_in.slice(8, 10), 0, 0, 0) > new Date()) {
           if (el.status === 'approved') {
             tempDataIjinDisetujui.push(el)
+          } else if (el.status === 'new' || el.status === 'new2') {
+            tempDataPengajuanStaff.push(el)
           }
         } else {
           tempDataIjinSudahLewat.push(el)
@@ -162,7 +169,7 @@ class HR extends Component {
     if (newValue === 0) {
       this.setState({ ijinTabs: 0, ijinTab: 0 })
     } else {
-      this.setState({ ijinTabs: 1, ijinTab: 2 })
+      this.setState({ ijinTabs: 1, ijinTab: 4 })
     }
   };
 
@@ -189,12 +196,12 @@ class HR extends Component {
           <Grid item style={{}} lg={12} xs={12} sm={6} md={6} xl={6}>
             <p style={{ margin: 20, fontWeight: 'bold', fontSize: 20 }}>Siapa yang sedang ijin</p>
             {
-              this.props.evaluator1
+              this.props.evaluator1 || this.props.userId === 265
                 ? <>
                   <Grid style={{ border: '1px solid gray', borderRadius: 10, margin: 20, padding: 10, marginBottom: 10, maxWidth: 505 }}>
                     <Grid style={{ display: 'flex', margin: '5px 5px 5px 10px' }}>
                       <p style={{ margin: 0, fontSize: 15, width: 100 }}>Evaluator 1</p>
-                      <p style={{ margin: 0, fontSize: 15 }}>: {this.props.evaluator1.name}</p>
+                      <p style={{ margin: 0, fontSize: 15 }}>: {this.props.evaluator1 ? this.props.evaluator1.name : '-'}</p>
                     </Grid>
                     {
                       this.props.evaluator2 && <Grid style={{ display: 'flex', margin: '5px 5px 5px 10px' }}>
@@ -220,7 +227,7 @@ class HR extends Component {
                       <Tab label="Ijin Saya" />
                     </Tabs>
                     {
-                      this.props.evaluator1 && <Button variant="contained" color="secondary" style={{ height: 40, width: 200 }} onClick={this.handleOpenModal}  >
+                      (this.props.evaluator1 || this.props.userId === 265) && <Button variant="contained" color="secondary" style={{ height: 40, width: 200 }} onClick={this.handleOpenModal}  >
                         Pengajuan baru
                       </Button>
                     }

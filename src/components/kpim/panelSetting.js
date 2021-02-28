@@ -73,6 +73,8 @@ class panelSetting extends Component {
       batasAtas = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.bulan, 0))
       batasBawah = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.bulan - 1, 1))
 
+      if (batasBawah >= 52) batasBawah = 1
+
       for (let i = batasBawah; i <= batasAtas; i++) {
         loopingWeek.push(i)
       }
@@ -240,9 +242,6 @@ class panelSetting extends Component {
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
-              <MenuItem value={0}>
-                telah berjalan
-              </MenuItem>
               {
                 months.map((el, index) =>
                   <MenuItem value={index + 1} key={index}>{el}</MenuItem>
@@ -263,9 +262,6 @@ class panelSetting extends Component {
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
-              <MenuItem value={0}>
-                telah berjalan
-                  </MenuItem>
               {
                 this.state.optionMinggu.map((el, index) =>
                   <MenuItem value={el} key={index}>{el}</MenuItem>

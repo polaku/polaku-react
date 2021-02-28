@@ -29,6 +29,7 @@ import SettingKeamanan from './views/Setting/SettingKeamanan';
 import HR from './views/HR/HR';
 import ReportIjin from './views/HR/ReportIjin';
 import KPIM from './views/KPIM/DashboardKPIM';
+// import KPIM from './views/KPIM/DashboardKPIM-backup';
 import TAL from './views/KPIM/TAL';
 import ReportKPIM from './views/KPIM/ReportKPIM';
 import SettingKPIM from './views/KPIM/SettingKPIM';
@@ -37,6 +38,7 @@ import Polanews from './views/Polanews/Polanews';
 import Helpdesk from './views/Helpdesk/Index';
 import DetailTopics from './views/Helpdesk/DetailTopics';
 import ForgetPassword from './views/ForgetPassword';
+import ResetPassword from './views/ResetPassword';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -60,7 +62,8 @@ function Routes() {
       <div className={classes.toolbar} />
       <Switch>
         <Route path="/login" component={Login} />
-        <Route path="/forget-password" component={ForgetPassword} />
+        <Route path="/reset-password/:token" component={ResetPassword} />
+        <Route path="/forget-password" component={ForgetPassword} />        
         <AuthenticatedRoute path="/booking-room/room-master/assign-room-master" component={AssignRoomMaster} />
         <AuthenticatedRoute path="/booking-room/room-master" component={RoomMaster} />
         <AuthenticatedRoute path="/booking-room/room-assistant" component={AssignRoomAssistant} />
@@ -91,6 +94,8 @@ function Routes() {
         <AuthenticatedRoute path="/kpim" component={KPIM} />
         <AuthenticatedRoute path="/profil" component={Profil} />
         <AuthenticatedRoute path="/polanews" component={Polanews} />
+        <AuthenticatedRoute path="/helpdesk/detail/:id/sub-topics/:idSub/question/:idQuestion" component={DetailTopics} />
+        <AuthenticatedRoute path="/helpdesk/detail/:id/sub-topics/:idSub" component={DetailTopics} />
         <AuthenticatedRoute path="/helpdesk/detail/:id" component={DetailTopics} />
         <AuthenticatedRoute path="/helpdesk" component={Helpdesk} />
         <Redirect from="/" to="/login" />

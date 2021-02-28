@@ -25,9 +25,9 @@ class PanelQuestion extends Component {
     unlike: false
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     if (this.props.data) {
-      this.fetchData()
+      await this.fetchData()
     }
   }
 
@@ -35,10 +35,27 @@ class PanelQuestion extends Component {
     if (this.props.data !== prevProps.data) {
       if (this.props.data) {
         await this.fetchData()
+
+        if (this.props.match.params.idQuestion) {
+          let questionSelected = this.props.data.tbl_question_helpdesks.find(el => el.id = this.props.match.params.idQuestion)
+          this.setState({ showDetailQuestion: !this.state.showDetailQuestion, questionSelected: questionSelected })
+        }else{
+        this.setState({ showDetailQuestion: false, questionSelected: null })
+
+        }
       } else {
         this.setState({ listQuestion: [] })
       }
-      this.setState({ showDetailQuestion: false, questionSelected: null })
+
+      if (!this.props.match.params.idQuestion) {
+        this.setState({ showDetailQuestion: false, questionSelected: null })
+      }
+    }
+
+    if (prevProps.match.params.idQuestion !== this.props.match.params.idQuestion) {
+      if(!this.props.match.params.idQuestion){
+        this.setState({ showDetailQuestion: false, questionSelected: null })
+      }
     }
 
     if (this.state.questionSelected !== prevState.questionSelected) {
@@ -103,6 +120,12 @@ class PanelQuestion extends Component {
   }
 
   handleShowDetailQuestion = (data) => {
+    if (data.id) {
+      this.props.history.push(`/helpdesk/detail/${this.props.match.params.id}/sub-topics/${this.props.match.params.idSub}/question/${data.id}`)
+    } else {
+      this.props.history.push(`/helpdesk/detail/${this.props.match.params.id}/sub-topics/${this.props.match.params.idSub}`)
+    }
+
     this.setState({ showDetailQuestion: !this.state.showDetailQuestion, questionSelected: data })
   }
 
@@ -153,25 +176,28 @@ class PanelQuestion extends Component {
           </Grid>
         </Grid>
 
-        <Grid style={{ display: 'flex', flexDirection: 'column', marginBottom: 30 }}>
-          <b style={{ fontSize: 12, marginBottom: 5 }}>Butuh bantuan lebih lanjut</b>
-          <Button variant="contained" color="secondary" size="small" style={{ textTransform: 'none', width: 70, fontSize: 11 }} onClick={() =>
-            this.state.questionSelected.help
-              ? !isNaN(Number(this.state.questionSelected.help[1]))
-                ? window.open(
-                  `https://api.whatsapp.com/send?phone=${this.state.questionSelected.help[0] === '0'
-                    ? `62${this.state.questionSelected.help.slice(1)}`
-                    : this.state.questionSelected.help.slice(0, 2) === '62'
-                      ? this.state.questionSelected.help
-                      : `62${this.state.questionSelected.help}`
-                  }`
-                )
+        {
+          this.state.questionSelected.help && <Grid style={{ display: 'flex', flexDirection: 'column', marginBottom: 30 }}>
+            <b style={{ fontSize: 12, marginBottom: 5 }}>Butuh bantuan lebih lanjut</b>
+            <Button variant="contained" color="secondary" size="small" style={{ textTransform: 'none', width: 70, fontSize: 11 }} onClick={() =>
+              this.state.questionSelected.help
+                ? !isNaN(Number(this.state.questionSelected.help[1]))
+                  ? window.open(
+                    `https://api.whatsapp.com/send?phone=${this.state.questionSelected.help[0] === '0'
+                      ? `62${this.state.questionSelected.help.slice(1)}`
+                      : this.state.questionSelected.help.slice(0, 2) === '62'
+                        ? this.state.questionSelected.help
+                        : `62${this.state.questionSelected.help}`
+                    }`
+                  )
+                  : null
                 : null
-              : null
-          }>
-            Hubungi
-          </Button>
-        </Grid>
+            }>
+              Hubungi
+            </Button>
+          </Grid>
+        }
+
       </Grid>
     )
 

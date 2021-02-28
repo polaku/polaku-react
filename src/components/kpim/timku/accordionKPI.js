@@ -12,13 +12,12 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Button,
 } from "@material-ui/core";
 import { ExpandMore } from "@material-ui/icons";
 
 import RowDesainOrderForm from "./rowDesainOrderForm";
 import RowTAL from "./rowTAL";
-import FormKPI from "./formKPI";
+import RowFormKPI from "./rowFormKPI";
 
 export default function Index() {
   const [show, setShow] = useState(false);
@@ -34,31 +33,28 @@ export default function Index() {
       </AccordionSummary>
       <AccordionDetails>
         <TableContainer component={Paper}>
-          <Table size="small" aria-label="collapsible table">
-            <TableHead>
-              <TableRow>
-                <TableCell />
-                <TableCell align="center">Timeline</TableCell>
-                <TableCell align="center">Bobot</TableCell>
-                <TableCell align="center">Target</TableCell>
-                <TableCell align="center">Pencapaian</TableCell>
-                <TableCell align="center" />
-                <TableCell />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <RowTAL />
-              <RowDesainOrderForm />
-            </TableBody>
-          </Table>
+          <form>
+            <Table size="small" aria-label="collapsible table">
+              <TableHead>
+                <TableRow>
+                  <TableCell />
+                  <TableCell align="center">Timeline</TableCell>
+                  <TableCell align="center">Bobot</TableCell>
+                  <TableCell align="center">Target</TableCell>
+                  <TableCell align="center">Pencapaian</TableCell>
+                  <TableCell align="center" />
+                  <TableCell />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <RowTAL />
+                <RowDesainOrderForm />
+                {show ? <RowFormKPI /> : null}
+              </TableBody>
+            </Table>
+          </form>
         </TableContainer>
       </AccordionDetails>
-
-      {show ? (
-        <AccordionDetails>
-          <FormKPI />
-        </AccordionDetails>
-      ) : null}
 
       <AccordionDetails>
         <div onClick={() => setShow(!show)} style={{ cursor: "pointer" }}>

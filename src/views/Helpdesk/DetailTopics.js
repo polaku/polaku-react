@@ -33,8 +33,27 @@ class DetailTopics extends Component {
 
   }
 
-  componentDidMount() {
-    this.fetchData()
+  async componentDidMount() {
+    await this.fetchData()
+
+    if (this.props.match.params.idSub) {
+      // this.changeSubTopicsSelected()
+      let newListSubTopics = this.state.listSubTopics, subTopicsSelected = null, indexSelected = null
+
+      await newListSubTopics.forEach((list, index) => {
+        if (+this.props.match.params.idSub === +list.id) {
+          list.isSelected = true
+          subTopicsSelected = list
+          indexSelected = index
+        }
+        else list.isSelected = false
+      })
+
+      this.setState({ listSubTopics: newListSubTopics, subTopicsSelected, indexSubTopics: indexSelected, addNewQuestion: false })
+
+      // this.props.history.push(`/helpdesk/detail/${this.props.match.params.id}/sub-topics/${this.props.match.params.idSub}`)
+
+    }
   }
 
   fetchData = async () => {
@@ -44,14 +63,13 @@ class DetailTopics extends Component {
       let { data } = await API.get(`/helpdesk/topics/${this.props.match.params.id}`, { headers: { token } })
 
       let optionListSubTopics = []
-
-      await data.data.tbl_sub_topics_helpdesks.forEach(subTopics => {
-        optionListSubTopics.push({ value: subTopics.id, label: subTopics.sub_topics, isEdit: false })
-      })
-
       if (data.data.tbl_sub_topics_helpdesks.length > 0) {
+        await data.data.tbl_sub_topics_helpdesks.forEach(subTopics => {
+          optionListSubTopics.push({ value: subTopics.id, label: subTopics.sub_topics, isEdit: false })
+        })
         data.data.tbl_sub_topics_helpdesks[0].isSelected = true
       }
+
       this.setState({
         proses: false,
         topics: data.data.topics,
@@ -60,6 +78,10 @@ class DetailTopics extends Component {
         optionListSubTopics,
         subTopicsSelected: data.data.tbl_sub_topics_helpdesks.length > 0 ? data.data.tbl_sub_topics_helpdesks[0] : null
       })
+
+      if (this.props.match.params && !this.props.match.params.idSub) {
+        this.props.history.push(`/helpdesk/detail/${this.props.match.params.id}/sub-topics/${data.data.tbl_sub_topics_helpdesks[0].id}`)
+      }
     } catch (err) {
       // console.log(err)
     }
@@ -144,6 +166,8 @@ class DetailTopics extends Component {
   }
 
   changeSubTopicsSelected = (indexSelected) => {
+    this.setState({ listSubTopics: [], subTopicsSelected: null, indexSubTopics: null, addNewQuestion: false })
+
     let newListSubTopics = this.state.listSubTopics, subTopicsSelected = null
 
     newListSubTopics.forEach((list, index) => {
@@ -153,6 +177,8 @@ class DetailTopics extends Component {
       }
       else list.isSelected = false
     })
+
+    this.props.history.push(`/helpdesk/detail/${this.props.match.params.id}/sub-topics/${subTopicsSelected.id}`)
 
     this.setState({ listSubTopics: newListSubTopics, subTopicsSelected, indexSubTopics: indexSelected, addNewQuestion: false })
   }
@@ -214,7 +240,7 @@ class DetailTopics extends Component {
             }
             <Grid>
               <b style={{ fontSize: 20 }}>{this.state.topics}</b>
-              <p style={{ margin: 0, fontSize: 12, cursor: 'pointer', color: '#da295b' }} onClick={() => this.props.history.goBack()}>Lihat semua topik</p>
+              <p style={{ margin: 0, fontSize: 12, cursor: 'pointer', color: '#da295b' }} onClick={() => this.props.history.push('/helpdesk')} >Lihat semua topik</p>
             </Grid>
 
           </Grid>

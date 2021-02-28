@@ -82,13 +82,16 @@ class cardSettingIndicator extends Component {
         persenTahun: 0
       })
       let persenTahun, persenBulan
-
-      if (this.props.data.unit.toLowerCase() === "keluhan" || this.props.data.unit.toLowerCase() === "komplen" || this.props.data.unit.toLowerCase() === "complain" || this.props.data.unit.toLowerCase() === "reject") {
+      // console.log(this.props.data)
+      if (this.props.data.targetInverse) {
         persenTahun = Math.floor(((this.props.data.target - this.props.data.pencapaian) / this.props.data.target) * 100)
-        if (this.props.data.score_kpim_monthly) {
-          persenBulan = Math.floor(((this.props.data.target_monthly - this.props.data.pencapaian_monthly) / this.props.data.target_monthly) * 100)
-        }
 
+        if (this.props.data.score_kpim_monthly) {
+          if (this.props.data.target_monthly < this.props.data.pencapaian_monthly) persenBulan = 0
+          else {
+            persenBulan = Math.floor(((this.props.data.target_monthly - this.props.data.pencapaian_monthly) / this.props.data.target_monthly) * 100)
+          }
+        }
       } else {
         persenTahun = Math.floor((this.props.data.pencapaian / this.props.data.target) * 100)
         persenBulan = Math.floor((this.props.data.pencapaian_monthly / this.props.data.target_monthly) * 100)
@@ -239,12 +242,13 @@ class cardSettingIndicator extends Component {
           target: allKPIM.data.data.target,
           unit: allKPIM.data.data.unit,
           year: allKPIM.data.data.year,
-          tbl_kpim_scores: allKPIM.data.data.kpimScore
+          tbl_kpim_scores: allKPIM.data.data.kpimScore,
         }
       } else {
         newData = { ...this.state.dataForEdit }
       }
 
+      newData.is_inverse = this.props.data.targetInverse
       newData.indicator_kpim = this.state.indicatorKPIM
       newData.monthly = newData.tbl_kpim_scores
       newData.month = this.props.data.month
@@ -334,22 +338,22 @@ class cardSettingIndicator extends Component {
     event.preventDefault()
     this.setState({ proses: true })
     let statusOverWeight = false
-    let listDate = await this.fetchOptionDateInWeek()
-    let thereDate20 = listDate.includes(20)
+    // let listDate = await this.fetchOptionDateInWeek()
+    // let thereDate20 = listDate.includes(20)
 
-    if (!thereDate20) {
-      if (!this.props.data.weight || Number(this.props.data.weight) === 0) {
-        if ((Number(this.props.bobotTAL) + Number(this.state.weight)) > 100) {
-          statusOverWeight = true
-        }
-      } else {
-        let newWeight = Number(this.props.bobotTAL) - Number(this.props.data.weight) + Number(this.state.weight)
+    // if (!thereDate20) {
+    if (!this.props.data.weight || Number(this.props.data.weight) === 0) {
+      if ((Number(this.props.bobotTAL) + Number(this.state.weight)) > 100) {
+        statusOverWeight = true
+      }
+    } else {
+      let newWeight = Number(this.props.bobotTAL) - Number(this.props.data.weight) + Number(this.state.weight)
 
-        if (newWeight > 100) {
-          statusOverWeight = true
-        }
+      if (newWeight > 100) {
+        statusOverWeight = true
       }
     }
+    // }
 
     if (!statusOverWeight) {
       let newData = {
@@ -631,7 +635,7 @@ class cardSettingIndicator extends Component {
                         </>
                       }
                       {
-                        !this.props.data.hasConfirm &&
+                        (!this.props.data.hasConfirm && new Date() <= new Date(new Date().getFullYear(), this.props.data.month, 7)) &&
                         <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick} disabled={this.state.proses}>
                           <MoreHorizIcon />
                         </Button>
@@ -770,7 +774,7 @@ class cardSettingIndicator extends Component {
                         }
                       </Grid>
                       {
-                        !this.props.data.hasConfirm &&
+                       (!this.props.data.hasConfirm && new Date() <= new Date(new Date().getFullYear(), this.props.data.month, 7)) &&
                         <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick}>
                           <MoreHorizIcon />
                         </Button>

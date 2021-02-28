@@ -65,6 +65,18 @@ class cardBookingRoom extends Component {
             .then(async () => {
               swal("Pesanan berhasil dihapus !", "", "success")
               await this.props.refresh()
+
+
+              // let getData = await API.get('/bookingRoom', {
+              //   headers: {
+              //     token,
+              //     // ip: await publicIp.v4()
+              //   }
+              // })
+              // console.log(getData.data.data)
+
+
+              
               this.setState({
                 proses: false
               })

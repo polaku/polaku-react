@@ -24,7 +24,7 @@ class PanelFormQuestion extends Component {
     question: null,
     editorState: EditorState.createEmpty(),
     help: null,
-    inviteOption: null,
+    inviteOption: 'all',
     company: null,
     department: null,
     employee: null,
@@ -38,25 +38,27 @@ class PanelFormQuestion extends Component {
 
     if (this.props.questionSelectedForEdit) {
       let company = [], department = [], employee = []
+      console.log(this.props.questionSelectedForEdit)
+      if (this.props.questionSelectedForEdit.tbl_question_fors.length > 0) {
+        if (this.props.questionSelectedForEdit.tbl_question_fors[0].option === 'company') {
+          await this.props.questionSelectedForEdit.tbl_question_fors.forEach(el => {
+            let companySelected = this.props.dataCompanies.find(element => el.company_id === element.company_id)
 
-      if (this.props.questionSelectedForEdit.tbl_question_fors[0].option === 'company') {
-        await this.props.questionSelectedForEdit.tbl_question_fors.forEach(el => {
-          let companySelected = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+            if (companySelected) company.push(companySelected)
+          })
+        } else if (this.props.questionSelectedForEdit.tbl_question_fors[0].option === 'department') {
+          await this.props.questionSelectedForEdit.tbl_question_fors.forEach(el => {
+            let departmentSelected = this.props.dataDepartments.find(element => el.departments_id === element.departments_id)
 
-          if (companySelected) company.push(companySelected)
-        })
-      } else if (this.props.questionSelectedForEdit.tbl_question_fors[0].option === 'department') {
-        await this.props.questionSelectedForEdit.tbl_question_fors.forEach(el => {
-          let departmentSelected = this.props.dataDepartments.find(element => el.departments_id === element.departments_id)
+            if (departmentSelected) department.push(departmentSelected)
+          })
+        } else if (this.props.questionSelectedForEdit.tbl_question_fors[0].option === 'employee') {
+          await this.props.questionSelectedForEdit.tbl_question_fors.forEach(el => {
+            let employeeSelected = this.state.listUser.find(user => el.user_id === user.value)
 
-          if (departmentSelected) department.push(departmentSelected)
-        })
-      } else if (this.props.questionSelectedForEdit.tbl_question_fors[0].option === 'employee') {
-        await this.props.questionSelectedForEdit.tbl_question_fors.forEach(el => {
-          let employeeSelected = this.state.listUser.find(user => el.user_id === user.value)
-
-          if (employeeSelected) employee.push(employeeSelected)
-        })
+            if (employeeSelected) employee.push(employeeSelected)
+          })
+        }
       }
 
       this.setState({
@@ -67,11 +69,17 @@ class PanelFormQuestion extends Component {
             convertFromHTML(this.props.questionSelectedForEdit.answer)
           )),
         help: this.props.questionSelectedForEdit.help,
-        inviteOption: this.props.questionSelectedForEdit.tbl_question_fors[0].option,
+        inviteOption: this.props.questionSelectedForEdit.tbl_question_fors.length > 0 ? this.props.questionSelectedForEdit.tbl_question_fors[0].option : '',
         company,
         department,
         employee
       })
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.inviteOption !== prevState.inviteOption) {
+      this.setState({ company: null, department: null, employee: null })
     }
   }
 
@@ -121,26 +129,38 @@ class PanelFormQuestion extends Component {
 
   submit = async () => {
     try {
-      let token = Cookies.get('POLAGROUP')
-      let newData = {
-        topicsId: this.props.topicsId,
-        subTopik: this.state.subTopik.value,
-        question: this.state.question,
-        editorState: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
-        help: this.state.help,
-        inviteOption: this.state.inviteOption,
-        company: this.state.company,
-        department: this.state.department,
-        employee: this.state.employee
-      }
-      if (this.props.questionSelectedForEdit) {
-        await API.put(`helpdesk/question/${this.props.questionSelectedForEdit.id}`, newData, { headers: { token } })
-        swal('Edit pertanyaan berhasil', '', 'success')
-        this.props.refresh()
+      let answer = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
+
+      if (this.state.subTopik && this.state.question && answer && this.state.inviteOption &&
+        ((this.state.inviteOption === 'company' && this.state.company) ||
+          (this.state.inviteOption === 'department' && this.state.department) ||
+          (this.state.inviteOption === 'employee' && this.state.employee))
+      ) {
+
+        let token = Cookies.get('POLAGROUP')
+        let newData = {
+          topicsId: this.props.topicsId,
+          subTopik: this.state.subTopik.value,
+          question: this.state.question,
+          editorState: answer,
+          help: this.state.help,
+          inviteOption: this.state.inviteOption,
+          company: this.state.company,
+          department: this.state.department,
+          employee: this.state.employee
+        }
+
+        if (this.props.questionSelectedForEdit) {
+          await API.put(`helpdesk/question/${this.props.questionSelectedForEdit.id}`, newData, { headers: { token } })
+          swal('Edit pertanyaan berhasil', '', 'success')
+          this.props.refresh()
+        } else {
+          await API.post('helpdesk/question', newData, { headers: { token } })
+          swal('Tambah pertanyaan berhasil', '', 'success')
+          this.props.refresh()
+        }
       } else {
-        await API.post('helpdesk/question', newData, { headers: { token } })
-        swal('Tambah pertanyaan berhasil', '', 'success')
-        this.props.refresh()
+        swal('Data tidak lengkap')
       }
     } catch (err) {
       if (this.props.questionSelectedForEdit) swal('Edit pertanyaan berhasil', '', 'success')
