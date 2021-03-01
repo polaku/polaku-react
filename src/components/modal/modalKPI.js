@@ -160,6 +160,7 @@ export default function Index() {
                         backgroundColor:
                           tipeTarget === option.value ? "#D71149" : "#C8C8C8",
                         color: "#fff",
+                        boxShadow: "none",
                       }}
                     >
                       {option.value}
@@ -181,6 +182,7 @@ export default function Index() {
                             ? "transparent"
                             : "#C8C8C8",
                         color: "#fff",
+                        boxShadow: "none",
                       }}
                     >
                       {option.value === "kpi" ? (
@@ -201,6 +203,7 @@ export default function Index() {
                             backgroundColor:
                               KPI === option.value ? "#D71149" : "#C8C8C8",
                             color: "#fff",
+                            boxShadow: "none",
                           }}
                         >
                           {option.value}
@@ -250,6 +253,7 @@ export default function Index() {
                         backgroundColor:
                           nilai === option.value ? "#D71149" : "#C8C8C8",
                         color: "#fff",
+                        boxShadow: "none",
                       }}
                     >
                       {option.value}
@@ -267,6 +271,7 @@ export default function Index() {
                         backgroundColor:
                           aktivitas === option.value ? "#D71149" : "#C8C8C8",
                         color: "#fff",
+                        boxShadow: "none",
                       }}
                     >
                       {option.value}
