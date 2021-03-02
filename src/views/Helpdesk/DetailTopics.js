@@ -69,7 +69,7 @@ class DetailTopics extends Component {
         })
         data.data.tbl_sub_topics_helpdesks[0].isSelected = true
       }
-
+      console.log(data.data.tbl_sub_topics_helpdesks)
       this.setState({
         proses: false,
         topics: data.data.topics,
@@ -213,6 +213,23 @@ class DetailTopics extends Component {
     this.setState({ addNewQuestion: false })
   }
 
+  changeOrder = async (id, args) => {
+    try {
+      let token = Cookies.get('POLAGROUP')
+      let newData = {
+        topics_id: this.props.match.params.id,
+        order: args
+      }
+
+      await API.put(`/helpdesk/sub-topics/${id}/order`, newData, { headers: { token } })
+      console.log('sukses')
+      this.fetchData()
+    } catch (err) {
+      console.log(err)
+      swal('silahkan coba lagi', '', 'warning')
+    }
+  }
+
   render() {
     return (
       <Grid container style={{ maxWidth: 900, margin: '0px auto', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -251,12 +268,21 @@ class DetailTopics extends Component {
                 ? !this.state.proses && <p style={{ margin: 0, fontSize: 14 }}>Belum ada sub topik</p>
                 : this.state.listSubTopics.map((subTopics, index) =>
                   !subTopics.isEdit
-                    ? <ListItem button style={{ padding: 5, borderLeft: '1px solid #c2c2c2', paddingLeft: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: subTopics.isSelected ? '#f0f0f0' : null }} onClick={() => this.changeSubTopicsSelected(index)}>
-                      <p style={{ color: subTopics.isSelected ? 'black' : '#a8a8a8', margin: 0, fontSize: 14, fontWeight: subTopics.isSelected ? 'bold' : null }}>{subTopics.sub_topics}</p>
+                    ? <ListItem button style={{ padding: 5, borderLeft: '1px solid #c2c2c2', paddingLeft: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: subTopics.isSelected ? '#f0f0f0' : null, minHeight: 40 }} >
+                      <p style={{ color: subTopics.isSelected ? 'black' : '#a8a8a8', margin: 0, fontSize: 14, fontWeight: subTopics.isSelected ? 'bold' : null, width: '100%' }} onClick={() => this.changeSubTopicsSelected(index)}>{subTopics.sub_topics}</p>
                       {
-                        (this.props.isAdminHelpdesk || this.props.isAdminsuper) && <Grid style={{ minWidth: 50, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        (this.props.isAdminHelpdesk || this.props.isAdminsuper) && <Grid style={{ minWidth: 65, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <EditIcon style={{ cursor: 'pointer', width: 20 }} onClick={() => this.edit(index)} />
                           <DeleteIcon style={{ color: 'red', cursor: 'pointer', width: 20 }} onClick={() => this.deleteSubTopics(index)} />
+                          <Grid style={{ display: 'flex', flexDirection: 'column', justifyContent: index === 0 || index === this.state.listSubTopics.length - 1 ? 'center' : 'space-between', height: 25 }}>
+                            {
+                              index !== 0 && <img src={process.env.PUBLIC_URL + '/caret-up.png'} alt={index + "up"} style={{ width: 20, height: 10, cursor: 'pointer' }} onClick={() => this.changeOrder(subTopics.id, 'up')} />
+                            }
+                            {
+                              index !== this.state.listSubTopics.length - 1 && <img src={process.env.PUBLIC_URL + '/caret-down.png'} alt={index + "down"} style={{ width: 20, height: 10, cursor: 'pointer' }} onClick={() => this.changeOrder(subTopics.id, 'down')} />
+                            }
+                          </Grid>
+
                         </Grid>
                       }
                     </ListItem>

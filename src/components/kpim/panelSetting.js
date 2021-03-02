@@ -26,7 +26,8 @@ class panelSetting extends Component {
       dataForDisplay: [],
       firstDateInWeek: new Date().getDate() - (new Date().getDay() - 1),
       weekCurrent: null,
-      needAction: 0
+      needAction: 0,
+      loading: true
     }
   }
 
@@ -60,7 +61,8 @@ class panelSetting extends Component {
       })
       this.fetchData(this.state.bulan, this.getNumberOfWeek(new Date()))
       this.setState({
-        proses: false
+        proses: false,
+        loading: false
       })
     }
   }
@@ -194,101 +196,108 @@ class panelSetting extends Component {
   render() {
     return (
       <div>
-        <Grid id="user" container style={{ marginLeft: 20, display: 'flex', alignItems: 'flex-start' }}>
-          {
-            this.state.dataForDisplay.map((el, index) =>
-              this.props.status === "all"
-                ? <Grid style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'cener', width: 80, marginRight: 30, cursor: 'pointer' }} key={index} onClick={() => this.navigateDashboardBawahan(el.user_id, el.fullname)}>
-                  <Badge
-                    overlap="circle"
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'right',
-                    }}
-                    badgeContent={<div style={{ backgroundColor: '#b4b4b4', borderRadius: 15, height: 30, width: 30, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>{Math.round(el.scoreKPIMBefore)}</div>}
-                  >
-                    <Avatar alt={`${el.fullname}'s avatar`} src={el.avatar || "http://api.polagroup.co.id/uploads/icon_user.png"} style={{ width: 80, height: 80 }} />
-                  </Badge>
-                  <p style={{ margin: 0, textAlign: 'center' }}>{el.fullname}</p>
-                </Grid>
-                : el.statusNeedAction && <Grid style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'cener', width: 80, marginRight: 30, cursor: 'pointer' }} key={index} onClick={() => this.navigateDashboardBawahan(el.user_id, el.fullname)}>
-                  <Badge
-                    overlap="circle"
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'right',
-                    }}
-                    badgeContent={<div style={{ backgroundColor: '#b4b4b4', borderRadius: 15, height: 30, width: 30, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>{Math.round(el.scoreKPIMBefore)}</div>}
-                  >
-                    <Avatar alt={`${el.fullname}'s avatar`} src={el.avatar || "http://api.polagroup.co.id/uploads/icon_user.png"} style={{ width: 80, height: 80 }} />
-                  </Badge>
-                  <p style={{ margin: 0, marginTop: 10, textAlign: 'center' }}>{el.fullname}</p>
-                </Grid>
-            )
-          }
-        </Grid>
-        <Grid id="filter" style={{ marginTop: 10, marginBottom: 30, display: 'flex', alignItems: 'flex-end' }}>
-          <p style={{ margin: '0px 10px 5px 0px' }}>filter</p>
-          <FormControl >
-            <InputLabel>
-              Bulan
+        {
+          this.state.loading
+            ? <Grid style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: 30 }}>
+              <CircularProgress color="secondary" size={60} />
+            </Grid>
+            : <>
+              <Grid id="user" container style={{ marginLeft: 20, display: 'flex', alignItems: 'flex-start' }}>
+                {
+                  this.state.dataForDisplay.map((el, index) =>
+                    this.props.status === "all"
+                      ? <Grid style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'cener', width: 80, marginRight: 30, cursor: 'pointer' }} key={index} onClick={() => this.navigateDashboardBawahan(el.user_id, el.fullname)}>
+                        <Badge
+                          overlap="circle"
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                          }}
+                          badgeContent={<div style={{ backgroundColor: '#b4b4b4', borderRadius: 15, height: 30, width: 30, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>{Math.round(el.scoreKPIMBefore)}</div>}
+                        >
+                          <Avatar alt={`${el.fullname}'s avatar`} src={el.avatar || "http://api.polagroup.co.id/uploads/icon_user.png"} style={{ width: 80, height: 80 }} />
+                        </Badge>
+                        <p style={{ margin: 0, textAlign: 'center' }}>{el.fullname}</p>
+                      </Grid>
+                      : el.statusNeedAction && <Grid style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'cener', width: 80, marginRight: 30, cursor: 'pointer' }} key={index} onClick={() => this.navigateDashboardBawahan(el.user_id, el.fullname)}>
+                        <Badge
+                          overlap="circle"
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                          }}
+                          badgeContent={<div style={{ backgroundColor: '#b4b4b4', borderRadius: 15, height: 30, width: 30, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>{Math.round(el.scoreKPIMBefore)}</div>}
+                        >
+                          <Avatar alt={`${el.fullname}'s avatar`} src={el.avatar || "http://api.polagroup.co.id/uploads/icon_user.png"} style={{ width: 80, height: 80 }} />
+                        </Badge>
+                        <p style={{ margin: 0, marginTop: 10, textAlign: 'center' }}>{el.fullname}</p>
+                      </Grid>
+                  )
+                }
+              </Grid>
+              <Grid id="filter" style={{ marginTop: 10, marginBottom: 30, display: 'flex', alignItems: 'flex-end' }}>
+                <p style={{ margin: '0px 10px 5px 0px' }}>filter</p>
+                <FormControl >
+                  <InputLabel>
+                    Bulan
                 </InputLabel>
-            <SelectOption
-              value={this.state.bulan}
-              onChange={this.handleChange('bulan')}
-              style={{ width: 150, marginRight: 10 }}
-              disabled={this.state.proses}
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              {
-                months.map((el, index) =>
-                  <MenuItem value={index + 1} key={index}>{el}</MenuItem>
-                )
-              }
-            </SelectOption>
-          </FormControl>
-          <FormControl >
-            <InputLabel>
-              Minggu
+                  <SelectOption
+                    value={this.state.bulan}
+                    onChange={this.handleChange('bulan')}
+                    style={{ width: 150, marginRight: 10 }}
+                    disabled={this.state.proses}
+                  >
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    {
+                      months.map((el, index) =>
+                        <MenuItem value={index + 1} key={index}>{el}</MenuItem>
+                      )
+                    }
+                  </SelectOption>
+                </FormControl>
+                <FormControl >
+                  <InputLabel>
+                    Minggu
                 </InputLabel>
-            <SelectOption
-              value={this.state.minggu}
-              onChange={this.handleChange('minggu')}
-              style={{ width: 150, marginRight: 10 }}
-              disabled={this.state.proses}
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              {
-                this.state.optionMinggu.map((el, index) =>
-                  <MenuItem value={el} key={index}>{el}</MenuItem>
-                )
-              }
-            </SelectOption>
-          </FormControl>
-        </Grid>
+                  <SelectOption
+                    value={this.state.minggu}
+                    onChange={this.handleChange('minggu')}
+                    style={{ width: 150, marginRight: 10 }}
+                    disabled={this.state.proses}
+                  >
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    {
+                      this.state.optionMinggu.map((el, index) =>
+                        <MenuItem value={el} key={index}>{el}</MenuItem>
+                      )
+                    }
+                  </SelectOption>
+                </FormControl>
+              </Grid>
 
-        <Grid id="main" style={{ marginTop: 20, textAlign: 'center' }}>
-          {/* CARD */}
-          {
-            this.state.proses
-              ? <CircularProgress color="secondary" />
-              : this.state.dataForDisplay.map((el, index) =>
-                <CardSettingUserKPIM data={el} key={index} refresh={this.refresh} firstDateInWeek={this.state.firstDateInWeek} week={this.state.minggu} month={this.state.bulan} weekCurrent={this.state.weekCurrent} setNeedAction={this.setNeedAction} status={this.props.status} lastWeekInMonth={this.state.optionMinggu[this.state.optionMinggu.length - 1]} />
-              )
-          }
-          {
-            this.state.needAction === 0 && this.props.status !== "all" && <>
-              <img src={process.env.PUBLIC_URL + '/settingKPIM.png'} alt="Logo" style={{ width: 500, maxHeight: 500, margin: '50px auto 10px auto' }} />
-              <p style={{ marginTop: 10, fontFamily: 'Simonetta', fontSize: 20, textShadow: '4px 4px 4px #aaa' }} >TIDAK ADA YANG BUTUH TINDAKAN</p>
+              <Grid id="main" style={{ marginTop: 20, textAlign: 'center' }}>
+                {/* CARD */}
+                {
+                  this.state.proses
+                    ? <CircularProgress color="secondary" />
+                    : this.state.dataForDisplay.map((el, index) =>
+                      <CardSettingUserKPIM data={el} key={index} refresh={this.refresh} firstDateInWeek={this.state.firstDateInWeek} week={this.state.minggu} month={this.state.bulan} weekCurrent={this.state.weekCurrent} setNeedAction={this.setNeedAction} status={this.props.status} lastWeekInMonth={this.state.optionMinggu[this.state.optionMinggu.length - 1]} />
+                    )
+                }
+                {
+                  this.state.needAction === 0 && this.props.status !== "all" && <>
+                    <img src={process.env.PUBLIC_URL + '/settingKPIM.png'} alt="Logo" style={{ width: 500, maxHeight: 500, margin: '50px auto 10px auto' }} />
+                    <p style={{ marginTop: 10, fontFamily: 'Simonetta', fontSize: 20, textShadow: '4px 4px 4px #aaa' }} >TIDAK ADA YANG BUTUH TINDAKAN</p>
+                  </>
+                }
+              </Grid>
             </>
-          }
-
-        </Grid>
-
+        }
+        {/* <p>TESTING</p> */}
       </div>
     )
   }

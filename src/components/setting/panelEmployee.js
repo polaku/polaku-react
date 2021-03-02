@@ -30,7 +30,7 @@ class panelEmployee extends Component {
     labelTab: ['Semua'],
     search: '',
     searchDinas: '',
-    valueA: this.props.indexTab ? this.props.indexTab :0,
+    valueA: this.props.indexTab ? this.props.indexTab : 0,
     valueB: 0,
     valueStatus: 0,
     index: 0,
@@ -550,7 +550,9 @@ class panelEmployee extends Component {
                         <p style={{ margin: 0 }}>Karyawan</p>
                       </Grid>
                       <p style={{ margin: 0, width: '25%' }}>Dinas ke perusahaan</p>
-                      <p style={{ margin: 0, textAlign: 'center' }}>Aksi</p>
+                      {
+                        this.props.isAdminHR && <p style={{ margin: 0, textAlign: 'center' }}>Aksi</p>
+                      }
                     </Paper>
                   </>
               }
@@ -600,7 +602,7 @@ const mapDispatchToProps = {
   fetchDataDinas
 }
 
-const mapStateToProps = ({ loading, dataUsers, lengthAllDataUsers, dataCompanies, dataDinas, counterEmployeeTetap, counterEmployeeKontrak, counterEmployeeProbation, counterEmployeeBerhenti, allUser, isAdminsuper, admin }) => {
+const mapStateToProps = ({ loading, dataUsers, lengthAllDataUsers, dataCompanies, dataDinas, counterEmployeeTetap, counterEmployeeKontrak, counterEmployeeProbation, counterEmployeeBerhenti, allUser, isAdminsuper, admin, isAdminHR }) => {
   return {
     loading,
     dataUsers,
@@ -613,7 +615,8 @@ const mapStateToProps = ({ loading, dataUsers, lengthAllDataUsers, dataCompanies
     counterEmployeeBerhenti,
     counterAllUser: allUser,
     isAdminsuper,
-    admin
+    admin,
+    isAdminHR
     // dinas,
     // PIC
   }

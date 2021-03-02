@@ -1,6 +1,8 @@
 const defaultState = {
   ip: null,
   userId: null,
+  nickname: null,
+  firstHierarchy: false,
   dataUserDetail: {},
   isAdminsuper: false,
   isRoomMaster: false,
@@ -95,6 +97,8 @@ function reducer(state = defaultState, action) {
         isAdminKPIM: action.payload.isAdminKPIM,
         isAdminHR: action.payload.isAdminHR,
         isAdminHelpdesk: action.payload.isAdminHelpdesk,
+        nickname: action.payload.nickname,
+        firstHierarchy: action.payload.firstHierarchy
       }
     }
     case 'FETCH_DATA_USER_DETAIL_SUCCESS': {

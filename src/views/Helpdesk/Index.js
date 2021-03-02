@@ -24,6 +24,7 @@ class Helpdesk extends Component {
 
   async componentDidMount() {
     await this.props.fetchDataTopicsHelpdesk()
+    console.log(this.props.nickname)
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -48,11 +49,18 @@ class Helpdesk extends Component {
 
     if (this.state.keyword !== prevState.keyword) {
       // console.log(this.props.dataTopicsHelpdesk)
-      let data = await this.props.dataTopicsHelpdesk.filter(el => el.topics.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())))
-console.log(this.state.listQuestion)
+      // let data = await this.props.dataTopicsHelpdesk.filter(el => el.topics.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())))
+
       let searchQuestion = await this.state.listQuestion.filter(el => el.question && el.question.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())))
-      console.log(searchQuestion)
-      this.setState({ dataTopicsHelpdesk: data, listSearching: searchQuestion })
+      let searchAnswer = await this.state.listQuestion.filter(el => el.answer && el.answer.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())))
+
+      console.log(this.state.listQuestion)
+
+      searchAnswer.length > 0 && searchAnswer.forEach(answer => {
+
+      })
+
+      this.setState({ listSearching: searchAnswer })
     }
   }
 
@@ -90,7 +98,7 @@ console.log(this.state.listQuestion)
       <Grid style={{ maxWidth: 900, margin: '0px auto' }}>
         <Grid container style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Grid item xs={12} sm={8}>
-            <h1 style={{ margin: 0 }}>Hi nama,</h1>
+            <h1 style={{ margin: 0 }}>Hi {this.props.nickname},</h1>
             <h1 style={{ margin: 0 }}>Ada yang bisa kami bantu?</h1>
             {/* <Paper style={{ width: 380 }}> */}
             <TextField
@@ -131,9 +139,8 @@ console.log(this.state.listQuestion)
                     <Paper style={{ padding: 15, cursor: 'pointer' }}
                       onClick={() => this.props.history.push(`/helpdesk/detail/${question.topics_id}/sub-topics/${question.sub_topics_id}/question/${question.id}`)}
                     >
-                      <h3 style={{ margin: 0 }}>Pertanyaan:</h3>
-                      <p style={{ marginTop: 3, marginBottom: 5 }}>{question.question}</p>
-                      <p style={{ margin: 0, fontSize: 12, fontWeight: 'bold' }}>Sub topik : {question.sub_topics} ( {question.topics} )</p>
+                      <h3 style={{ marginTop: 3, marginBottom: 5 }}>{question.question}</h3>
+                      <p style={{ marginTop: 3, marginBottom: 5 }}>{question.answer.replace(/(<([^>]+)>)/ig, "").split(' ').slice(0, 20).join(' ')}</p>
                     </Paper>
                   </Grid>
                 )
@@ -193,12 +200,13 @@ const mapDispatchToProps = {
   fetchDataTopicsHelpdesk
 }
 
-const mapStateToProps = ({ dataTopicsHelpdesk, userId, isAdminHelpdesk, isAdminsuper }) => {
+const mapStateToProps = ({ dataTopicsHelpdesk, userId, isAdminHelpdesk, isAdminsuper, nickname }) => {
   return {
     dataTopicsHelpdesk,
     userId,
     isAdminHelpdesk,
-    isAdminsuper
+    isAdminsuper,
+    nickname
   }
 }
 

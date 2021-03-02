@@ -136,22 +136,24 @@ class cardEmployee extends Component {
             />
           </Tooltip>
         </Grid>
-        <Grid style={{ width: '10%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Grid style={{ minWidth: '100px', display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexWrap: 'wrap' }}>
-            {
-              this.state.notComplete
-              && <Tooltip title="Lengkapi data" aria-label="lengkapi-data">
-                <ErrorOutlinedIcon style={{ color: 'red' }} />
+        {
+          this.props.isAdminHR && <Grid style={{ width: '10%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Grid style={{ minWidth: '100px', display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexWrap: 'wrap' }}>
+              {
+                this.state.notComplete
+                && <Tooltip title="Lengkapi data" aria-label="lengkapi-data">
+                  <ErrorOutlinedIcon style={{ color: 'red' }} />
+                </Tooltip>
+              }
+              <Tooltip title="Edit karyawan" aria-label="edit-data">
+                <img src={process.env.PUBLIC_URL + '/edit.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-employee', { data: this.props.data, index: this.props.index })} />
               </Tooltip>
-            }
-            <Tooltip title="Edit karyawan" aria-label="edit-data">
-              <img src={process.env.PUBLIC_URL + '/edit.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-employee', { data: this.props.data, index: this.props.index })} />
-            </Tooltip>
-            {/* <Tooltip title="Hapus karyawan" aria-label="delete-data">
+              {/* <Tooltip title="Hapus karyawan" aria-label="delete-data">
               <DeleteIcon style={{ color: 'red', cursor: 'pointer' }} onClick={this.delete} />
             </Tooltip> */}
+            </Grid>
           </Grid>
-        </Grid>
+        }
       </Paper>
     )
   }
@@ -161,9 +163,10 @@ const mapDispatchToProps = {
   fetchDataAddress
 }
 
-const mapStateToProps = ({ ip }) => {
+const mapStateToProps = ({ ip, isAdminHR }) => {
   return {
-    ip
+    ip,
+    isAdminHR
   }
 }
 

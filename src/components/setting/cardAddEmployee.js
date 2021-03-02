@@ -71,8 +71,8 @@ class cardAddEmployee extends Component {
     dataAddressDinas: [],
     isDinas: false,
 
-    username: '',
-    password: '',
+    // username: '',
+    // password: '',
     optionCompany: [],
     optionDivisi: [],
     optionPosisi: [],
@@ -270,7 +270,7 @@ class cardAddEmployee extends Component {
       alamat: this.props.data.rawData.tbl_account_detail.address,
 
       isDinas: this.props.data.rawData.dinas.length > 0 ? true : false,
-      username: this.props.data.rawData.username
+      // username: this.props.data.rawData.username
       // divisi: this.props.data.rawData.tbl_account_detail.departments_id,
       // peran: this.props.data.rawData.tbl_account_detail.position_id,
     })
@@ -351,11 +351,11 @@ class cardAddEmployee extends Component {
     let newData = new FormData()
 
     if (this.props.data) newData.append("userId", this.props.data.userId)
-    newData.append("username", this.state.username)
-    if (!this.props.data) {
-      if (this.state.dateOfBirth) newData.append("password", `${this.state.dateOfBirth.getDate() < 10 ? `0${this.state.dateOfBirth.getDate()}` : this.state.dateOfBirth.getDate()}${this.state.dateOfBirth.getMonth() + 1 < 10 ? `0${this.state.dateOfBirth.getMonth() + 1}` : this.state.dateOfBirth.getMonth() + 1}${this.state.dateOfBirth.getFullYear()}`)
-      else newData.append("password", '12345678')
-    }
+    // newData.append("username", this.state.username)
+    // if (!this.props.data) {
+    //   if (this.state.dateOfBirth) newData.append("password", `${this.state.dateOfBirth.getDate() < 10 ? `0${this.state.dateOfBirth.getDate()}` : this.state.dateOfBirth.getDate()}${this.state.dateOfBirth.getMonth() + 1 < 10 ? `0${this.state.dateOfBirth.getMonth() + 1}` : this.state.dateOfBirth.getMonth() + 1}${this.state.dateOfBirth.getFullYear()}`)
+    //   else newData.append("password", '12345678')
+    // }
     if (this.props.data && this.state.password) newData.append("password", this.state.password)
     newData.append("email", this.state.emailPribadi)
     newData.append("fullname", this.state.name)
@@ -1032,50 +1032,51 @@ class cardAddEmployee extends Component {
           {/* 5 */}
           <Paper style={{ backgroundColor: 'white', padding: 20, margin: '5px 0px 10px 0px' }}>
 
-            <Grid id="username" style={{ display: 'flex', alignItems: 'center' }}>
-              <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-                <b style={{ margin: 0 }}>Username</b>
-                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
-              </Grid>
-
-              <OutlinedInput
-                value={this.state.username}
-                onChange={this.handleChange('username')}
-                variant="outlined"
-                style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
-                inputProps={{
-                  style: {
-                    padding: '5px 8px',
-                    fontSize: 14
-                  }
-                }}
-                disabled={this.props.proses}
-              />
-            </Grid>
-
             {
-              this.props.data &&
-              <Grid id="password" style={{ display: 'flex', alignItems: 'center' }}>
-                <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-                  <b style={{ margin: 0 }}>Kata Sandi Baru</b>
-                  <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              !this.props.data && <>
+                <Grid id="username" style={{ display: 'flex', alignItems: 'center' }}>
+                  <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                    <b style={{ margin: 0 }}>Username</b>
+                    <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+                  </Grid>
+
+                  <OutlinedInput
+                    value={this.state.username}
+                    onChange={this.handleChange('username')}
+                    variant="outlined"
+                    style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
+                    inputProps={{
+                      style: {
+                        padding: '5px 8px',
+                        fontSize: 14
+                      }
+                    }}
+                    disabled={this.props.proses}
+                  />
                 </Grid>
 
-                <OutlinedInput
-                  type="password"
-                  value={this.state.password}
-                  onChange={this.handleChange('password')}
-                  variant="outlined"
-                  style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
-                  inputProps={{
-                    style: {
-                      padding: '5px 8px',
-                      fontSize: 14
-                    }
-                  }}
-                  disabled={this.props.proses}
-                />
-              </Grid>
+                <Grid id="password" style={{ display: 'flex', alignItems: 'center' }}>
+                  <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                    <b style={{ margin: 0 }}>Kata Sandi Baru</b>
+                    <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+                  </Grid>
+
+                  <OutlinedInput
+                    type="password"
+                    value={this.state.password}
+                    onChange={this.handleChange('password')}
+                    variant="outlined"
+                    style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}
+                    inputProps={{
+                      style: {
+                        padding: '5px 8px',
+                        fontSize: 14
+                      }
+                    }}
+                    disabled={this.props.proses}
+                  />
+                </Grid>
+              </>
             }
             <Grid id="email-pribadi" style={{ display: 'flex', alignItems: 'center' }}>
               <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>

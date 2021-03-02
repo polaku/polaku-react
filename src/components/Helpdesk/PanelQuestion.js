@@ -39,8 +39,8 @@ class PanelQuestion extends Component {
         if (this.props.match.params.idQuestion) {
           let questionSelected = this.props.data.tbl_question_helpdesks.find(el => el.id = this.props.match.params.idQuestion)
           this.setState({ showDetailQuestion: !this.state.showDetailQuestion, questionSelected: questionSelected })
-        }else{
-        this.setState({ showDetailQuestion: false, questionSelected: null })
+        } else {
+          this.setState({ showDetailQuestion: false, questionSelected: null })
 
         }
       } else {
@@ -53,7 +53,7 @@ class PanelQuestion extends Component {
     }
 
     if (prevProps.match.params.idQuestion !== this.props.match.params.idQuestion) {
-      if(!this.props.match.params.idQuestion){
+      if (!this.props.match.params.idQuestion) {
         this.setState({ showDetailQuestion: false, questionSelected: null })
       }
     }
@@ -86,6 +86,7 @@ class PanelQuestion extends Component {
       question.totalLikes = likes
       question.totalUnlikes = unlikes
     })
+    console.log(this.props.data.tbl_question_helpdesks)
     this.setState({ listQuestion: this.props.data.tbl_question_helpdesks })
 
   }
@@ -152,6 +153,33 @@ class PanelQuestion extends Component {
     }
   }
 
+  changeOrder = async (id, subTopicsId, args, index) => {
+    try {
+      let token = Cookies.get('POLAGROUP')
+      let newData = {
+        sub_topics_id: subTopicsId,
+        order: args
+      }
+
+      await API.put(`/helpdesk/question/${id}/order`, newData, { headers: { token } })
+
+      let dataListQuestion = this.state.listQuestion
+
+      let temp = dataListQuestion[index]
+      if (args === 'up') {
+        dataListQuestion[index] = dataListQuestion[index - 1]
+        dataListQuestion[index - 1] = temp
+      } else {
+        dataListQuestion[index] = dataListQuestion[index + 1]
+        dataListQuestion[index + 1] = temp
+      }
+      this.setState({ dataListQuestion })
+    } catch (err) {
+      console.log(err)
+      swal('silahkan coba lagi', '', 'warning')
+    }
+  }
+
   render() {
     // DETAIL QUESTION
     if (this.state.showDetailQuestion) return (
@@ -213,24 +241,34 @@ class PanelQuestion extends Component {
               ? this.state.listQuestion.map((question, index) =>
                 <>
                   <ListItem button style={{ padding: 5, paddingLeft: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} >
-                    <p style={{ margin: 0, cursor: 'pointer' }} onClick={() => this.handleShowDetailQuestion(question)}>{question.question}</p>
-                    <Grid style={{ minWidth: 100, display: 'flex', alignItems: 'center' }}>
+                    <p style={{ margin: 0, cursor: 'pointer', width: '100%' }} onClick={() => this.handleShowDetailQuestion(question)}>{question.question}</p>
+                    <Grid style={{ minWidth: 150, display: 'flex', alignItems: 'center' }}>
                       {/* LIKE OR UNLIKE */}
                       {
                         (this.props.isAdminHelpdesk || this.props.isAdminsuper) &&
                         <>
-                          <Grid style={{ minWidth: 50, display: 'flex', alignItems: 'center', }}>
+                          <Grid style={{ minWidth: 55, display: 'flex', alignItems: 'center' }}>
                             <p style={{ margin: 0, marginRight: 2, fontSize: 11 }}>{question.totalLikes}</p>
-                            <ThumbUpOutlinedIcon style={{ color: '#737373', width: 20, height: 18 }} />
+                            <ThumbUpOutlinedIcon style={{ color: '#737373', width: 20, height: 18, marginRight: 5 }} />
                             <p style={{ margin: 0, marginRight: 2, fontSize: 11 }}>{question.totalUnlikes}</p>
-                            <ThumbDownOutlinedIcon style={{ color: '#737373', width: 20, height: 18, marginRight: 8 }} />
+                            <ThumbDownOutlinedIcon style={{ color: '#737373', width: 20, height: 18, }} />
                           </Grid>
 
 
                           {/* EDIT OR DELETE */}
-                          <Grid style={{ minWidth: 50, marginLeft: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <Grid style={{ minWidth: 40, marginLeft: 15, marginRight: 15, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <EditIcon style={{ width: 22, height: 20 }} onClick={() => this.props.editQuestion(index)} />
                             <DeleteIcon style={{ color: 'red', width: 22, height: 20 }} onClick={() => this.deleteQuestion(index)} />
+                          </Grid>
+
+                          {/* ORDER LIST */}
+                          <Grid style={{ display: 'flex', flexDirection: 'column', justifyContent: index === 0 || index === this.state.listQuestion.length - 1 ? 'center' : 'space-between', height: 25 }}>
+                            {
+                              index !== 0 && <img src={process.env.PUBLIC_URL + '/caret-up.png'} alt={index + "up"} style={{ width: 20, height: 10, cursor: 'pointer' }} onClick={() => this.changeOrder(question.id, question.sub_topics_id, 'up', index)} />
+                            }
+                            {
+                              index !== this.state.listQuestion.length - 1 && <img src={process.env.PUBLIC_URL + '/caret-down.png'} alt={index + "down"} style={{ width: 20, height: 10, cursor: 'pointer' }} onClick={() => this.changeOrder(question.id, question.sub_topics_id, 'down', index)} />
+                            }
                           </Grid>
                         </>
                       }

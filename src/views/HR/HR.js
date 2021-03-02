@@ -196,7 +196,7 @@ class HR extends Component {
           <Grid item style={{}} lg={12} xs={12} sm={6} md={6} xl={6}>
             <p style={{ margin: 20, fontWeight: 'bold', fontSize: 20 }}>Siapa yang sedang ijin</p>
             {
-              this.props.evaluator1 || this.props.userId === 265
+              this.props.evaluator1 || this.props.firstHierarchy
                 ? <>
                   <Grid style={{ border: '1px solid gray', borderRadius: 10, margin: 20, padding: 10, marginBottom: 10, maxWidth: 505 }}>
                     <Grid style={{ display: 'flex', margin: '5px 5px 5px 10px' }}>
@@ -227,7 +227,7 @@ class HR extends Component {
                       <Tab label="Ijin Saya" />
                     </Tabs>
                     {
-                      (this.props.evaluator1 || this.props.userId === 265) && <Button variant="contained" color="secondary" style={{ height: 40, width: 200 }} onClick={this.handleOpenModal}  >
+                      (this.props.evaluator1 || this.props.firstHierarchy) && <Button variant="contained" color="secondary" style={{ height: 40, width: 200 }} onClick={this.handleOpenModal}  >
                         Pengajuan baru
                       </Button>
                     }
@@ -364,7 +364,7 @@ const mapDispatchToProps = {
   fetchDataContactUs,
 }
 
-const mapStateToProps = ({ loading, userId, sisaCuti, dataContactUs, dataContactUsStaff, evaluator1, evaluator2, bawahan }) => {
+const mapStateToProps = ({ loading, userId, sisaCuti, dataContactUs, dataContactUsStaff, evaluator1, evaluator2, bawahan, firstHierarchy }) => {
   return {
     loading,
     userId,
@@ -374,6 +374,7 @@ const mapStateToProps = ({ loading, userId, sisaCuti, dataContactUs, dataContact
     evaluator1,
     evaluator2,
     bawahan,
+    firstHierarchy,
   }
 }
 

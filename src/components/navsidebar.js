@@ -196,6 +196,8 @@ function Navsidebar(props) {
               evaluator2: data.evaluator2,
               bawahan: data.bawahan,
               admin: data.admin,
+              nickname: data.nickname,
+              firstHierarchy: data.firstHierarchy
               // ip: props.ip
             };
 
@@ -284,7 +286,7 @@ function Navsidebar(props) {
             await props.fetchDataNotification();
           })
           .catch((err) => {
-            // console.log(err)
+            console.log(err)
             Cookies.remove("POLAGROUP");
             // props.userLogout()
             props.history.push("/login");
