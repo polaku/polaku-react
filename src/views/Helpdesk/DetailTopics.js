@@ -76,7 +76,7 @@ class DetailTopics extends Component {
         iconPath: data.data.icon ? `${BaseURL}/${data.data.icon}` : null,
         listSubTopics: data.data.tbl_sub_topics_helpdesks,
         optionListSubTopics,
-        subTopicsSelected: data.data.tbl_sub_topics_helpdesks.length > 0 ? data.data.tbl_sub_topics_helpdesks[0] : null
+        subTopicsSelected: (data.data.tbl_sub_topics_helpdesks.length > 0 && this.props.match.params && !this.props.match.params.idSub) ? data.data.tbl_sub_topics_helpdesks[0] : null
       })
 
       if (this.props.match.params && !this.props.match.params.idSub) {

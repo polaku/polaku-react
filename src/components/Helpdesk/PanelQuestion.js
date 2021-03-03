@@ -28,6 +28,13 @@ class PanelQuestion extends Component {
   async componentDidMount() {
     if (this.props.data) {
       await this.fetchData()
+
+      if (this.props.match.params.idQuestion) {
+        let questionSelected = this.props.data.tbl_question_helpdesks.find(el => +el.id === +this.props.match.params.idQuestion)
+        this.setState({ showDetailQuestion: !this.state.showDetailQuestion, questionSelected: questionSelected })
+      } else {
+        this.setState({ showDetailQuestion: false, questionSelected: null })
+      }
     }
   }
 
@@ -35,13 +42,11 @@ class PanelQuestion extends Component {
     if (this.props.data !== prevProps.data) {
       if (this.props.data) {
         await this.fetchData()
-
         if (this.props.match.params.idQuestion) {
-          let questionSelected = this.props.data.tbl_question_helpdesks.find(el => el.id = this.props.match.params.idQuestion)
-          this.setState({ showDetailQuestion: !this.state.showDetailQuestion, questionSelected: questionSelected })
+          let questionSelected = this.props.data.tbl_question_helpdesks.find(el => +el.id === +this.props.match.params.idQuestion)
+          this.setState({ showDetailQuestion: true, questionSelected: questionSelected })
         } else {
           this.setState({ showDetailQuestion: false, questionSelected: null })
-
         }
       } else {
         this.setState({ listQuestion: [] })

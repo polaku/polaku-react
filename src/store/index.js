@@ -409,7 +409,7 @@ const api = store => next => async action => {
       // let newDataStaff = await getData.data.data.filter(el => el.evaluator_1 === action.payload || el.evaluator_2 === action.payload  || action.payload === 1)
 
       let newData = [], newDataStaff = []
-      if (action.payload) {
+      if (action.payload && !action.payload.startDate) {
         await getData.data.data.forEach(el => {
 
           if (el.leave_date) {  // cuti
@@ -482,7 +482,7 @@ const api = store => next => async action => {
 
       next({
         type: 'FETCH_DATA_CONTACT_US_SUCCESS',
-        payload: { dataContactUs: newData, dataContactUsStaff: newDataStaff, dataAllContactUs: getData.data.data }
+        payload: { dataContactUs: newData, dataContactUsStaff: newDataStaff, dataAllContactUs: getData.data.data, totalDataContactUs: getData.data.totalData  }
       })
 
     } catch (err) {

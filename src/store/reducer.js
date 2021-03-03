@@ -46,6 +46,7 @@ const defaultState = {
   dataContactUs: [],
   dataContactUsStaff: [],
   dataAllContactUs: [],
+  totalDataContactUs: 0,
   dataAllKPIM: [],
   dataAllTAL: [],
   dataAllRewardKPIM: [],
@@ -245,6 +246,7 @@ function reducer(state = defaultState, action) {
         dataContactUs: action.payload.dataContactUs,
         dataContactUsStaff: action.payload.dataContactUsStaff,
         dataAllContactUs: action.payload.dataAllContactUs,
+        totalDataContactUs: action.payload.totalDataContactUs,
         loading: false
       }
     }

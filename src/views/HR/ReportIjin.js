@@ -21,6 +21,7 @@ import ArchiveIcon from '@material-ui/icons/Archive';
 
 import CardReport from '../../components/report/CardReport';
 import Download from '../../components/exportToExcel'
+import Loading from '../../components/Loading';
 
 import orderBy from 'lodash/orderBy';
 
@@ -61,6 +62,7 @@ class ReportIjin extends Component {
     super(props)
     this._isMounted = false
     this.state = {
+      loading: true,
       month: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
       monthSelected: 0,
       value: 0,
@@ -186,7 +188,8 @@ class ReportIjin extends Component {
 
     this._isMounted && this.setState({
       dataForDisplay: newData,
-      data: newData
+      data: newData,
+      loading: false
     })
   }
 
@@ -227,7 +230,8 @@ class ReportIjin extends Component {
       monthEnd: this.state.newMonthEnd,
       dataForDisplay: [],
       data: [],
-      page: 0
+      page: 0,
+      loading: true
     })
     await this.props.fetchDataContactUs({ limit: this.state.rowsPerPage, page: 0, startDate: this.state.newMonthStart, endDate: this.state.newMonthEnd })
     await this.fetchData()
@@ -282,9 +286,9 @@ class ReportIjin extends Component {
       if (month1 === month2) return `${month1} ${new Date(waktuAkhir).getFullYear()}`
       else if (new Date(waktuAwal).getFullYear() === new Date(waktuAkhir).getFullYear()) return `${month1} - ${month2} ${new Date(waktuAkhir).getFullYear()}`
       else return `${month1} ${new Date(waktuAwal).getFullYear()} -${month2} ${new Date(waktuAkhir).getFullYear()}`
-
     }
 
+    if (this.state.loading) return <Loading loading={this.state.loading} />;
     return (
       <div style={{ padding: '10px 40px' }}>
         <p style={{ fontSize: 24, fontWeight: 'bold', margin: 0 }}>Report Ijin</p>
@@ -466,6 +470,7 @@ class ReportIjin extends Component {
                 <TableBody>
                   {
                     orderBy(this.state.dataForDisplay, this.state.columnToSort, this.state.sortDirection).slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((el, index) => (
+                      // orderBy(this.state.dataForDisplay, this.state.columnToSort, this.state.sortDirection).map((el, index) => (
                       <CardReport data={el} key={index} />
                     ))
                   }
@@ -475,6 +480,7 @@ class ReportIjin extends Component {
                 rowsPerPageOptions={[5, 10, 20]}
                 component="div"
                 count={this.state.dataForDisplay.length}
+                // count={this.props.totalDataContactUs}
                 rowsPerPage={this.state.rowsPerPage}
                 page={this.state.page}
                 backIconButtonProps={{

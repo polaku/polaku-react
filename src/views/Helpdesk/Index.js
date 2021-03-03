@@ -36,6 +36,7 @@ class Helpdesk extends Component {
       await this.props.dataTopicsHelpdesk.forEach(async (topics) => {
         topics.tbl_sub_topics_helpdesks.length > 0 && await topics.tbl_sub_topics_helpdesks.forEach(async (subTopics) => {
           subTopics.tbl_question_helpdesks.length > 0 && await subTopics.tbl_question_helpdesks.forEach(question => {
+            question.question_id = question.id
             question.topics_id = topics.id
             question.sub_topics = subTopics.sub_topics
             listQuestion.push({ ...question, ...topics })
@@ -48,19 +49,17 @@ class Helpdesk extends Component {
     }
 
     if (this.state.keyword !== prevState.keyword) {
-      // console.log(this.props.dataTopicsHelpdesk)
-      // let data = await this.props.dataTopicsHelpdesk.filter(el => el.topics.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())))
-
-      let searchQuestion = await this.state.listQuestion.filter(el => el.question && el.question.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())))
-      let searchAnswer = await this.state.listQuestion.filter(el => el.answer && el.answer.toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())))
+      let searchQuestion = await this.state.listQuestion.filter(el => el.question && el.question.replace(/(<([^>]+)>)/ig, "").toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())))
+      let searchAnswer = await this.state.listQuestion.filter(el => el.answer && el.answer.replace(/(<([^>]+)>)/ig, "").toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())))
 
       console.log(this.state.listQuestion)
 
       searchAnswer.length > 0 && searchAnswer.forEach(answer => {
-
+        let checkAnswer = searchQuestion.find(question => question.question_id === answer.question_id)
+        if (!checkAnswer) searchQuestion.push(answer)
       })
 
-      this.setState({ listSearching: searchAnswer })
+      this.setState({ listSearching: searchQuestion })
     }
   }
 
@@ -137,7 +136,7 @@ class Helpdesk extends Component {
                 ? this.state.listSearching.map((question, index) =>
                   <Grid item xs={12}>
                     <Paper style={{ padding: 15, cursor: 'pointer' }}
-                      onClick={() => this.props.history.push(`/helpdesk/detail/${question.topics_id}/sub-topics/${question.sub_topics_id}/question/${question.id}`)}
+                      onClick={() => this.props.history.push(`/helpdesk/detail/${question.topics_id}/sub-topics/${question.sub_topics_id}/question/${question.question_id}`)}
                     >
                       <h3 style={{ marginTop: 3, marginBottom: 5 }}>{question.question}</h3>
                       <p style={{ marginTop: 3, marginBottom: 5 }}>{question.answer.replace(/(<([^>]+)>)/ig, "").split(' ').slice(0, 20).join(' ')}</p>
