@@ -35,6 +35,7 @@ class panelSetting extends Component {
     this._isMounted = true
 
     if (this._isMounted) {
+      console.log("MASUK CDM 1")
       this.fetchWeek()
       this.setState({
         minggu: this.getNumberOfWeek(new Date()),
@@ -55,15 +56,18 @@ class panelSetting extends Component {
       if (batasAtas === 53) {
         loopingWeek[loopingWeek.length - 1] = 1
       }
+      console.log("MASUK CDM 2")
 
       this.setState({
         optionMinggu: loopingWeek,
       })
-      this.fetchData(this.state.bulan, this.getNumberOfWeek(new Date()))
+      await this.fetchData(this.state.bulan, this.getNumberOfWeek(new Date()))
       this.setState({
         proses: false,
         loading: false
       })
+      console.log("MASUK CDM 3")
+
     }
   }
 
@@ -99,8 +103,11 @@ class panelSetting extends Component {
 
   fetchData = async (month, week) => {
     let temp = [], tempForDisplay = []
+    console.log("MASUK FETCHDATA 1")
+
     await this.props.fetchDataAllKPIM({ "for-setting": true, year: new Date().getFullYear(), month, week })
     await this.props.fetchDataRewardKPIM(this.props.userId)
+    console.log("MASUK FETCHDATA 2")
 
     //filter kpim per-user bawahan
     this.props.bawahan && await this.props.bawahan.forEach(async element => {
@@ -114,10 +121,12 @@ class panelSetting extends Component {
       newData.kpim = await this.props.dataAllKPIM.filter(el => el.user_id === element.user_id)
       tempForDisplay.push(newData)
     });
+    console.log("MASUK FETCHDATA 3")
 
     await tempForDisplay.forEach(async user => {
       user.rewardKPIM = await this.props.dataAllRewardKPIM.filter(element => user.user_id === element.user_id)
     })
+    console.log("MASUK FETCHDATA 4")
 
     await tempForDisplay.forEach(async user => {
       let tempScoreKPIMBefore = 0, tempPembagi = 0
@@ -128,6 +137,7 @@ class panelSetting extends Component {
       if (tempPembagi !== 0) user.scoreKPIMBefore = tempScoreKPIMBefore / tempPembagi
       else user.scoreKPIMBefore = 0
     })
+    console.log("MASUK FETCHDATA 5")
 
     this._isMounted && this.setState({ data: temp, dataForDisplay: tempForDisplay, needAction: 0, proses: false })
   }

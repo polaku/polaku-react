@@ -8,6 +8,8 @@ import Cookies from 'js-cookie';
 // const CancelToken = axios.CancelToken;
 // let cancel;
 
+import swal from 'sweetalert';
+
 const api = store => next => async action => {
   let token = Cookies.get('POLAGROUP')
 
@@ -482,7 +484,7 @@ const api = store => next => async action => {
 
       next({
         type: 'FETCH_DATA_CONTACT_US_SUCCESS',
-        payload: { dataContactUs: newData, dataContactUsStaff: newDataStaff, dataAllContactUs: getData.data.data, totalDataContactUs: getData.data.totalData  }
+        payload: { dataContactUs: newData, dataContactUsStaff: newDataStaff, dataAllContactUs: getData.data.data, totalDataContactUs: getData.data.totalData }
       })
 
     } catch (err) {
@@ -496,7 +498,7 @@ const api = store => next => async action => {
     next({
       type: 'FETCH_DATA_ALL_KPIM_LOADING'
     })
-
+    console.log("index start")
     let getDataKPIM
     try {
 
@@ -531,6 +533,10 @@ const api = store => next => async action => {
       })
 
     } catch (err) {
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      }
+
       next({
         type: 'FETCH_DATA_ERROR',
         payload: err

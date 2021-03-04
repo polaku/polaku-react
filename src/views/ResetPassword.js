@@ -16,7 +16,7 @@ class ResetPassword extends Component {
     repassword: null,
     errorRepassword: false
   }
-  
+
   componentDidUpdate(prevProps, prevState) {
     if (this.state.repassword !== prevState.repassword) {
       if (this.state.repassword !== this.state.password) {
@@ -33,7 +33,7 @@ class ResetPassword extends Component {
   };
 
   submit = async () => {
-    if (this.state.repassword) {
+    if (this.state.repassword !== null) {
       try {
         let newData = {
           password: this.state.password,
@@ -44,12 +44,21 @@ class ResetPassword extends Component {
         Cookies.set('POLAGROUP', getToken.data.token, { expires: 365 });
 
         await this.checkToken()
-        swal('Berhasil', 'Email anda berhasil diubah', 'success')
+        swal('Berhasil', 'Password anda berhasil diubah', 'success')
         this.props.history.push("/polanews")
 
       } catch (err) {
-        console.log('gagal')
-        console.log(err.response)
+        // console.log(err.response)
+        if (err.response && err.response.status === 400) {
+          if (err.response.data.message === 'token not found') {
+            swal('Gagal', 'Link sudah terpakai, silahkan masukan kembali email anda', 'error')
+          } else {
+            swal('Gagal', 'Link sudah kedaluwarsa, silahkan masukan kembali email anda', 'error')
+          }
+          this.props.history.push('/forget-password')
+        } else {
+          swal('Error', 'please try again', 'error')
+        }
         // console.log(err)
       }
     }
