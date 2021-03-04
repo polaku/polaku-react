@@ -69,7 +69,7 @@ class DetailTopics extends Component {
         })
         data.data.tbl_sub_topics_helpdesks[0].isSelected = true
       }
-      console.log(data.data.tbl_sub_topics_helpdesks)
+
       this.setState({
         proses: false,
         topics: data.data.topics,
@@ -222,10 +222,10 @@ class DetailTopics extends Component {
       }
 
       await API.put(`/helpdesk/sub-topics/${id}/order`, newData, { headers: { token } })
-      console.log('sukses')
+
       this.fetchData()
     } catch (err) {
-      console.log(err)
+      // console.log(err)
       swal('silahkan coba lagi', '', 'warning')
     }
   }

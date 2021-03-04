@@ -33,7 +33,7 @@ class BookingRoom extends Component {
   async componentDidMount() {
     await this.props.fetchDataBookingRooms()
     await this.props.fetchDataRooms()
-    console.log(this.props.dataBookingRooms)
+
     await this.fetchData()
   }
 

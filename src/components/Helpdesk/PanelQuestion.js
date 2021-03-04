@@ -91,9 +91,8 @@ class PanelQuestion extends Component {
       question.totalLikes = likes
       question.totalUnlikes = unlikes
     })
-    console.log(this.props.data.tbl_question_helpdesks)
-    this.setState({ listQuestion: this.props.data.tbl_question_helpdesks })
 
+    this.setState({ listQuestion: this.props.data.tbl_question_helpdesks })
   }
 
   deleteQuestion = (index) => {
@@ -180,7 +179,7 @@ class PanelQuestion extends Component {
       }
       this.setState({ dataListQuestion })
     } catch (err) {
-      console.log(err)
+      // console.log(err)
       swal('silahkan coba lagi', '', 'warning')
     }
   }

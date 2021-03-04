@@ -38,7 +38,7 @@ class PanelFormQuestion extends Component {
 
     if (this.props.questionSelectedForEdit) {
       let company = [], department = [], employee = []
-      console.log(this.props.questionSelectedForEdit)
+
       if (this.props.questionSelectedForEdit.tbl_question_fors.length > 0) {
         if (this.props.questionSelectedForEdit.tbl_question_fors[0].option === 'company') {
           await this.props.questionSelectedForEdit.tbl_question_fors.forEach(el => {

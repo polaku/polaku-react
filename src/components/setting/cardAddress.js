@@ -23,7 +23,7 @@ class cardAddress extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.data)
+    // console.log(this.props.data)
     if (!this.props.data.acronym ||
       !this.props.data.address ||
       !this.props.data.fax ||

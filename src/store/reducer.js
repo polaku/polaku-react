@@ -2,6 +2,7 @@ const defaultState = {
   ip: null,
   userId: null,
   nickname: null,
+  fullname: null,
   firstHierarchy: false,
   dataUserDetail: {},
   isAdminsuper: false,
@@ -99,6 +100,7 @@ function reducer(state = defaultState, action) {
         isAdminHR: action.payload.isAdminHR,
         isAdminHelpdesk: action.payload.isAdminHelpdesk,
         nickname: action.payload.nickname,
+        fullname: action.payload.fullname,
         firstHierarchy: action.payload.firstHierarchy
       }
     }

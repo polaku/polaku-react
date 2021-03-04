@@ -24,15 +24,12 @@ class Helpdesk extends Component {
 
   async componentDidMount() {
     await this.props.fetchDataTopicsHelpdesk()
-    console.log(this.props.nickname)
   }
 
   async componentDidUpdate(prevProps, prevState) {
     if (this.props.dataTopicsHelpdesk !== prevProps.dataTopicsHelpdesk) {
-      console.log(this.props.dataTopicsHelpdesk)
 
       let listQuestion = []
-      console.log(this.props.dataTopicsHelpdesk)
       await this.props.dataTopicsHelpdesk.forEach(async (topics) => {
         topics.tbl_sub_topics_helpdesks.length > 0 && await topics.tbl_sub_topics_helpdesks.forEach(async (subTopics) => {
           subTopics.tbl_question_helpdesks.length > 0 && await subTopics.tbl_question_helpdesks.forEach(question => {
@@ -45,14 +42,11 @@ class Helpdesk extends Component {
       });
 
       this.setState({ dataTopicsHelpdesk: this.props.dataTopicsHelpdesk, listQuestion })
-      console.log(listQuestion)
     }
 
     if (this.state.keyword !== prevState.keyword) {
       let searchQuestion = await this.state.listQuestion.filter(el => el.question && el.question.replace(/(<([^>]+)>)/ig, "").toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())))
       let searchAnswer = await this.state.listQuestion.filter(el => el.answer && el.answer.replace(/(<([^>]+)>)/ig, "").toLowerCase().match(new RegExp(this.state.keyword.toLowerCase())))
-
-      console.log(this.state.listQuestion)
 
       searchAnswer.length > 0 && searchAnswer.forEach(answer => {
         let checkAnswer = searchQuestion.find(question => question.question_id === answer.question_id)
@@ -97,7 +91,7 @@ class Helpdesk extends Component {
       <Grid style={{ maxWidth: 900, margin: '0px auto' }}>
         <Grid container style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Grid item xs={12} sm={8}>
-            <h1 style={{ margin: 0 }}>Hi {this.props.nickname},</h1>
+            <h1 style={{ margin: 0 }}>Hi {this.props.nickname || this.props.fullname},</h1>
             <h1 style={{ margin: 0 }}>Ada yang bisa kami bantu?</h1>
             {/* <Paper style={{ width: 380 }}> */}
             <TextField
@@ -199,13 +193,14 @@ const mapDispatchToProps = {
   fetchDataTopicsHelpdesk
 }
 
-const mapStateToProps = ({ dataTopicsHelpdesk, userId, isAdminHelpdesk, isAdminsuper, nickname }) => {
+const mapStateToProps = ({ dataTopicsHelpdesk, userId, isAdminHelpdesk, isAdminsuper, nickname, fullname }) => {
   return {
     dataTopicsHelpdesk,
     userId,
     isAdminHelpdesk,
     isAdminsuper,
-    nickname
+    nickname,
+    fullname
   }
 }
 

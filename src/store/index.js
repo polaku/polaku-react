@@ -498,7 +498,7 @@ const api = store => next => async action => {
     next({
       type: 'FETCH_DATA_ALL_KPIM_LOADING'
     })
-    console.log("index start")
+
     let getDataKPIM
     try {
 

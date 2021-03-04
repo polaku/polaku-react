@@ -78,6 +78,7 @@ class Login extends Component {
           bawahan: data.data.bawahan,
           admin: data.data.admin,
           nickname: data.data.nickname,
+          fullname: data.data.fullname,
           firstHierarchy: data.data.firstHierarchy
           // ip: props.ip
         }
