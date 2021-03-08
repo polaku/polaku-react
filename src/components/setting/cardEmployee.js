@@ -64,7 +64,11 @@ class cardEmployee extends Component {
       })
       .catch(err => {
         // console.log(err)
-        swal('please try again')
+        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+          swal('Gagal', 'Koneksi tidak stabil', 'error')
+        } else {
+          swal('please try again')
+        }
       })
   }
 
@@ -92,7 +96,11 @@ class cardEmployee extends Component {
   //           await this.props.fetchDataAddress()
   //           await this.props.fetchData()
   //         } catch (err) {
-  //           swal("Hapus alamat gagal", "", "error")
+  //           if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+  //             swal('Gagal', 'Koneksi tidak stabil', 'error')
+  //           } else {
+  //             swal("Hapus alamat gagal", "", "error")
+  //           }
   //         }
   //       }
   //     });

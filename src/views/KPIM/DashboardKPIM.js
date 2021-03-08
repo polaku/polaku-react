@@ -126,33 +126,39 @@ class DashboardKPIM extends Component {
 
     if (this._isMounted) {
       if (this.props.location.state) {
-        this.setState({
-          idBawahanSelected: this.props.location.state.userId,
-          weekSelected: this.getNumberOfWeek(new Date()),
-          monthSelected: new Date().getMonth() + 1,
-        });
+        try {
+          this.setState({
+            idBawahanSelected: this.props.location.state.userId,
+            weekSelected: this.getNumberOfWeek(new Date()),
+            monthSelected: new Date().getMonth() + 1,
+          });
 
-        let token = Cookies.get("POLAGROUP");
-        let dataUser = await API.get(
-          `/users/${this.props.location.state.userId}`,
-          {
-            headers: {
-              token,
-              ip: this.props.ip,
-            },
+          let token = Cookies.get("POLAGROUP");
+          let dataUser = await API.get(
+            `/users/${this.props.location.state.userId}`,
+            {
+              headers: {
+                token,
+                ip: this.props.ip,
+              },
+            }
+          );
+
+          this.setState({ listBawahan: dataUser.data.bawahan });
+          await this.fetchData(
+            new Date().getMonth() + 1,
+            this.getNumberOfWeek(new Date()),
+            this.props.location.state.userId
+          );
+
+          await this.props.fetchDataRewardKPIM(this.props.location.state.userId);
+
+          await this.props.myRewardKPIM.sort(this.sortingReward);
+        } catch (err) {
+          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+            swal('Gagal', 'Koneksi tidak stabil', 'error')
           }
-        );
-
-        this.setState({ listBawahan: dataUser.data.bawahan });
-        await this.fetchData(
-          new Date().getMonth() + 1,
-          this.getNumberOfWeek(new Date()),
-          this.props.location.state.userId
-        );
-
-        await this.props.fetchDataRewardKPIM(this.props.location.state.userId);
-
-        await this.props.myRewardKPIM.sort(this.sortingReward);
+        }
       } else if (this.props.userId) {
         this.setState({
           weekSelected: this.getNumberOfWeek(new Date()),
@@ -544,7 +550,11 @@ class DashboardKPIM extends Component {
           this.setState({
             proses: false,
           });
-          swal("please try again");
+          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+            swal('Gagal', 'Koneksi tidak stabil', 'error')
+          } else {
+            swal("please try again");
+          }
           // console.log(err)
         });
     } else {

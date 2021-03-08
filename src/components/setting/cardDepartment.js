@@ -78,7 +78,11 @@ class cardDepartment extends Component {
             swal("Hapus department sukses", "", "success")
             await this.props.refresh()
           } catch (err) {
-            swal("Hapus department gagal", "", "error")
+            if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+              swal('Gagal', 'Koneksi tidak stabil', 'error')
+            } else {
+              swal("Hapus department gagal", "", "error")
+            }
           }
         }
       });

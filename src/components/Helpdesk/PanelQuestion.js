@@ -73,7 +73,11 @@ class PanelQuestion extends Component {
           else this.setState({ like: false, unlike: false })
         } catch (err) {
           // console.log(err)
-          this.setState({ like: false, unlike: false })
+          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+            swal('Gagal', 'Koneksi tidak stabil', 'error')
+          } else {
+            this.setState({ like: false, unlike: false })
+          }
         }
       } else {
         this.setState({ like: false, unlike: false })
@@ -117,7 +121,11 @@ class PanelQuestion extends Component {
               swal('Hapus pertanyaan berhasil', '', 'success')
             })
             .catch(err => {
-              swal('Hapus pertanyaan gagal', '', 'error')
+              if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+                swal('Gagal', 'Koneksi tidak stabil', 'error')
+              } else {
+                swal('Hapus pertanyaan gagal', '', 'error')
+              }
               // console.log(err)
             })
         }
@@ -141,7 +149,11 @@ class PanelQuestion extends Component {
       await API.put(`/helpdesk/question/like-unlike/${this.state.questionSelected.id}`, { like: this.state.like, unlike: this.state.unlike }, { headers: { token } })
     } catch (err) {
       // console.log(err)
-      this.setState({ like: !this.state.like, unlike: false })
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      } else {
+        this.setState({ like: !this.state.like, unlike: false })
+      }
     }
   }
 
@@ -153,7 +165,11 @@ class PanelQuestion extends Component {
       await this.props.fetchDataTopicsHelpdesk()
     } catch (err) {
       // console.log(err)
-      this.setState({ like: false, unlike: !this.state.unlike })
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      } else {
+        this.setState({ like: false, unlike: !this.state.unlike })
+      }
     }
   }
 
@@ -180,7 +196,11 @@ class PanelQuestion extends Component {
       this.setState({ dataListQuestion })
     } catch (err) {
       // console.log(err)
-      swal('silahkan coba lagi', '', 'warning')
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      } else {
+        swal('silahkan coba lagi', '', 'warning')
+      }
     }
   }
 

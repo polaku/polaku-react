@@ -132,7 +132,11 @@ class AddDepartment extends Component {
           })
           .catch(err => {
             this.setState({ proses: false, statusSubmit: false })
-            swal('Ubah department gagal', '', 'error')
+            if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+              swal('Gagal', 'Koneksi tidak stabil', 'error')
+            } else {
+              swal('Ubah department gagal', '', 'error')
+            }
           })
       } else {
         this.setState({ tempDataForEdit: newData })
@@ -161,7 +165,11 @@ class AddDepartment extends Component {
           })
           .catch(err => {
             this.setState({ proses: false, statusSubmit: false })
-            swal('Tambah department gagal', '', 'error')
+            if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+              swal('Gagal', 'Koneksi tidak stabil', 'error')
+            } else {
+              swal('Tambah department gagal', '', 'error')
+            }
           })
       } else {
         this.setState({ data: newData })
@@ -172,7 +180,7 @@ class AddDepartment extends Component {
   cancelSubmit = () => {
     this.setState({ statusSubmit: false, proses: false })
   }
-  
+
   render() {
     if (this.state.loading) return <Loading loading={this.state.loading} />;
     return (

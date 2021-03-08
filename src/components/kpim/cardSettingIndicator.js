@@ -184,6 +184,9 @@ class cardSettingIndicator extends Component {
         })
       }
     } catch (err) {
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      }
       // console.log(err)
     }
   }
@@ -228,55 +231,60 @@ class cardSettingIndicator extends Component {
     }
 
     if (!statusOverBobot) {
-      let token = Cookies.get('POLAGROUP')
-      let newData
-      if (!this.state.dataForEdit.tbl_kpim_scores) {
-        let allKPIM = await API.get(`/kpim/${this.props.data.kpim_id}`, {
+      try {
+        let token = Cookies.get('POLAGROUP')
+        let newData
+        if (!this.state.dataForEdit.tbl_kpim_scores) {
+          let allKPIM = await API.get(`/kpim/${this.props.data.kpim_id}`, {
+            headers: {
+              token,
+              ip: this.props.ip
+            }
+          })
+
+          newData = {
+            target: allKPIM.data.data.target,
+            unit: allKPIM.data.data.unit,
+            year: allKPIM.data.data.year,
+            tbl_kpim_scores: allKPIM.data.data.kpimScore,
+          }
+        } else {
+          newData = { ...this.state.dataForEdit }
+        }
+
+        newData.is_inverse = this.props.data.targetInverse
+        newData.indicator_kpim = this.state.indicatorKPIM
+        newData.monthly = newData.tbl_kpim_scores
+        newData.month = this.props.data.month
+        delete newData.tbl_kpim_scores
+
+        newData.monthly.forEach(el => {
+          if (Number(el.month) === Number(this.props.data.month)) {
+            el.bobot = this.state.bobot
+            el.pencapaian_monthly = this.state.capaian
+          }
+        })
+
+        await API.put(`/kpim/${this.props.data.kpim_id}`, newData, {
           headers: {
             token,
             ip: this.props.ip
           }
         })
 
-        newData = {
-          target: allKPIM.data.data.target,
-          unit: allKPIM.data.data.unit,
-          year: allKPIM.data.data.year,
-          tbl_kpim_scores: allKPIM.data.data.kpimScore,
-        }
-      } else {
-        newData = { ...this.state.dataForEdit }
-      }
-
-      newData.is_inverse = this.props.data.targetInverse
-      newData.indicator_kpim = this.state.indicatorKPIM
-      newData.monthly = newData.tbl_kpim_scores
-      newData.month = this.props.data.month
-      delete newData.tbl_kpim_scores
-
-      newData.monthly.forEach(el => {
-        if (Number(el.month) === Number(this.props.data.month)) {
-          el.bobot = this.state.bobot
-          el.pencapaian_monthly = this.state.capaian
-        }
-      })
-
-      API.put(`/kpim/${this.props.data.kpim_id}`, newData, {
-        headers: {
-          token,
-          ip: this.props.ip
-        }
-      })
-        .then((data) => {
-          swal("Edit indicator KPIM sukses", "", "success")
-          this.setState({
-            statusEdit: false
-          })
-          this.props.refresh()
+        swal("Edit indicator KPIM sukses", "", "success")
+        this.setState({
+          statusEdit: false
         })
-        .catch(err => {
+        this.props.refresh()
+
+      } catch (err) {
+        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+          swal('Gagal', 'Koneksi tidak stabil', 'error')
+        } else {
           swal('please try again')
-        })
+        }
+      }
     } else {
       swal("Bobot kpim lebih dari 100", "", "warning")
     }
@@ -327,7 +335,11 @@ class cardSettingIndicator extends Component {
           this.props.refresh()
         })
         .catch(err => {
-          swal('please try again')
+          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+            swal('Gagal', 'Koneksi tidak stabil', 'error')
+          } else {
+            swal('please try again')
+          }
         })
     } else {
       swal("Bobot kpim lebih dari 100", "", "warning")
@@ -379,7 +391,11 @@ class cardSettingIndicator extends Component {
           })
         })
         .catch(err => {
-          swal('please try again')
+          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+            swal('Gagal', 'Koneksi tidak stabil', 'error')
+          } else {
+            swal('please try again')
+          }
         })
     } else {
       swal("Weight tal lebih dari 100", "", "warning")
@@ -410,7 +426,11 @@ class cardSettingIndicator extends Component {
                 this.props.refresh()
               })
               .catch(err => {
-                swal('please try again')
+                if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+                  swal('Gagal', 'Koneksi tidak stabil', 'error')
+                } else {
+                  swal('please try again')
+                }
               })
           } else {
 
@@ -424,7 +444,11 @@ class cardSettingIndicator extends Component {
                 this.props.refresh()
               })
               .catch(err => {
-                swal('please try again')
+                if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+                  swal('Gagal', 'Koneksi tidak stabil', 'error')
+                } else {
+                  swal('please try again')
+                }
               })
           }
         }
@@ -774,7 +798,7 @@ class cardSettingIndicator extends Component {
                         }
                       </Grid>
                       {
-                       (!this.props.data.hasConfirm && new Date() <= new Date(new Date().getFullYear(), this.props.data.month, 7)) &&
+                        (!this.props.data.hasConfirm && new Date() <= new Date(new Date().getFullYear(), this.props.data.month, 7)) &&
                         <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick}>
                           <MoreHorizIcon />
                         </Button>

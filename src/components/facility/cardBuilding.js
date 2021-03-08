@@ -15,6 +15,7 @@ import ModalCreateEditBuilding from '../modal/modalCreateEditBuilding';
 import { fetchDataBuildings } from '../../store/action';
 
 import { API } from '../../config/API';
+import swal from 'sweetalert';
 
 class cardBuilding extends Component {
   constructor(props) {
@@ -61,6 +62,11 @@ class cardBuilding extends Component {
     })
       .then(() => {
         this.props.fetchDataBuildings()
+      })
+      .catch(err => {
+        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+          swal('Gagal', 'Koneksi tidak stabil', 'error')
+        }
       })
   }
 

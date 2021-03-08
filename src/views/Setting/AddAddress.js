@@ -76,7 +76,11 @@ class AddAddress extends Component {
       let { data } = await API.get('/building')
       this.setState({ dataBuilding: data.data })
     } catch (err) {
-      swal('please refresh this page !')
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      } else {
+        swal('please refresh this page !')
+      }
     }
   }
 
@@ -135,7 +139,11 @@ class AddAddress extends Component {
               .catch(err => {
                 // console.log(err)
                 this.setState({ proses: false })
-                swal('Ubah alamat gagal', '', 'error')
+                if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+                  swal('Gagal', 'Koneksi tidak stabil', 'error')
+                } else {
+                  swal('Ubah alamat gagal', '', 'error')
+                }
               })
           } else {
             newData.forEach(async (data, index) => {
@@ -165,7 +173,11 @@ class AddAddress extends Component {
               .catch(err => {
                 // console.log(err)
                 this.setState({ proses: false })
-                swal('Ubah alamat gagal', '', 'error')
+                if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+                  swal('Gagal', 'Koneksi tidak stabil', 'error')
+                } else {
+                  swal('Ubah alamat gagal', '', 'error')
+                }
               })
           }
         } else {
@@ -203,7 +215,11 @@ class AddAddress extends Component {
             })
             .catch(err => {
               this.setState({ proses: false })
-              swal('Tambah alamat gagal', '', 'error')
+              if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+                swal('Gagal', 'Koneksi tidak stabil', 'error')
+              } else {
+                swal('Tambah alamat gagal', '', 'error')
+              }
             })
         } else {
           this.setState({ data: newData })

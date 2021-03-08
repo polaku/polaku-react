@@ -70,6 +70,9 @@ class modalCreateEditRoom extends Component {
       })
       this.setState({ listUser })
     } catch (err) {
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      }
       // console.log(err)
     }
   }
@@ -121,7 +124,11 @@ class modalCreateEditRoom extends Component {
         swal('Tambah acara berhasil', '', 'success')
       })
       .catch(err => {
-        swal('please try again')
+        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+          swal('Gagal', 'Koneksi tidak stabil', 'error')
+        } else {
+          swal('please try again')
+        }
         this.setState({
           proses: false
         })

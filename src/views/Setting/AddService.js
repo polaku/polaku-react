@@ -121,6 +121,9 @@ class AddService extends Component {
       this.setState({ listUser })
     } catch (err) {
       // console.log(err)
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      }
     }
   }
 
@@ -185,6 +188,9 @@ class AddService extends Component {
       })
     } catch (err) {
       // console.log(err)
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      }
     }
   }
 
@@ -258,9 +264,11 @@ class AddService extends Component {
           this.setState({ dinas: newDinas })
 
         })
-        .catch(err => { }
-          // console.log(err)
-        )
+        .catch(err => {
+          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+            swal('Gagal', 'Koneksi tidak stabil', 'error')
+          }
+        })
       // == END == FETCH STRUCTURE (DEPARTMENT AND POSITION) DINAS 
     })
     this.setState({ proses: false })
@@ -348,9 +356,11 @@ class AddService extends Component {
 
           this.setState({ dinas: newDinas });
         })
-        .catch(err => { }
-          // console.log(err)
-        )
+        .catch(err => {
+          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+            swal('Gagal', 'Koneksi tidak stabil', 'error')
+          }
+        })
     }
 
     newDinas[index][name] = event.target.value
@@ -464,7 +474,12 @@ class AddService extends Component {
                 });
               })
               .catch(err => {
-                swal("Pesanan gagal dihapus !", "", "error")
+                if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+                  swal('Gagal', 'Koneksi tidak stabil', 'error')
+                } else {
+                  swal("Pesanan gagal dihapus !", "", "error")
+                }
+
                 this.setState({
                   proses: false
                 })
@@ -565,7 +580,11 @@ class AddService extends Component {
       })
       .catch(err => {
         this.setState({ proses: false, statusSubmit: false })
-        swal('Simpan dinas gagal', '', 'error')
+        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+          swal('Gagal', 'Koneksi tidak stabil', 'error')
+        } else {
+          swal('Simpan dinas gagal', '', 'error')
+        }
       })
   }
 

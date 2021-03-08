@@ -88,7 +88,11 @@ class cardAdmin extends Component {
             swal("Hapus admin sukses", "", "success")
             await this.props.refresh()
           } catch (err) {
-            swal("Hapus admin gagal", "", "error")
+            if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+              swal('Gagal', 'Koneksi tidak stabil', 'error')
+            } else {
+              swal("Hapus admin gagal", "", "error")
+            }
           }
         }
       });

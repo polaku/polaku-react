@@ -135,6 +135,8 @@ class cardEvent extends Component {
     } catch (err) {
       if (err.message === 'Request failed with status code 403') {
         swal('Waktu login telah habis, silahkan login kembali');
+      } else if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
       } else {
         swal(err);
       }
@@ -170,7 +172,12 @@ class cardEvent extends Component {
         this.props.fetchDataEventNeedApproval()
       })
       .catch(err => {
-        swal('please try again')
+        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+          swal('Gagal', 'Koneksi tidak stabil', 'error')
+        } else {
+          swal('please try again')
+        }
+
         this.setState({
           proses: false
         })

@@ -72,7 +72,9 @@ class modalCreateEditRoomAssistant extends Component {
           this.props.closeModal()
         })
         .catch(err => {
-          if (err.message === 'Request failed with status code 400') {
+          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+            swal('Gagal', 'Koneksi tidak stabil', 'error')
+          } else if (err.message === 'Request failed with status code 400') {
             swal("Sudah menjadi room master", "", "warning")
           }
         })
@@ -95,7 +97,11 @@ class modalCreateEditRoomAssistant extends Component {
           this.props.refresh()
         })
         .catch(err => {
-          swal('please try again')
+          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+            swal('Gagal', 'Koneksi tidak stabil', 'error')
+          } else {
+            swal('please try again')
+          }
         })
     }
   }

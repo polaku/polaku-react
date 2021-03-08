@@ -48,7 +48,11 @@ class pencapaianKPIM extends Component {
         this.props.refresh()
       })
       .catch(err => {
-        swal('please try again')
+        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+          swal('Gagal', 'Koneksi tidak stabil', 'error')
+        } else {
+          swal('please try again')
+        }
       })
   }
 

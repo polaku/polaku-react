@@ -362,7 +362,9 @@ class cardSettingUserKPIM extends Component {
           this.props.refresh()
         })
         .catch(err => {
-          if (err.message === "Request failed with status code 400") {
+          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+            swal('Gagal', 'Koneksi tidak stabil', 'error')
+          } else if (err.message === "Request failed with status code 400") {
             swal('Indicator TAL sudah ada')
           } else {
             swal('please try again')
@@ -431,7 +433,11 @@ class cardSettingUserKPIM extends Component {
           this.props.refresh()
         })
         .catch(err => {
-          swal('please try again')
+          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+            swal('Gagal', 'Koneksi tidak stabil', 'error')
+          } else {
+            swal('please try again')
+          }
         })
     } else {
       swal("Bobot TAL lebih dari 100", "", "warning")
@@ -467,7 +473,11 @@ class cardSettingUserKPIM extends Component {
         this.props.refresh()
       })
       .catch(err => {
-        swal('please try again')
+        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+          swal('Gagal', 'Koneksi tidak stabil', 'error')
+        } else {
+          swal('please try again')
+        }
       })
   }
 
@@ -529,7 +539,11 @@ class cardSettingUserKPIM extends Component {
               this.props.refresh()
             })
             .catch(err => {
-              swal("Please try again")
+              if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+                swal('Gagal', 'Koneksi tidak stabil', 'error')
+              } else {
+                swal("Please try again")
+              }
             })
           this.setState({ proses: false })
         }

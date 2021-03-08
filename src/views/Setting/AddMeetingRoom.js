@@ -274,7 +274,9 @@ class AddMeetingRoom extends Component {
       await this.props.fetchDataRooms()
       this.props.history.goBack()
     } catch (err) {
-      if (this.props.location.state.data) {
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      } else if (this.props.location.state.data) {
         swal('Ubah ruang meeting gagal', '', 'error')
       } else {
         swal('Tambah ruang meeting gagal', '', 'error')

@@ -25,13 +25,13 @@ class CardTopics extends Component {
   componentDidMount() {
     this.setState({ topics_id: this.props.data.id, topics: this.props.data.topics, icon: this.props.data.icon, userId: this.props.data.user_id, iconPath: this.props.data.icon ? `${BaseURL}/${this.props.data.icon}` : null })
   }
-  
+
   componentDidUpdate(prevProps, prevState) {
-    if(this.props.data !== prevProps.data){
+    if (this.props.data !== prevProps.data) {
       this.setState({ topics_id: this.props.data.id, topics: this.props.data.topics, icon: this.props.data.icon, userId: this.props.data.user_id, iconPath: this.props.data.icon ? `${BaseURL}/${this.props.data.icon}` : null })
     }
   }
-  
+
   edit = () => {
     this.setState({ isEdit: true })
   }
@@ -56,7 +56,11 @@ class CardTopics extends Component {
 
       swal('Ubah topik berhasil', '', 'success')
     } catch (err) {
-      swal('Ubah topik gagal', '', 'error')
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      } else {
+        swal('Ubah topik gagal', '', 'error')
+      }
       // console.log(err)
     }
   }
@@ -84,7 +88,11 @@ class CardTopics extends Component {
               swal('Hapus topik berhasil', '', 'success')
             })
             .catch(err => {
-              swal('Hapus topik gagal', '', 'error')
+              if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+                swal('Gagal', 'Koneksi tidak stabil', 'error')
+              } else {
+                swal('Hapus topik gagal', '', 'error')
+              }
               // console.log(err)
             })
         }
@@ -108,7 +116,11 @@ class CardTopics extends Component {
 
         swal('Ubah topik berhasil', '', 'success')
       } catch (err) {
-        swal('Ubah topik gagal', '', 'error')
+        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+          swal('Gagal', 'Koneksi tidak stabil', 'error')
+        } else {
+          swal('Ubah topik gagal', '', 'error')
+        }
         // console.log(err)
       }
     }
@@ -170,7 +182,7 @@ const mapDispatchToProps = {
   fetchDataTopicsHelpdesk
 }
 
-const mapStateToProps = ({ userId, isAdminHelpdesk, isAdminsuper}) => {
+const mapStateToProps = ({ userId, isAdminHelpdesk, isAdminsuper }) => {
   return {
     userId,
     isAdminsuper,

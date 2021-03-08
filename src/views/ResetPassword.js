@@ -49,7 +49,9 @@ class ResetPassword extends Component {
 
       } catch (err) {
         // console.log(err.response)
-        if (err.response && err.response.status === 400) {
+        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+          swal('Gagal', 'Koneksi tidak stabil', 'error')
+        } else if (err.response && err.response.status === 400) {
           if (err.response.data.message === 'token not found') {
             swal('Gagal', 'Link sudah terpakai, silahkan masukan kembali email anda', 'error')
           } else {
@@ -173,6 +175,9 @@ class ResetPassword extends Component {
           await this.props.fetchDataNotification();
         })
         .catch((err) => {
+          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+            swal('Gagal', 'Koneksi tidak stabil', 'error')
+          }
           // console.log(err)
           Cookies.remove("POLAGROUP");
           // props.userLogout()

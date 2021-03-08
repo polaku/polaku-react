@@ -95,7 +95,9 @@ class modalEvent extends Component {
       }
 
     } catch (err) {
-      if (err.message === 'Request failed with status code 403') {
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      } else if (err.message === 'Request failed with status code 403') {
         swal('Waktu login telah habis, silahkan login kembali', "", "error");
       } else {
         swal('Error', `${err}`)
@@ -129,7 +131,11 @@ class modalEvent extends Component {
       await this.props.fetchDataEvent()
       swal('Hapus acara berhasil', '', 'success')
     } catch (err) {
-      swal('Hapus acara gagal', '', 'error')
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      } else {
+        swal('Hapus acara gagal', '', 'error')
+      }
     }
   }
 

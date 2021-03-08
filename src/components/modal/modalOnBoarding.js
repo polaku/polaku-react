@@ -103,7 +103,11 @@ class modalOnBoarding extends Component {
       .catch(err => {
         // console.log(err)
         this.setState({ proses: false })
-        swal('please try again')
+        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+          swal('Gagal', 'Koneksi tidak stabil', 'error')
+        } else {
+          swal('please try again')
+        }
       })
   }
 

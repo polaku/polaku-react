@@ -154,7 +154,9 @@ class CreateBookingRoom extends Component {
           this.props.history.push('/booking-room');
         })
         .catch((err) => {
-          if (err.message === 'Request failed with status code 400') {
+          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+            swal('Gagal', 'Koneksi tidak stabil', 'error')
+          } else if (err.message === 'Request failed with status code 400') {
             swal('Waktu yang dipesan sudah terpesan oleh orang lain, harap menentukan waktu yang lain', "", "error");
           } else if (err.message === 'Request failed with status code 403') {
             swal('Waktu login telah habis, silahkan login kembali', "", "error");

@@ -55,6 +55,9 @@ class Profil extends Component {
       this.props.history.push('/login')
     } catch (err) {
       // console.log(err)
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      }
     }
   }
 
@@ -90,6 +93,9 @@ class Profil extends Component {
       })
       .catch(err => {
         // console.log(err)
+        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+          swal('Gagal', 'Koneksi tidak stabil', 'error')
+        }
       })
 
 

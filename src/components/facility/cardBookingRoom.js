@@ -74,7 +74,11 @@ class cardBookingRoom extends Component {
               })
             })
             .catch(err => {
-              swal("Pesanan gagal dihapus !", "", "error")
+              if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+                swal('Gagal', 'Koneksi tidak stabil', 'error')
+              } else {
+                swal("Pesanan gagal dihapus !", "", "error")
+              }
               this.setState({
                 proses: false
               })

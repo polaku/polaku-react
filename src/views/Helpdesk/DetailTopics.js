@@ -84,6 +84,9 @@ class DetailTopics extends Component {
       }
     } catch (err) {
       // console.log(err)
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      }
     }
   }
 
@@ -110,7 +113,11 @@ class DetailTopics extends Component {
 
         swal('Ubah topik berhasil', '', 'success')
       } catch (err) {
-        swal('Ubah topik gagal', '', 'error')
+        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+          swal('Gagal', 'Koneksi tidak stabil', 'error')
+        } else {
+          swal('Ubah topik gagal', '', 'error')
+        }
         // console.log(err)
       }
     }
@@ -154,7 +161,11 @@ class DetailTopics extends Component {
 
             })
             .catch(err => {
-              swal('Hapus sub topik gagal', '', 'error')
+              if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+                swal('Gagal', 'Koneksi tidak stabil', 'error')
+              } else {
+                swal('Hapus sub topik gagal', '', 'error')
+              }
               // console.log(err)
             })
         }
@@ -195,7 +206,11 @@ class DetailTopics extends Component {
       swal('Edit sub topik berhasil', '', 'success')
     } catch (err) {
       // console.log(err)
-      swal('Edit sub topik gagal', '', 'error')
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      } else {
+        swal('Edit sub topik gagal', '', 'error')
+      }
     }
   }
 
@@ -226,7 +241,11 @@ class DetailTopics extends Component {
       this.fetchData()
     } catch (err) {
       // console.log(err)
-      swal('silahkan coba lagi', '', 'warning')
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      } else {
+        swal('silahkan coba lagi', '', 'warning')
+      }
     }
   }
 

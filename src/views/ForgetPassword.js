@@ -28,7 +28,11 @@ export default class ForgetPassword extends Component {
           swal('Error', 'Email tidak ditemukan', 'error')
         }
       } else {
-        swal('Error', 'Silahkan coba lagi', 'error')
+        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+          swal('Gagal', 'Koneksi tidak stabil', 'error')
+        } else {
+          swal('Error', 'Silahkan coba lagi', 'error')
+        }
       }
     }
   }

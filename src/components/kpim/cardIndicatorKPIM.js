@@ -81,7 +81,7 @@ class cardIndicator extends Component {
           persenBefore = Math.round(
             (Math.ceil(Number(dataBefore.pencapaian_monthly)) /
               Number(dataBefore.target_monthly)) *
-              100
+            100
           );
 
         if (dataNow.target_monthly !== 0)
@@ -89,7 +89,7 @@ class cardIndicator extends Component {
             Math.ceil(
               (Number(dataNow.pencapaian_monthly) /
                 Number(dataNow.target_monthly)) *
-                100
+              100
             )
           );
       } else {
@@ -144,7 +144,11 @@ class cardIndicator extends Component {
         swal("Nilai sudah terbaru", "", "success");
       })
       .catch((err) => {
-        swal("please try again");
+        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+          swal('Gagal', 'Koneksi tidak stabil', 'error')
+        } else {
+          swal("please try again");
+        }
       });
   };
 
@@ -254,39 +258,39 @@ class cardIndicator extends Component {
                 </Grid>
               </Grid>
             ) : (
-              <>
-                <p style={{ margin: 0, fontSize: 30 }}>
-                  {Math.floor(this.state.persenNow)}%
+                  <>
+                    <p style={{ margin: 0, fontSize: 30 }}>
+                      {Math.floor(this.state.persenNow)}%
                 </p>
-                <Grid style={{ display: "flex", alignItems: "center" }}>
-                  {this.state.persenBefore - this.state.persenNow <= 0 ? (
-                    <ArrowDropUpIcon style={{ color: "green" }} />
-                  ) : (
-                    <ArrowDropDownIcon style={{ color: "red" }} />
-                  )}
+                    <Grid style={{ display: "flex", alignItems: "center" }}>
+                      {this.state.persenBefore - this.state.persenNow <= 0 ? (
+                        <ArrowDropUpIcon style={{ color: "green" }} />
+                      ) : (
+                          <ArrowDropDownIcon style={{ color: "red" }} />
+                        )}
 
-                  <p
-                    style={{
-                      margin: "3px 5px 0px 0px",
-                      fontSize: 10,
-                      color:
-                        this.state.persenBefore - this.state.persenNow <= 0
-                          ? "green"
-                          : "red",
-                    }}
-                  >
-                    {Math.abs(
-                      Math.floor(this.state.persenBefore - this.state.persenNow)
-                    )}
+                      <p
+                        style={{
+                          margin: "3px 5px 0px 0px",
+                          fontSize: 10,
+                          color:
+                            this.state.persenBefore - this.state.persenNow <= 0
+                              ? "green"
+                              : "red",
+                        }}
+                      >
+                        {Math.abs(
+                          Math.floor(this.state.persenBefore - this.state.persenNow)
+                        )}
                     %
                   </p>
-                  <p style={{ margin: "3px 0px 0px 0px", fontSize: 10 }}>
-                    {" "}
+                      <p style={{ margin: "3px 0px 0px 0px", fontSize: 10 }}>
+                        {" "}
                     dari periode sebelumnya
                   </p>
-                </Grid>
-              </>
-            )}
+                    </Grid>
+                  </>
+                )}
           </Grid>
         </Grid>
 
@@ -306,24 +310,24 @@ class cardIndicator extends Component {
           <Grid style={{ width: 250, padding: 10 }}>
             {this.props.data.indicator_kpim.toLowerCase() === "tal team"
               ? this.props.data.talBawahanThisWeek.map((tal, index) => (
-                  <PencapaianKPIM
-                    data={tal}
-                    key={index}
-                    refresh={this.refresh}
-                    index={index}
-                    indicator={this.props.data.indicator_kpim}
-                  />
-                ))
+                <PencapaianKPIM
+                  data={tal}
+                  key={index}
+                  refresh={this.refresh}
+                  index={index}
+                  indicator={this.props.data.indicator_kpim}
+                />
+              ))
               : this.props.data.tbl_kpim_scores.map((kpim, index) => (
-                  <PencapaianKPIM
-                    data={kpim}
-                    key={index}
-                    refresh={this.refresh}
-                    index={index}
-                    indicator={this.props.data.indicator_kpim}
-                    year={this.props.data.year}
-                  />
-                ))}
+                <PencapaianKPIM
+                  data={kpim}
+                  key={index}
+                  refresh={this.refresh}
+                  index={index}
+                  indicator={this.props.data.indicator_kpim}
+                  year={this.props.data.year}
+                />
+              ))}
 
             {this.props.data.indicator_kpim.toLowerCase() === "kpim team" && (
               <Grid style={{ width: "100%", textAlign: "end" }}>

@@ -22,6 +22,7 @@ import {
 import { fetchDataCompanies, fetchDataDepartment, fetchDataPosition, fetchDataUsers, fetchDataAddress, fetchDataStructure } from '../../store/action';
 
 import { API } from '../../config/API';
+import swal from 'sweetalert';
 
 const animatedComponents = makeAnimated();
 
@@ -139,9 +140,11 @@ class cardAddEmployee extends Component {
           this.setState({ optionDivisi, optionPosisi })
 
         })
-        .catch(err => { }
-          // console.log(err)
-        )
+        .catch(err => {
+          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+            swal('Gagal', 'Koneksi tidak stabil', 'error')
+          }
+        })
 
       this.setState({ dataAddress })
     }
@@ -183,9 +186,11 @@ class cardAddEmployee extends Component {
           this.setState({ optionDivisiDinas, optionPosisiDinas })
 
         })
-        .catch(err => { }
-          // console.log(err)
-        )
+        .catch(err => {
+          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+            swal('Gagal', 'Koneksi tidak stabil', 'error')
+          }
+        })
 
       this.setState({ dataAddressDinas })
     }

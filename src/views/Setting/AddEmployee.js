@@ -60,6 +60,9 @@ class AddEmployee extends Component {
       this.setState({ optionUser: listUser })
     } catch (err) {
       // console.log(err)
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      }
     }
   }
 
@@ -116,7 +119,11 @@ class AddEmployee extends Component {
           })
           .catch(err => {
             this.setState({ proses: false, statusSubmit: false })
-            swal('Ubah karyawan gagal', '', 'error')
+            if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+              swal('Gagal', 'Koneksi tidak stabil', 'error')
+            } else {
+              swal('Ubah karyawan gagal', '', 'error')
+            }
           })
       } else {
         this.setState({ tempDataForEdit: newData })
@@ -145,7 +152,11 @@ class AddEmployee extends Component {
           })
           .catch(err => {
             this.setState({ proses: false, statusSubmit: false })
-            swal('Tambah karyawan gagal', '', 'error')
+            if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+              swal('Gagal', 'Koneksi tidak stabil', 'error')
+            } else {
+              swal('Tambah karyawan gagal', '', 'error')
+            }
           })
       } else {
         this.setState({ data: newData })

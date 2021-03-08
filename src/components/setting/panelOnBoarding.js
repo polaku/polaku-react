@@ -183,7 +183,11 @@ class panelOnBoarding extends Component {
       })
       await this.props.fetchDataPIC()
     } catch (err) {
-      swal("Edit PIC gagal", "", "warning")
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      } else {
+        swal("Edit PIC gagal", "", "warning")
+      }
     }
   };
 
@@ -234,7 +238,11 @@ class panelOnBoarding extends Component {
           }
         });
     } catch (err) {
-      swal('Hapus PIC gagal', '', 'error')
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      } else {
+        swal('Hapus PIC gagal', '', 'error')
+      }
     }
   }
 

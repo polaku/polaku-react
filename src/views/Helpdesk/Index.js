@@ -81,7 +81,11 @@ class Helpdesk extends Component {
       this.setState({ newTopics: null, icon: null, iconPath: null })
       swal('Tambah topik berhasil', '', 'success')
     } catch (err) {
-      swal('Tambah topik gagal', '', 'error')
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      } else {
+        swal('Tambah topik gagal', '', 'error')
+      }
       // console.log(err)
     }
   }

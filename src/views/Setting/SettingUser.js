@@ -284,7 +284,11 @@ class SettingUser extends Component {
           swal("Tambah user sukses", "", "success")
         })
         .catch(err => {
-          swal('Error', `${err}`)
+          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+            swal('Gagal', 'Koneksi tidak stabil', 'error')
+          } else {
+            swal('Error', `${err}`)
+          }
         })
     } else {
       this.validateForm()
@@ -479,7 +483,11 @@ class SettingUser extends Component {
         swal("Import data sukses", "", "success")
       })
       .catch(err => {
-        swal("please try again")
+        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+          swal('Gagal', 'Koneksi tidak stabil', 'error')
+        } else {
+          swal("please try again")
+        }
       })
   }
 

@@ -231,6 +231,9 @@ class AddAdmin extends Component {
       this.setState({ dataDesignation: data.data, optionDesignation })
     } catch (err) {
       // console.log(err)
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      }
     }
   }
 
@@ -273,6 +276,9 @@ class AddAdmin extends Component {
       this.setState({ listUser })
     } catch (err) {
       // console.log(err)
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      }
     }
   }
 
@@ -553,7 +559,9 @@ class AddAdmin extends Component {
       }
       this.navigateBack()
     } catch (err) {
-      if (this.state.isEdit) {
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      } else if (this.state.isEdit) {
         swal('Edit Admin gagal', '', 'error')
       } else {
         swal('Tambah Admin gagal', '', 'error')

@@ -144,8 +144,12 @@ class Login extends Component {
         await this.props.fetchDataNotification()
       }
     } catch (err) {
-      // console.log(err)
-      swal('Username atau Password Salah!', 'Username atau Password yang anda masukan tidak sesuai', 'error')
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      } else {
+        swal('Username atau Password Salah!', 'Username atau Password yang anda masukan tidak sesuai', 'error')
+      }
+
       this.setState({
         proses: false,
         editableInput: true

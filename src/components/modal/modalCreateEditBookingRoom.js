@@ -177,10 +177,12 @@ class modalCreateEditBookingRoom extends Component {
           })
           .catch((err) => {
             // console.log(err.response)
-            if (err.message === 'Request failed with status code 400') {
-              if(err.response.data.error === 'Total person too much'){
+            if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+              swal('Gagal', 'Koneksi tidak stabil', 'error')
+            } else if (err.message === 'Request failed with status code 400') {
+              if (err.response.data.error === 'Total person too much') {
                 swal('Total partisipan melebihi kapasitas ruangan', "", "error");
-              }else{
+              } else {
                 swal('Waktu yang dipesan sudah terpesan oleh orang lain, harap menentukan waktu yang lain', "", "error");
               }
             } else if (err.message === 'Request failed with status code 403') {
@@ -214,7 +216,9 @@ class modalCreateEditBookingRoom extends Component {
             await this.props.refresh()
           })
           .catch((err) => {
-            if (err.message === 'Request failed with status code 400') {
+            if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+              swal('Gagal', 'Koneksi tidak stabil', 'error')
+            } else if (err.message === 'Request failed with status code 400') {
               swal('Waktu yang dipesan sudah terpesan oleh orang lain, harap menentukan waktu yang lain', "", "error");
             } else if (err.message === 'Request failed with status code 403') {
               swal('Waktu login telah habis, silahkan login kembali', "", "error");
