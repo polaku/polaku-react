@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 
 import {
   Table, TableBody, TableCell, TableHead, TableRow, Paper, Button, TablePagination
 } from '@material-ui/core';
 
-import ModalCreateEditRoomAssistant from '../../components/modal/modalCreateEditRoomAssistant';
-import CardRoomAssistant from '../../components/facility/cardRoomAssistant';
-
 import { fetchDataRoomMaster, fetchDataRooms } from '../../store/action';
+
+const ModalCreateEditRoomAssistant = lazy(() => import('../../components/modal/modalCreateEditRoomAssistant'));
+const CardRoomAssistant = lazy(() => import('../../components/facility/cardRoomAssistant'));
 
 class AssignRoomAssistant extends Component {
   constructor(props) {
@@ -30,7 +30,7 @@ class AssignRoomAssistant extends Component {
   componentWillUnmount() {
     this._isMounted = false
   }
-  
+
 
   fetchData = async () => {
     await this.props.fetchDataRoomMaster()

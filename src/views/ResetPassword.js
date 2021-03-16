@@ -11,10 +11,13 @@ import { API } from '../config/API';
 import { setUser, fetchDataNotification } from '../store/action';
 
 class ResetPassword extends Component {
-  state = {
-    password: null,
-    repassword: null,
-    errorRepassword: false
+  constructor(props) {
+    super(props);
+    this.state = {
+      password: null,
+      repassword: null,
+      errorRepassword: false
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {

@@ -17,12 +17,15 @@ import { API } from '../../config/API';
 import { fetchDataTopicsHelpdesk } from '../../store/action';
 
 class PanelQuestion extends Component {
-  state = {
-    listQuestion: [],
-    showDetailQuestion: false,
-    questionSelected: null,
-    like: false,
-    unlike: false
+  constructor(props) {
+    super(props);
+    this.state = {
+      listQuestion: [],
+      showDetailQuestion: false,
+      questionSelected: null,
+      like: false,
+      unlike: false
+    };
   }
 
   async componentDidMount() {

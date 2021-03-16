@@ -18,19 +18,22 @@ import { fetchDataTopicsHelpdesk } from '../../store/action';
 import { API, BaseURL } from '../../config/API';
 
 class DetailTopics extends Component {
-  state = {
-    proses: true,
-    index: 0,
-    topics: null,
-    iconPath: null,
-    listSubTopics: [],
-    newSubTopics: null,
-    addNewQuestion: false,
-    subTopicsSelected: null,
+  constructor(props) {
+    super(props);
+    this.state = {
+      proses: true,
+      index: 0,
+      topics: null,
+      iconPath: null,
+      listSubTopics: [],
+      newSubTopics: null,
+      addNewQuestion: false,
+      subTopicsSelected: null,
 
-    indexSubTopics: 0,
-    questionSelectedForEdit: null,
+      indexSubTopics: 0,
+      questionSelectedForEdit: null,
 
+    }
   }
 
   async componentDidMount() {

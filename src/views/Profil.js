@@ -1,10 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie'
 
 import { Paper, Button, Grid, TextField } from '@material-ui/core';
-
-import ModalChangePassword from '../components/modal/modalChangePassword';
 
 import EditIcon from '@material-ui/icons/Edit';
 import CancelPresentationOutlinedIcon from '@material-ui/icons/CancelPresentationOutlined';
@@ -16,12 +14,17 @@ import { API } from '../config/API';
 
 import swal from 'sweetalert';
 
+const ModalChangePassword = lazy(() => import('../components/modal/modalChangePassword'));
+
 class Profil extends Component {
-  state = {
+  constructor(props) {
+    super(props);
+    this.state = {
     changePass: false,
     changeUsername: false,
     username: ''
   }
+}
 
   async componentDidMount() {
     if (this.props.userId) {

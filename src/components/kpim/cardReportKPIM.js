@@ -14,96 +14,99 @@ import ChevronRightOutlinedIcon from '@material-ui/icons/ChevronRightOutlined';
 import Download from '../exportToExcel';
 
 export default class cardReport extends Component {
-  state = {
-    openDetail: false,
-    unduhLaporan: ["semua", "KPIM", "TAL"],
-    openTAL: false,
-    isSelected: false,
-    anchorElMenu: null,
-    anchorElSubMenu: null,
-    openMenu: false,
-    openSubMenu: false,
-    labelValueReportNilai: [
-      {
-        label: "NIK",
-        value: "nik"
-      }, {
-        label: "Nama",
-        value: "nama"
-      }, {
-        label: "KPIM1",
-        value: "kpim1"
-      }, {
-        label: "KPIM2",
-        value: "kpim2"
-      }, {
-        label: "KPIM3",
-        value: "kpim3"
-      }, {
-        label: "KPIM4",
-        value: "kpim4"
-      }, {
-        label: "KPIM5",
-        value: "kpim5"
-      }, {
-        label: "TAL",
-        value: "TAL"
-      }, {
-        label: "Total Nilai",
-        value: "totalNilai"
-      }, {
-        label: "NIK Evaluator",
-        value: "nikEvaluator"
-      }, {
-        label: "Nama Evaluator",
-        value: "namaEvaluator"
-      },
-    ],
-    labelValueKPIM: [
-      {
-        label: "NIK",
-        value: "nik"
-      }, {
-        label: "Nama",
-        value: "nama"
-      }, {
-        label: "Indikator",
-        value: "indikator"
-      }, {
-        label: "Nilai",
-        value: "nilai"
-      }, {
-        label: "NIK Evaluator",
-        value: "nikEvaluator"
-      }, {
-        label: "Nama Evaluator",
-        value: "namaEvaluator"
-      },
-    ],
-    labelValueTAL: [
-      {
-        label: "NIK",
-        value: "nik"
-      }, {
-        label: "Nama",
-        value: "nama"
-      }, {
-        label: "TAL",
-        value: "tal"
-      }, {
-        label: "Minggu",
-        value: "minggu"
-      }, {
-        label: "Nilai",
-        value: "nilai"
-      }, {
-        label: "NIK Evaluator",
-        value: "nikEvaluator"
-      }, {
-        label: "Nama Evaluator",
-        value: "namaEvaluator"
-      },
-    ],
+  constructor(props) {
+    super(props);
+    this.state = {
+      openDetail: false,
+      unduhLaporan: ["semua", "KPIM", "TAL"],
+      openTAL: false,
+      isSelected: false,
+      anchorElMenu: null,
+      anchorElSubMenu: null,
+      openMenu: false,
+      openSubMenu: false,
+      labelValueReportNilai: [
+        {
+          label: "NIK",
+          value: "nik"
+        }, {
+          label: "Nama",
+          value: "nama"
+        }, {
+          label: "KPIM1",
+          value: "kpim1"
+        }, {
+          label: "KPIM2",
+          value: "kpim2"
+        }, {
+          label: "KPIM3",
+          value: "kpim3"
+        }, {
+          label: "KPIM4",
+          value: "kpim4"
+        }, {
+          label: "KPIM5",
+          value: "kpim5"
+        }, {
+          label: "TAL",
+          value: "TAL"
+        }, {
+          label: "Total Nilai",
+          value: "totalNilai"
+        }, {
+          label: "NIK Evaluator",
+          value: "nikEvaluator"
+        }, {
+          label: "Nama Evaluator",
+          value: "namaEvaluator"
+        },
+      ],
+      labelValueKPIM: [
+        {
+          label: "NIK",
+          value: "nik"
+        }, {
+          label: "Nama",
+          value: "nama"
+        }, {
+          label: "Indikator",
+          value: "indikator"
+        }, {
+          label: "Nilai",
+          value: "nilai"
+        }, {
+          label: "NIK Evaluator",
+          value: "nikEvaluator"
+        }, {
+          label: "Nama Evaluator",
+          value: "namaEvaluator"
+        },
+      ],
+      labelValueTAL: [
+        {
+          label: "NIK",
+          value: "nik"
+        }, {
+          label: "Nama",
+          value: "nama"
+        }, {
+          label: "TAL",
+          value: "tal"
+        }, {
+          label: "Minggu",
+          value: "minggu"
+        }, {
+          label: "Nilai",
+          value: "nilai"
+        }, {
+          label: "NIK Evaluator",
+          value: "nikEvaluator"
+        }, {
+          label: "Nama Evaluator",
+          value: "namaEvaluator"
+        },
+      ],
+    };
   }
 
   componentDidUpdate(prevProps, prevState) {

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
@@ -21,10 +21,8 @@ import ArrowDropDownOutlinedIcon from '@material-ui/icons/ArrowDropDownOutlined'
 import ArchiveIcon from '@material-ui/icons/Archive';
 import CancelPresentationIcon from '@material-ui/icons/CancelPresentation';
 
-import orderBy from 'lodash/orderBy';
-
-import CardReport from '../../components/report/CardReport';
 import Download from '../../components/exportToExcel';
+import orderBy from 'lodash/orderBy';
 
 import {
   fetchDataUsers, fetchDataCompanies, fetchDataPosition, fetchDataBuildings
@@ -32,6 +30,8 @@ import {
 
 import swal from 'sweetalert';
 import { API } from '../../config/API';
+
+const CardReport = lazy(() => import('../../components/report/CardReport'));
 
 const invertDirection = {
   asc: "desc",

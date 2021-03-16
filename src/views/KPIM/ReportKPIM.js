@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 
 import PropTypes from 'prop-types';
@@ -14,10 +14,11 @@ import ArrowDropUpOutlinedIcon from '@material-ui/icons/ArrowDropUpOutlined';
 import ArrowDropDownOutlinedIcon from '@material-ui/icons/ArrowDropDownOutlined';
 import SearchIcon from '@material-ui/icons/Search';
 
-import CardReportKPIM from '../../components/kpim/cardReportKPIM';
-import Download from '../../components/exportToExcel'
+import Download from '../../components/exportToExcel';
 
 import { fetchDataAllKPIM } from '../../store/action';
+
+const CardReportKPIM = lazy(() => import('../../components/kpim/cardReportKPIM'));
 
 const invertDirection = {
   asc: "desc",
@@ -50,155 +51,158 @@ TabPanel.propTypes = {
 
 
 class ReportIjin extends Component {
-  state = {
-    loading: false,
-    month: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
-    yearSelected: new Date().getFullYear(),
-    monthSelected: null,
-    weekSelected: null,
-    optionMinggu: [],
-    optionYear: [],
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: false,
+      month: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+      yearSelected: new Date().getFullYear(),
+      monthSelected: null,
+      weekSelected: null,
+      optionMinggu: [],
+      optionYear: [],
 
-    value: 0,
-    index: 0,
-    openFilter: false,
+      value: 0,
+      index: 0,
+      openFilter: false,
 
-    data: [],
-    dataForDisplay: [],
-    page: 0,
-    rowsPerPage: 5,
-    columnToSort: "",
-    sortDirection: "desc",
+      data: [],
+      dataForDisplay: [],
+      page: 0,
+      rowsPerPage: 5,
+      columnToSort: "",
+      sortDirection: "desc",
 
-    labelValue: [
-      {
-        label: "Name",
-        value: "name"
-      }, {
-        label: "Total Nilai",
-        value: "totalNilai"
-      }, {
-        label: "TAL",
-        value: "tal"
-      }, {
-        label: "KPIM",
-        value: "kpim"
-      }
-    ],
+      labelValue: [
+        {
+          label: "Name",
+          value: "name"
+        }, {
+          label: "Total Nilai",
+          value: "totalNilai"
+        }, {
+          label: "TAL",
+          value: "tal"
+        }, {
+          label: "KPIM",
+          value: "kpim"
+        }
+      ],
 
-    kpim: [],
-    tal: [],
+      kpim: [],
+      tal: [],
 
-    searchName: "",
-    filterCategori: "",
-    selectAll: false,
-    statusCheckAll: false,
+      searchName: "",
+      filterCategori: "",
+      selectAll: false,
+      statusCheckAll: false,
 
-    unduhLaporan: ["semua", "KPIM", "TAL"],
-    anchorElSubMenu: null,
-    openSubMenu: false,
+      unduhLaporan: ["semua", "KPIM", "TAL"],
+      anchorElSubMenu: null,
+      openSubMenu: false,
 
-    labelValueReportNilai: [
-      {
-        label: "NIK",
-        value: "nik"
-      }, {
-        label: "Nama",
-        value: "nama"
-      }, {
-        label: "KPIM1",
-        value: "kpim1"
-      }, {
-        label: "KPIM2",
-        value: "kpim2"
-      }, {
-        label: "KPIM3",
-        value: "kpim3"
-      }, {
-        label: "KPIM4",
-        value: "kpim4"
-      }, {
-        label: "KPIM5",
-        value: "kpim5"
-      }, {
-        label: "TAL",
-        value: "TAL"
-      }, {
-        label: "Total Nilai",
-        value: "totalNilai"
-      }, {
-        label: "NIK Evaluator",
-        value: "nikEvaluator"
-      }, {
-        label: "Nama Evaluator",
-        value: "namaEvaluator"
-      }, {
-        label: "Bulan",
-        value: "bulan"
-      }, {
-        label: "Tahun",
-        value: "tahun"
-      },
-    ],
-    labelValueKPIM: [
-      {
-        label: "NIK",
-        value: "nik"
-      }, {
-        label: "Nama",
-        value: "nama"
-      }, {
-        label: "Indikator",
-        value: "indikator"
-      }, {
-        label: "Nilai",
-        value: "nilai"
-      }, {
-        label: "NIK Evaluator",
-        value: "nikEvaluator"
-      }, {
-        label: "Nama Evaluator",
-        value: "namaEvaluator"
-      }, {
-        label: "Bulan",
-        value: "bulan"
-      }, {
-        label: "Tahun",
-        value: "tahun"
-      },
-    ],
-    labelValueTAL: [
-      {
-        label: "NIK",
-        value: "nik"
-      }, {
-        label: "Nama",
-        value: "nama"
-      }, {
-        label: "TAL",
-        value: "tal"
-      }, {
-        label: "Minggu",
-        value: "minggu"
-      }, {
-        label: "Nilai",
-        value: "nilai"
-      }, {
-        label: "NIK Evaluator",
-        value: "nikEvaluator"
-      }, {
-        label: "Nama Evaluator",
-        value: "namaEvaluator"
-      },
-    ],
-    dataNilaiReport: [],
-    dataNilaiKPIM: [],
-    dataNilaiTAL: [],
-    counterCeklis: 0,
+      labelValueReportNilai: [
+        {
+          label: "NIK",
+          value: "nik"
+        }, {
+          label: "Nama",
+          value: "nama"
+        }, {
+          label: "KPIM1",
+          value: "kpim1"
+        }, {
+          label: "KPIM2",
+          value: "kpim2"
+        }, {
+          label: "KPIM3",
+          value: "kpim3"
+        }, {
+          label: "KPIM4",
+          value: "kpim4"
+        }, {
+          label: "KPIM5",
+          value: "kpim5"
+        }, {
+          label: "TAL",
+          value: "TAL"
+        }, {
+          label: "Total Nilai",
+          value: "totalNilai"
+        }, {
+          label: "NIK Evaluator",
+          value: "nikEvaluator"
+        }, {
+          label: "Nama Evaluator",
+          value: "namaEvaluator"
+        }, {
+          label: "Bulan",
+          value: "bulan"
+        }, {
+          label: "Tahun",
+          value: "tahun"
+        },
+      ],
+      labelValueKPIM: [
+        {
+          label: "NIK",
+          value: "nik"
+        }, {
+          label: "Nama",
+          value: "nama"
+        }, {
+          label: "Indikator",
+          value: "indikator"
+        }, {
+          label: "Nilai",
+          value: "nilai"
+        }, {
+          label: "NIK Evaluator",
+          value: "nikEvaluator"
+        }, {
+          label: "Nama Evaluator",
+          value: "namaEvaluator"
+        }, {
+          label: "Bulan",
+          value: "bulan"
+        }, {
+          label: "Tahun",
+          value: "tahun"
+        },
+      ],
+      labelValueTAL: [
+        {
+          label: "NIK",
+          value: "nik"
+        }, {
+          label: "Nama",
+          value: "nama"
+        }, {
+          label: "TAL",
+          value: "tal"
+        }, {
+          label: "Minggu",
+          value: "minggu"
+        }, {
+          label: "Nilai",
+          value: "nilai"
+        }, {
+          label: "NIK Evaluator",
+          value: "nikEvaluator"
+        }, {
+          label: "Nama Evaluator",
+          value: "namaEvaluator"
+        },
+      ],
+      dataNilaiReport: [],
+      dataNilaiKPIM: [],
+      dataNilaiTAL: [],
+      counterCeklis: 0,
 
-    updatedAt: new Date(),
-    dataForDownload: []
-  };
+      updatedAt: new Date(),
+      dataForDownload: []
+    }
+  }
 
   async componentDidMount() {
     let optionYear = []

@@ -16,16 +16,19 @@ import { API } from '../../config/API';
 import swal from 'sweetalert';
 
 class cardTAL extends Component {
-  state = {
-    load: 0,
-    achievement: 0,
-    link: '',
-    editAchievement: false,
-    editLoad: false,
-    proses: false,
-    prosesLoad: false,
-    prosesAchievment: false,
-    prosesLink: false
+  constructor(props) {
+    super(props);
+    this.state = {
+      load: 0,
+      achievement: 0,
+      link: '',
+      editAchievement: false,
+      editLoad: false,
+      proses: false,
+      prosesLoad: false,
+      prosesAchievment: false,
+      prosesLink: false
+    };
   }
 
   componentDidMount() {

@@ -22,14 +22,17 @@ import swal from 'sweetalert';
 const animatedComponents = makeAnimated();
 
 class modalOnBoarding extends Component {
-  state = {
-    companyName: '',
-    akronim: '',
-    pic: [],
-    people: [],
-    proses: false,
-    listCompanies: [],
-    disabledAkronim: false
+  constructor(props) {
+    super(props);
+    this.state = {
+      companyName: '',
+      akronim: '',
+      pic: [],
+      people: [],
+      proses: false,
+      listCompanies: [],
+      disabledAkronim: false
+    }
   }
 
   async componentDidMount() {

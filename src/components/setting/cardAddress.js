@@ -18,8 +18,11 @@ import { API } from '../../config/API';
 import swal from 'sweetalert';
 
 class cardAddress extends Component {
-  state = {
-    notComplete: false
+  constructor(props) {
+    super(props);
+    this.state = {
+      notComplete: false
+    }
   }
 
   componentDidMount() {

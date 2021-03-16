@@ -1,33 +1,36 @@
-import React, { Component } from 'react'
+import React, { Component, lazy } from 'react'
 
 import {
-  Grid, CircularProgress, Paper, Tabs, Tab, Divider, TextField, Button, 
+  Grid, CircularProgress, Paper, Tabs, Tab, Divider, TextField, Button,
   // TablePagination, 
   Select, MenuItem, FormControl, FormControlLabel, Checkbox, Switch
   // Checkbox
 } from '@material-ui/core';
 
-import CardKeamanan from '../../components/setting/cardKeamanan';
-import CardAktifitas from '../../components/setting/cardAktifitas';
+const CardKeamanan = lazy(() => import('../../components/setting/cardKeamanan'));
+const CardAktifitas = lazy(() => import('../../components/setting/cardAktifitas'));
 
 export default class SettingKeamanan extends Component {
-  state = {
-    labelTab: ['Semua'],
-    indexMenu: 0,
-    search: '',
-    value: 0,
-    limitError: '',
-    timesError: '',
-    waktuError: '',
-    limit: '',
-    times: '',
-    waktu: '',
-    otomatisLogout: false,
-    resetPassword: false,
-    oneBrowser: false,
-    onePhone: false,
-    otomatisLogout2: false,
-    totalIP: '',
+  constructor(props) {
+    super(props);
+    this.state = {
+      labelTab: ['Semua'],
+      indexMenu: 0,
+      search: '',
+      value: 0,
+      limitError: '',
+      timesError: '',
+      waktuError: '',
+      limit: '',
+      times: '',
+      waktu: '',
+      otomatisLogout: false,
+      resetPassword: false,
+      oneBrowser: false,
+      onePhone: false,
+      otomatisLogout2: false,
+      totalIP: '',
+    }
   }
 
 

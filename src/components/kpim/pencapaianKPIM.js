@@ -13,15 +13,18 @@ import swal from 'sweetalert';
 import { connect } from 'react-redux';
 
 class pencapaianKPIM extends Component {
-  state = {
-    open: false,
-    anchorEl: null,
-    persenBefore: 0,
-    persenNow: 0,
-    newInput: "",
-    pencapaian: 0,
-    editIndicator: false,
-    fullname: "",
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false,
+      anchorEl: null,
+      persenBefore: 0,
+      persenNow: 0,
+      newInput: "",
+      pencapaian: 0,
+      editIndicator: false,
+      fullname: "",
+    }
   }
 
   componentDidMount() {

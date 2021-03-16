@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 // import Cookies from 'js-cookie';
@@ -8,30 +8,33 @@ import {
   // Checkbox
 } from '@material-ui/core';
 
-import CardAddress from './cardAddress';
 // import SeCreatableSelect from 'react-select/creatable';
 // import makeAnimated from 'react-select/animated';
 
 import { fetchDataUsers, fetchDataAddress, fetchDataCompanies } from '../../store/action';
 
-import ModalLogSetting from '../modal/modalLogSetting';
+const ModalLogSetting = lazy(() => import('../modal/modalLogSetting'));
+const CardAddress = lazy(() => import('./cardAddress'));
 
 class panelAddress extends Component {
-  state = {
-    labelTab: ['Semua'],
-    search: '',
-    value: 0,
-    index: 0,
-    selectAll: false,
-    check: false,
-    data: [],
-    dataForDisplay: [],
-    dataForEdit: [],
-    proses: true,
-    openModalLogSetting: false,
-    page: 0,
-    rowsPerPage: 10,
-    optionCompany: []
+  constructor(props) {
+    super(props);
+    this.state = {
+      labelTab: ['Semua'],
+      search: '',
+      value: 0,
+      index: 0,
+      selectAll: false,
+      check: false,
+      data: [],
+      dataForDisplay: [],
+      dataForEdit: [],
+      proses: true,
+      openModalLogSetting: false,
+      page: 0,
+      rowsPerPage: 10,
+      optionCompany: []
+    }
   }
 
   async componentDidMount() {

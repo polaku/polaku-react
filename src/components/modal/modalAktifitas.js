@@ -14,12 +14,15 @@ import LaptopMacOutlinedIcon from '@material-ui/icons/LaptopMacOutlined';
 // import swal from 'sweetalert';
 
 export default class modalAktifitas extends Component {
-  state = {
-    listReward: [],
-    nilaiBawah: '',
-    nilaiAtas: '',
-    newReward: '',
-    statusAddReward: false,
+  constructor(props) {
+    super(props);
+    this.state = {
+      listReward: [],
+      nilaiBawah: '',
+      nilaiAtas: '',
+      newReward: '',
+      statusAddReward: false,
+    }
   }
 
   componentDidMount() {

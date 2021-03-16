@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, lazy } from 'react'
 import Cookies from 'js-cookie';
 import { connect } from 'react-redux';
 
@@ -19,38 +19,41 @@ import ArchiveOutlinedIcon from '@material-ui/icons/ArchiveOutlined';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
-import ModalSettingTargetKPIM from '../modal/modalSettingTargetKPIM';
-import ModalCopyIndicatorKPIM from '../modal/modalCopyIndicatorKPIM';
-
 import swal from 'sweetalert';
 
 import { API } from '../../config/API';
 
+const ModalSettingTargetKPIM = lazy(() => import('../modal/modalSettingTargetKPIM'));
+const ModalCopyIndicatorKPIM = lazy(() => import('../modal/modalCopyIndicatorKPIM'));
+
 class cardSettingIndicator extends Component {
-  state = {
-    proses: false,
-    open: false,
-    anchorEl: null,
-    persenTahun: 0,
-    persenBulan: 0,
-    target_monthly: null,
-    capaian_monthly: null,
-    statusEdit: false,
-    openModalTargetKPIM: false,
-    openModalCopyIndicatorKPIM: false,
+  constructor(props) {
+    super(props);
+    this.state = {
+      proses: false,
+      open: false,
+      anchorEl: null,
+      persenTahun: 0,
+      persenBulan: 0,
+      target_monthly: null,
+      capaian_monthly: null,
+      statusEdit: false,
+      openModalTargetKPIM: false,
+      openModalCopyIndicatorKPIM: false,
 
-    dataForEdit: {},
-    indicatorKPIM: '',
-    capaian: 0,
-    bobot: 0,
-    tempScoreKPIM: [],
-    achievement: 0,
-    weight: 0,
+      dataForEdit: {},
+      indicatorKPIM: '',
+      capaian: 0,
+      bobot: 0,
+      tempScoreKPIM: [],
+      achievement: 0,
+      weight: 0,
 
-    newOptionTimeTAL: 1,
-    newTimeTAL: '',
+      newOptionTimeTAL: 1,
+      newTimeTAL: '',
 
-    optionTimeTAL: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+      optionTimeTAL: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+    }
   }
 
   async componentDidMount() {

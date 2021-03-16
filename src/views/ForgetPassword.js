@@ -8,8 +8,11 @@ import swal from 'sweetalert';
 import { API } from '../config/API';
 
 export default class ForgetPassword extends Component {
-  state = {
-    email: ''
+  constructor(props) {
+    super(props);
+    this.state = {
+      email: ''
+    }
   }
 
   handleChange = name => event => {

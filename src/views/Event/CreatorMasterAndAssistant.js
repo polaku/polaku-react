@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 
 import {
   Table, TableBody, TableCell, TableHead, TableRow, Paper, Grid, TablePagination, Button
 } from '@material-ui/core';
 
-import CardCreatorMasterAndAssistant from '../../components/facility/cardCreatorMasterAndAssistant';
-import ModalCreatorMasterAndAssistant from '../../components/modal/modalCreatorMasterAndAssistant';
-
 import { fetchDataCreatorMasterAndAssistant, fetchDataUsers } from '../../store/action';
+
+const ModalCreatorMasterAndAssistant = lazy(() => import('../../components/modal/modalCreatorMasterAndAssistant'));
+const CardCreatorMasterAndAssistant = lazy(() => import('../../components/facility/cardCreatorMasterAndAssistant'));
 
 class CreatorMasterAndAssistant extends Component {
   constructor(props) {

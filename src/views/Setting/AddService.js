@@ -20,54 +20,57 @@ import { API } from '../../config/API';
 const animatedComponents = makeAnimated();
 
 class AddService extends Component {
-  state = {
-    proses: false,
-    dinasId: null,
-    employee: null,
-    employeeSelected: null,
-    companyKPI: null,
-    companyKPISelected: null,
-    companyHRD: null,
-    companyHRDSelected: null,
-    optionCompanyKPInHRD: [],
+  constructor(props) {
+    super(props);
+    this.state = {
+      proses: false,
+      dinasId: null,
+      employee: null,
+      employeeSelected: null,
+      companyKPI: null,
+      companyKPISelected: null,
+      companyHRD: null,
+      companyHRDSelected: null,
+      optionCompanyKPInHRD: [],
 
-    // Perusahaan Asal
-    coreCompany: null,
-    coreAddressCompany: null,
-    evaluator1: null,
-    evaluator2: null,
-    positions: [{
-      department: null,
-      position: null,
-    }],
+      // Perusahaan Asal
+      coreCompany: null,
+      coreAddressCompany: null,
+      evaluator1: null,
+      evaluator2: null,
+      positions: [{
+        department: null,
+        position: null,
+      }],
 
-    evaluatorSelected: null,
-    company: null,
-    addressCompany: '',
-    listCompany: [],
-    listAddressCompany: [],
-    listUser: [],
+      evaluatorSelected: null,
+      company: null,
+      addressCompany: '',
+      listCompany: [],
+      listAddressCompany: [],
+      listUser: [],
 
-    dinas: [
-      // {
-      //   dinasId: null,
-      //   company: null,
-      //   location: null,
-      //   positions: [{
-      //     department: null,
-      //     departmentSelected: null,
-      //     departmentPositionId: null,
-      //     position: null,
-      //     positionSelected: null
-      //   }]
-      //   optionPosition: [],
-      //   optionDepart: [],
-      //   evaluator: null,
-      //   evaluatorSelected: null,
-      // }
-    ],
+      dinas: [
+        // {
+        //   dinasId: null,
+        //   company: null,
+        //   location: null,
+        //   positions: [{
+        //     department: null,
+        //     departmentSelected: null,
+        //     departmentPositionId: null,
+        //     position: null,
+        //     positionSelected: null
+        //   }]
+        //   optionPosition: [],
+        //   optionDepart: [],
+        //   evaluator: null,
+        //   evaluatorSelected: null,
+        // }
+      ],
 
-    optionCompany: [],
+      optionCompany: [],
+    }
   }
 
   async componentDidMount() {

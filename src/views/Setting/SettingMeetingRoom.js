@@ -1,30 +1,34 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 
 import {
   Grid, CircularProgress, Paper, Tabs, Tab, Divider, TextField, Button, TablePagination
   // Checkbox
 } from '@material-ui/core';
-import CardRoom from '../../components/setting/cardRoom';
 
 import { fetchDataRooms } from '../../store/action';
 
+const CardRoom = lazy(() => import('../../components/setting/cardRoom'));
+
 class SettingMeetingRoom extends Component {
-  state = {
-    labelTab: ['Semua'],
-    search: '',
-    value: 0,
-    index: 0,
-    selectAll: false,
-    check: false,
-    data: [],
-    dataForDisplay: [],
-    dataForEdit: [],
-    proses: true,
-    openModalLogSetting: false,
-    page: 0,
-    rowsPerPage: 10,
-    optionBuilding: []
+  constructor(props) {
+    super(props);
+    this.state = {
+      labelTab: ['Semua'],
+      search: '',
+      value: 0,
+      index: 0,
+      selectAll: false,
+      check: false,
+      data: [],
+      dataForDisplay: [],
+      dataForEdit: [],
+      proses: true,
+      openModalLogSetting: false,
+      page: 0,
+      rowsPerPage: 10,
+      optionBuilding: []
+    }
   }
 
   async componentDidMount() {

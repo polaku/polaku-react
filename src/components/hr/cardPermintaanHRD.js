@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
@@ -6,24 +6,27 @@ import {
   Card, Grid, Avatar, Paper, Button
 } from '@material-ui/core';
 
-import ModalCreateEditPermintaanHRD from '../modal/modalCreateEditPermintaanHRD';
-
 import swal from 'sweetalert';
 
 import { API } from '../../config/API';
 
+const ModalCreateEditPermintaanHRD = lazy(() => import('../modal/modalCreateEditPermintaanHRD'));
+
 class cardPermintaanHRD extends Component {
-  state = {
-    isCuti: false,
-    status: '',
-    keterangan: '',
-    waktu1: new Date(),
-    waktu2: new Date(),
-    category: '',
-    proses: false,
-    openModal: false,
-    hasPassed: false
-    // status: 0
+  constructor(props) {
+    super(props);
+    this.state = {
+      isCuti: false,
+      status: '',
+      keterangan: '',
+      waktu1: new Date(),
+      waktu2: new Date(),
+      category: '',
+      proses: false,
+      openModal: false,
+      hasPassed: false
+      // status: 0
+    };
   }
 
   async componentDidMount() {
@@ -258,7 +261,7 @@ class cardPermintaanHRD extends Component {
             {/* Header 1 */}
             <Paper style={{ padding: '0px 20px', display: 'flex', alignItems: 'center', backgroundColor: 'white', borderRadius: 0, width: '100%', justifyContent: 'space-between' }}>
               <Grid style={{ display: 'flex', alignItems: 'center' }}>
-                <Avatar alt="icon_user" src={this.props.data.tbl_user.tbl_account_detail.avatar} style={{ marginRight: 10 }} />
+                <Avatar alt="user" src={this.props.data.tbl_user.tbl_account_detail.avatar} style={{ marginRight: 10 }} />
                 <p style={{ fontWeight: 'bold', margin: 0, fontSize: 18 }}>{this.props.data.name}</p>
               </Grid>
               <Grid style={{ display: 'flex', alignItems: 'center', paddingRight: 15 }}>

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 
 import { Grid, Button } from '@material-ui/core';
@@ -6,9 +6,9 @@ import { Grid, Button } from '@material-ui/core';
 import Calendar from '../../components/calendar/calendar.js';
 
 import { fetchDataEvent } from '../../store/action';
-import CardEvent from '../../components/event/cardEvent';
 
-import ModalCreateEditEvent from '../../components/modal/modalCreateEditEvent';
+const ModalCreateEditEvent = lazy(() => import('../../components/modal/modalCreateEditEvent'));
+const CardEvent = lazy(() => import('../../components/event/cardEvent'));
 
 class Event extends Component {
   constructor(props) {

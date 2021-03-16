@@ -7,8 +7,11 @@ const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 export default class exportToExcel extends React.Component {
-  state = {
-    data: []
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: []
+    };
   }
 
   render() {

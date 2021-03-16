@@ -11,24 +11,27 @@ import { API } from '../../config/API';
 import swal from 'sweetalert';
 
 class modalDetailUser extends Component {
-  state = {
-    companyId: '',
-    companyName: '',
-    fullname: '',
-    username: '',
-    confirPassword: '',
-    password: '',
-    initial: '',
-    nik: '',
-    idEvaluator1: 0,
-    evaluator1: '',
-    idEvaluator2: 0,
-    evaluator2: '',
-    isActive: false,
-    dataUser: [],
+  constructor(props) {
+    super(props);
+    this.state = {
+      companyId: '',
+      companyName: '',
+      fullname: '',
+      username: '',
+      confirPassword: '',
+      password: '',
+      initial: '',
+      nik: '',
+      idEvaluator1: 0,
+      evaluator1: '',
+      idEvaluator2: 0,
+      evaluator2: '',
+      isActive: false,
+      dataUser: [],
 
-    isEdit: false,
-    isError: false,
+      isEdit: false,
+      isError: false,
+    }
   }
 
   async componentDidMount() {

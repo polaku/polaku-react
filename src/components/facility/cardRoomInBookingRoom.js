@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 
 import {
   Card, Divider, Typography, CardContent, Button
 } from '@material-ui/core';
 
-import CardBookingRoom from './cardBookingRoom';
-import ModalCreateEditBookingRoom from '../modal/modalCreateEditBookingRoom'
+const ModalCreateEditBookingRoom = lazy(() => import('../modal/modalCreateEditBookingRoom'));
+const CardBookingRoom = lazy(() => import('./cardBookingRoom'));
 
 export default class cardRoomInBookingRoom extends Component {
   constructor(props) {

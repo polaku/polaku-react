@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
@@ -6,20 +6,22 @@ import { Grid, Paper, TextField, Button } from '@material-ui/core';
 
 import swal from 'sweetalert';
 
-import CardTopics from '../../components/Helpdesk/CardTopics';
-
 import { API } from '../../config/API';
 import { fetchDataTopicsHelpdesk } from '../../store/action';
 
+const CardTopics = lazy(() => import('../../components/Helpdesk/CardTopics'));
 class Helpdesk extends Component {
-  state = {
-    newTopics: null,
-    newIcon: null,
-    iconPath: null,
-    dataTopicsHelpdesk: [],
-    listQuestion: [],
-    keyword: '',
-    listSearching: []
+  constructor(props) {
+    super(props);
+    this.state = {
+      newTopics: null,
+      newIcon: null,
+      iconPath: null,
+      dataTopicsHelpdesk: [],
+      listQuestion: [],
+      keyword: '',
+      listSearching: []
+    }
   }
 
   async componentDidMount() {

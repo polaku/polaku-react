@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
@@ -7,15 +7,18 @@ import { Grid, Typography, Paper, Button } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 
-import ModalCreateEditPolanews from '../modal/modalCreateEditPolanews';
-
 import swal from 'sweetalert';
 
 import { API } from '../../config/API'
 
+const ModalCreateEditPolanews = lazy(() => import('../modal/modalCreateEditPolanews'));
+
 class cardPolanews extends Component {
-  state = {
-    open: false,
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false,
+    }
   }
 
   handleDelete = () => {

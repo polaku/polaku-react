@@ -13,13 +13,16 @@ import swal from 'sweetalert';
 import { API } from '../../config/API';
 
 class modalCreateEditPolanews extends Component {
-  state = {
-    title: '',
-    description: '',
-    status: "1",
-    attachmentPdf: null,
-    thumbnail: null,
-    imgPreview: null
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: '',
+      description: '',
+      status: "1",
+      attachmentPdf: null,
+      thumbnail: null,
+      imgPreview: null
+    }
   }
 
   componentDidMount() {

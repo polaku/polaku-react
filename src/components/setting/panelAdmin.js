@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 // import Cookies from 'js-cookie';
@@ -8,39 +8,42 @@ import {
   // Checkbox
 } from '@material-ui/core';
 
-import CardAdmin from './cardAdmin';
 // import SeCreatableSelect from 'react-select/creatable';
 // import makeAnimated from 'react-select/animated';
 
 import { fetchDataCompanies, fetchDataDesignation } from '../../store/action';
 
-import ModalCreateEditMuchEmployee from '../modal/modalCreateEditMuchEmployee';
-import ModalLogSetting from '../modal/modalLogSetting';
+const ModalCreateEditMuchEmployee = lazy(() => import('../modal/modalCreateEditMuchEmployee'));
+const ModalLogSetting = lazy(() => import('../modal/modalLogSetting'));
+const CardAdmin = lazy(() => import('./cardAdmin'));
 
 class panelAdmin extends Component {
-  state = {
-    labelTab: ['Semua'],
-    search: '',
-    value: 0,
-    // valueA: 0,
-    index: 0,
-    selectAll: false,
-    check: false,
-    data: [],
-    dataForDisplay: [],
-    dataDinas: [],
-    dataForDisplayDinas: [],
-    dataForEdit: [],
-    optionCompany: [],
+  constructor(props) {
+    super(props);
+    this.state = {
+      labelTab: ['Semua'],
+      search: '',
+      value: 0,
+      // valueA: 0,
+      index: 0,
+      selectAll: false,
+      check: false,
+      data: [],
+      dataForDisplay: [],
+      dataDinas: [],
+      dataForDisplayDinas: [],
+      dataForEdit: [],
+      optionCompany: [],
 
-    openModalCreateEditMuchEmployee: false,
-    isCreate: false,
-    company: '',
-    page: 0,
-    rowsPerPage: 10,
-    proses: true,
+      openModalCreateEditMuchEmployee: false,
+      isCreate: false,
+      company: '',
+      page: 0,
+      rowsPerPage: 10,
+      proses: true,
 
-    openModalLogSetting: false,
+      openModalLogSetting: false,
+    }
   }
 
   async componentDidMount() {

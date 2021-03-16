@@ -16,9 +16,12 @@ import { API } from '../../config/API';
 const animatedComponents = makeAnimated();
 
 class modalCopyIndicatorKPIM extends Component {
-  state = {
-    user: {},
-    users: []
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: {},
+      users: []
+    }
   }
 
   async componentDidMount() {

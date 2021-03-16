@@ -9,26 +9,29 @@ import swal from 'sweetalert';
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 export default class modalSettingTargetKPIM extends Component {
-  state = {
-    batasBulan: 0,
-    tahun: [],
-    tahunSelected: new Date().getFullYear(),
-    targetTahunan: '',
-    unit: '',
-    targetInverse: false,
+  constructor(props) {
+    super(props);
+    this.state = {
+      batasBulan: 0,
+      tahun: [],
+      tahunSelected: new Date().getFullYear(),
+      targetTahunan: '',
+      unit: '',
+      targetInverse: false,
 
-    Jan: '',
-    Feb: '',
-    Mar: '',
-    Apr: '',
-    May: '',
-    Jun: '',
-    Jul: '',
-    Aug: '',
-    Sep: '',
-    Oct: '',
-    Nov: '',
-    Dec: '',
+      Jan: '',
+      Feb: '',
+      Mar: '',
+      Apr: '',
+      May: '',
+      Jun: '',
+      Jul: '',
+      Aug: '',
+      Sep: '',
+      Oct: '',
+      Nov: '',
+      Dec: '',
+    }
   }
 
   componentDidMount() {
@@ -95,13 +98,19 @@ export default class modalSettingTargetKPIM extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.targetInverse !== prevState.targetInverse || this.state.targetTahunan !== prevState.targetTahunan) {
+    if (this.state.targetInverse !== prevState.targetInverse || (this.state.targetTahunan !== prevState.targetTahunan && !this.state.targetInverse)) {
       this.fetchTargetInverse()
+    }
+
+    if (
+      (this.state.targetTahunan !== prevState.targetTahunan && (this.state.unit === '%' || this.state.unit.toLowerCase() === "persen")) || 
+      (this.state.unit !== prevState.unit && (this.state.unit === '%' || this.state.unit.toLowerCase() === "persen") && this.state.targetTahunan)) {
+      this.fetchTargetInverse(true)
     }
   }
 
-  fetchTargetInverse = () => {
-    if (this.state.targetInverse) {
+  fetchTargetInverse = (args) => {
+    if (this.state.targetInverse || args) {
       let targetMonth = {}
 
       months.forEach((element, index) => {
@@ -352,7 +361,7 @@ export default class modalSettingTargetKPIM extends Component {
                     onChange={this.handleChange(el)}
                     variant="outlined"
                     style={{ width: '32%', marginTop: 13 }}
-                    disabled={this.state.batasBulan > index || this.state.targetTahunan === "" || (this.props.data && this.state[el] === 0) || this.state.targetInverse}
+                    disabled={this.state.batasBulan > index || this.state.targetTahunan === "" || (this.props.data && this.state[el] === 0) || this.state.targetInverse || this.state.unit === '%' || this.state.unit.toLowerCase() === "persen"}
                   />
                 )
               }

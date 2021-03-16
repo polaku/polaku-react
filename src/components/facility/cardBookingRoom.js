@@ -9,11 +9,12 @@ import PersonIcon from '@material-ui/icons/Person';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import ModalCreateEditBookingRoom from '../modal/modalCreateEditBookingRoom';
 import { API } from '../../config/API';
 import { setBookingRoom } from '../../store/action';
 
 import swal from 'sweetalert';
+
+const ModalCreateEditBookingRoom = React.lazy(() => import('../modal/modalCreateEditBookingRoom'));
 
 class cardBookingRoom extends Component {
   constructor(props) {

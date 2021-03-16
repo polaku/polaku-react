@@ -5,9 +5,12 @@ import { Grid, Button } from '@material-ui/core';
 import Stepper from 'react-stepper-horizontal';
 
 export default class StepperOnboarding extends Component {
-  state = {
-    steps: [{ title: 'alamat & jam operasi' }, { title: 'struktur perusahaan' }, { title: 'upload karyawan' }, { title: 'pilih admin' }, { title: 'quality control' }, { title: 'selesai' }],
-    activeStep: 0
+  constructor(props) {
+    super(props);
+    this.state = {
+      steps: [{ title: 'alamat & jam operasi' }, { title: 'struktur perusahaan' }, { title: 'upload karyawan' }, { title: 'pilih admin' }, { title: 'quality control' }, { title: 'selesai' }],
+      activeStep: 0
+    }
   }
 
   navigateAddAddress = () => {

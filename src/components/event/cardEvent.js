@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
@@ -7,9 +7,9 @@ import { Button, CircularProgress } from '@material-ui/core';
 import { fetchDataEvent, fetchDataEventNeedApproval } from '../../store/action';
 import { API } from '../../config/API';
 
-import ModalEvent from '../modal/modalEvent'
-
 import swal from 'sweetalert';
+
+const ModalEvent = lazy(() => import('../modal/modalEvent'));
 
 class cardEvent extends Component {
   constructor(props) {

@@ -17,9 +17,12 @@ import { API } from '../../config/API';
 import swal from 'sweetalert';
 
 class cardAdmin extends Component {
-  state = {
-    notComplete: false,
-    status: ''
+  constructor(props) {
+    super(props);
+    this.state = {
+      notComplete: false,
+      status: ''
+    }
   }
 
   async componentDidMount() {

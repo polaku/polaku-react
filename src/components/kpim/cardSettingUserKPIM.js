@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import Cookies from 'js-cookie';
 import { connect } from 'react-redux';
 
@@ -17,51 +17,54 @@ import EditIcon from '@material-ui/icons/Edit';
 
 import swal from 'sweetalert';
 
-import CardSettingIndicator from './cardSettingIndicator';
-import ModalReward from '../modal/modalReward';
-import ModalSettingTargetKPIM from '../modal/modalSettingTargetKPIM';
-import ModalSendGrade from "../modal/modalSendGrade";
-
 import { API } from '../../config/API';
 
+const ModalReward = lazy(() => import('../modal/modalReward'));
+const ModalSettingTargetKPIM = lazy(() => import('../modal/modalSettingTargetKPIM'));
+const ModalSendGrade = lazy(() => import('../modal/modalSendGrade'));
+const CardSettingIndicator = lazy(() => import('./cardSettingIndicator'));
+
 class cardSettingUserKPIM extends Component {
-  state = {
-    proses: false,
-    isVisible: true,
-    user_id: null,
-    openKPIM: false,
-    openTAL: false,
-    statusCreateKPIM: false,
-    statusCreateTAL: false,
+  constructor(props) {
+    super(props);
+    this.state = {
+      proses: false,
+      isVisible: true,
+      user_id: null,
+      openKPIM: false,
+      openTAL: false,
+      statusCreateKPIM: false,
+      statusCreateTAL: false,
 
-    newIndicatorKPIM: '',
-    newDataKPIM: {},
+      newIndicatorKPIM: '',
+      newDataKPIM: {},
 
-    newIndicatorTAL: '',
-    isLoopingIndicatorTAL: 0,
-    newOptionTimeTAL: 1,
-    newTimeTAL: '',
-    newBobotTAL: '',
+      newIndicatorTAL: '',
+      isLoopingIndicatorTAL: 0,
+      newOptionTimeTAL: 1,
+      newTimeTAL: '',
+      newBobotTAL: '',
 
-    optionTimeTAL: [],
+      optionTimeTAL: [],
 
-    openModalReward: false,
-    openModalTargetKPIM: false,
+      openModalReward: false,
+      openModalTargetKPIM: false,
 
-    KPIM: [],
-    TAL: [],
-    TALMonth: null,
-    bobotKPIM: 0,
-    bobotTAL: 0,
-    bobot: 0,
-    adaBobotKPIMYangKosong: false,
-    adaWeightTALYangKosong: false,
+      KPIM: [],
+      TAL: [],
+      TALMonth: null,
+      bobotKPIM: 0,
+      bobotTAL: 0,
+      bobot: 0,
+      adaBobotKPIMYangKosong: false,
+      adaWeightTALYangKosong: false,
 
-    statusSudahKirimNilai: false,
-    statusValid: false,
-    openModalSendGrade: false,
+      statusSudahKirimNilai: false,
+      statusValid: false,
+      openModalSendGrade: false,
 
-    editBobotTAL: false
+      editBobotTAL: false
+    }
   }
 
   async componentDidMount() {

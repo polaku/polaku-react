@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
@@ -6,7 +6,6 @@ import { Grid, Button, Select, MenuItem, FormControl, FormControlLabel, Checkbox
 
 import CloseIcon from '@material-ui/icons/Close';
 
-import CardAddAddress from '../../components/setting/cardAddAddress';
 import Loading from '../../components/Loading';
 
 import swal from 'sweetalert';
@@ -15,19 +14,24 @@ import { fetchDataCompanies, fetchDataAddress } from '../../store/action';
 
 import { API } from '../../config/API';
 
+const CardAddAddress = lazy(() => import('../../components/setting/cardAddAddress'));
+
 class AddAddress extends Component {
-  state = {
-    alamat: [false],
-    statusSubmit: false,
-    companyId: '',
-    disableCompanyId: false,
-    data: [],
-    indexMainAddress: null,
-    dataForEdit: [],
-    tempDataForEdit: [],
-    proses: false,
-    dataBuilding: [],
-    optionCompany: []
+  constructor(props) {
+    super(props);
+    this.state = {
+      alamat: [false],
+      statusSubmit: false,
+      companyId: '',
+      disableCompanyId: false,
+      data: [],
+      indexMainAddress: null,
+      dataForEdit: [],
+      tempDataForEdit: [],
+      proses: false,
+      dataBuilding: [],
+      optionCompany: []
+    }
   }
 
   async componentDidMount() {

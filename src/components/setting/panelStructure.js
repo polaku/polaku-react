@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 // import Cookies from 'js-cookie';
@@ -10,7 +10,6 @@ import {
 
 import orderBy from 'lodash/orderBy';
 
-import CardDepartment from './cardDepartment';
 // import SeCreatableSelect from 'react-select/creatable';
 // import makeAnimated from 'react-select/animated';
 import ArrowDropUpOutlinedIcon from '@material-ui/icons/ArrowDropUpOutlined';
@@ -18,7 +17,8 @@ import ArrowDropDownOutlinedIcon from '@material-ui/icons/ArrowDropDownOutlined'
 
 import { fetchDataUsers, fetchDataStructure, fetchDataCompanies } from '../../store/action';
 
-import ModalLogSetting from '../modal/modalLogSetting';
+const ModalLogSetting = lazy(() => import('../modal/modalLogSetting'));
+const CardDepartment = lazy(() => import('./cardDepartment'));
 
 const invertDirection = {
   asc: "desc",
@@ -27,24 +27,27 @@ const invertDirection = {
 
 
 class panelStructure extends Component {
-  state = {
-    labelTab: ['Semua'],
-    search: '',
-    // valueA: 0,
-    valueB: 0,
-    index: 0,
-    selectAll: false,
-    check: false,
-    data: [],
-    dataForDisplay: [],
-    dataForEdit: [],
+  constructor(props) {
+    super(props);
+    this.state = {
+      labelTab: ['Semua'],
+      search: '',
+      // valueA: 0,
+      valueB: 0,
+      index: 0,
+      selectAll: false,
+      check: false,
+      data: [],
+      dataForDisplay: [],
+      dataForEdit: [],
 
-    openModalLogSetting: false,
-    columnToSort: "",
-    sortDirection: "desc",
-    page: 0,
-    rowsPerPage: 10,
-    optionCompany: [],
+      openModalLogSetting: false,
+      columnToSort: "",
+      sortDirection: "desc",
+      page: 0,
+      rowsPerPage: 10,
+      optionCompany: [],
+    }
   }
 
   async componentDidMount() {

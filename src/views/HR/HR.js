@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 
 import {
@@ -6,25 +6,28 @@ import {
 } from '@material-ui/core';
 import Loading from '../../components/Loading';
 
-import CardPermintaanHRD from '../../components/hr/cardPermintaanHRD';
-import ModalCreateEditPermintaanHRD from '../../components/modal/modalCreateEditPermintaanHRD';
-
 import { fetchDataContactUs } from '../../store/action';
 
+const ModalCreateEditPermintaanHRD = lazy(() => import('../../components/modal/modalCreateEditPermintaanHRD'));
+const CardPermintaanHRD = lazy(() => import('../../components/hr/cardPermintaanHRD'));
+
 class HR extends Component {
-  state = {
-    proses: true,
-    dataIjinSaya: [],
-    dataIjinSayaPengajuan: [],
-    dataIjinSayaDisetujui: [],
-    dataIjinPengajuanStaff: [],
-    dataIjinStaffSedangIjin: [],
-    dataIjinStaffDisetujui: [],
-    dataIjinStaffSudahLewat: [],
-    ijinTabs: 0,
-    ijinTab: 0,
-    display: 0,
-    openModal: false,
+  constructor(props) {
+    super(props);
+    this.state = {
+      proses: true,
+      dataIjinSaya: [],
+      dataIjinSayaPengajuan: [],
+      dataIjinSayaDisetujui: [],
+      dataIjinPengajuanStaff: [],
+      dataIjinStaffSedangIjin: [],
+      dataIjinStaffDisetujui: [],
+      dataIjinStaffSudahLewat: [],
+      ijinTabs: 0,
+      ijinTab: 0,
+      display: 0,
+      openModal: false,
+    }
   }
 
   componentDidMount() {

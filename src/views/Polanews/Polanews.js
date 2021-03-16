@@ -1,18 +1,21 @@
-import React, { Component } from 'react'
+import React, { Component, lazy } from 'react'
 import { connect } from 'react-redux';
 
 import {
   Paper, Typography, Button, Grid
 } from '@material-ui/core'
 
-import CardPolanews from '../../components/polanews/cardPolanews'
-import ModalCreateEditPolanews from '../../components/modal/modalCreateEditPolanews';
-
 import { fetchDataPolanews } from '../../store/action';
 
+const ModalCreateEditPolanews = lazy(() => import('../../components/modal/modalCreateEditPolanews'));
+const CardPolanews = lazy(() => import('../../components/polanews/cardPolanews'));
+
 class Polanews extends Component {
-  state = {
-    open: false
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false
+    }
   }
 
   async componentDidMount() {

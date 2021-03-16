@@ -10,43 +10,46 @@ import makeAnimated from 'react-select/animated';
 const animatedComponents = makeAnimated();
 
 export default class cardAddAddress extends Component {
-  state = {
-    building: '',
-    address: '',
-    phone: [''],
-    fax: [''],
-    files: [],
-    operationSemua: false,
-    operationSenin: false,
-    operationSelasa: false,
-    operationRabu: false,
-    operationKamis: false,
-    operationJumat: false,
-    operationSabtu: false,
-    operationMinggu: false,
+  constructor(props) {
+    super(props);
+    this.state = {
+      building: '',
+      address: '',
+      phone: [''],
+      fax: [''],
+      files: [],
+      operationSemua: false,
+      operationSenin: false,
+      operationSelasa: false,
+      operationRabu: false,
+      operationKamis: false,
+      operationJumat: false,
+      operationSabtu: false,
+      operationMinggu: false,
 
-    optionHours: ['06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00'],
-    operationHours: [
-      {
-        day: 'Setiap Hari',
-        startHour: '',
-        endHour: '',
-      }
-    ],
-    optionRestHours: ['11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30'],
-    operationRestHours: [
-      {
-        day: 'Setiap Hari',
-        startRestHour: '',
-        endRestHour: '',
-      }
-    ],
-    optionCompanies: [],
-    buildingId: null,
-    listBuilding: [],
-    selectedItem: '',
-    disableAddress: false,
-    hasEdit: false
+      optionHours: ['06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00'],
+      operationHours: [
+        {
+          day: 'Setiap Hari',
+          startHour: '',
+          endHour: '',
+        }
+      ],
+      optionRestHours: ['11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30'],
+      operationRestHours: [
+        {
+          day: 'Setiap Hari',
+          startRestHour: '',
+          endRestHour: '',
+        }
+      ],
+      optionCompanies: [],
+      buildingId: null,
+      listBuilding: [],
+      selectedItem: '',
+      disableAddress: false,
+      hasEdit: false
+    }
   }
 
   async componentDidMount() {

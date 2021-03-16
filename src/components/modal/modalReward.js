@@ -14,12 +14,15 @@ import { API } from '../../config/API';
 import swal from 'sweetalert';
 
 class modalReward extends Component {
-  state = {
-    listReward: [],
-    nilaiBawah: '',
-    nilaiAtas: '',
-    newReward: '',
-    statusAddReward: false,
+  constructor(props) {
+    super(props);
+    this.state = {
+      listReward: [],
+      nilaiBawah: '',
+      nilaiAtas: '',
+      newReward: '',
+      statusAddReward: false,
+    }
   }
 
   componentDidMount() {

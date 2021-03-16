@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -6,14 +6,17 @@ import {
   Table, TableBody, TableCell, TableHead, TableRow, Paper, TablePagination
 } from '@material-ui/core';
 
-import CardRoomMaster from '../../components/facility/cardRoomMaster';
-
 import { fetchDataRoomMaster } from '../../store/action';
 
+const CardRoomMaster = lazy(() => import('../../components/facility/cardRoomMaster'));
+
 class RoomMaster extends Component {
-  state = {
-    page: 0,
-    rowsPerPage: 5,
+  constructor(props) {
+    super(props);
+    this.state = {
+      page: 0,
+      rowsPerPage: 5,
+    }
   }
 
   componentDidMount() {

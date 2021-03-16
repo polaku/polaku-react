@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -10,7 +10,7 @@ import SwipeableViews from 'react-swipeable-views';
 
 import PanelSetting from '../../components/kpim/panelSetting';
 
-import ModalRememberSendGrade from '../../components/modal/modalRememberSendGrade';
+const ModalRememberSendGrade = lazy(() => import('../../components/modal/modalRememberSendGrade'));
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -36,16 +36,19 @@ TabPanel.propTypes = {
 };
 
 export default class SettingKPIM extends Component {
-  state = {
-    value: 0,
-    banyakButuhTindakan: 0,
-    openModalSendGrade: false
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 0,
+      banyakButuhTindakan: 0,
+      openModalSendGrade: false
+    }
   }
 
   componentDidMount() {
     let numberWeekCurrent = this.getNumberOfWeek(new Date())
     let lastNumberWeekCurrent = this.getNumberOfWeek(new Date(new Date().getFullYear() + new Date().getMonth() + 1, 0))
-    
+
 
     if (numberWeekCurrent === lastNumberWeekCurrent) {
       this.setState({

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 // import Cookies from 'js-cookie';
@@ -8,8 +8,6 @@ import {
   // Checkbox
 } from '@material-ui/core';
 
-import CardService from './cardService';
-import CardEmployee from './cardEmployee';
 import ArrowDropUpOutlinedIcon from '@material-ui/icons/ArrowDropUpOutlined';
 import ArrowDropDownOutlinedIcon from '@material-ui/icons/ArrowDropDownOutlined';
 // import SeCreatableSelect from 'react-select/creatable';
@@ -17,8 +15,10 @@ import ArrowDropDownOutlinedIcon from '@material-ui/icons/ArrowDropDownOutlined'
 
 import { fetchDataCompanies, fetchDataDinas, fetchDataUsers } from '../../store/action';
 
-import ModalCreateEditMuchEmployee from '../modal/modalCreateEditMuchEmployee';
-import ModalLogSetting from '../modal/modalLogSetting';
+const ModalCreateEditMuchEmployee = lazy(() => import('../modal/modalCreateEditMuchEmployee'));
+const ModalLogSetting = lazy(() => import('../modal/modalLogSetting'));
+const CardService = lazy(() => import('./cardService'));
+const CardEmployee = lazy(() => import('./cardEmployee'));
 
 const invertDirection = {
   asc: "desc",
@@ -26,34 +26,37 @@ const invertDirection = {
 }
 
 class panelEmployee extends Component {
-  state = {
-    labelTab: ['Semua'],
-    search: '',
-    searchDinas: '',
-    valueA: this.props.indexTab ? this.props.indexTab : 0,
-    valueB: 0,
-    valueStatus: 0,
-    index: 0,
-    selectAll: false,
-    check: false,
-    data: [],
-    dataForDisplay: [],
-    dataDinas: [],
-    dataForEdit: [],
-    listCompany: [],
+  constructor(props) {
+    super(props);
+    this.state = {
+      labelTab: ['Semua'],
+      search: '',
+      searchDinas: '',
+      valueA: this.props.indexTab ? this.props.indexTab : 0,
+      valueB: 0,
+      valueStatus: 0,
+      index: 0,
+      selectAll: false,
+      check: false,
+      data: [],
+      dataForDisplay: [],
+      dataDinas: [],
+      dataForEdit: [],
+      listCompany: [],
 
-    openModalCreateEditMuchEmployee: false,
-    isCreate: false,
-    page: 0,
-    rowsPerPage: 10,
-    proses: true,
-    optionCompany: [],
+      openModalCreateEditMuchEmployee: false,
+      isCreate: false,
+      page: 0,
+      rowsPerPage: 10,
+      proses: true,
+      optionCompany: [],
 
-    openModalLogSetting: false,
-    type: '',
+      openModalLogSetting: false,
+      type: '',
 
-    columnToSort: "",
-    sortDirection: "desc",
+      columnToSort: "",
+      sortDirection: "desc",
+    }
   }
 
   async componentDidMount() {

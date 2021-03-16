@@ -28,6 +28,7 @@ class Login extends Component {
   }
 
   componentDidMount() {
+    console.log("MASUK ")
     if (Cookies.get("POLAGROUP")) {
       this.props.history.push("/polanews")
     }

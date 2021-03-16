@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 
 import { Grid } from '@material-ui/core';
 
-import CardEvent from '../../components/event/cardEvent';
-
 import { fetchDataEventNeedApproval } from '../../store/action';
+const CardEvent = lazy(() => import('../../components/event/cardEvent'));
 
 class ApprovalEvent extends Component {
   constructor(props) {
@@ -21,7 +20,7 @@ class ApprovalEvent extends Component {
   componentWillUnmount() {
     this._isMounted = false
   }
-  
+
 
   render() {
     return (

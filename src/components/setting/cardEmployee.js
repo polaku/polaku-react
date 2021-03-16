@@ -17,10 +17,13 @@ import { API } from '../../config/API';
 import swal from 'sweetalert';
 
 class cardEmployee extends Component {
-  state = {
-    notComplete: false,
-    isActive: false,
-    department: "-"
+  constructor(props) {
+    super(props);
+    this.state = {
+      notComplete: false,
+      isActive: false,
+      department: "-"
+    }
   }
 
   componentDidMount() {

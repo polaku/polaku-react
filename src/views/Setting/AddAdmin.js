@@ -17,53 +17,56 @@ import { API } from '../../config/API';
 const animatedComponents = makeAnimated();
 
 class AddAdmin extends Component {
-  state = {
-    adminType: '',
-    adminTypeSelected: null,
-    adminId: '',
-    adminIdSelected: null,
-    company: '',
-    optionCompany: [],
-    listUser: [],
-    proses: false,
+  constructor(props) {
+    super(props);
+    this.state = {
+      adminType: '',
+      adminTypeSelected: null,
+      adminId: '',
+      adminIdSelected: null,
+      company: '',
+      optionCompany: [],
+      listUser: [],
+      proses: false,
 
-    semua: false,
+      semua: false,
 
-    alamat: false,
-    kelolaAlamat: false,
-    mengunduhAlamat: false,
-    melihatAlamat: false,
-    expandAlamat: false,
+      alamat: false,
+      kelolaAlamat: false,
+      mengunduhAlamat: false,
+      melihatAlamat: false,
+      expandAlamat: false,
 
-    struktur: false,
-    kelolaStruktur: false,
-    mengunduhStruktur: false,
-    melihatStruktur: false,
-    expandStruktur: false,
+      struktur: false,
+      kelolaStruktur: false,
+      mengunduhStruktur: false,
+      melihatStruktur: false,
+      expandStruktur: false,
 
-    karyawan: false,
-    kelolaKaryawan: false,
-    mengunduhKaryawan: false,
-    melihatKaryawan: false,
-    expandKaryawan: false,
+      karyawan: false,
+      kelolaKaryawan: false,
+      mengunduhKaryawan: false,
+      melihatKaryawan: false,
+      expandKaryawan: false,
 
-    admin: false,
-    kelolaAdmin: false,
-    mengunduhAdmin: false,
-    melihatAdmin: false,
-    expandAdmin: false,
+      admin: false,
+      kelolaAdmin: false,
+      mengunduhAdmin: false,
+      melihatAdmin: false,
+      expandAdmin: false,
 
-    meeting: false,
-    kpim: false,
-    hr: false,
-    helpdesk: false,
+      meeting: false,
+      kpim: false,
+      hr: false,
+      helpdesk: false,
 
-    optionDesignation: [],
-    dataDesignation: [],
-    statusDesignation: false,
+      optionDesignation: [],
+      dataDesignation: [],
+      statusDesignation: false,
 
-    disabledUser: false,
-    isEdit: false
+      disabledUser: false,
+      isEdit: false
+    }
   }
 
   async componentDidMount() {

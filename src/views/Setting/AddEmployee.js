@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
@@ -9,26 +9,29 @@ import {
 
 import CloseIcon from '@material-ui/icons/Close';
 
-import CardAddEmployee from '../../components/setting/cardAddEmployee';
-
 import swal from 'sweetalert';
 
 import { fetchDataCompanies, fetchDataUsers, fetchDataAddress } from '../../store/action';
 
 import { API } from '../../config/API';
 
-class AddEmployee extends Component {
-  state = {
-    department: [false],
-    statusSubmit: false,
-    companyId: '',
-    disableCompanyId: false,
-    data: [],
-    dataForEdit: [],
-    tempDataForEdit: [],
-    proses: false,
+const CardAddEmployee = lazy(() => import('../../components/setting/cardAddEmployee'));
 
-    optionUser: [],
+class AddEmployee extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      department: [false],
+      statusSubmit: false,
+      companyId: '',
+      disableCompanyId: false,
+      data: [],
+      dataForEdit: [],
+      tempDataForEdit: [],
+      proses: false,
+
+      optionUser: [],
+    }
   }
 
   async componentDidMount() {

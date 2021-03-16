@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, lazy } from "react";
 import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import Cookies from "js-cookie";
@@ -24,8 +24,6 @@ import {
   TableContainer,
   TableFooter,
   Collapse,
-  List,
-  ListItem,
   TextField,
   MenuItem,
   InputAdornment,
@@ -34,9 +32,6 @@ import {
   DialogContentText,
   Dialog,
   DialogActions,
-  Tabs,
-  Tab,
-  Box,
 } from "@material-ui/core";
 
 import MenuIcon from "@material-ui/icons/Menu";
@@ -44,11 +39,8 @@ import AddIcon from "@material-ui/icons/Add";
 import ClearIcon from "@material-ui/icons/Clear";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 
-import { CircularProgressbar } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
-
-import CardIndicator from "../../components/kpim/cardIndicatorKPIM";
-import CardItemTAL from "../../components/kpim/cardItemTAL";
+// import { CircularProgressbar } from "react-circular-progressbar";
+// import "react-circular-progressbar/dist/styles.css";
 
 import {
   fetchDataAllKPIM,
@@ -59,6 +51,9 @@ import { API } from "../../config/API";
 
 import swal from "sweetalert";
 import { AccountCircle, CalendarToday, ExpandMore } from "@material-ui/icons";
+
+const CardIndicator = lazy(() => import('../../components/kpim/cardIndicatorKPIM'));
+const CardItemTAL = lazy(() => import('../../components/kpim/cardItemTAL'));
 
 class DashboardKPIM extends Component {
   constructor(props) {

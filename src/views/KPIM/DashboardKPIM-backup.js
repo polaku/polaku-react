@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, lazy } from "react";
 import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import Cookies from "js-cookie";
@@ -23,9 +23,6 @@ import BarChartIcon from "@material-ui/icons/BarChart";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
-import CardIndicator from "../../components/kpim/cardIndicatorKPIM";
-import CardItemTAL from "../../components/kpim/cardItemTAL";
-
 import {
   fetchDataAllKPIM,
   fetchDataAllTAL,
@@ -34,6 +31,9 @@ import {
 import { API } from "../../config/API";
 
 import swal from "sweetalert";
+
+const CardIndicator = lazy(() => import('../../components/kpim/cardIndicatorKPIM'));
+const CardItemTAL = lazy(() => import('../../components/kpim/cardItemTAL'));
 
 class DashboardKPIM extends Component {
   constructor(props) {

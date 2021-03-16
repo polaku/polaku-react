@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, lazy } from 'react'
 import Cookies from 'js-cookie';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -8,14 +8,18 @@ import {
 } from '@material-ui/core';
 
 import DeleteIcon from '@material-ui/icons/Delete';
-import ModalAktifitas from '../modal/modalAktifitas';
 
 import { API } from '../../config/API';
 import swal from 'sweetalert';
 
+const ModalAktifitas = lazy(() => import('../modal/modalAktifitas'));
+
 class cardKeamanan extends Component {
-  state = {
-    openModalAktifitas: false
+  constructor(props) {
+    super(props);
+    this.state = {
+      openModalAktifitas: false
+    }
   }
 
   handleModalAktifitas = () => {

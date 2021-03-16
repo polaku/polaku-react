@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 
 import {
   Modal, Backdrop, Fade, Grid, Table, TableHead, TableRow, TableBody, TableCell
 } from '@material-ui/core';
 
-import CardItemTAL from '../kpim/cardItemTAL';
+const CardItemTAL = lazy(() => import('../kpim/cardItemTAL'));
 
 export default class modalDetailTAL extends Component {
   closeModal = () => {

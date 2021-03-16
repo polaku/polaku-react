@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
@@ -8,14 +8,14 @@ import {
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import CardRooms from './cardRoom';
-import ModalCreateEditRoom from '../modal/modalCreateEditRoom';
-import ModalCreateEditBuilding from '../modal/modalCreateEditBuilding';
-
 import { fetchDataBuildings } from '../../store/action';
 
 import { API } from '../../config/API';
 import swal from 'sweetalert';
+
+const ModalCreateEditRoom = lazy(() => import('../modal/modalCreateEditRoom'));
+const ModalCreateEditBuilding = lazy(() => import('../modal/modalCreateEditBuilding'));
+const CardRooms = lazy(() => import('./cardRoom'));
 
 class cardBuilding extends Component {
   constructor(props) {

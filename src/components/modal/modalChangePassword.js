@@ -11,12 +11,15 @@ import { API } from '../../config/API';
 import { connect } from 'react-redux';
 
 class modalChangePassword extends Component {
-  state = {
-    proses: false,
-    passOld: '',
-    passNew: '',
-    passConf: '',
-    errorPass: false
+  constructor(props) {
+    super(props);
+    this.state = {
+      proses: false,
+      passOld: '',
+      passNew: '',
+      passConf: '',
+      errorPass: false
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {

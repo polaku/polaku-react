@@ -27,16 +27,20 @@ let months = [
 ];
 
 class cardIndicator extends Component {
-  state = {
-    open: false,
-    anchorEl: null,
-    persenBefore: 0,
-    persenNow: 0,
-    editIndicator: false,
-    dataTALWeek: [],
-    proses: true,
-    bobotNow: 0,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false,
+      anchorEl: null,
+      persenBefore: 0,
+      persenNow: 0,
+      editIndicator: false,
+      dataTALWeek: [],
+      proses: true,
+      bobotNow: 0,
+    };
+  }
+
   componentDidMount() {
     this.fetchData();
   }

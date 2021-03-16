@@ -24,13 +24,16 @@ import swal from 'sweetalert';
 const animatedComponents = makeAnimated();
 
 class panelOnBoarding extends Component {
-  state = {
-    loading: true,
-    expanded: false,
-    openPopOver: false,
-    anchorEl: null,
-    data: [],
-    pic: []
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: true,
+      expanded: false,
+      openPopOver: false,
+      anchorEl: null,
+      data: [],
+      pic: []
+    }
   }
 
   async componentDidMount() {

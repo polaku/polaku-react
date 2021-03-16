@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 
 import PropTypes from 'prop-types';
@@ -19,7 +19,6 @@ import ArrowDropUpOutlinedIcon from '@material-ui/icons/ArrowDropUpOutlined';
 import ArrowDropDownOutlinedIcon from '@material-ui/icons/ArrowDropDownOutlined';
 import ArchiveIcon from '@material-ui/icons/Archive';
 
-import CardReport from '../../components/report/CardReport';
 import Download from '../../components/exportToExcel'
 import Loading from '../../components/Loading';
 
@@ -28,6 +27,8 @@ import orderBy from 'lodash/orderBy';
 import swal from 'sweetalert';
 
 import { fetchDataContactUs } from '../../store/action';
+
+const CardReport = lazy(() => import('../../components/report/CardReport'));
 
 const invertDirection = {
   asc: "desc",
@@ -164,7 +165,10 @@ class ReportIjin extends Component {
           element.lamaIjin = `${element.leave_request} hari`
           element.sisaCuti = element.tbl_user.tbl_account_detail.leave
 
-          if (element.leave_date_in) element.tglSelesai = `${element.leave_date_in.slice(8, 10)}/${element.leave_date_in.slice(5, 7)}/${element.leave_date_in.slice(0, 4)}`
+          if (element.leave_date_in) {
+            let dateIn = new Date(new Date().setDate(new Date(element.leave_date_in).getDate() - 1))
+            element.tglSelesai = `${dateIn.getDate() < 10 ? `0${dateIn.getDate()}` : dateIn.getDate()}/${dateIn.getMonth() + 1 < 10 ? `0${dateIn.getMonth() + 1}` : dateIn.getMonth() + 1}/${dateIn.getFullYear() < 10 ? `0${dateIn.getFullYear()}` : dateIn.getFullYear()}`
+          }
           else element.tglSelesai = `${element.leave_date.slice(element.leave_date.length - 2, element.leave_date.length)}/${element.leave_date.slice(element.leave_date.length - 5, element.leave_date.length - 3)}/${element.leave_date.slice(element.leave_date.length - 10, element.leave_date.length - 6)}`
 
           newData.push(element)

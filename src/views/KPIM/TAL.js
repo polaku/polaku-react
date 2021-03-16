@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -10,9 +10,9 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 
 import 'react-circular-progressbar/dist/styles.css';
 
-import CardTAL from '../../components/kpim/cardTAL';
-
 import { fetchDataAllTAL } from '../../store/action';
+
+const CardTAL = lazy(() => import('../../components/kpim/cardTAL'));
 
 class TAL extends Component {
   constructor(props) {

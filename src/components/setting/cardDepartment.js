@@ -18,8 +18,11 @@ import { API } from '../../config/API';
 import swal from 'sweetalert';
 
 class cardDepartment extends Component {
-  state = {
-    statusEmpty: ''
+  constructor(props) {
+    super(props);
+    this.state = {
+      statusEmpty: ''
+    }
   }
 
   async componentDidMount() {

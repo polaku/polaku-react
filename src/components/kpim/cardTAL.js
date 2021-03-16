@@ -1,16 +1,19 @@
-import React, { Component } from 'react'
+import React, { Component, lazy } from 'react'
 
 import { Grid } from '@material-ui/core'
 
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
-import ModalDetailTAL from '../modal/modalDetailTAL';
+const ModalDetailTAL = lazy(() => import('../modal/modalDetailTAL'));
 
 export default class cardTAL extends Component {
-  state = {
-    openModal: false,
-    totalPersen: 0,
+  constructor(props) {
+    super(props);
+    this.state = {
+      openModal: false,
+      totalPersen: 0,
+    }
   }
 
   componentDidMount() {

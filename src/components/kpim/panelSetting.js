@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -6,10 +6,9 @@ import {
   Grid, Badge, Avatar, MenuItem, FormControl, InputLabel, Select as SelectOption, CircularProgress
 } from '@material-ui/core';
 
-import CardSettingUserKPIM from './cardSettingUserKPIM';
-
 import { fetchDataAllKPIM, fetchDataAllTAL, fetchDataRewardKPIM } from '../../store/action';
 
+const CardSettingUserKPIM = lazy(() => import('./cardSettingUserKPIM'));
 const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
 
 class panelSetting extends Component {

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
@@ -6,7 +6,6 @@ import { Grid, Button, Select, MenuItem, FormControl } from '@material-ui/core';
 
 import CloseIcon from '@material-ui/icons/Close';
 
-import CardAddDepartment from '../../components/setting/cardAddDepartment';
 import Loading from '../../components/Loading';
 
 import swal from 'sweetalert';
@@ -15,18 +14,23 @@ import { fetchDataCompanies, fetchDataDepartment, fetchDataPosition, fetchDataSt
 
 import { API } from '../../config/API';
 
+const CardAddDepartment = lazy(() => import('../../components/setting/cardAddDepartment'));
+
 class AddDepartment extends Component {
-  state = {
-    department: [false],
-    statusSubmit: false,
-    companyId: '',
-    disableCompanyId: false,
-    data: [],
-    dataForEdit: [],
-    tempDataForEdit: [],
-    proses: false,
-    loading: false,
-    optionCompany: []
+  constructor(props) {
+    super(props);
+    this.state = {
+      department: [false],
+      statusSubmit: false,
+      companyId: '',
+      disableCompanyId: false,
+      data: [],
+      dataForEdit: [],
+      tempDataForEdit: [],
+      proses: false,
+      loading: false,
+      optionCompany: []
+    }
   }
 
   async componentDidMount() {

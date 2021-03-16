@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, lazy } from 'react'
 import Cookies from 'js-cookie';
 
 import { TableCell, TableRow, Checkbox, IconButton, Tooltip } from '@material-ui/core';
@@ -6,26 +6,29 @@ import { TableCell, TableRow, Checkbox, IconButton, Tooltip } from '@material-ui
 // import EditIcon from '@material-ui/icons/Edit';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
-import ModalDetailUser from '../modal/modalDetailUser';
-
 import { API } from '../../config/API';
 
 import swal from 'sweetalert';
 import { connect } from 'react-redux';
 
-class CardReport extends Component {
-  state = {
-    statusIjin: '',
-    tglMulai: '',
-    timeImpMulai: '',
-    tglSelesai: '',
-    timeImpSelesai: '',
-    lamaIjin: '',
-    sisaCuti: '',
+const ModalDetailUser = lazy(() => import('../modal/modalDetailUser'));
 
-    //setting user
-    isActive: false,
-    openModalDetailUser: false,
+class CardReport extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      statusIjin: '',
+      tglMulai: '',
+      timeImpMulai: '',
+      tglSelesai: '',
+      timeImpSelesai: '',
+      lamaIjin: '',
+      sisaCuti: '',
+
+      //setting user
+      isActive: false,
+      openModalDetailUser: false,
+    }
   }
 
   componentDidMount() {

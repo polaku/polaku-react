@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -14,7 +14,7 @@ import PanelStructure from '../../components/setting/panelStructure';
 import PanelEmployee from '../../components/setting/panelEmployee';
 import PanelAdmin from '../../components/setting/panelAdmin';
 
-import ModalOnBoarding from '../../components/modal/modalOnBoarding';
+const ModalOnBoarding = lazy(() => import('../../components/modal/modalOnBoarding'));
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -40,11 +40,14 @@ TabPanel.propTypes = {
 };
 
 class SettingPerusahaan extends Component {
-  state = {
-    value: this.props.location.state ? this.props.location.state.index : 0,
-    index: 0,
-    openModalOnBoarding: false,
-    label: []
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: this.props.location.state ? this.props.location.state.index : 0,
+      index: 0,
+      openModalOnBoarding: false,
+      label: []
+    }
   }
 
   componentDidMount() {

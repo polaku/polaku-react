@@ -13,13 +13,16 @@ import { fetchDataTopicsHelpdesk } from '../../store/action';
 import { API, BaseURL } from '../../config/API';
 
 class CardTopics extends Component {
-  state = {
-    topics_id: null,
-    topics: null,
-    icon: null,
-    iconPath: null,
-    isEdit: false,
-    userId: null
+  constructor(props) {
+    super(props);
+    this.state = {
+      topics_id: null,
+      topics: null,
+      icon: null,
+      iconPath: null,
+      isEdit: false,
+      userId: null
+    };
   }
 
   componentDidMount() {

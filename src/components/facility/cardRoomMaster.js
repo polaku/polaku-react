@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
@@ -9,12 +9,12 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 
-import ModalRoomMaster from '../modal/modalRoomMaster';
-
 import { fetchDataRoomMaster } from '../../store/action';
 import { API } from '../../config/API';
 
 import swal from 'sweetalert';
+
+const ModalRoomMaster = lazy(() => import('../modal/modalRoomMaster'));
 
 class cardRoomMaster extends Component {
   constructor(props) {

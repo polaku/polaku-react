@@ -19,18 +19,20 @@ import { API } from '../../config/API';
 const animatedComponents = makeAnimated();
 
 class PanelFormQuestion extends Component {
-  state = {
-    subTopik: null,
-    question: null,
-    editorState: EditorState.createEmpty(),
-    help: null,
-    inviteOption: 'all',
-    company: null,
-    department: null,
-    employee: null,
-    listUser: []
+  constructor(props) {
+    super(props);
+    this.state = {
+      subTopik: null,
+      question: null,
+      editorState: EditorState.createEmpty(),
+      help: null,
+      inviteOption: 'all',
+      company: null,
+      department: null,
+      employee: null,
+      listUser: []
+    };
   }
-
   async componentDidMount() {
     await this.props.fetchDataCompanies()
     await this.props.fetchDataDepartment()

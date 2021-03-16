@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 // import Cookies from 'js-cookie';
 
@@ -12,9 +12,9 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 
-import CardRoomInBookingRoom from '../../components/facility/cardRoomInBookingRoom';
-
 import { fetchDataBookingRooms, fetchDataMyBookingRooms, fetchDataRooms } from '../../store/action';
+
+const CardRoomInBookingRoom = lazy(() => import('../../components/facility/cardRoomInBookingRoom'));
 
 // import { API } from '../../config/API';
 

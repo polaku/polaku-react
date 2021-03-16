@@ -17,8 +17,11 @@ import { API } from '../../config/API';
 import swal from 'sweetalert';
 
 class cardService extends Component {
-  state = {
-    notComplete: false
+  constructor(props) {
+    super(props);
+    this.state = {
+      notComplete: false
+    }
   }
 
   // handleChangeCheck = event => {

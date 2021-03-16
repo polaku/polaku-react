@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 
-import CardBuilding from '../../components/facility/cardBuilding';
-import ModalCreateEditBuilding from '../../components/modal/modalCreateEditBuilding';
-
 import { fetchDataBuildings, fetchDataRooms, fetchDataCompanies } from '../../store/action';
+
+const ModalCreateEditBuilding = lazy(() => import('../../components/modal/modalCreateEditBuilding'));
+const CardBuilding = lazy(() => import('../../components/facility/cardBuilding'));
 
 class Rooms extends Component {
   constructor(props) {

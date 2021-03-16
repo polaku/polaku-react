@@ -21,7 +21,7 @@
     "moment-range": "^4.0.2",
     "node-sass": "^5.0.0",
     "public-ip": "^4.0.2",
-    "react": "^17.0.1",
+    "react": "^16.8.0",
     "react-big-calendar": "^0.22.1",
     "react-circular-progressbar": "^2.0.3",
     "react-data-export": "^0.5.0",
@@ -38,10 +38,12 @@
     "react-swipeable-views": "^0.13.3",
     "react-timeago": "^4.4.0",
     "redux": "^4.0.4",
+    "source-map-explorer": "^2.5.2",
     "sweetalert": "^2.1.2",
     "xlsx": "^0.15.4"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -61,5 +63,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "envify": "^4.1.0",
+    "terser": "^4.8.0",
+    "uglifyify": "^5.0.2"
   }
 }

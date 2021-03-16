@@ -18,38 +18,41 @@ import { API } from '../../config/API';
 const animatedComponents = makeAnimated();
 
 class cardAddDepartment extends Component {
-  state = {
-    nameDepartment: '',
-    levelHirarki: '',
-    partOfDepartment: '',
-    position: [
-      //   {
-      //   position: '',
-      //   user: ''
-      // }
-    ],
-    userPosition: [''],
-    team: [
-      //   {
-      //   nameTeam: '',
-      //   teamPosition: [''],
-      //   selectedTeamPosition: [''],
-      //   user: [''],
-      //   userSelected: [''],
-      //   reportTo: '',
-      // }
-    ],
-    listDepartment: [],
-    listPosition: [],
-    listUser: [],
-    selectedDept: null,
-    selectedPartDept: null,
-    selectedPosition: [],
-    selectedUserPosition: [],
-    selectedTeamPosition: [],
-    selectedReportTo: null,
+  constructor(props) {
+    super(props);
+    this.state = {
+      nameDepartment: '',
+      levelHirarki: '',
+      partOfDepartment: '',
+      position: [
+        //   {
+        //   position: '',
+        //   user: ''
+        // }
+      ],
+      userPosition: [''],
+      team: [
+        //   {
+        //   nameTeam: '',
+        //   teamPosition: [''],
+        //   selectedTeamPosition: [''],
+        //   user: [''],
+        //   userSelected: [''],
+        //   reportTo: '',
+        // }
+      ],
+      listDepartment: [],
+      listPosition: [],
+      listUser: [],
+      selectedDept: null,
+      selectedPartDept: null,
+      selectedPosition: [],
+      selectedUserPosition: [],
+      selectedTeamPosition: [],
+      selectedReportTo: null,
 
-    proses: false
+      proses: false
+    }
   }
 
   async componentDidMount() {

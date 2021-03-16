@@ -13,14 +13,17 @@ import { connect } from 'react-redux';
 
 class modalLogSetting
   extends Component {
-  state = {
-    data: [],
-    page: 0,
-    rowsPerPage: 5,
-    month: new Date().getMonth() + 1,
-    year: new Date().getFullYear(),
-    optionMonth: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
-    optionYear: [new Date().getFullYear() - 1, new Date().getFullYear()]
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [],
+      page: 0,
+      rowsPerPage: 5,
+      month: new Date().getMonth() + 1,
+      year: new Date().getFullYear(),
+      optionMonth: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+      optionYear: [new Date().getFullYear() - 1, new Date().getFullYear()]
+    }
   }
 
   async componentDidMount() {
