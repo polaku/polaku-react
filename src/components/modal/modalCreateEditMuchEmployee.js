@@ -9,6 +9,10 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import DragAndDrop from '../DragAndDrop';
 import Download from '../../components/exportToExcel';
+import DownloadExampleImg from '../../Assets/download-example.png';
+import UploadLogo1ExampleImg from '../../Assets/upload-logo-1.png';
+import UploadLogo2ExampleImg from '../../Assets/upload-logo-2.png';
+import UserFile from '../../Assets/user.xlsx';
 
 import { API } from '../../config/API';
 
@@ -83,8 +87,6 @@ class modalCreateEditMuchEmployee extends Component {
       })
 
       this.setState({ rawData: getData.data.data })
-      //company
-      //keyword
     } catch (err) {
       if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
         swal('Gagal', 'Koneksi tidak stabil', 'error')
@@ -248,7 +250,7 @@ class modalCreateEditMuchEmployee extends Component {
   }
 
   downloadTemplate = () => {
-    window.open(process.env.PUBLIC_URL + '/user.xlsx')
+    window.open(UserFile)
   }
 
   fetchDataReport = () => {
@@ -265,12 +267,9 @@ class modalCreateEditMuchEmployee extends Component {
     if (this.state.semua || this.state.selfEmail) label.push({ label: 'selfEmail', value: 'selfEmail' })
     if (this.state.semua || this.state.officeEmail) label.push({ label: 'officeEmail', value: 'officeEmail' })
     if (this.state.semua || this.state.username) label.push({ label: 'username', value: 'username' })
-    //building
     if (this.state.semua || this.state.company) label.push({ label: 'company', value: 'company' })
     if (this.state.semua || this.state.evaluator1) label.push({ label: 'evaluator1', value: 'evaluator1' })
     if (this.state.semua || this.state.evaluator2) label.push({ label: 'evaluator2', value: 'evaluator2' })
-    //department
-    //position
     if (this.state.semua || this.state.leave) label.push({ label: 'leave', value: 'leave' })
     if (this.state.semua || this.state.statusEmpolyee) label.push({ label: 'statusEmpolyee', value: 'statusEmpolyee' })
     if (this.state.semua || this.state.joinDate) label.push({ label: 'joinDate', value: 'joinDate' })
@@ -290,12 +289,9 @@ class modalCreateEditMuchEmployee extends Component {
       if (this.state.semua || this.state.selfEmail) newData.selfEmail = element.email
       if (this.state.semua || this.state.officeEmail) newData.officeEmail = element.tbl_account_detail.office_email
       if (this.state.semua || this.state.username) newData.username = element.username
-      //building
       if (this.state.semua || this.state.company) newData.company = element.tbl_account_detail.tbl_company.acronym
       if (this.state.semua || this.state.evaluator1) newData.evaluator1 = element.tbl_account_detail.idEvaluator1 ? element.tbl_account_detail.idEvaluator1.tbl_account_detail.nik : null
       if (this.state.semua || this.state.evaluator2) newData.evaluator2 = element.tbl_account_detail.idEvaluator2 ? element.tbl_account_detail.idEvaluator2.tbl_account_detail.nik : null
-      //department
-      //position
       if (this.state.semua || this.state.leave) newData.leave = element.tbl_account_detail.leave
       if (this.state.semua || this.state.statusEmpolyee) newData.statusEmpolyee = element.tbl_account_detail.status_employee
       if (this.state.semua || this.state.joinDate) newData.joinDate = element.tbl_account_detail.join_date
@@ -305,9 +301,6 @@ class modalCreateEditMuchEmployee extends Component {
       if (this.state.semua || this.state.nextLensaDate) newData.nextLensaDate = element.tbl_account_detail.next_lensa_date
 
       data.push(newData)
-      // building: false,
-      // department: false,
-      // position: false,
     });
 
     this.setState({ proses: false, dataDownload: data, labelDownload: label })
@@ -355,14 +348,14 @@ class modalCreateEditMuchEmployee extends Component {
               {
                 this.props.isCreate
                   ? <Grid style={{ display: 'flex', flexDirection: 'column', width: '50%', textAlign: 'center', borderRight: '1px solid #e0e0e0' }}>
-                    <img src={process.env.PUBLIC_URL + '/download-example.png'} alt="Logo" style={{ width: 65, maxHeight: 120, alignSelf: 'center', marginTop: 3, marginBottom: 10 }} />
+                    <img src={DownloadExampleImg} alt="Logo" style={{ width: 65, maxHeight: 120, alignSelf: 'center', marginTop: 3, marginBottom: 10 }} />
                     <b>1. Unduh file Excel Tambah Sekaligus</b>
                     <Button variant="outlined" style={{ width: '90%', alignSelf: 'center', marginTop: 60 }} onClick={this.downloadTemplate}>
                       Unduh Template Excel
                     </Button>
                   </Grid>
                   : <Grid style={{ display: 'flex', flexDirection: 'column', width: '50%', textAlign: 'center', borderRight: '1px solid #e0e0e0' }}>
-                    <img src={process.env.PUBLIC_URL + '/upload-logo-1.png'} alt="Logo" style={{ width: 230, maxHeight: 120, alignSelf: 'center' }} />
+                    <img src={UploadLogo1ExampleImg} alt="Logo" style={{ width: 230, maxHeight: 120, alignSelf: 'center' }} />
                     <b>1. Pilih Kolom & Download Template excel</b>
                     <Grid style={{ border: '1px solid #e0e0e0', margin: 10, padding: '5px 10px', height: 100, overflow: 'auto', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
                       <FormControlLabel
@@ -400,15 +393,12 @@ class modalCreateEditMuchEmployee extends Component {
                       data={this.state.dataDownload}
                     />
 
-                    {/* <Button variant="outlined" style={{ width: '90%', alignSelf: 'center' }} onClick={this.fetchDataReport}>
-                      Unduh Template Excel
-                    </Button> */}
                   </Grid>
               }
 
 
               <Grid style={{ display: 'flex', flexDirection: 'column', width: '50%', textAlign: 'center' }}>
-                <img src={process.env.PUBLIC_URL + '/upload-logo-2.png'} alt="Logo" style={{ width: 230, maxHeight: 120, alignSelf: 'center' }} />
+                <img src={UploadLogo2ExampleImg} alt="Logo" style={{ width: 230, maxHeight: 120, alignSelf: 'center' }} />
                 <b>2. Unggah Template Excel yang Sudah Diubah</b>
                 <Grid style={{ margin: '5px 10px' }}>
                   <DragAndDrop handleFiles={this.handleFiles} status="employee" proses={false} />
@@ -418,9 +408,7 @@ class modalCreateEditMuchEmployee extends Component {
 
             <Divider />
 
-            {/* <Grid> */}
             <p style={{ margin: '10px 0px 0px 0px', color: '#d91b51', cursor: 'pointer', textAlign: 'end' }} onClick={this.addAlamat} disabled={this.state.proses}>Lihat riwayat perubahan terakhir {'>'}</p>
-            {/* </Grid> */}
 
           </Grid>
         </Fade>

@@ -117,9 +117,6 @@ class cardAdmin extends Component {
                 <ErrorOutlinedIcon style={{ color: 'red' }} />
               </Tooltip>
             }
-            {/* <Tooltip title="Edit admin" aria-label="edit-data">
-              <img src={process.env.PUBLIC_URL + '/edit.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-admin', { data: this.props.data })} />
-            </Tooltip> */}
             <Tooltip title="Hapus admin" aria-label="delete-data">
               <DeleteIcon style={{ color: 'red', cursor: 'pointer' }} onClick={this.delete} />
             </Tooltip>

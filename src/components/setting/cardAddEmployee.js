@@ -3,15 +3,11 @@ import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
 import {
-  Grid, OutlinedInput, Button,
-  // Divider, TextField,
-  FormControlLabel, Checkbox, Select, MenuItem, Paper, FormControl, Avatar
+  Grid, OutlinedInput, Button, FormControlLabel, Checkbox, Select, MenuItem, Paper, FormControl, Avatar
 } from '@material-ui/core';
-// import SeReactSelect from 'react-select/creatable';
 import ReactSelect from 'react-select';
 
 import makeAnimated from 'react-select/animated';
-// import DragAndDrop from '../DragAndDrop';
 
 import DateFnsUtils from '@date-io/date-fns';
 import {

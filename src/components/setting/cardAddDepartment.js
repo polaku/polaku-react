@@ -4,12 +4,12 @@ import Cookies from 'js-cookie';
 
 import {
   Grid, Button, Select, MenuItem, Paper, InputLabel
-  // OutlinedInput, Divider, FormControlLabel, Checkbox,  FormControl, InputLabel 
 } from '@material-ui/core';
 import CreatableSelect from 'react-select/creatable';
 import ReactSelect from 'react-select';
 import makeAnimated from 'react-select/animated';
-// import CloseIcon from '@material-ui/icons/Close';
+
+import DropdownImg from '../../Assets/dropdown.png';
 
 import swal from 'sweetalert';
 
@@ -569,7 +569,7 @@ class cardAddDepartment extends Component {
             {
               this.state.position.map((position, index) =>
                 <Grid style={{ width: '50%', margin: 5, minWidth: 300, display: 'flex', alignItems: 'flex-start' }} key={"position" + index}>
-                  <img src={process.env.PUBLIC_URL + '/dropdown.png'} alt="dropdown" style={{ width: 20, height: 20, marginRight: 10, marginTop: 10 }} />
+                  <img src={DropdownImg} alt="dropdown" style={{ width: 20, height: 20, marginRight: 10, marginTop: 10 }} />
                   <Grid style={{ width: 400 }}>
                     <Grid style={{ height: 40 }}>
                       <CreatableSelect
@@ -651,7 +651,7 @@ class cardAddDepartment extends Component {
                   {
                     team.teamPosition.map((position, indexPosition) =>
                       <Grid style={{ width: '60%', margin: 5, minWidth: 300, display: 'flex', alignItems: 'center' }} key={"teamPosition" + indexPosition}>
-                        <img src={process.env.PUBLIC_URL + '/dropdown.png'} alt="dropdown" style={{ width: 20, height: 20, marginRight: 10 }} />
+                        <img src={DropdownImg} alt="dropdown" style={{ width: 20, height: 20, marginRight: 10 }} />
                         <Grid style={{ width: 400, height: 40 }}>
                           <CreatableSelect
                             isClearable

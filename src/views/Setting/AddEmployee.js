@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
 import {
-  Grid, Button,
-  // Select, MenuItem, FormControl 
+  Grid, Button
 } from '@material-ui/core';
 
 import CloseIcon from '@material-ui/icons/Close';
+import EmployeeImg from '../../Assets/employee.png';
 
 import swal from 'sweetalert';
 
@@ -172,7 +172,7 @@ class AddEmployee extends Component {
       <Grid>
         <Grid style={{ display: 'flex' }}>
           <Grid style={{ backgroundColor: '#d71149', padding: 10, borderRadius: 50, width: 60 }}>
-            <img src={process.env.PUBLIC_URL + '/employee.png'} alt="Logo" style={{ width: 35, height: 35, alignSelf: 'center' }} />
+            <img src={EmployeeImg} alt="Logo" style={{ width: 35, height: 35, alignSelf: 'center' }} />
           </Grid>
           <Grid style={{ display: 'flex', flexDirection: 'column', marginLeft: '15px' }}>
             <b style={{ fontSize: 20 }}>Tambah Karyawan</b>

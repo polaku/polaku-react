@@ -1,17 +1,17 @@
 import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-// import Cookies from 'js-cookie';
 
 import {
   Grid, CircularProgress, Paper, Tabs, Tab, Divider, TextField, Button, TablePagination
-  // Checkbox
 } from '@material-ui/core';
 
 import ArrowDropUpOutlinedIcon from '@material-ui/icons/ArrowDropUpOutlined';
 import ArrowDropDownOutlinedIcon from '@material-ui/icons/ArrowDropDownOutlined';
-// import SeCreatableSelect from 'react-select/creatable';
-// import makeAnimated from 'react-select/animated';
+
+import AddEmployeeImg from '../../Assets/add-employee.png';
+import AddMuchEmployeeImg from '../../Assets/add-much-employee.png';
+import EditEmployeeImg from '../../Assets/edit-employee.png';
 
 import { fetchDataCompanies, fetchDataDinas, fetchDataUsers } from '../../store/action';
 
@@ -268,25 +268,6 @@ class panelEmployee extends Component {
     })
   }
 
-  // handleCheck = async (addressId) => {
-  //   let checkSelected = this.state.dataForEdit.find(el => el.id === addressId)
-  //   if (checkSelected) {
-  //     console.log("SUDAH ADA")
-  //     let data = await this.state.dataForEdit.filter(el => el.id !== addressId)
-  //     this.setState({ dataForEdit: data, check: false })
-  //   } else {
-  //     console.log("BELUM ADA")
-  //     let selected = this.state.data.find(el => el.id === addressId)
-  //     let data = this.state.dataForEdit
-  //     data.push(selected)
-  //     console.log(data)
-  //     this.setState({ dataForEdit: data })
-  //     if (data.length === this.state.dataForDisplay.length) {
-  //       this.setState({ selectAll: true, check: true })
-  //     }
-  //   }
-  // }
-
   refresh = async () => {
     this.setState({ proses: true, rowsPerPage: 10, page: 0, search: '' })
     if (this.state.valueA === 0) {
@@ -388,15 +369,15 @@ class panelEmployee extends Component {
                   ? <>
                     <Grid style={{ display: 'flex', margin: '20px 15px' }}>
                       <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.handleModalCreateEditMuchEmployee('edit')}>
-                        <img src={process.env.PUBLIC_URL + '/edit-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
+                        <img src={EditEmployeeImg} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                         <p style={{ margin: '0px 0px 0px 5px' }}>Ubah banyak</p>
                       </Grid>
                       <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.handleModalCreateEditMuchEmployee('create')}>
-                        <img src={process.env.PUBLIC_URL + '/add-much-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
+                        <img src={AddMuchEmployeeImg} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                         <p style={{ margin: '0px 0px 0px 5px' }}>Tambah banyak</p>
                       </Grid>
                       <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-employee', { index: this.props.index })}>
-                        <img src={process.env.PUBLIC_URL + '/add-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
+                        <img src={AddEmployeeImg} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                         <p style={{ margin: '0px 0px 0px 5px' }}>Tambah karyawan</p>
                       </Grid>
                       <p style={{ color: '#d71149', margin: 0, cursor: 'pointer' }} onClick={this.handleModalLogSetting}>Lihat riwayat perubahan</p>
@@ -426,7 +407,6 @@ class panelEmployee extends Component {
                       </Tabs>
                       <Divider />
                       <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
-                        {/* <form style={{ width: '100%', marginRight: 15, marginTop: 3 }}> */}
                         <TextField
                           id="pencarian"
                           placeholder="Cari berdasarkan nama/nik"
@@ -441,7 +421,6 @@ class panelEmployee extends Component {
                             }
                           }}
                         />
-                        {/* </form> */}
                         <Button onClick={this.handleSearch} variant="contained" style={{ width: 150 }}>
                           Cari
                         </Button>
@@ -489,16 +468,8 @@ class panelEmployee extends Component {
                   // Dinas
                   : <>
                     <Grid style={{ display: 'flex', margin: '20px 15px' }}>
-                      {/* <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }}>
-                        <img src={process.env.PUBLIC_URL + '/edit-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
-                        <p style={{ margin: '0px 0px 0px 5px' }}>Ubah banyak</p>
-                      </Grid>
-                      <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }}>
-                        <img src={process.env.PUBLIC_URL + '/add-much-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
-                        <p style={{ margin: '0px 0px 0px 5px' }}>Tambah banyak karyawan dinas</p>
-                      </Grid> */}
                       <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-service', { index: this.props.index })}>
-                        <img src={process.env.PUBLIC_URL + '/add-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
+                        <img src={AddEmployeeImg} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                         <p style={{ margin: '0px 0px 0px 5px' }}>Tambah karyawan dinas</p>
                       </Grid>
                       <p style={{ color: '#d71149', margin: 0, cursor: 'pointer' }} onClick={this.handleModalLogSetting}>Lihat riwayat perubahan</p>
@@ -519,7 +490,6 @@ class panelEmployee extends Component {
                       </Tabs>
                       <Divider />
                       <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
-                        {/* <form style={{ width: '100%', marginRight: 15, marginTop: 3 }}> */}
                         <TextField
                           id="pencarian"
                           placeholder="Cari berdasarkan nama/nik"
@@ -534,7 +504,6 @@ class panelEmployee extends Component {
                             }
                           }}
                         />
-                        {/* </form> */}
                         <Button onClick={this.handleSearchDinas} variant="contained" style={{ width: 150 }}>
                           Cari
                         </Button>
@@ -543,13 +512,6 @@ class panelEmployee extends Component {
 
                     <Paper id="header" style={{ display: 'flex', padding: '15px 20px', margin: 3, borderRadius: 0, alignItems: 'center' }}>
                       <Grid style={{ display: 'flex', alignItems: 'center', width: '30%' }}>
-                        {/* <Checkbox
-                  checked={this.state.check}
-                  onChange={this.handleChangeCheck}
-                  value="secondary"
-                  color="secondary"
-                  size="small"
-                /><p style={{ margin: 0 }}>pilih untuk lakukan aksi</p> */}
                         <p style={{ margin: 0 }}>Karyawan</p>
                       </Grid>
                       <p style={{ margin: 0, width: '25%' }}>Dinas ke perusahaan</p>

@@ -1,15 +1,12 @@
 import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-// import Cookies from 'js-cookie';
 
 import {
   Grid, CircularProgress, Paper, Tabs, Tab, Divider, TextField, Button, TablePagination
-  // Checkbox
 } from '@material-ui/core';
 
-// import SeCreatableSelect from 'react-select/creatable';
-// import makeAnimated from 'react-select/animated';
+import AddAddressImg from '../../Assets/add-address.png';
 
 import { fetchDataUsers, fetchDataAddress, fetchDataCompanies } from '../../store/action';
 
@@ -154,25 +151,6 @@ class panelAddress extends Component {
     })
   }
 
-  // handleCheck = async (addressId) => {
-  //   let checkSelected = this.state.dataForEdit.find(el => el.id === addressId)
-  //   if (checkSelected) {
-  //     console.log("SUDAH ADA")
-  //     let data = await this.state.dataForEdit.filter(el => el.id !== addressId)
-  //     this.setState({ dataForEdit: data, check: false })
-  //   } else {
-  //     console.log("BELUM ADA")
-  //     let selected = this.state.data.find(el => el.id === addressId)
-  //     let data = this.state.dataForEdit
-  //     data.push(selected)
-  //     console.log(data)
-  //     this.setState({ dataForEdit: data })
-  //     if (data.length === this.state.dataForDisplay.length) {
-  //       this.setState({ selectAll: true, check: true })
-  //     }
-  //   }
-  // }
-
   handleChangePage = async (event, newPage) => {
     this.setState({
       page: newPage
@@ -223,16 +201,8 @@ class panelAddress extends Component {
             </div>
             : <Grid>
               <Grid style={{ display: 'flex', margin: 10 }}>
-                {/* <Grid style={{ display: 'flex', alignItems: 'center' }}>
-                  <img src={process.env.PUBLIC_URL + '/edit-address.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
-                  <p style={{ margin: '0px 0px 0px 5px' }}>Ubah banyak</p>
-                </Grid> */}
-                {/* <Grid style={{ display: 'flex', alignItems: 'center' }}>
-                  <img src={process.env.PUBLIC_URL + '/add-address.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
-                  <p style={{ margin: '0px 0px 0px 5px' }}>Tambah banyak</p>
-                </Grid> */}
                 <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-address', { index: this.props.index })}>
-                  <img src={process.env.PUBLIC_URL + '/add-address.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
+                  <img src={AddAddressImg} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                   <p style={{ margin: '0px 0px 0px 5px' }}>Tambah alamat</p>
                 </Grid>
                 <p style={{ color: '#d71149', margin: 0, cursor: 'pointer' }} onClick={this.handleModalLogSetting}>Lihat riwayat perubahan</p>
@@ -277,13 +247,6 @@ class panelAddress extends Component {
 
               <Paper id="header" style={{ display: 'flex', padding: '15px 20px', margin: 3, borderRadius: 0, alignItems: 'center' }}>
                 <Grid style={{ display: 'flex', alignItems: 'center', width: '40%' }}>
-                  {/* <Checkbox
-                    checked={this.state.check}
-                    onChange={this.handleChangeCheck}
-                    value="secondary"
-                    color="secondary"
-                    size="small"
-                  /><p style={{ margin: 0 }}>pilih untuk lakukan aksi</p> */}
                   <p style={{ margin: 0 }}>Alamat</p>
                 </Grid>
                 <p style={{ margin: 0, width: '20%' }}>Perusahaan</p>
@@ -336,8 +299,6 @@ const mapStateToProps = ({ loading, dataUsers, dataAddress, totalDataAddress, da
     dataCompanies,
     isAdminsuper,
     admin
-    // dinas,
-    // PIC
   }
 }
 

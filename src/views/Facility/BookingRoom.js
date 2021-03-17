@@ -1,6 +1,5 @@
 import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
-// import Cookies from 'js-cookie';
 
 import {
   Grid, Button, FormControl, Select, MenuItem
@@ -16,7 +15,6 @@ import { fetchDataBookingRooms, fetchDataMyBookingRooms, fetchDataRooms } from '
 
 const CardRoomInBookingRoom = lazy(() => import('../../components/facility/cardRoomInBookingRoom'));
 
-// import { API } from '../../config/API';
 
 class BookingRoom extends Component {
   constructor(props) {

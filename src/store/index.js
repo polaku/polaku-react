@@ -2,13 +2,6 @@ import { createStore, applyMiddleware } from 'redux'
 import reducer from './reducer'
 import { API } from '../config/API';
 import Cookies from 'js-cookie';
-// import publicIp from 'public-ip';
-// import axios from 'axios';
-
-// const CancelToken = axios.CancelToken;
-// let cancel;
-
-import swal from 'sweetalert';
 
 const api = store => next => async action => {
   let token = Cookies.get('POLAGROUP')

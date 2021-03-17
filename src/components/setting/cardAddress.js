@@ -5,11 +5,11 @@ import Cookies from 'js-cookie';
 
 import {
   Paper, Grid, Tooltip
-  // Checkbox, 
 } from '@material-ui/core';
 
 import ErrorOutlinedIcon from '@material-ui/icons/ErrorOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditImg from '../../Assets/edit.png';
 
 import { fetchDataAddress } from '../../store/action';
 
@@ -26,7 +26,6 @@ class cardAddress extends Component {
   }
 
   componentDidMount() {
-    // console.log(this.props.data)
     if (!this.props.data.acronym ||
       !this.props.data.address ||
       !this.props.data.fax ||
@@ -81,7 +80,6 @@ class cardAddress extends Component {
     return (
       <Paper style={{ display: 'flex', padding: '15px 20px', margin: 1, borderRadius: 0, alignItems: 'center' }}>
         <Grid style={{ width: '40%' }}>
-          {/* <img src={process.env.PUBLIC_URL + '/building.png'} alt="Logo" style={{ width: 40, maxHeight: 40, alignSelf: 'center', marginRight: 10 }} /> */}
           <Grid style={{ display: 'flex', alignItems: 'center' }}>
             <b style={{ margin: 0, fontSize: 15 }}>{this.props.data.tbl_building && this.props.data.tbl_building.building}</b>
             {
@@ -106,7 +104,7 @@ class cardAddress extends Component {
                 : <Grid style={{ width: 24 }} />
             }
             <Tooltip title="Edit alamat" aria-label="edit-data">
-              <img src={process.env.PUBLIC_URL + '/edit.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-address', { data: this.props.data, index: this.props.index })} />
+              <img src={EditImg} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-address', { data: this.props.data, index: this.props.index })} />
             </Tooltip>
             <Tooltip title="Hapus alamat" aria-label="delete-data">
               <DeleteIcon style={{ color: 'red', cursor: 'pointer' }} onClick={this.delete} />

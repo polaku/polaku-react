@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import {
   Modal, Fade, Grid, Backdrop, Typography, Button
 } from '@material-ui/core';
-
+import BellImg from '../../Assets/bell.png'
 export default class modalRememberSendGrade extends Component {
   render() {
     return (
@@ -33,7 +33,7 @@ export default class modalRememberSendGrade extends Component {
             flexDirection: 'column',
             padding: '40px 30px'
           }}>
-            <img src={process.env.PUBLIC_URL + '/bell.png'} alt="Logo" style={{ width: 120, maxHeight: 120, alignSelf: 'center', marginBottom: 20 }} />
+            <img src={BellImg} alt="Logo" style={{ width: 120, maxHeight: 120, alignSelf: 'center', marginBottom: 20 }} />
             <Typography style={{ alignSelf: 'center', fontSize: 25, fontWeight: 'bold' }}>Sudah waktunya untuk mengirim laporan nilai!</Typography>
             <Typography style={{ alignSelf: 'center', fontSize: 25, fontWeight: 'bold' }}>Sudahkah Anda memeriksa nilai setiap orang?</Typography>
 

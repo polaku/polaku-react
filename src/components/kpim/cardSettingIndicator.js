@@ -11,7 +11,6 @@ import SubdirectoryArrowRightOutlinedIcon from '@material-ui/icons/SubdirectoryA
 
 import CreateRoundedIcon from '@material-ui/icons/CreateRounded';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
-// import SyncOutlinedIcon from '@material-ui/icons/SyncOutlined';
 import CancelPresentationOutlinedIcon from '@material-ui/icons/CancelPresentationOutlined';
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
 import ArchiveOutlinedIcon from '@material-ui/icons/ArchiveOutlined';

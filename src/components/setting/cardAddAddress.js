@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 
 import { Grid, OutlinedInput, Button, Divider, FormControlLabel, Checkbox, Select, MenuItem, Paper, InputLabel } from '@material-ui/core';
-// import SeCreatableSelect from 'react-select/creatable';
 import CreatableSelect from 'react-select/creatable';
 
 import makeAnimated from 'react-select/animated';
-// import DragAndDrop from '../DragAndDrop';
 
 const animatedComponents = makeAnimated();
 

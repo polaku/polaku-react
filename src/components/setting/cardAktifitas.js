@@ -4,11 +4,9 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import {
-  Grid, Paper,
-  // Tooltip
+  Grid, Paper
 } from '@material-ui/core';
 
-// import DeleteIcon from '@material-ui/icons/Delete';
 
 import { API } from '../../config/API';
 import swal from 'sweetalert';

@@ -14,7 +14,8 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 
-// import MultipleDatePicker from 'react-multiple-datepicker'
+import IjinImg from '../../Assets/ijin.jpeg';
+
 import swal from 'sweetalert';
 
 import { API } from '../../config/API';
@@ -355,7 +356,7 @@ class modalCreateEditPermintaanHRD extends Component {
             {
               this.state.jenisIjin === 6 && <p style={{ fontWeight: 'bold', marginTop: 0, fontSize: 24 }}>Sisa cuti anda {this.props.sisaCuti} hari</p>
             }
-            <img src={process.env.PUBLIC_URL + '/ijin.jpeg'} alt="Logo" style={{ width: 200 }} />
+            <img src={IjinImg} alt="Logo" style={{ width: 200 }} />
             <p style={{ fontWeight: 'bold' }}>Ajukan ijin dengan mengisi beberapa detail dibawah ini</p>
             <form noValidate autoComplete="off" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
               {/* <MultipleDatePicker
@@ -562,27 +563,6 @@ class modalCreateEditPermintaanHRD extends Component {
                   </FormControl>
                 </>
               }
-
-              {/* <FormControl style={{ margin: '10px 0 10px 0' }}>
-                <MuiPickersUtilsProvider utils={DateFnsUtils} style={{ margin: 0 }}>
-                  <KeyboardDatePicker
-                    margin="normal"
-                    id="date_in"
-                    label="Date in"
-                    format="dd/MM/yyyy"
-                    style={{ margin: 0 }}
-                    value={this.state.date_in}
-                    onChange={date => this.setState({ date_in: date })}
-                    KeyboardButtonProps={{
-                      'aria-label': 'change date',
-                    }}
-                    minDate={new Date()}
-                    maxDate={new Date(new Date().getFullYear(), new Date().getMonth() + 2, 31)}
-                    disabled={this.state.proses}
-                  />
-                </MuiPickersUtilsProvider>
-              </FormControl> */}
-
 
               <div style={{ position: 'relative' }}>
                 <Button

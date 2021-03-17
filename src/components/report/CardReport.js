@@ -3,7 +3,6 @@ import Cookies from 'js-cookie';
 
 import { TableCell, TableRow, Checkbox, IconButton, Tooltip } from '@material-ui/core';
 
-// import EditIcon from '@material-ui/icons/Edit';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { API } from '../../config/API';

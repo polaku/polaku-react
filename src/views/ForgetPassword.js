@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Grid, Typography, TextField, Button, CircularProgress, InputAdornment } from '@material-ui/core';
 
 import MailIcon from '@material-ui/icons/Mail';
+import LogoImg from '../Assets/logo.png';
 
 import swal from 'sweetalert';
 
@@ -44,7 +45,7 @@ export default class ForgetPassword extends Component {
     return (
       <Grid style={{ display: 'flex', justifyContent: 'center', margin: '5% 0 0 auto' }}>
         <Grid style={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
-          <img src={process.env.PUBLIC_URL + '/logo.png'} alt="Logo" />
+          <img src={LogoImg} alt="Logo" />
           <Typography style={{ margin: 10, fontSize: 15, fontWeight: 'bold', marginBottom: 0 }}>LUPA PASSWORD</Typography>
           <TextField
             id="username"

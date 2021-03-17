@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { Grid, Breadcrumbs, Link, List, ListItem, Divider, Button } from '@material-ui/core';
-// import { EditorState, convertToRaw } from 'draft-js';
-// import draftToHtml from 'draftjs-to-html';
 
 import ThumbDownOutlinedIcon from '@material-ui/icons/ThumbDownOutlined';
 import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import ArrowDownImg from '../../Assets/caret-down.png';
+import ArrowUpImg from '../../Assets/caret-up.png';
 
 import swal from 'sweetalert';
 
@@ -75,7 +75,6 @@ class PanelQuestion extends Component {
           if (data.data) this.setState({ like: data.data.like, unlike: data.data.unlike })
           else this.setState({ like: false, unlike: false })
         } catch (err) {
-          // console.log(err)
           if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
             swal('Gagal', 'Koneksi tidak stabil', 'error')
           } else {
@@ -129,7 +128,6 @@ class PanelQuestion extends Component {
               } else {
                 swal('Hapus pertanyaan gagal', '', 'error')
               }
-              // console.log(err)
             })
         }
       });
@@ -151,7 +149,6 @@ class PanelQuestion extends Component {
       let token = Cookies.get('POLAGROUP')
       await API.put(`/helpdesk/question/like-unlike/${this.state.questionSelected.id}`, { like: this.state.like, unlike: this.state.unlike }, { headers: { token } })
     } catch (err) {
-      // console.log(err)
       if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
         swal('Gagal', 'Koneksi tidak stabil', 'error')
       } else {
@@ -167,7 +164,6 @@ class PanelQuestion extends Component {
       await API.put(`/helpdesk/question/like-unlike/${this.state.questionSelected.id}`, { like: this.state.like, unlike: this.state.unlike }, { headers: { token } })
       await this.props.fetchDataTopicsHelpdesk()
     } catch (err) {
-      // console.log(err)
       if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
         swal('Gagal', 'Koneksi tidak stabil', 'error')
       } else {
@@ -198,7 +194,6 @@ class PanelQuestion extends Component {
       }
       this.setState({ dataListQuestion })
     } catch (err) {
-      // console.log(err)
       if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
         swal('Gagal', 'Koneksi tidak stabil', 'error')
       } else {
@@ -291,10 +286,10 @@ class PanelQuestion extends Component {
                           {/* ORDER LIST */}
                           <Grid style={{ display: 'flex', flexDirection: 'column', justifyContent: index === 0 || index === this.state.listQuestion.length - 1 ? 'center' : 'space-between', height: 25 }}>
                             {
-                              index !== 0 && <img src={process.env.PUBLIC_URL + '/caret-up.png'} alt={index + "up"} style={{ width: 20, height: 10, cursor: 'pointer' }} onClick={() => this.changeOrder(question.id, question.sub_topics_id, 'up', index)} />
+                              index !== 0 && <img src={ArrowUpImg} alt={index + "up"} style={{ width: 20, height: 10, cursor: 'pointer' }} onClick={() => this.changeOrder(question.id, question.sub_topics_id, 'up', index)} />
                             }
                             {
-                              index !== this.state.listQuestion.length - 1 && <img src={process.env.PUBLIC_URL + '/caret-down.png'} alt={index + "down"} style={{ width: 20, height: 10, cursor: 'pointer' }} onClick={() => this.changeOrder(question.id, question.sub_topics_id, 'down', index)} />
+                              index !== this.state.listQuestion.length - 1 && <img src={ArrowDownImg} alt={index + "down"} style={{ width: 20, height: 10, cursor: 'pointer' }} onClick={() => this.changeOrder(question.id, question.sub_topics_id, 'down', index)} />
                             }
                           </Grid>
                         </>

@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import { Grid, Typography, TextField, Button, CircularProgress, InputAdornment } from '@material-ui/core';
 
 import LockIcon from '@material-ui/icons/Lock';
+import LogoImg from '../Assets/logo.png';
 
 import swal from 'sweetalert';
 
@@ -51,7 +52,6 @@ class ResetPassword extends Component {
         this.props.history.push("/polanews")
 
       } catch (err) {
-        // console.log(err.response)
         if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
           swal('Gagal', 'Koneksi tidak stabil', 'error')
         } else if (err.response && err.response.status === 400) {
@@ -64,7 +64,6 @@ class ResetPassword extends Component {
         } else {
           swal('Error', 'please try again', 'error')
         }
-        // console.log(err)
       }
     }
   }
@@ -74,12 +73,10 @@ class ResetPassword extends Component {
     if (token) {
       API.get("/users/check-token", {
         headers: {
-          token,
-          // ip: ip || null
+          token
         },
       })
         .then(async ({ data }) => {
-          // console.log(data)
           let newData = {
             user_id: data.user_id,
             isRoomMaster: data.isRoomMaster,
@@ -90,7 +87,6 @@ class ResetPassword extends Component {
             evaluator2: data.evaluator2,
             bawahan: data.bawahan,
             admin: data.admin,
-            // ip: props.ip
           };
 
           let checkPIC = data.admin.find((el) => el.PIC);
@@ -181,9 +177,7 @@ class ResetPassword extends Component {
           if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
             swal('Gagal', 'Koneksi tidak stabil', 'error')
           }
-          // console.log(err)
           Cookies.remove("POLAGROUP");
-          // props.userLogout()
           this.props.history.push("/login");
         });
     }
@@ -193,7 +187,7 @@ class ResetPassword extends Component {
     return (
       <Grid style={{ display: 'flex', justifyContent: 'center', margin: '5% 0 0 auto' }}>
         <Grid style={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
-          <img src={process.env.PUBLIC_URL + '/logo.png'} alt="Logo" />
+          <img src={LogoImg} alt="Logo" />
           <Typography style={{ margin: 10, fontSize: 15, fontWeight: 'bold', marginBottom: 15 }}>RESET PASSWORD</Typography>
           <TextField
             id="password"

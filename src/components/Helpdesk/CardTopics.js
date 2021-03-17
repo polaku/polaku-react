@@ -7,6 +7,8 @@ import { Grid, Paper, TextField, Button } from '@material-ui/core';
 
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import AddIconImg from '../../Assets/add-icon.png';
+
 import swal from 'sweetalert';
 
 import { fetchDataTopicsHelpdesk } from '../../store/action';
@@ -138,7 +140,7 @@ class CardTopics extends Component {
             style={{ minWidth: 30, height: 30, padding: 0, marginRight: 5, backgroundColor: 'white', border: this.state.iconPath ? null : '1px dashed #707070' }}
             disabled={!this.state.isEdit && this.state.iconPath}
           >
-            <img src={this.state.iconPath || process.env.PUBLIC_URL + '/add-icon.png'} alt="add-icon" style={{ width: 20, height: 20 }} />
+            <img src={this.state.iconPath || AddIconImg} alt="add-icon" style={{ width: 20, height: 20 }} />
             <input
               type="file"
               accept="image/png,image/jpeg"

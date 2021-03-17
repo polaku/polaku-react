@@ -9,6 +9,7 @@ import {
 
 import MailIcon from '@material-ui/icons/Mail';
 import LockIcon from '@material-ui/icons/Lock';
+import LogoImg from '../Assets/logo.png';
 
 import swal from 'sweetalert';
 
@@ -54,11 +55,7 @@ class Login extends Component {
     }
 
     try {
-      data = await API.post('/users/signin', user, {
-        // headers: {
-        //   ip: this.props.ip
-        // }
-      })
+      data = await API.post('/users/signin', user)
       Cookies.set('POLAGROUP', data.data.token, { expires: 365 });
 
       if (data) {
@@ -81,7 +78,6 @@ class Login extends Component {
           nickname: data.data.nickname,
           fullname: data.data.fullname,
           firstHierarchy: data.data.firstHierarchy
-          // ip: props.ip
         }
 
 
@@ -162,8 +158,7 @@ class Login extends Component {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', margin: '5% 0 0 auto' }}>
         <div style={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
-          {/* <img src="https://polaku.polagroup.co.id/uploads/logo.png" alt="Logo" /> */}
-          <img src={process.env.PUBLIC_URL + '/logo.png'} alt="Logo" />
+          <img src={LogoImg} alt="Logo" />
           <Typography style={{ margin: 10, fontSize: 13 }}>SIGN IN TO CONTINUE.</Typography>
           <form noValidate autoComplete="off" onSubmit={this.signin} style={{ display: 'flex', flexDirection: 'column' }}>
             <TextField

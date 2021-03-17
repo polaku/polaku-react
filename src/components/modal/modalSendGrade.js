@@ -4,6 +4,8 @@ import {
   Modal, Fade, Grid, Backdrop, Typography, Button
 } from '@material-ui/core';
 
+import WarningImg from '../../Assets/warning.png';
+
 export default class modalRememberSendGrade extends Component {
   componentDidMount(){
   }
@@ -36,7 +38,7 @@ export default class modalRememberSendGrade extends Component {
             flexDirection: 'column',
             padding: '40px 30px'
           }}>
-            <img src={process.env.PUBLIC_URL + '/warning.png'} alt="Logo" style={{ width: 120, maxHeight: 120, alignSelf: 'center', marginBottom: 20 }} />
+            <img src={WarningImg} alt="Logo" style={{ width: 120, maxHeight: 120, alignSelf: 'center', marginBottom: 20 }} />
             <Typography style={{ alignSelf: 'center', fontSize: 25, fontWeight: 'bold' }}>Pastikan Anda sudah memeriksa nilai yang diberikan!</Typography>
             <Typography style={{ alignSelf: 'center', fontSize: 25, fontWeight: 'bold' }}>Karena tidak dapat diubah!</Typography>
 

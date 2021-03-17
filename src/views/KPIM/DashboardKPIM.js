@@ -39,9 +39,6 @@ import AddIcon from "@material-ui/icons/Add";
 import ClearIcon from "@material-ui/icons/Clear";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 
-// import { CircularProgressbar } from "react-circular-progressbar";
-// import "react-circular-progressbar/dist/styles.css";
-
 import {
   fetchDataAllKPIM,
   fetchDataAllTAL,
@@ -50,10 +47,10 @@ import {
 import { API } from "../../config/API";
 
 import swal from "sweetalert";
-import { AccountCircle, CalendarToday, ExpandMore } from "@material-ui/icons";
+import { CalendarToday, ExpandMore } from "@material-ui/icons";
 
 const CardIndicator = lazy(() => import('../../components/kpim/cardIndicatorKPIM'));
-const CardItemTAL = lazy(() => import('../../components/kpim/cardItemTAL'));
+// const CardItemTAL = lazy(() => import('../../components/kpim/cardItemTAL'));
 
 class DashboardKPIM extends Component {
   constructor(props) {

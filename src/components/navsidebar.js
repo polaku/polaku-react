@@ -41,6 +41,7 @@ import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
 import BarChartIcon from "@material-ui/icons/BarChart";
 import ImportContactsRoundedIcon from "@material-ui/icons/ImportContactsRounded";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
+import PolagroupImg from '../Assets/polagroup.png';
 
 import { setUser, fetchDataNotification, userLogout } from "../store/action";
 import { API } from "../config/API";
@@ -181,11 +182,9 @@ function Navsidebar(props) {
         API.get("/users/check-token", {
           headers: {
             token,
-            // ip: ip || null
           },
         })
           .then(async ({ data }) => {
-            // console.log(data)
             let newData = {
               user_id: data.user_id,
               isRoomMaster: data.isRoomMaster,
@@ -199,7 +198,6 @@ function Navsidebar(props) {
               nickname: data.nickname,
               fullname: data.fullname,
               firstHierarchy: data.firstHierarchy
-              // ip: props.ip
             };
 
             let checkPIC = data.admin.find((el) => el.PIC);
@@ -287,9 +285,7 @@ function Navsidebar(props) {
             await props.fetchDataNotification();
           })
           .catch((err) => {
-            // console.log(err)
             Cookies.remove("POLAGROUP");
-            // props.userLogout()
             props.history.push("/login");
           });
       } else {
@@ -558,7 +554,7 @@ function Navsidebar(props) {
                   <MenuIcon />
                 </IconButton>
                 <img
-                  src={process.env.PUBLIC_URL + "/polagroup.png"}
+                  src={PolagroupImg}
                   alt="Logo"
                   style={{ width: 175, maxHeight: 50 }}
                 />
@@ -726,24 +722,6 @@ function Navsidebar(props) {
                     </ListItem>
                   </Link>
                 ) : (
-                    // (props.isAdminsuper || props.isRoomMaster || props.isAdminRoom)
-                    //   ? <ListItem button key="Facility"
-                    //     onClick={event => handleClick(event, 'openChildBookingRoom')} selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
-                    //     <ListItemIcon>
-                    //       <MeetingRoomOutlinedIcon />
-                    //     </ListItemIcon>
-                    //     <ListItemText primary="Fasilitas" />
-                    //     {openChildBookingRoom ? <ExpandLess /> : <ExpandMore />}
-                    //   </ListItem>
-                    //   : <Link to="/booking-room" onClick={event => handleListItemClick(event, 1)} style={{ textDecoration: "none", color: 'black' }}>
-                    //     <ListItem button key="Booking Room" selected={selectedIndex === 1 || selectedIndex === 1.1 || selectedIndex === 1.2 || selectedIndex === 1.3}>
-                    //       <ListItemIcon>
-                    //         <MeetingRoomOutlinedIcon />
-                    //       </ListItemIcon>
-                    //       <ListItemText primary="Booking Room" />
-                    //     </ListItem>
-                    //   </Link>
-
                     <Link
                       to="/booking-room"
                       onClick={(event) => handleListItemClick(event, 1)}
@@ -1109,11 +1087,6 @@ function Navsidebar(props) {
                         <ListItemText primary="Tugasku" />
                       </ListItem>
                     </Link>
-                    {/* <Link to="/kpim/tal" onClick={event => handleListItemClick(event, 4.1)} style={{ textDecoration: 'none', color: 'black' }}>
-                      <ListItem button className={classes.nested} selected={selectedIndex === 4.1}>
-                        <ListItemText primary="TAL" />
-                      </ListItem>
-                    </Link> */}
                     {(isAtasan || props.isAdminsuper) && (
                       <>
                         {(isAtasan ||
@@ -1275,7 +1248,6 @@ function Navsidebar(props) {
                       >
                         <ListItemIcon style={{ marginLeft: 8 }}>
                           <MaterialIcon icon="PersonOutlineOutlinedIcon" />
-                          {/* <PersonOutlineOutlinedIcon /> */}
                         </ListItemIcon>
                       </ListItem>
                     </Link>

@@ -1,15 +1,12 @@
 import React, { Component, lazy } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-// import Cookies from 'js-cookie';
 
 import {
   Grid, CircularProgress, Paper, TextField, Button, TablePagination, Tabs, Tab, Divider
-  // Checkbox
 } from '@material-ui/core';
 
-// import SeCreatableSelect from 'react-select/creatable';
-// import makeAnimated from 'react-select/animated';
+import AddEmployeeImg from '../../Assets/add-employee.png';
 
 import { fetchDataCompanies, fetchDataDesignation } from '../../store/action';
 
@@ -65,10 +62,6 @@ class panelAdmin extends Component {
       if (this.state.optionCompany.length > 0) {
         this.fetchOptionCompany()
       }
-    }
-
-    if (this.state.optionCompany !== prevState.optionCompany) {
-      // console.log(this.state.optionCompany)
     }
   }
 
@@ -209,16 +202,8 @@ class panelAdmin extends Component {
             </div>
             : <>
               <Grid style={{ display: 'flex', margin: '20px 15px' }}>
-                {/* <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.handleModalCreateEditMuchEmployee('edit')}>
-                  <img src={process.env.PUBLIC_URL + '/edit-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
-                  <p style={{ margin: '0px 0px 0px 5px' }}>Ubah banyak</p>
-                </Grid>
-                <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.handleModalCreateEditMuchEmployee('create')}>
-                  <img src={process.env.PUBLIC_URL + '/add-much-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
-                  <p style={{ margin: '0px 0px 0px 5px' }}>Tambah banyak</p>
-                </Grid> */}
                 <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-admin', { index: this.props.index })}>
-                  <img src={process.env.PUBLIC_URL + '/add-employee.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
+                  <img src={AddEmployeeImg} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                   <p style={{ margin: '0px 0px 0px 5px' }}>Tambah admin</p>
                 </Grid>
                 <p style={{ color: '#d71149', margin: 0, cursor: 'pointer' }} onClick={this.handleModalLogSetting}>Lihat riwayat perubahan</p>
@@ -263,13 +248,6 @@ class panelAdmin extends Component {
 
               <Paper id="header" style={{ display: 'flex', padding: '15px 20px', margin: 3, borderRadius: 0, alignItems: 'center' }}>
                 <Grid style={{ display: 'flex', alignItems: 'center', width: '30%' }}>
-                  {/* <Checkbox
-                    checked={this.state.check}
-                    onChange={this.handleChangeCheck}
-                    value="secondary"
-                    color="secondary"
-                    size="small"
-                  /><p style={{ margin: 0 }}>pilih untuk lakukan aksi</p> */}
                   <p style={{ margin: 0 }}>Karyawan</p>
                 </Grid>
                 <p style={{ margin: 0, width: '50%' }}>Akses</p>

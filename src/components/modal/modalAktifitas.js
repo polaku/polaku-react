@@ -1,17 +1,11 @@
 import React, { Component } from 'react'
-// import Cookies from 'js-cookie';
 
 import {
   Modal, Fade, Grid, Backdrop, Chip, Divider
 } from '@material-ui/core';
 
-// import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import LaptopMacOutlinedIcon from '@material-ui/icons/LaptopMacOutlined';
-
-// import { API } from '../../config/API';
-
-// import swal from 'sweetalert';
 
 export default class modalAktifitas extends Component {
   constructor(props) {

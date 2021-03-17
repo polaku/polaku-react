@@ -3,13 +3,9 @@ import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
 import {
-  Grid, OutlinedInput, Button,
-  // Divider, 
-  FormControlLabel, Checkbox, Select, MenuItem, Paper, FormControl
+  Grid, OutlinedInput, Button, FormControlLabel, Checkbox, Select, MenuItem, Paper, FormControl
 } from '@material-ui/core';
-// import CreatableSelect from 'react-select/creatable';
 
-// import makeAnimated from 'react-select/animated';
 import DragAndDrop from '../../components/DragAndDrop';
 
 import { fetchDataBuildings, fetchDataUsers } from '../../store/action';
@@ -17,8 +13,6 @@ import { fetchDataBuildings, fetchDataUsers } from '../../store/action';
 import { API } from '../../config/API';
 import { fetchDataRooms } from '../../store/action';
 import swal from 'sweetalert';
-
-// const animatedComponents = makeAnimated();
 
 class AddMeetingRoom extends Component {
   constructor(props) {

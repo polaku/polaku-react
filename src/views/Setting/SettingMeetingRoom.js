@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 
 import {
   Grid, CircularProgress, Paper, Tabs, Tab, Divider, TextField, Button, TablePagination
-  // Checkbox
 } from '@material-ui/core';
+import AddAddressImg from '../../Assets/add-address.png';
 
 import { fetchDataRooms } from '../../store/action';
 
@@ -129,7 +129,7 @@ class SettingMeetingRoom extends Component {
               <p style={{ fontSize: 20, fontWeight: 'bold' }}>Ruang meeting</p>
               <Grid style={{ display: 'flex', margin: 10 }}>
                 <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-meeting-room/add-meeting-room')}>
-                  <img src={process.env.PUBLIC_URL + '/add-address.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
+                  <img src={AddAddressImg} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                   <p style={{ margin: '0px 0px 0px 5px' }}>Tambah ruang</p>
                 </Grid>
               </Grid>
@@ -149,7 +149,6 @@ class SettingMeetingRoom extends Component {
                 </Tabs>
                 <Divider />
                 <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
-                  {/* <form style={{ width: '100%', marginRight: 15, marginTop: 3 }}> */}
                   <TextField
                     id="pencarian"
                     placeholder="cari berdasarkan nama ruang"
@@ -163,7 +162,6 @@ class SettingMeetingRoom extends Component {
                       }
                     }}
                   />
-                  {/* </form> */}
                   <Button onClick={this.handleSearch} variant="contained" style={{ width: 150 }}>
                     Cari
                 </Button>

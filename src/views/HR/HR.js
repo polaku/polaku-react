@@ -5,6 +5,7 @@ import {
   Paper, Button, Grid, Tabs, Tab
 } from '@material-ui/core';
 import Loading from '../../components/Loading';
+import IconOrangImg from '../../Assets/icon orang.png';
 
 import { fetchDataContactUs } from '../../store/action';
 
@@ -33,10 +34,6 @@ class HR extends Component {
   componentDidMount() {
     if (this.props.userId) {
       this.fetchData()
-    }
-
-    if (this.props.bawahan.length === 0) {
-      // this.setState({ ijinTabs: 1 })
     }
   }
 
@@ -151,11 +148,6 @@ class HR extends Component {
         }
       }
     })
-
-    // console.log("tempDataPengajuan", tempDataPengajuan)
-    // console.log("tempDataDisetujui", tempDataDisetujui)
-    // console.log("tempDataPengajuanStaff", tempDataPengajuanStaff)
-    // console.log("tempDataStaffSedangIjin", tempDataStaffSedangIjin)
 
     this.setState({
       proses: false,
@@ -296,10 +288,8 @@ class HR extends Component {
             }
           </Grid >
           <Grid style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <img src={process.env.PUBLIC_URL + '/icon orang.png'} alt="Logo" style={{ width: 400, maxHeight: 250, }} />
+            <img src={IconOrangImg} alt="Logo" style={{ width: 400, maxHeight: 250, }} />
           </Grid>
-          {/* <img src="https://polaku.polagroup.co.id/uploads/logo.png" alt="Logo" /> */}
-
         </Paper >
 
         <Grid container>

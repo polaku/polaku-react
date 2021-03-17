@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 
 import ErrorOutlinedIcon from '@material-ui/icons/ErrorOutlined';
-// import DeleteIcon from '@material-ui/icons/Delete';
+import EditImg from '../../Assets/edit.png';
 
 import { fetchDataAddress } from '../../store/action';
 
@@ -66,7 +66,6 @@ class cardEmployee extends Component {
         this.props.refresh()
       })
       .catch(err => {
-        // console.log(err)
         if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
           swal('Gagal', 'Koneksi tidak stabil', 'error')
         } else {
@@ -74,40 +73,6 @@ class cardEmployee extends Component {
         }
       })
   }
-
-  // handleChangeCheck = event => {
-  //   this.setState({
-  //     check: event.target.checked
-  //   })
-  //   this.props.handleCheck(this.props.data.id)
-  // }
-
-  // delete = () => {
-  //   swal({
-  //     title: "Apa anda yakin ingin menyetujuinya?",
-  //     icon: "warning",
-  //     buttons: true,
-  //     dangerMode: true,
-  //   })
-  //     .then(async (yesAnswer) => {
-  //       if (yesAnswer) {
-  //         try {
-  //           let token = Cookies.get('POLAGROUP')
-  //           await API.delete(`/address/${this.props.data.id}`, { headers: { token,
-  //           ip: this.props.ip } })
-  //           swal("Hapus alamat sukses", "", "success")
-  //           await this.props.fetchDataAddress()
-  //           await this.props.fetchData()
-  //         } catch (err) {
-  //           if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
-  //             swal('Gagal', 'Koneksi tidak stabil', 'error')
-  //           } else {
-  //             swal("Hapus alamat gagal", "", "error")
-  //           }
-  //         }
-  //       }
-  //     });
-  // }
 
   render() {
     return (
@@ -157,11 +122,8 @@ class cardEmployee extends Component {
                 </Tooltip>
               }
               <Tooltip title="Edit karyawan" aria-label="edit-data">
-                <img src={process.env.PUBLIC_URL + '/edit.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-employee', { data: this.props.data, index: this.props.index })} />
+                <img src={EditImg} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-employee', { data: this.props.data, index: this.props.index })} />
               </Tooltip>
-              {/* <Tooltip title="Hapus karyawan" aria-label="delete-data">
-              <DeleteIcon style={{ color: 'red', cursor: 'pointer' }} onClick={this.delete} />
-            </Tooltip> */}
             </Grid>
           </Grid>
         }

@@ -6,8 +6,8 @@ import {
   Grid, LinearProgress, Select as SelectOption, MenuItem, CircularProgress
 } from '@material-ui/core';
 
+import SettingKPIMImg from '../../Assets/settingKPIM.png';
 import BarChartIcon from '@material-ui/icons/BarChart';
-
 import 'react-circular-progressbar/dist/styles.css';
 
 import { fetchDataAllTAL } from '../../store/action';
@@ -172,7 +172,7 @@ class TAL extends Component {
               {
                 this.state.isEmpty
                   ? <Grid style={{ display: 'flex', margin: '50px auto 10px auto', flexDirection: 'column', textAlign: 'center' }}>
-                    <img src={process.env.PUBLIC_URL + '/settingKPIM.png'} alt="Logo" style={{ width: 500, maxHeight: 500 }} />
+                    <img src={SettingKPIMImg} alt="Logo" style={{ width: 500, maxHeight: 500 }} />
                     <p style={{ marginTop: 10, fontFamily: 'Simonetta', fontSize: 20, textShadow: '4px 4px 4px #aaa' }} >BELUM ADA TAL</p>
                   </Grid>
                   : this.state.dataForDisplay.length > 0 && this.state.dataForDisplay.map((el, index) =>

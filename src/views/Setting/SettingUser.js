@@ -20,6 +20,9 @@ import ArrowDropUpOutlinedIcon from '@material-ui/icons/ArrowDropUpOutlined';
 import ArrowDropDownOutlinedIcon from '@material-ui/icons/ArrowDropDownOutlined';
 import ArchiveIcon from '@material-ui/icons/Archive';
 import CancelPresentationIcon from '@material-ui/icons/CancelPresentation';
+import userFile from '../../Assets/user.xlsx';
+import EvaluatorFile from '../../Assets/evaluator.xlsx';
+import LeaveFile from '../../Assets/leave.xlsx';
 
 import Download from '../../components/exportToExcel';
 import orderBy from 'lodash/orderBy';
@@ -191,11 +194,6 @@ class SettingUser extends Component {
       dataForDisplay: tempNewDataUsers,
       dataUser: this.props.dataUsers
     })
-
-    // if(this.state.keyword !== ''){
-    //   console.log("MASUK")
-    //   this.searching()
-    // }
   }
 
   handleChangeTabs = (event, newTabs) => {
@@ -227,9 +225,6 @@ class SettingUser extends Component {
   handleChange = name => async event => {
     if (name === 'companyId') {
       let company = this.props.dataCompanies.find(company => company.company_id === event.target.value)
-      // let filterUser = await this.props.dataUsers.filter(user => user.tbl_account_detail.company_id === event.target.value)
-
-      // this.setState({ [name]: event.target.value, companyName: company.company_name, dataUser: filterUser });
       this.setState({ [name]: event.target.value, companyName: company.company_name });
     } else if (name === 'konfirmasiPassword') {
       this.setState({ [name]: event.target.value });
@@ -239,7 +234,6 @@ class SettingUser extends Component {
   };
 
   addNewUser = async () => {
-    // this.state.konfirmasiPassword
     if (!this.state.passwordNotExact &&
       this.state.username !== "" &&
       this.state.password !== "" &&
@@ -257,17 +251,17 @@ class SettingUser extends Component {
 
       var formData = new FormData();
 
-      formData.append("username", this.state.username) //
+      formData.append("username", this.state.username)
       formData.append("password", this.state.password)
-      formData.append("email", this.state.email) //
-      formData.append("fullname", this.state.fullname) //
-      formData.append("initial", this.state.initial) //
-      formData.append("nik", this.state.nik) //
-      formData.append("address", this.state.address) //
-      formData.append("date_of_birth", this.state.dateBirth) //
-      formData.append("building_id", this.state.buildingId) //
-      formData.append("company_id", this.state.companyId) //
-      formData.append("phone", this.state.phone) //
+      formData.append("email", this.state.email)
+      formData.append("fullname", this.state.fullname)
+      formData.append("initial", this.state.initial)
+      formData.append("nik", this.state.nik)
+      formData.append("address", this.state.address)
+      formData.append("date_of_birth", this.state.dateBirth)
+      formData.append("building_id", this.state.buildingId)
+      formData.append("company_id", this.state.companyId)
+      formData.append("phone", this.state.phone)
       formData.append("name_evaluator_1", this.state.idEvaluator1)
       formData.append("name_evaluator_2", this.state.idEvaluator2)
       formData.append("position_id", this.state.positionId)
@@ -936,7 +930,7 @@ class SettingUser extends Component {
                   </Grid>
                   <Grid item xs={12} md={12} lg={6} style={{ display: 'flex' }} >
                     <p style={{ margin: '0px 10px 0px 20px' }}>format .xlsx </p>
-                    <a href={process.env.PUBLIC_URL + '/leave.xlsx'}>download sample import cuti</a>
+                    <a href={LeaveFile}>download sample import cuti</a>
                   </Grid>
                 </Grid>
                 <Grid style={{ margin: '10px 0px 0px 220px' }}>
@@ -978,7 +972,7 @@ class SettingUser extends Component {
                   </Grid>
                   <Grid item xs={12} md={12} lg={6} style={{ display: 'flex' }} >
                     <p style={{ margin: '0px 10px 0px 20px' }}>format .xlsx </p>
-                    <a href={process.env.PUBLIC_URL + '/evaluator.xlsx'}>download sample import evaluator</a>
+                    <a href={EvaluatorFile}>download sample import evaluator</a>
                   </Grid>
                 </Grid>
                 <Grid style={{ margin: '10px 0px 0px 220px' }}>
@@ -1020,7 +1014,7 @@ class SettingUser extends Component {
                   </Grid>
                   <Grid item xs={12} md={12} lg={6} style={{ display: 'flex' }} >
                     <p style={{ margin: '0px 10px 0px 20px' }}>format .xlsx </p>
-                    <a href={process.env.PUBLIC_URL + '/user.xlsx'}>download sample import user</a>
+                    <a href={userFile}>download sample import user</a>
                   </Grid>
                 </Grid>
                 <Grid style={{ margin: '10px 0px 0px 220px' }}>

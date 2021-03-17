@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditImg from '../../Assets/edit.png';
 
 import { API } from '../../config/API';
 import swal from 'sweetalert';
@@ -54,7 +55,7 @@ class cardRoom extends Component {
         <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '20%' }}>
           <Grid style={{ minWidth: '100px', display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexWrap: 'wrap' }}>
             <Tooltip title="Edit ruang" aria-label="edit-data">
-              <img src={process.env.PUBLIC_URL + '/edit.png'} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-meeting-room/add-meeting-room', { data: this.props.data })} />
+              <img src={EditImg} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-meeting-room/add-meeting-room', { data: this.props.data })} />
             </Tooltip>
             <Tooltip title="Hapus ruang" aria-label="delete-data">
               <DeleteIcon style={{ color: 'red', cursor: 'pointer' }} onClick={this.delete} />
