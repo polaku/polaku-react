@@ -3,7 +3,6 @@ import { Provider } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
 import store from './store'
 
-// core components
 import Navsidebar from "./components/navsidebar";
 
 import { makeStyles } from '@material-ui/core/styles';

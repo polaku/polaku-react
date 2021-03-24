@@ -35,8 +35,6 @@ class modalDetailUser extends Component {
   }
 
   async componentDidMount() {
-    // let filterUser = await this.props.dataUsers.filter(user => user.tbl_account_detail.company_id === this.props.data.rawData.tbl_account_detail.company_id)
-
     this.setState({
       companyId: this.props.data.rawData.tbl_account_detail.company_id,
       companyName: this.props.data.company,
@@ -49,7 +47,6 @@ class modalDetailUser extends Component {
       evaluator2: this.props.data.evaluator2,
       idEvaluator2: this.props.data.rawData.tbl_account_detail.name_evaluator_2,
       isActive: this.props.data.isActive,
-      // dataUser: filterUser
       dataUser: this.props.dataUsers
     })
   }
@@ -75,9 +72,7 @@ class modalDetailUser extends Component {
   handleChange = name => async event => {
     if (name === 'companyId') {
       let company = this.props.dataCompanies.find(company => company.company_id === event.target.value)
-      // let filterUser = await this.props.dataUsers.filter(user => user.tbl_account_detail.company_id === event.target.value)
 
-      // this.setState({ [name]: event.target.value, companyName: company.company_name, dataUser: filterUser });
       this.setState({ [name]: event.target.value, companyName: company.company_name });
     } else if (name === 'idEvaluator1') {
       if (event.target.value !== "") {

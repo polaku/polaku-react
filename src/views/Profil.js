@@ -15,37 +15,42 @@ import { API } from '../config/API';
 import swal from 'sweetalert';
 
 const ModalChangePassword = lazy(() => import('../components/modal/modalChangePassword'));
+const Loading = lazy(() => import('../components/Loading'));
 
 class Profil extends Component {
   constructor(props) {
     super(props);
     this.state = {
-    changePass: false,
-    changeUsername: false,
-    username: ''
+      proses: false,
+      changePass: false,
+      changeUsername: false,
+      username: ''
+    }
   }
-}
 
   async componentDidMount() {
     if (this.props.userId) {
+      this.setState({ proses: true })
       await this.props.fetchDataUserDetail(this.props.userId)
       this.setState({
         username: this.props.dataUserDetail.username
       })
+      this.setState({ proses: false })
     }
   }
 
   async componentDidUpdate(prevProps, prevState) {
     if (prevProps.userId !== this.props.userId) {
+      this.setState({ proses: true })
       await this.props.fetchDataUserDetail(this.props.userId)
       this.setState({
         username: this.props.dataUserDetail ? this.props.dataUserDetail.username : null
       })
+      this.setState({ proses: false })
     }
   }
 
   logout = async () => {
-
     try {
       await API.get('/users/signout', {
         headers: {
@@ -57,7 +62,6 @@ class Profil extends Component {
       this.props.userLogout()
       this.props.history.push('/login')
     } catch (err) {
-      // console.log(err)
       if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
         swal('Gagal', 'Koneksi tidak stabil', 'error')
       }
@@ -95,7 +99,6 @@ class Profil extends Component {
         this.handleChangeUsername()
       })
       .catch(err => {
-        // console.log(err)
         if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
           swal('Gagal', 'Koneksi tidak stabil', 'error')
         }
@@ -107,6 +110,9 @@ class Profil extends Component {
   render() {
     return (
       <div>
+        {
+          this.state.proses && <Loading loading={this.state.proses} />
+        }
         {
           this.props.dataUserDetail && <>
             <Paper style={{ padding: '40px 30px 20px 30px', backgroundColor: 'white', borderRadius: 0, maxWidth: 400, width: '95%', margin: '50px auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>

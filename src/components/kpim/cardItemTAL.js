@@ -104,7 +104,6 @@ class cardTAL extends Component {
             prosesAchievment: false,
             prosesLink: false
           })
-          // console.log(err)
           if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
             swal('Gagal', 'Koneksi tidak stabil', 'error')
           } else {

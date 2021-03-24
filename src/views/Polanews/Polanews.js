@@ -44,7 +44,7 @@ class Polanews extends Component {
         <p style={{ margin: 10, fontSize: 30 }}>Berita Pola</p>
         <Paper square style={{ padding: '10px 20px 10px 20px', margin: '10px 0px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 60 }}>
           <Typography style={{ marginLeft: 5 }}>Semua Berita Pola</Typography>
-          { // BUTTON CREATE NEWS
+          {
             (this.props.userId === 1 || this.props.userId === 30 || this.props.userId === 33 || this.props.userId === 44) && <Button variant="contained" color="primary" onClick={this.handleOpenModal}>
               Buat Berita Baru
             </Button>

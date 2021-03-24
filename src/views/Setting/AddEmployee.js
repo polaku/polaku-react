@@ -7,7 +7,6 @@ import {
 } from '@material-ui/core';
 
 import CloseIcon from '@material-ui/icons/Close';
-import EmployeeImg from '../../Assets/employee.png';
 
 import swal from 'sweetalert';
 
@@ -36,7 +35,6 @@ class AddEmployee extends Component {
 
   async componentDidMount() {
     await this.fetchOptionUser()
-    // console.log("MASUK SINI")
     if (this.props.location.state) {
       if (this.props.location.state.data) {
         let data = [this.props.location.state.data]
@@ -59,10 +57,8 @@ class AddEmployee extends Component {
       await getData.data.data.forEach(user => {
         listUser.push({ value: user.user_id, label: user.tbl_account_detail.fullname })
       })
-      // console.log(listUser)
       this.setState({ optionUser: listUser })
     } catch (err) {
-      // console.log(err)
       if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
         swal('Gagal', 'Koneksi tidak stabil', 'error')
       }
@@ -172,7 +168,7 @@ class AddEmployee extends Component {
       <Grid>
         <Grid style={{ display: 'flex' }}>
           <Grid style={{ backgroundColor: '#d71149', padding: 10, borderRadius: 50, width: 60 }}>
-            <img src={EmployeeImg} alt="Logo" style={{ width: 35, height: 35, alignSelf: 'center' }} />
+            <img src={require('../../Assets/employee.png').default} alt="Logo" style={{ width: 35, height: 35, alignSelf: 'center' }} />
           </Grid>
           <Grid style={{ display: 'flex', flexDirection: 'column', marginLeft: '15px' }}>
             <b style={{ fontSize: 20 }}>Tambah Karyawan</b>

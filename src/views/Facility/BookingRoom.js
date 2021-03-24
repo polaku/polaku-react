@@ -14,6 +14,7 @@ import {
 import { fetchDataBookingRooms, fetchDataMyBookingRooms, fetchDataRooms } from '../../store/action';
 
 const CardRoomInBookingRoom = lazy(() => import('../../components/facility/cardRoomInBookingRoom'));
+const Loading = lazy(() => import('../../components/Loading'));
 
 
 class BookingRoom extends Component {
@@ -24,15 +25,18 @@ class BookingRoom extends Component {
       dataForDisplay: [],
       searchDate: null,
       building: 'semua',
-      listBuilding: []
+      listBuilding: [],
+      proses: true
     }
   }
 
   async componentDidMount() {
+    this.setState({proses: true})
     await this.props.fetchDataBookingRooms()
     await this.props.fetchDataRooms()
 
     await this.fetchData()
+    this.setState({proses: false})
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -56,7 +60,6 @@ class BookingRoom extends Component {
   };
 
   fetchData = async () => {
-    // console.log("KEPANGGIL fetchData")
     this.setState({
       data: [],
       dataForDisplay: []
@@ -83,7 +86,6 @@ class BookingRoom extends Component {
   }
 
   refresh = async () => {
-    // console.log("MASUK REFRESH in BookingRoom")
     await this.props.fetchDataBookingRooms()
     await this.props.fetchDataRooms()
     await this.fetchData()
@@ -136,6 +138,9 @@ class BookingRoom extends Component {
   render() {
     return (
       <Grid>
+        {
+          this.state.proses &&  <Loading loading={this.state.proses}/>
+        }
         <Grid style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Grid id="top-left" style={{ display: 'flex', alignItems: 'center' }}>
             <p>Cari berdasarkan Tanggal :</p>

@@ -117,9 +117,7 @@ export default class cardReport extends Component {
     }
 
     if (this.state.isSelected !== prevState.isSelected) {
-      // if (this.state.isVisible) {
       this.props.handleCheck(this.props.data.userId, this.state.isSelected)
-      // }
     }
 
     if (this.props.data !== prevProps.data) {

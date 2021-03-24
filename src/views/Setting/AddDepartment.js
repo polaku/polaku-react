@@ -7,7 +7,6 @@ import { Grid, Button, Select, MenuItem, FormControl } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 
 import Loading from '../../components/Loading';
-import StructureImg from '../../Assets/structure.png';
 import swal from 'sweetalert';
 
 import { fetchDataCompanies, fetchDataDepartment, fetchDataPosition, fetchDataStructure } from '../../store/action';
@@ -190,7 +189,7 @@ class AddDepartment extends Component {
       <Grid>
         <Grid style={{ display: 'flex' }}>
           <Grid style={{ backgroundColor: '#d71149', padding: 10, borderRadius: 50 }}>
-            <img src={StructureImg} alt="Logo" style={{ width: 60, height: 50, alignSelf: 'center' }} />
+            <img src={require('../../Assets/structure.png').default} alt="Logo" style={{ width: 60, height: 50, alignSelf: 'center' }} />
           </Grid>
           <Grid style={{ display: 'flex', flexDirection: 'column', marginLeft: '15px' }}>
             {
@@ -262,8 +261,6 @@ const mapStateToProps = ({ dataCompanies, isAdminsuper, ip, admin }) => {
     isAdminsuper,
     ip,
     admin
-    // PIC,
-    // dinas,
   }
 }
 

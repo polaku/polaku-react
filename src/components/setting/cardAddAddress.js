@@ -221,7 +221,6 @@ export default class cardAddAddress extends Component {
 
   // OPERATION HOUR (START)
   handleChangeOperationHour = (name, index) => event => {
-    // this.setState({ [name]: event.target.value });
     let newArray = this.state.operationHours;
 
     newArray[index][name] = event.target.value
@@ -258,7 +257,6 @@ export default class cardAddAddress extends Component {
 
   // OPERATION REST HOUR (START)
   handleChangeOperationRestHour = (name, index) => event => {
-    // this.setState({ [name]: event.target.value });
     let newArray = this.state.operationRestHours;
 
     newArray[index][name] = event.target.value
@@ -396,7 +394,6 @@ export default class cardAddAddress extends Component {
                   <CreatableSelect
                     isClearable
                     value={this.props.data && this.state.selectedItem}
-                    // value={this.props.data && !this.state.hasEdit && this.state.selectedItem}
                     components={animatedComponents}
                     options={this.state.listBuilding}
                     onChange={this.handleChangeBuilding}

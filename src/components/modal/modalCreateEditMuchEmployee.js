@@ -9,9 +9,6 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import DragAndDrop from '../DragAndDrop';
 import Download from '../../components/exportToExcel';
-import DownloadExampleImg from '../../Assets/download-example.png';
-import UploadLogo1ExampleImg from '../../Assets/upload-logo-1.png';
-import UploadLogo2ExampleImg from '../../Assets/upload-logo-2.png';
 import UserFile from '../../Assets/user.xlsx';
 
 import { API } from '../../config/API';
@@ -51,14 +48,10 @@ class modalCreateEditMuchEmployee extends Component {
       nextLensaDate: false,
 
       key: ["fullname", "nickname", "initial", "date_of_birth", "address", "phone", "selfEmail", "officeEmail", "username",
-        // "building",
         "company", "evaluator1", "evaluator2",
-        // "department", "position", 
         "leave", "statusEmpolyee", "joinDate", "startBigLeave", "bigLeave", "nextFrameDate", "nextLensaDate"],
       label: ['Nama Lengkap', 'Nama Panggilan', 'Inisial', 'Tanggal Lahir', 'Alamat', 'No Telepon', 'Email Pribadi', 'Email Kantor', 'Username',
-        // 'Gedung', 
         'Perusahaan', 'Evaluator 1', 'Evaluator 2',
-        // 'Divisi', 'Posisi', 
         'Sisa Cuti', 'Status Karyawan', 'Tanggal Gabung', 'Tanggal Mulai Cuti Besar', 'Sisa Cuti Besar', 'Tanggal Frame Selanjutnya', 'Tanggal Lensa Selanjutnya'],
       dataDownload: [],
       rawData: [],
@@ -111,7 +104,6 @@ class modalCreateEditMuchEmployee extends Component {
       (this.state.address !== prevState.address) ||
       (this.state.phone !== prevState.phone) ||
       (this.state.selfEmail !== prevState.selfEmail) ||
-      (this.state.officeEmail !== prevState.officeEmail) ||
       (this.state.username !== prevState.username) ||
       (this.state.building !== prevState.building) ||
       (this.state.company !== prevState.company) ||
@@ -126,7 +118,7 @@ class modalCreateEditMuchEmployee extends Component {
       (this.state.bigLeave !== prevState.bigLeave) ||
       (this.state.nextFrameDate !== prevState.nextFrameDate) ||
       (this.state.nextLensaDate !== prevState.nextLensaDate)) {
-      if (!this.state.fullname || !this.state.nickname || !this.state.initial || !this.state.date_of_birth || !this.state.address || !this.state.phone || !this.state.selfEmail || !this.state.officeEmail || !this.state.username || !this.state.building || !this.state.company || !this.state.evaluator1 || !this.state.evaluator2 || !this.state.department || !this.state.position || !this.state.leave || !this.state.statusEmpolyee || !this.state.joinDate || !this.state.startBigLeave || !this.state.bigLeave || !this.state.nextFrameDate || !this.state.nextLensaDate) this.setState({ semua: false })
+      if (!this.state.fullname || !this.state.nickname || !this.state.initial || !this.state.date_of_birth || !this.state.address || !this.state.phone || !this.state.selfEmail || !this.state.username || !this.state.building || !this.state.company || !this.state.evaluator1 || !this.state.evaluator2 || !this.state.department || !this.state.position || !this.state.leave || !this.state.statusEmpolyee || !this.state.joinDate || !this.state.startBigLeave || !this.state.bigLeave || !this.state.nextFrameDate || !this.state.nextLensaDate) this.setState({ semua: false })
     }
 
     if (
@@ -137,7 +129,6 @@ class modalCreateEditMuchEmployee extends Component {
       (this.state.address !== prevState.address) ||
       (this.state.phone !== prevState.phone) ||
       (this.state.selfEmail !== prevState.selfEmail) ||
-      (this.state.officeEmail !== prevState.officeEmail) ||
       (this.state.username !== prevState.username) ||
       (this.state.building !== prevState.building) ||
       (this.state.company !== prevState.company) ||
@@ -152,7 +143,7 @@ class modalCreateEditMuchEmployee extends Component {
       (this.state.bigLeave !== prevState.bigLeave) ||
       (this.state.nextFrameDate !== prevState.nextFrameDate) ||
       (this.state.nextLensaDate !== prevState.nextLensaDate)) {
-      if (this.state.fullname && this.state.nickname && this.state.initial && this.state.date_of_birth && this.state.address && this.state.phone && this.state.selfEmail && this.state.officeEmail && this.state.username && this.state.building && this.state.company && this.state.evaluator1 && this.state.evaluator2 && this.state.department && this.state.position && this.state.leave && this.state.statusEmpolyee && this.state.joinDate && this.state.startBigLeave && this.state.bigLeave && this.state.nextFrameDate && this.state.nextLensaDate) this.setState({ semua: true })
+      if (this.state.fullname && this.state.nickname && this.state.initial && this.state.date_of_birth && this.state.address && this.state.phone && this.state.selfEmail && this.state.username && this.state.building && this.state.company && this.state.evaluator1 && this.state.evaluator2 && this.state.department && this.state.position && this.state.leave && this.state.statusEmpolyee && this.state.joinDate && this.state.startBigLeave && this.state.bigLeave && this.state.nextFrameDate && this.state.nextLensaDate) this.setState({ semua: true })
 
     }
   }
@@ -208,7 +199,6 @@ class modalCreateEditMuchEmployee extends Component {
         this.props.close()
       })
       .catch(err => {
-        // console.log(err)
         if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
           swal('Gagal', 'Koneksi tidak stabil', 'error')
         } else {
@@ -236,7 +226,6 @@ class modalCreateEditMuchEmployee extends Component {
         this.props.close()
       })
       .catch(err => {
-        // console.log(err)
         if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
           swal('Gagal', 'Koneksi tidak stabil', 'error')
         } else {
@@ -348,14 +337,14 @@ class modalCreateEditMuchEmployee extends Component {
               {
                 this.props.isCreate
                   ? <Grid style={{ display: 'flex', flexDirection: 'column', width: '50%', textAlign: 'center', borderRight: '1px solid #e0e0e0' }}>
-                    <img src={DownloadExampleImg} alt="Logo" style={{ width: 65, maxHeight: 120, alignSelf: 'center', marginTop: 3, marginBottom: 10 }} />
+                    <img src={require('../../Assets/download-example.png').default} alt="Logo" style={{ width: 65, maxHeight: 120, alignSelf: 'center', marginTop: 3, marginBottom: 10 }} />
                     <b>1. Unduh file Excel Tambah Sekaligus</b>
                     <Button variant="outlined" style={{ width: '90%', alignSelf: 'center', marginTop: 60 }} onClick={this.downloadTemplate}>
                       Unduh Template Excel
                     </Button>
                   </Grid>
                   : <Grid style={{ display: 'flex', flexDirection: 'column', width: '50%', textAlign: 'center', borderRight: '1px solid #e0e0e0' }}>
-                    <img src={UploadLogo1ExampleImg} alt="Logo" style={{ width: 230, maxHeight: 120, alignSelf: 'center' }} />
+                    <img src={require('../../Assets/upload-logo-1.png').default} alt="Logo" style={{ width: 230, maxHeight: 120, alignSelf: 'center' }} />
                     <b>1. Pilih Kolom & Download Template excel</b>
                     <Grid style={{ border: '1px solid #e0e0e0', margin: 10, padding: '5px 10px', height: 100, overflow: 'auto', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
                       <FormControlLabel
@@ -398,7 +387,7 @@ class modalCreateEditMuchEmployee extends Component {
 
 
               <Grid style={{ display: 'flex', flexDirection: 'column', width: '50%', textAlign: 'center' }}>
-                <img src={UploadLogo2ExampleImg} alt="Logo" style={{ width: 230, maxHeight: 120, alignSelf: 'center' }} />
+                <img src={require('../../Assets/upload-logo-2.png').default} alt="Logo" style={{ width: 230, maxHeight: 120, alignSelf: 'center' }} />
                 <b>2. Unggah Template Excel yang Sudah Diubah</b>
                 <Grid style={{ margin: '5px 10px' }}>
                   <DragAndDrop handleFiles={this.handleFiles} status="employee" proses={false} />

@@ -19,8 +19,7 @@ import {
   Collapse,
   Badge,
   Menu,
-  MenuItem,
-  // Icon
+  MenuItem
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -41,7 +40,6 @@ import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
 import BarChartIcon from "@material-ui/icons/BarChart";
 import ImportContactsRoundedIcon from "@material-ui/icons/ImportContactsRounded";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
-import PolagroupImg from '../Assets/polagroup.png';
 
 import { setUser, fetchDataNotification, userLogout } from "../store/action";
 import { API } from "../config/API";
@@ -135,7 +133,6 @@ const MaterialIcon = ({ icon }) => {
 };
 
 function Navsidebar(props) {
-  // const history = useHistory();
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [openChildBookingRoom, setOpenChildBookingRoom] = React.useState(false);
@@ -344,7 +341,7 @@ function Navsidebar(props) {
     } else if (props.location.pathname === "/kpim/tal") {
       setSelectedIndex(4.1);
     } else if (props.location.pathname === "/kpim/report") {
-      if (props.isAdminKPIM || props.isAdminsuper) {
+      if (props.isAdminKPIM || props.isAdminsuper || isAtasan) {
         setSelectedIndex(4.2);
       } else {
         props.history.goBack();
@@ -554,7 +551,7 @@ function Navsidebar(props) {
                   <MenuIcon />
                 </IconButton>
                 <img
-                  src={PolagroupImg}
+                  src={require('../Assets/polagroup.png').default}
                   alt="Logo"
                   style={{ width: 175, maxHeight: 50 }}
                 />
@@ -950,7 +947,6 @@ function Navsidebar(props) {
               {/* HR */}
               <>
                 {open ? (
-                  // ? Number(props.adminContactCategori) === 4 || props.userId === 1
                   props.isAdminHR || props.userId === 1 ? (
                     <ListItem
                       button

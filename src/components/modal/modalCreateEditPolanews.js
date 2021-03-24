@@ -7,7 +7,6 @@ import {
 } from '@material-ui/core';
 
 import CancelPresentationIcon from '@material-ui/icons/CancelPresentation';
-import PlaceholderImg from '../../Assets/placeholder.png';
 
 import swal from 'sweetalert';
 
@@ -251,7 +250,7 @@ class modalCreateEditPolanews extends Component {
                         ? <img src={this.props.data.thumbnail} alt="thumbnail" style={{ width: 150, height: 180 }} />
                         : this.state.imgPreview
                           ? <img src={this.state.imgPreview} alt="thumbnail" style={{ width: 150, height: 180 }} />
-                          : <img src={PlaceholderImg} alt="Logo" style={{ width: 150, height: 150 }} />
+                          : <img src={require('../../Assets/placeholder.png').default} alt="Logo" style={{ width: 150, height: 150 }} />
                     }
                   </Grid>
                 </Grid>

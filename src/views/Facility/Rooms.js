@@ -12,7 +12,6 @@ class Rooms extends Component {
     this._isMounted = false
     this.state = {
       dataBuildings: [],
-      // dataCompanies: [],
       openModal: false,
     }
   }
@@ -40,7 +39,6 @@ class Rooms extends Component {
 
     this._isMounted && this.setState({
       dataBuildings: tempBuildings,
-      // dataCompanies: this.props.dataCompanies
     })
   }
 
@@ -54,7 +52,6 @@ class Rooms extends Component {
 
       this.setState({
         dataBuildings: tempBuildings,
-        // dataCompanies: this.props.dataCompanies
       })
     }
   }

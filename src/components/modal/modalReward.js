@@ -8,7 +8,6 @@ import {
 
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
-import RewardImg from '../../Assets/reward.png';
 
 import { API } from '../../config/API';
 
@@ -117,7 +116,7 @@ class modalReward extends Component {
             flexDirection: 'column',
             padding: '40px 30px'
           }}>
-            <img src={RewardImg} alt="Logo" style={{ width: 120, maxHeight: 120, alignSelf: 'center' }} />
+            <img src={require('../../Assets/reward.png').default} alt="Logo" style={{ width: 120, maxHeight: 120, alignSelf: 'center' }} />
             <Typography style={{ alignSelf: 'center', fontSize: 35, fontWeight: 'bold', margin: 10 }}>Reward & Consequences</Typography>
 
             <Grid style={{ display: 'flex', margin: '10px 0px' }}>

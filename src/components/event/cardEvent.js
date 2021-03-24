@@ -124,7 +124,6 @@ class cardEvent extends Component {
       }
       if (getData) {
         this.props.fetchDataEvent()
-        // this.props.fetchDataMyEvent()
 
         swal(`${args} Success`);
         this.setState({

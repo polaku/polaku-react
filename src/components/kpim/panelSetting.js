@@ -6,8 +6,6 @@ import {
   Grid, Badge, Avatar, MenuItem, FormControl, InputLabel, Select as SelectOption, CircularProgress
 } from '@material-ui/core';
 
-import SettingKPIMImg from '../../Assets/settingKPIM.png';
-
 import { fetchDataAllKPIM, fetchDataAllTAL, fetchDataRewardKPIM } from '../../store/action';
 
 const CardSettingUserKPIM = lazy(() => import('./cardSettingUserKPIM'));
@@ -170,14 +168,6 @@ class panelSetting extends Component {
   }
 
   // CALENDER GOOGLE
-  // getNumberOfWeek = date => {
-  //   //yyyy-mm-dd (first date in week)
-  //   var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  //   var dayNum = d.getUTCDay() || 7;
-  //   d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-  //   var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  //   return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
-  // }
 
   setNeedAction = args => {
     let temp = this.state.needAction + 1
@@ -292,7 +282,7 @@ class panelSetting extends Component {
                 }
                 {
                   this.state.needAction === 0 && this.props.status !== "all" && <>
-                    <img src={SettingKPIMImg} alt="Logo" style={{ width: 500, maxHeight: 500, margin: '50px auto 10px auto' }} />
+                    <img src={require('../../Assets/settingKPIM.png').default} alt="Logo" style={{ width: 500, maxHeight: 500, margin: '50px auto 10px auto' }} />
                     <p style={{ marginTop: 10, fontFamily: 'Simonetta', fontSize: 20, textShadow: '4px 4px 4px #aaa' }} >TIDAK ADA YANG BUTUH TINDAKAN</p>
                   </>
                 }

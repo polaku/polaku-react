@@ -7,7 +7,6 @@ import { Grid, Paper, TextField, Button } from '@material-ui/core';
 
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import AddIconImg from '../../Assets/add-icon.png';
 
 import swal from 'sweetalert';
 
@@ -66,7 +65,6 @@ class CardTopics extends Component {
       } else {
         swal('Ubah topik gagal', '', 'error')
       }
-      // console.log(err)
     }
   }
 
@@ -98,7 +96,6 @@ class CardTopics extends Component {
               } else {
                 swal('Hapus topik gagal', '', 'error')
               }
-              // console.log(err)
             })
         }
       });
@@ -126,7 +123,6 @@ class CardTopics extends Component {
         } else {
           swal('Ubah topik gagal', '', 'error')
         }
-        // console.log(err)
       }
     }
   }
@@ -140,7 +136,7 @@ class CardTopics extends Component {
             style={{ minWidth: 30, height: 30, padding: 0, marginRight: 5, backgroundColor: 'white', border: this.state.iconPath ? null : '1px dashed #707070' }}
             disabled={!this.state.isEdit && this.state.iconPath}
           >
-            <img src={this.state.iconPath || AddIconImg} alt="add-icon" style={{ width: 20, height: 20 }} />
+            <img src={this.state.iconPath || require('../../Assets/add-icon.png').default} alt="add-icon" style={{ width: 20, height: 20 }} />
             <input
               type="file"
               accept="image/png,image/jpeg"

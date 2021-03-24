@@ -20,8 +20,6 @@ const defaultState = {
   isAdminKPIM: false,
   isAdminHR: false,
   isAdminHelpdesk: false,
-  // PIC: [],
-  // dinas: [],
   adminContactCategori: null,
   sisaCuti: 0,
   evaluator1: null,
@@ -85,8 +83,6 @@ function reducer(state = defaultState, action) {
         evaluator2: action.payload.evaluator2,
         bawahan: action.payload.bawahan,
         adminContactCategori: action.payload.adminContactCategori,
-        // dinas: action.payload.dinas,
-        // PIC: action.payload.PIC,admin
         admin: action.payload.admin,
         ip: action.payload.ip,
         isPIC: action.payload.isPIC,

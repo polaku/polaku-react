@@ -251,7 +251,7 @@ class panelOnBoarding extends Component {
 
   render() {
     return (
-      <div style={{ width: '100%' }}>
+      <div style={{ width: '100%', minHeight: 100 }}>
         {
           this.state.loading
             ? <div style={{ textAlign: 'center' }}>

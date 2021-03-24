@@ -169,14 +169,6 @@ class AddMeetingRoom extends Component {
 
   // OPERATION HOUR (START)
   handleChangeOperationHour = (name, index) => event => {
-    // let newArray = this.state.operationHours;
-
-    // newArray[index][name] = event.target.value
-
-    // this.setState({
-    //   operationHours: newArray
-    // });
-
     this.setState({
       [name]: event.target.value
     });

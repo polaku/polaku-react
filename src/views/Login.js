@@ -9,7 +9,6 @@ import {
 
 import MailIcon from '@material-ui/icons/Mail';
 import LockIcon from '@material-ui/icons/Lock';
-import LogoImg from '../Assets/logo.png';
 
 import swal from 'sweetalert';
 
@@ -29,7 +28,6 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    console.log("MASUK ")
     if (Cookies.get("POLAGROUP")) {
       this.props.history.push("/polanews")
     }
@@ -158,7 +156,7 @@ class Login extends Component {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', margin: '5% 0 0 auto' }}>
         <div style={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
-          <img src={LogoImg} alt="Logo" />
+          <img src={require('../Assets/logo.png').default} alt="Logo" />
           <Typography style={{ margin: 10, fontSize: 13 }}>SIGN IN TO CONTINUE.</Typography>
           <form noValidate autoComplete="off" onSubmit={this.signin} style={{ display: 'flex', flexDirection: 'column' }}>
             <TextField

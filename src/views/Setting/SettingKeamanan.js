@@ -2,9 +2,7 @@ import React, { Component, lazy } from 'react'
 
 import {
   Grid, CircularProgress, Paper, Tabs, Tab, Divider, TextField, Button,
-  // TablePagination, 
   Select, MenuItem, FormControl, FormControlLabel, Checkbox, Switch
-  // Checkbox
 } from '@material-ui/core';
 
 const CardKeamanan = lazy(() => import('../../components/setting/cardKeamanan'));
@@ -42,7 +40,6 @@ export default class SettingKeamanan extends Component {
 
   handleChangeTab = async (event, newValue) => {
     await this.setState({ value: newValue, page: 0 })
-    // this.fetchDataForDisplay()
   };
 
   handleChange = name => event => {

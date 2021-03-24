@@ -10,7 +10,7 @@ import orderBy from 'lodash/orderBy';
 
 import ArrowDropUpOutlinedIcon from '@material-ui/icons/ArrowDropUpOutlined';
 import ArrowDropDownOutlinedIcon from '@material-ui/icons/ArrowDropDownOutlined';
-import AddAddressImg from '../../Assets/add-address.png';
+import Loading from '../Loading';
 
 import { fetchDataUsers, fetchDataStructure, fetchDataCompanies } from '../../store/action';
 
@@ -28,8 +28,8 @@ class panelStructure extends Component {
     super(props);
     this.state = {
       labelTab: ['Semua'],
+      loading: true,
       search: '',
-      // valueA: 0,
       valueB: 0,
       index: 0,
       selectAll: false,
@@ -48,6 +48,7 @@ class panelStructure extends Component {
   }
 
   async componentDidMount() {
+    this.setState({loading:true})
     await this.props.fetchDataCompanies()
     await this.props.fetchDataStructure({ limit: this.state.rowsPerPage, page: this.state.page })
     await this.fetchData()
@@ -55,6 +56,7 @@ class panelStructure extends Component {
     if (this.props.dataCompanies && this.props.admin) {
       this.fetchOptionCompany()
     }
+    this.setState({loading:false})
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -113,10 +115,6 @@ class panelStructure extends Component {
       this.setState({ optionCompany })
     }
   }
-
-  // handleChangeTabA = (event, newValue) => {
-  //   this.setState({ valueA: newValue })
-  // };
 
   handleChangeTabB = async (event, newValue) => {
     this.setState({ valueB: newValue, search: '', page: 0 })
@@ -177,7 +175,7 @@ class panelStructure extends Component {
     this.setState({
       page: newPage
     })
-    this.setState({ proses: true })
+    this.setState({ loading: true })
     let query = {}
     if (this.state.search) query.keyword = this.state.search
     if (this.state.valueB !== 0) {
@@ -186,7 +184,7 @@ class panelStructure extends Component {
     }
     await this.props.fetchDataStructure({ limit: this.state.rowsPerPage, page: newPage, ...query })
     await this.fetchData()
-    this.setState({ proses: false })
+    this.setState({ loading: false })
   }
 
   handleChangeRowsPerPage = async (event) => {
@@ -194,7 +192,7 @@ class panelStructure extends Component {
       rowsPerPage: event.target.value,
       page: 0
     })
-    this.setState({ proses: true })
+    this.setState({ loading: true })
     let query = {}
     if (this.state.search) query.keyword = this.state.search
     if (this.state.valueB !== 0) {
@@ -204,11 +202,11 @@ class panelStructure extends Component {
     await this.props.fetchDataStructure({ limit: this.state.rowsPerPage + event.target.value, page: 0, ...query })
 
     await this.fetchData()
-    this.setState({ proses: false })
+    this.setState({ loading: false })
   }
 
   refresh = async () => {
-    this.setState({ proses: true })
+    this.setState({ loading: true })
     await this.props.fetchDataStructure({ limit: this.state.rowsPerPage, page: this.state.page })
     await this.fetchData()
   }
@@ -224,7 +222,7 @@ class panelStructure extends Component {
             : <Grid>
               <Grid style={{ display: 'flex', margin: '20px 15px' }}>
                 <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-department', { index: this.props.index })}>
-                  <img src={AddAddressImg} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
+                  <img src={require('../../Assets/add-address.png').default} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                   <p style={{ margin: '0px 0px 0px 5px' }}>Tambah department</p>
                 </Grid>
                 <p style={{ color: '#d71149', margin: 0, cursor: 'pointer' }} onClick={this.handleModalLogSetting}>Lihat riwayat perubahan</p>
@@ -252,7 +250,7 @@ class panelStructure extends Component {
                     variant="outlined"
                     value={this.state.search}
                     onChange={this.handleChange('search')}
-                    disabled={this.state.proses}
+                    disabled={this.state.loading}
                     style={{ width: '100%', marginRight: 15, marginTop: 3 }}
                     InputProps={{
                       style: {
@@ -342,8 +340,6 @@ const mapStateToProps = ({ loading, dataUsers, dataStructure, totalDataStructure
     dataCompanies,
     isAdminsuper,
     admin
-    // dinas,
-    // PIC
   }
 }
 

@@ -31,7 +31,6 @@ class CardReport extends Component {
   }
 
   componentDidMount() {
-    // ============ REPORT IJIN (START) ============
     if (this.props.data.categori_id === 6) {
       this.setState({
         statusIjin: "Cuti",
@@ -63,8 +62,6 @@ class CardReport extends Component {
         sisaCuti: this.props.data.tbl_user.tbl_account_detail.leave
       })
     }
-    // ============ REPORT IJIN (END) ============
-
 
     if (this.props.data.nik) {
       this.setState({

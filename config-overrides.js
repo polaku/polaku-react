@@ -14,7 +14,7 @@ module.exports = {
       ...config,
       plugins:[
         ...config.plugins,
-        // other: OtherPl
+        // other: OtherPlugin
       ],
     }
   }

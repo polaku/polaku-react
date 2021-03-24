@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Cookies from 'js-cookie';
 
 import {
-  Grid, OutlinedInput, Button, FormControlLabel, Checkbox, Select, MenuItem, Paper, FormControl, Avatar
+  Grid, OutlinedInput, FormControlLabel, Checkbox, Select, MenuItem, Paper, FormControl, Avatar
 } from '@material-ui/core';
 import ReactSelect from 'react-select';
 
@@ -17,7 +16,6 @@ import {
 
 import { fetchDataCompanies, fetchDataDepartment, fetchDataPosition, fetchDataUsers, fetchDataAddress, fetchDataStructure } from '../../store/action';
 
-import { API } from '../../config/API';
 import swal from 'sweetalert';
 
 const animatedComponents = makeAnimated();
@@ -34,16 +32,10 @@ class cardAddEmployee extends Component {
       company: '',
       companyAddress: '',
       nik: '',
-      listDivisi: [{
-        divisi: '',
-        peran: '',
-      }],
       evaluator1: '',
       evaluator1Selected: null,
       evaluator2: '',
       evaluator2Selected: null,
-      // tanggalGabung: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
-      // dateOfBirth: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
       tanggalGabung: null,
       dateOfBirth: null,
       statusKaryawan: '',
@@ -55,10 +47,6 @@ class cardAddEmployee extends Component {
 
       companyDinas: '',
       companyDinasAddress: '',
-      listDivisiDinas: [{
-        divisi: '',
-        peran: '',
-      }],
 
       emailPribadi: '',
       emailKantor: '',
@@ -70,13 +58,7 @@ class cardAddEmployee extends Component {
       dataAddressDinas: [],
       isDinas: false,
 
-      // username: '',
-      // password: '',
       optionCompany: [],
-      optionDivisi: [],
-      optionPosisi: [],
-      optionDivisiDinas: [],
-      optionPosisiDinas: [],
     }
   }
 
@@ -88,7 +70,6 @@ class cardAddEmployee extends Component {
     if (this.props.data) {
       await this.fetchDataEdit()
     }
-    // console.log(this.props.location.state.index)
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -97,12 +78,8 @@ class cardAddEmployee extends Component {
       this.setState({ proses: this.props.proses })
     }
 
-    // if (this.props.dataAddress !== prevProps.dataAddress) {
-    //   this.setState({ dataAddress: this.props.dataAddress })
-    // }
-
     if (this.state.company !== prevState.company) {
-      let dataAddress = [], idBuilding = [], token = Cookies.get('POLAGROUP')
+      let dataAddress = [], idBuilding = []
 
       await this.props.dataAddress.forEach(address => {
         if ((address.company_id === this.state.company) || (this.props.data && address.company_id === this.props.data.companyId)) {
@@ -113,43 +90,11 @@ class cardAddEmployee extends Component {
         }
       });
 
-      API.get(`/structure?company=${this.state.company}`, { headers: { token } })
-        .then(async ({ data }) => {
-          let optionPosisi = [], idDepart = [], optionDivisi = [], positions = []
-
-          //Looping depart
-          await data.data.forEach(async structure => {
-            await structure.tbl_department_positions.forEach(el => {
-              let checkAvailableBefore = positions.find(position => position.department === structure.departments_id && position.position === el.position_id)
-
-              if (el.user_id === null && !checkAvailableBefore) {
-                optionPosisi.push({ value: el.position_id, label: el.tbl_position.position, departments_id: structure.departments_id, departmentPositionId: el.id })
-
-                let checkDepart = idDepart.find(id => id === structure.departments_id)
-
-                if (!checkDepart) {
-                  optionDivisi.push({ value: structure.departments_id, label: structure.department.deptname })
-                  idDepart.push(structure.departments_id)
-                }
-              }
-
-            })
-          })
-
-          this.setState({ optionDivisi, optionPosisi })
-
-        })
-        .catch(err => {
-          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
-            swal('Gagal', 'Koneksi tidak stabil', 'error')
-          }
-        })
-
       this.setState({ dataAddress })
     }
 
     if (this.state.companyDinas !== prevState.companyDinas) {
-      let dataAddressDinas = [], idBuilding = [], token = Cookies.get('POLAGROUP')
+      let dataAddressDinas = [], idBuilding = []
       await this.props.dataAddress.forEach(address => {
         if (address.company_id === this.state.companyDinas) {
           if (idBuilding.indexOf(address.building_id) < 0) {
@@ -158,38 +103,6 @@ class cardAddEmployee extends Component {
           }
         }
       });
-
-      API.get(`/structure?company=${this.state.companyDinas}`, { headers: { token } })
-        .then(async ({ data }) => {
-          let optionPosisiDinas = [], idDepart = [], optionDivisiDinas = [], positions = []
-
-          //Looping depart
-          await data.data.forEach(async structure => {
-            await structure.tbl_department_positions.forEach(el => {
-              let checkAvailableBefore = positions.find(position => position.department === structure.departments_id && position.position === el.position_id)
-
-              if (el.user_id === null && !checkAvailableBefore) {
-                optionPosisiDinas.push({ value: el.position_id, label: el.tbl_position.position, departments_id: structure.departments_id, departmentPositionId: el.id })
-
-                let checkDepart = idDepart.find(id => id === structure.departments_id)
-
-                if (!checkDepart) {
-                  optionDivisiDinas.push({ value: structure.departments_id, label: structure.department.deptname })
-                  idDepart.push(structure.departments_id)
-                }
-              }
-
-            })
-          })
-
-          this.setState({ optionDivisiDinas, optionPosisiDinas })
-
-        })
-        .catch(err => {
-          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
-            swal('Gagal', 'Koneksi tidak stabil', 'error')
-          }
-        })
 
       this.setState({ dataAddressDinas })
     }
@@ -226,27 +139,6 @@ class cardAddEmployee extends Component {
   }
 
   fetchDataEdit = async () => {
-    if (this.props.data.position.length > 0) {
-      let listDivisi = [
-        //   {
-        //   divisi: '',
-        //   peran: '',
-        // }
-      ]
-
-      this.props.data.position.forEach(position => {
-        if (position.tbl_structure_department.company_id === this.props.data.companyId) {
-          listDivisi.push({
-            id: position.id,
-            peran: position.position_id,
-            divisi: position.tbl_structure_department.departments_id
-          })
-        }
-      })
-
-      this.setState({ listDivisi })
-    }
-
     this.setState({
       pathAvatar: this.props.data.rawData.tbl_account_detail.avatar,
       name: this.props.data.rawData.tbl_account_detail.fullname,
@@ -274,9 +166,6 @@ class cardAddEmployee extends Component {
       alamat: this.props.data.rawData.tbl_account_detail.address,
 
       isDinas: this.props.data.rawData.dinas.length > 0 ? true : false,
-      // username: this.props.data.rawData.username
-      // divisi: this.props.data.rawData.tbl_account_detail.departments_id,
-      // peran: this.props.data.rawData.tbl_account_detail.position_id,
     })
 
   }
@@ -284,68 +173,6 @@ class cardAddEmployee extends Component {
   handleChange = name => event => {
     this.setState({ [name]: event.target.value });
   };
-
-  // HANDLE DIVISI (START)
-  handleChangeDivisi = (index, name) => event => {
-    let newArray = this.state.listDivisi
-
-    newArray[index][name] = event.target.value
-
-    this.setState({ listDivisi: newArray })
-  }
-
-  deleteDivisi = index => {
-    let newArray = this.state.listDivisi;
-
-    newArray.splice(index, 1);
-    this.setState({
-      listDivisi: newArray
-    });
-  }
-
-  addDivisi = index => {
-    let newArray = this.state.listDivisi;
-
-    newArray.push({
-      divisi: '',
-      peran: '',
-    });
-    this.setState({
-      listDivisi: newArray
-    });
-  }
-  // HANDLE DIVISI (END)
-
-  // HANDLE DIVISI DINAS (START)
-  handleChangeDivisiDinas = (index, name) => event => {
-    let newArray = this.state.listDivisiDinas
-
-    newArray[index][name] = event.target.value
-
-    this.setState({ listDivisiDinas: newArray })
-  }
-
-  deleteDivisiDinas = index => {
-    let newArray = this.state.listDivisiDinas;
-
-    newArray.splice(index, 1);
-    this.setState({
-      listDivisiDinas: newArray
-    });
-  }
-
-  addDivisiDinas = index => {
-    let newArray = this.state.listDivisiDinas;
-
-    newArray.push({
-      divisi: '',
-      peran: '',
-    });
-    this.setState({
-      listDivisiDinas: newArray
-    });
-  }
-  // HANDLE DIVISI DINAS (END)
 
   handleFiles = files => {
     this.setState({ files })
@@ -355,11 +182,7 @@ class cardAddEmployee extends Component {
     let newData = new FormData()
 
     if (this.props.data) newData.append("userId", this.props.data.userId)
-    // newData.append("username", this.state.username)
-    // if (!this.props.data) {
-    //   if (this.state.dateOfBirth) newData.append("password", `${this.state.dateOfBirth.getDate() < 10 ? `0${this.state.dateOfBirth.getDate()}` : this.state.dateOfBirth.getDate()}${this.state.dateOfBirth.getMonth() + 1 < 10 ? `0${this.state.dateOfBirth.getMonth() + 1}` : this.state.dateOfBirth.getMonth() + 1}${this.state.dateOfBirth.getFullYear()}`)
-    //   else newData.append("password", '12345678')
-    // }
+
     if (this.props.data && this.state.password) newData.append("password", this.state.password)
     newData.append("email", this.state.emailPribadi)
     newData.append("fullname", this.state.name)
@@ -385,14 +208,6 @@ class cardAddEmployee extends Component {
     newData.append("officeEmail", this.state.emailKantor)
 
     if (this.state.avatar) newData.append("avatar", this.state.avatar)
-
-    if (this.state.listDivisi[0].divisi && this.state.listDivisi[0].peran) {
-      newData.append("list_divisi", JSON.stringify(this.state.listDivisi))
-    }
-
-    if (this.state.listDivisiDinas[0].divisi && this.state.listDivisiDinas[0].peran) {
-      newData.append("list_divisi_dinas", JSON.stringify(this.state.listDivisiDinas))
-    }
 
     this.props.sendData(newData)
   }
@@ -460,7 +275,7 @@ class cardAddEmployee extends Component {
       this.setState({ avatar: file, pathAvatar });
     } else {
       e.target.value = null;
-      //   swal("Unggah File Gagal!", "Ukuran file lebih dari 5MB", "warning")
+      swal("Unggah File Gagal!", "Ukuran file lebih dari 5MB", "warning")
     }
   };
 
@@ -625,60 +440,6 @@ class cardAddEmployee extends Component {
                 disabled={this.props.proses}
               />
             </Grid>
-
-            {
-              this.state.listDivisi.map((divisi, index) =>
-                <Grid id="divisi" style={{ display: 'flex', alignItems: 'center' }} key={'divisi' + index}>
-                  <Grid style={{ width: '20%', marginRight: 10 }}>
-                    <b style={{ marginBottom: 5 }}>Department</b>
-                  </Grid>
-
-                  <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
-                    <Select
-                      value={divisi.divisi}
-                      onChange={this.handleChangeDivisi(index, 'divisi')}
-                      disabled={this.props.proses}
-                      style={{ width: '100%' }}
-                    >
-                      <MenuItem value={null}>Pilih Department</MenuItem>
-                      {
-                        this.state.optionDivisi.map((department, index) =>
-                          <MenuItem value={department.value} key={"department" + index}>{department.label}</MenuItem>
-                        )
-                      }
-                    </Select>
-                  </FormControl>
-
-                  <Grid style={{ width: '2%' }} />
-
-                  <Grid style={{ width: '20%', marginRight: 10 }}>
-                    <b style={{ marginBottom: 5 }}>Posisi</b>
-                  </Grid>
-
-                  <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
-                    <Select
-                      value={divisi.peran}
-                      onChange={this.handleChangeDivisi(index, 'peran')}
-                      disabled={this.props.proses || !divisi.divisi}
-                      style={{ width: '100%' }}
-                    >
-                      <MenuItem value={null}>Pilih posisi</MenuItem>
-                      {
-                        this.state.optionPosisi.map((position, index) =>
-                          position.departments_id === divisi.divisi && <MenuItem value={position.value} key={"departments" + index}>{position.label}</MenuItem>
-                        )
-                      }
-                    </Select>
-                  </FormControl>
-
-                  {
-                    this.state.listDivisi.length > 1 && <Button style={{ backgroundColor: '#ff1919', borderRadius: 30, minWidth: 30, color: 'white', marginLeft: '10px' }} size='small' onClick={() => this.deleteDivisi(index)} disabled={this.state.proses}>X</Button>
-                  }
-                </Grid>
-              )
-            }
-            <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.addDivisi} disabled={this.state.proses}>+ tambah department</p>
-
 
             <Grid id="evaluator" style={{ display: 'flex', alignItems: 'center' }}>
               <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
@@ -950,59 +711,6 @@ class cardAddEmployee extends Component {
                   </Select>
                 </FormControl>
               </Grid>
-
-              {
-                this.state.listDivisiDinas.map((divisi, index) =>
-                  <Grid id="divisi" style={{ display: 'flex', alignItems: 'center' }} key={'divisi-dinas' + index}>
-                    <Grid style={{ width: '20%', marginRight: 10 }}>
-                      <b style={{ marginBottom: 5 }}>Department</b>
-                    </Grid>
-
-                    <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
-                      <Select
-                        value={divisi.divisi}
-                        onChange={this.handleChangeDivisiDinas(index, 'divisi')}
-                        disabled={this.props.proses || !this.state.isDinas}
-                        style={{ width: '100%' }}
-                      >
-                        <MenuItem value={null}>Pilih department</MenuItem>
-                        {
-                          this.state.optionDivisiDinas.map((department, index) =>
-                            <MenuItem value={department.value} key={"DivisiDinas" + index}>{department.label}</MenuItem>
-                          )
-                        }
-                      </Select>
-                    </FormControl>
-
-                    <Grid style={{ width: '2%' }} />
-
-                    <Grid style={{ width: '20%', marginRight: 10 }}>
-                      <b style={{ marginBottom: 5 }}>Posisi</b>
-                    </Grid>
-
-                    <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px' }}>
-                      <Select
-                        value={divisi.peran}
-                        onChange={this.handleChangeDivisiDinas(index, 'peran')}
-                        disabled={this.props.proses || !this.state.isDinas || !divisi.divisi}
-                        style={{ width: '100%' }}
-                      >
-                        <MenuItem value={null}>Pilih posisi</MenuItem>
-                        {
-                          this.state.optionPosisiDinas.map((position, index) =>
-                            divisi.divisi === position.departments_id && <MenuItem value={position.value} key={"posisi-dinas" + index}>{position.label}</MenuItem>
-                          )
-                        }
-                      </Select>
-                    </FormControl>
-
-                    {
-                      this.state.listDivisiDinas.length > 1 && <Button style={{ backgroundColor: '#ff1919', borderRadius: 30, minWidth: 30, color: 'white', marginLeft: '10px' }} size='small' onClick={() => this.deleteDivisiDinas(index)} disabled={this.state.proses}>X</Button>
-                    }
-                  </Grid>
-                )
-              }
-              <p style={{ margin: 0, color: '#d91b51', cursor: !this.state.isDinas ? null : 'pointer' }} onClick={!this.state.isDinas ? null : this.addDivisiDinas} disabled={this.state.proses}>+ tambah department</p>
             </Paper>
           }
 
@@ -1107,7 +815,6 @@ class cardAddEmployee extends Component {
             <Grid id="email-kantor" style={{ display: 'flex', alignItems: 'center' }}>
               <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
                 <b style={{ margin: 0 }}>Email Kantor</b>
-                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
               </Grid>
 
               <OutlinedInput
@@ -1194,8 +901,6 @@ const mapStateToProps = ({ dataCompanies, dataDepartments, dataPositions, dataUs
     dataAddress,
     isAdminsuper,
     dataStructure,
-    // PIC,
-    // dinas,
     admin
   }
 }

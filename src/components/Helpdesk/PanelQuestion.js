@@ -8,8 +8,6 @@ import ThumbDownOutlinedIcon from '@material-ui/icons/ThumbDownOutlined';
 import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import ArrowDownImg from '../../Assets/caret-down.png';
-import ArrowUpImg from '../../Assets/caret-up.png';
 
 import swal from 'sweetalert';
 
@@ -111,9 +109,6 @@ class PanelQuestion extends Component {
     })
       .then(async (yesAnswer) => {
         if (yesAnswer) {
-          // this.setState({
-          //   proses: true
-          // })
           let token = Cookies.get('POLAGROUP'), dataListQuestion = this.state.listQuestion
 
           API.delete(`/helpdesk/question/${dataListQuestion[index].id}`, { headers: { token } })
@@ -286,10 +281,10 @@ class PanelQuestion extends Component {
                           {/* ORDER LIST */}
                           <Grid style={{ display: 'flex', flexDirection: 'column', justifyContent: index === 0 || index === this.state.listQuestion.length - 1 ? 'center' : 'space-between', height: 25 }}>
                             {
-                              index !== 0 && <img src={ArrowUpImg} alt={index + "up"} style={{ width: 20, height: 10, cursor: 'pointer' }} onClick={() => this.changeOrder(question.id, question.sub_topics_id, 'up', index)} />
+                              index !== 0 && <img src={require('../../Assets/caret-up.png').default} alt={index + "up"} style={{ width: 20, height: 10, cursor: 'pointer' }} onClick={() => this.changeOrder(question.id, question.sub_topics_id, 'up', index)} />
                             }
                             {
-                              index !== this.state.listQuestion.length - 1 && <img src={ArrowDownImg} alt={index + "down"} style={{ width: 20, height: 10, cursor: 'pointer' }} onClick={() => this.changeOrder(question.id, question.sub_topics_id, 'down', index)} />
+                              index !== this.state.listQuestion.length - 1 && <img src={require('../../Assets/caret-down.png').default} alt={index + "down"} style={{ width: 20, height: 10, cursor: 'pointer' }} onClick={() => this.changeOrder(question.id, question.sub_topics_id, 'down', index)} />
                             }
                           </Grid>
                         </>

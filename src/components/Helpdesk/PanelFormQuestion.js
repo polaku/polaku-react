@@ -100,7 +100,6 @@ class PanelFormQuestion extends Component {
       if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
         swal('Gagal', 'Koneksi tidak stabil', 'error')
       }
-      // console.log(err)
     }
   }
 
@@ -174,7 +173,6 @@ class PanelFormQuestion extends Component {
         if (this.props.questionSelectedForEdit) swal('Edit pertanyaan berhasil', '', 'success')
         else swal('Tambah pertanyaan gagal', '', 'error')
       }
-      // console.log(err)
     }
   }
 

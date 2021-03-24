@@ -4,9 +4,7 @@ import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
 import {
-  Modal, Fade, Grid, Backdrop, Typography, OutlinedInput, FormControl,
-  //  InputAdornment, 
-  Button, Divider
+  Modal, Fade, Grid, Backdrop, Typography, OutlinedInput, FormControl, Button, Divider
 } from '@material-ui/core';
 
 import SeCreatableSelect from 'react-select/creatable';
@@ -98,13 +96,10 @@ class modalOnBoarding extends Component {
       .then(async ({ data }) => {
         await this.props.fetchDataPIC()
         swal("Tambah PIC sukses", "", "success")
-        // this.props.history.push('/setting/setting-perusahaan/stepper-onboarding', { company_id: data.data.company_id })
         this.setState({ proses: false })
         this.props.close()
-        // this.props.history.push('/setting/setting-perusahaan/add-address', { company_id: data.data.company_id })
       })
       .catch(err => {
-        // console.log(err)
         this.setState({ proses: false })
         if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
           swal('Gagal', 'Koneksi tidak stabil', 'error')

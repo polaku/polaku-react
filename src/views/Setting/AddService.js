@@ -87,7 +87,6 @@ class AddService extends Component {
   }
 
   async componentDidUpdate(prevProps, prevState) {
-    // kepakai
     if (this.state.coreCompany !== prevState.coreCompany) {
       let listAddressCompany = [], idBuilding = []
 
@@ -103,7 +102,6 @@ class AddService extends Component {
       this.setState({ listAddressCompany })
     }
 
-    // kepakai
     if (this.state.employee !== prevState.employee) {
       this.setState({ dinas: [], companyKPI: null, companyKPISelected: null, companyHRD: null, companyHRDSelected: null })
       await this.fetchDataUser()
@@ -123,7 +121,6 @@ class AddService extends Component {
 
       this.setState({ listUser })
     } catch (err) {
-      // console.log(err)
       if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
         swal('Gagal', 'Koneksi tidak stabil', 'error')
       }
@@ -190,7 +187,6 @@ class AddService extends Component {
         companyKPISelected: optionCompanyKPInHRD.find(el => el.value === getData.data.data.tbl_account_detail.company_KPI) || null
       })
     } catch (err) {
-      // console.log(err)
       if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
         swal('Gagal', 'Koneksi tidak stabil', 'error')
       }
@@ -298,7 +294,6 @@ class AddService extends Component {
       this.setState({ optionCompanyKPInHRD })
 
 
-      // ========================================
       API.get(`/structure?company=${event.target.value}`, { headers: { token } })
         .then(async ({ data }) => {
           let optionPosition = [], idDepart = [], optionDepart = [], positions = []
@@ -561,12 +556,10 @@ class AddService extends Component {
       }
 
       if (dinas.dinasId) {
-        // PUT
         promises.push(
           API.put(`/dinas/${dinas.dinasId}`, newData, { headers: { token } })
         )
       } else {
-        // CREATE
         promises.push(
           API.post(`/dinas`, newData, { headers: { token } })
         )
@@ -576,7 +569,6 @@ class AddService extends Component {
 
     Promise.all(promises)
       .then(async ({ data }) => {
-        // this.setState({ data: [], proses: false })
         swal('Simpan data dinas sukses', '', 'success')
         await this.props.fetchDataDinas({ limit: 10, page: 0 })
         this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index, indexTab: 1 })

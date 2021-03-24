@@ -4,7 +4,6 @@ import Cookies from 'js-cookie';
 import { Grid, Typography, TextField, Button, CircularProgress, InputAdornment } from '@material-ui/core';
 
 import LockIcon from '@material-ui/icons/Lock';
-import LogoImg from '../Assets/logo.png';
 
 import swal from 'sweetalert';
 
@@ -187,7 +186,7 @@ class ResetPassword extends Component {
     return (
       <Grid style={{ display: 'flex', justifyContent: 'center', margin: '5% 0 0 auto' }}>
         <Grid style={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
-          <img src={LogoImg} alt="Logo" />
+          <img src={require('../Assets/logo.png').default} alt="Logo" />
           <Typography style={{ margin: 10, fontSize: 15, fontWeight: 'bold', marginBottom: 15 }}>RESET PASSWORD</Typography>
           <TextField
             id="password"

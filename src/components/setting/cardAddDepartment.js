@@ -9,8 +9,6 @@ import CreatableSelect from 'react-select/creatable';
 import ReactSelect from 'react-select';
 import makeAnimated from 'react-select/animated';
 
-import DropdownImg from '../../Assets/dropdown.png';
-
 import swal from 'sweetalert';
 
 import { API } from '../../config/API';
@@ -126,7 +124,7 @@ class cardAddDepartment extends Component {
 
       this.setState({ listUser })
     } catch (err) {
-      // console.log(err)
+      console.log(err)
       if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
         swal('Gagal', 'Koneksi tidak stabil', 'error')
       }
@@ -245,8 +243,12 @@ class cardAddDepartment extends Component {
   };
 
   deletePosition = index => {
+    console.log(index)
     let newArray = this.state.position;
-    newArray.splice(index, 1);
+    this.setState({
+      position: []
+    });
+    console.log(newArray.splice(index, 1));
     this.setState({
       position: newArray
     });
@@ -522,7 +524,6 @@ class cardAddDepartment extends Component {
                 value={this.state.levelHirarki}
                 onChange={this.handleChange('levelHirarki')}
                 style={{ width: 80, marginRight: 10 }}
-              // disabled={this.state.proses}
               >
                 <MenuItem value="">
                   <em>Hirarki</em>
@@ -569,7 +570,7 @@ class cardAddDepartment extends Component {
             {
               this.state.position.map((position, index) =>
                 <Grid style={{ width: '50%', margin: 5, minWidth: 300, display: 'flex', alignItems: 'flex-start' }} key={"position" + index}>
-                  <img src={DropdownImg} alt="dropdown" style={{ width: 20, height: 20, marginRight: 10, marginTop: 10 }} />
+                  <img src={require('../../Assets/dropdown.png').default} alt="dropdown" style={{ width: 20, height: 20, marginRight: 10, marginTop: 10 }} />
                   <Grid style={{ width: 400 }}>
                     <Grid style={{ height: 40 }}>
                       <CreatableSelect
@@ -651,7 +652,7 @@ class cardAddDepartment extends Component {
                   {
                     team.teamPosition.map((position, indexPosition) =>
                       <Grid style={{ width: '60%', margin: 5, minWidth: 300, display: 'flex', alignItems: 'center' }} key={"teamPosition" + indexPosition}>
-                        <img src={DropdownImg} alt="dropdown" style={{ width: 20, height: 20, marginRight: 10 }} />
+                        <img src={require('../../Assets/dropdown.png').default} alt="dropdown" style={{ width: 20, height: 20, marginRight: 10 }} />
                         <Grid style={{ width: 400, height: 40 }}>
                           <CreatableSelect
                             isClearable

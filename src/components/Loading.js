@@ -1,6 +1,6 @@
 import React from 'react';
 import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import {CircularProgress, Paper} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -16,7 +16,9 @@ export default function SimpleBackdrop(props) {
   return (
     <div>
       <Backdrop className={classes.backdrop} open={props.loading}>
-        <CircularProgress color="secondary" />
+        <Paper style={{width: 100, height: 100, opacity: 0.9, display: 'flex', alignItems: 'center', justifyContent:' center', borderRadius: 10 }}>
+          <CircularProgress color="secondary" />
+        </Paper>
       </Backdrop>
     </div>
   );

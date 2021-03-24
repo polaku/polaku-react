@@ -9,7 +9,6 @@ import {
 
 import ErrorOutlinedIcon from '@material-ui/icons/ErrorOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
-import EditImg from '../../Assets/edit.png';
 
 import { fetchDataAddress } from '../../store/action';
 
@@ -104,7 +103,7 @@ class cardAddress extends Component {
                 : <Grid style={{ width: 24 }} />
             }
             <Tooltip title="Edit alamat" aria-label="edit-data">
-              <img src={EditImg} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-address', { data: this.props.data, index: this.props.index })} />
+              <img src={require('../../Assets/edit.png').default} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-address', { data: this.props.data, index: this.props.index })} />
             </Tooltip>
             <Tooltip title="Hapus alamat" aria-label="delete-data">
               <DeleteIcon style={{ color: 'red', cursor: 'pointer' }} onClick={this.delete} />

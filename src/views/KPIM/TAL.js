@@ -6,7 +6,6 @@ import {
   Grid, LinearProgress, Select as SelectOption, MenuItem, CircularProgress
 } from '@material-ui/core';
 
-import SettingKPIMImg from '../../Assets/settingKPIM.png';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import 'react-circular-progressbar/dist/styles.css';
 
@@ -102,14 +101,6 @@ class TAL extends Component {
   }
 
   // CALENDER GOOGLE
-  // getNumberOfWeek = date => {
-  //   //yyyy-mm-dd (first date in week)
-  //   var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  //   var dayNum = d.getUTCDay() || 7;
-  //   d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-  //   var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  //   return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
-  // }
 
   handleChange = name => async event => {
     let mingguAwalBulan = this.getNumberOfWeek(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
@@ -172,7 +163,7 @@ class TAL extends Component {
               {
                 this.state.isEmpty
                   ? <Grid style={{ display: 'flex', margin: '50px auto 10px auto', flexDirection: 'column', textAlign: 'center' }}>
-                    <img src={SettingKPIMImg} alt="Logo" style={{ width: 500, maxHeight: 500 }} />
+                    <img src={require('../../Assets/settingKPIM.png').default} alt="Logo" style={{ width: 500, maxHeight: 500 }} />
                     <p style={{ marginTop: 10, fontFamily: 'Simonetta', fontSize: 20, textShadow: '4px 4px 4px #aaa' }} >BELUM ADA TAL</p>
                   </Grid>
                   : this.state.dataForDisplay.length > 0 && this.state.dataForDisplay.map((el, index) =>

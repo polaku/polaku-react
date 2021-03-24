@@ -25,7 +25,6 @@ const api = store => next => async action => {
       let getData = await API.get(`/users?${query}`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -50,26 +49,20 @@ const api = store => next => async action => {
     next({
       type: 'FETCH_DATA_LOADING'
     })
-    // console.log("MASUK SINI 1")
     try {
-      // console.log("MASUK SINI 2")
 
       let query = ''
       if (action.payload && action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
       if (action.payload && action.payload.forOption) query === '' ? query += `forOption=true` : query += `&forOption=true`
       if (action.payload && action.payload.keyword) query === '' ? query += `search=${action.payload.keyword}` : query += `&search=${action.payload.keyword}`
       if (action.payload && action.payload.company) query === '' ? query += `company=${action.payload.company}` : query += `&company=${action.payload.company}`
-      // console.log("MASUK SINI 3")
 
       let getData = await API.get(`/bookingRoom/rooms${query !== '' ? `?${query}` : ''}`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
-      // console.log("MASUK SINI 4")
 
-      // console.log(getData.data.data)
       next({
         type: 'FETCH_DATA_ROOMS_SUCCESS',
         payload: getData.data.data
@@ -92,7 +85,6 @@ const api = store => next => async action => {
       getData = await API.get('/bookingRoom/roomMaster', {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -131,7 +123,6 @@ const api = store => next => async action => {
       getData = await API.get('/company', {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -157,7 +148,6 @@ const api = store => next => async action => {
       getData = await API.get('/bookingRoom/building', {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -183,7 +173,6 @@ const api = store => next => async action => {
       getData = await API.get('/bookingRoom', {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
       next({
@@ -208,7 +197,6 @@ const api = store => next => async action => {
       getData = await API.get('/bookingRoom/myroom', {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -234,7 +222,6 @@ const api = store => next => async action => {
       getData = await API.get('/events', {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -267,7 +254,6 @@ const api = store => next => async action => {
       getData = await API.get('/events/all', {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -300,7 +286,6 @@ const api = store => next => async action => {
       getData = await API.get('/events/masterCreator', {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -326,7 +311,6 @@ const api = store => next => async action => {
       getData = await API.get('/department', {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -352,7 +336,6 @@ const api = store => next => async action => {
       getData = await API.get('/notification', {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -397,7 +380,6 @@ const api = store => next => async action => {
       getData = await API.get(`/contactUs/allContactUs?${query}`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
       // let newData = await getData.data.data.filter(el => el.user_id === action.payload)
@@ -419,11 +401,7 @@ const api = store => next => async action => {
               if (el.user_id === action.payload) newData.push(el)
               else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload || action.payload === 1) newDataStaff.push(el)
 
-              // if (lastDate.length > 1) {   // for data from web php (yyyy-mm-dd,yyyy-mm-dd,yyyy-mm-dd) 
-              //   if (Number(newLastDate.slice(newLastDate.length - 2, newLastDate.length)) >= new Date().getDate()) {
-              //     if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload || action.payload === 1) newDataStaff.push(el)
-              //   }
-              // } else { // for data from mobile (yyyy-mm-dd hh:mm:ss)
+              // for data from mobile (yyyy-mm-dd hh:mm:ss)
               //   if ((Number(newLastDate.slice(newLastDate.length - 2, newLastDate.length)) + (Number(el.leave_request) - 1)) >= new Date().getDate()) {                
               //   }
               // }
@@ -498,25 +476,21 @@ const api = store => next => async action => {
       if (action.payload && action.payload["for-setting"]) getDataKPIM = await API.get(`/kpim?for-setting=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
       else if (action.payload && action.payload["for-dashboard"]) getDataKPIM = await API.get(`/kpim?for-dashboard=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}&user-id=${action.payload.userId}`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
       else if (action.payload && action.payload["for-report"]) getDataKPIM = await API.get(`/kpim?for-report=true&year=${action.payload.year}&month=${action.payload.month}`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
       else getDataKPIM = await API.get(`/kpim`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -542,25 +516,21 @@ const api = store => next => async action => {
       if (action.payload && action.payload["for-setting"]) getData = await API.get(`/tal?for-setting=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
       else if (action.payload && action.payload["for-dashboard"]) getData = await API.get(`/tal?for-dashboard=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}&user-id=${action.payload.userId}`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
       else if (action.payload && action.payload["for-tal-team"]) getData = await API.get(`/tal?for-tal-team=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}&user-id=${action.payload.userId}`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
       else getData = await API.get(`/tal?year=${action.payload}`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -586,7 +556,6 @@ const api = store => next => async action => {
       getData = await API.get(`/rewardKPIM?all=true`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -614,7 +583,6 @@ const api = store => next => async action => {
       getData = await API.get(`/position`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -640,7 +608,6 @@ const api = store => next => async action => {
       getData = await API.get(`/news`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -666,7 +633,6 @@ const api = store => next => async action => {
       getData = await API.get(`/users/${action.payload}`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -692,7 +658,6 @@ const api = store => next => async action => {
       getData = await API.get('/pic', {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -724,7 +689,6 @@ const api = store => next => async action => {
       let getData = await API.get(`/address?${query}`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -756,7 +720,6 @@ const api = store => next => async action => {
       let getData = await API.get(`/structure?${query}`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -787,7 +750,6 @@ const api = store => next => async action => {
       let getData = await API.get(`/dinas?${query}`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -827,7 +789,6 @@ const api = store => next => async action => {
       let getData = await API.get(`/designation?${query}`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 
@@ -862,7 +823,6 @@ const api = store => next => async action => {
       let getData = await API.get(`/helpdesk/topics?${query}`, {
         headers: {
           token,
-          // ip: await publicIp.v4()
         }
       })
 

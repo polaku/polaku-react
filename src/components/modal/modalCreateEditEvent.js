@@ -73,7 +73,6 @@ class modalCreateEditRoom extends Component {
       if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
         swal('Gagal', 'Koneksi tidak stabil', 'error')
       }
-      // console.log(err)
     }
   }
 

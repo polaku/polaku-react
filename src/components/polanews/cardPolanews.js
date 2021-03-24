@@ -81,7 +81,7 @@ class cardPolanews extends Component {
         <Paper style={{ padding: 15 }}>
           <Grid style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
             <Typography>{this.props.data.title}</Typography>
-            { // BUTTON EDIT AND DELETE
+            {
               (this.props.userId === 1 || this.props.userId === 30 || this.props.userId === 33 || this.props.userId === 44) &&
               <Grid>
                 <Button variant="contained" style={{ width: 10, minWidth: 40, padding: '3px 0px', marginRight: 10 }} onClick={this.handleOpenModal}>

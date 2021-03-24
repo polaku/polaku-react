@@ -6,8 +6,6 @@ import {
   Grid, CircularProgress, Paper, Tabs, Tab, Divider, TextField, Button, TablePagination
 } from '@material-ui/core';
 
-import AddAddressImg from '../../Assets/add-address.png';
-
 import { fetchDataUsers, fetchDataAddress, fetchDataCompanies } from '../../store/action';
 
 const ModalLogSetting = lazy(() => import('../modal/modalLogSetting'));
@@ -57,10 +55,6 @@ class panelAddress extends Component {
 
         this.setState({ dataForDisplay: data })
       }
-    }
-
-    if (this.state.dataForEdit !== prevState.dataForEdit) {
-      // console.log(this.state.dataForEdit)
     }
 
     if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.admin !== prevProps.admin) {
@@ -202,7 +196,7 @@ class panelAddress extends Component {
             : <Grid>
               <Grid style={{ display: 'flex', margin: 10 }}>
                 <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-address', { index: this.props.index })}>
-                  <img src={AddAddressImg} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
+                  <img src={require('../../Assets/add-address.png').default} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                   <p style={{ margin: '0px 0px 0px 5px' }}>Tambah alamat</p>
                 </Grid>
                 <p style={{ color: '#d71149', margin: 0, cursor: 'pointer' }} onClick={this.handleModalLogSetting}>Lihat riwayat perubahan</p>

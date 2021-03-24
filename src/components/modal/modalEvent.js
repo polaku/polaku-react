@@ -87,7 +87,7 @@ class modalEvent extends Component {
           joinEvent: newPerson
         })
       }
-      if (getData) {        // this.props.fetchDataMyEvent()
+      if (getData) {
         swal(`${args} Success`, "", "success")
         this.setState({
           proses: false

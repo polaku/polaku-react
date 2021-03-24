@@ -5,7 +5,6 @@ import {
   Paper, Button, Grid, Tabs, Tab
 } from '@material-ui/core';
 import Loading from '../../components/Loading';
-import IconOrangImg from '../../Assets/icon orang.png';
 
 import { fetchDataContactUs } from '../../store/action';
 
@@ -288,7 +287,7 @@ class HR extends Component {
             }
           </Grid >
           <Grid style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <img src={IconOrangImg} alt="Logo" style={{ width: 400, maxHeight: 250, }} />
+            <img src={require('../../Assets/icon orang.png').default} alt="Logo" style={{ width: 400, maxHeight: 250, }} />
           </Grid>
         </Paper >
 

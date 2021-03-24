@@ -25,7 +25,6 @@ class cardPermintaanHRD extends Component {
       proses: false,
       openModal: false,
       hasPassed: false
-      // status: 0
     };
   }
 

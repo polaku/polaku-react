@@ -132,7 +132,6 @@ class DashboardKPIM extends Component {
           }
         }
       } else if (this.props.userId) {
-        // console.log("MASUK 1")
         this.setState({
           weekSelected: this.getNumberOfWeek(new Date()),
           monthSelected: new Date().getMonth() + 1,
@@ -142,13 +141,10 @@ class DashboardKPIM extends Component {
           this.getNumberOfWeek(new Date()),
           this.props.userId
         );
-        // console.log("MASUK 2")
 
         await this.props.fetchDataRewardKPIM(this.props.userId);
-        // console.log("MASUK 3")
 
         await this.props.myRewardKPIM.sort(this.sortingReward);
-        // console.log("MASUK 4")
 
       }
     }
@@ -254,7 +250,6 @@ class DashboardKPIM extends Component {
     let tempTAL = [],
       talTeam;
 
-    // console.log("MASUK fetchData 1")
     await this.props.fetchDataAllKPIM({
       "for-dashboard": true,
       year: new Date().getFullYear(),
@@ -262,14 +257,12 @@ class DashboardKPIM extends Component {
       week: weekSelected,
       userId,
     });
-    // console.log("MASUK fetchData 2")
 
     // ===== HANDLE TAL ===== //
     let dataTAL = await this.props.dataAllKPIM.find(
       (kpim) =>
         kpim.user_id === userId && kpim.indicator_kpim.toLowerCase() === "tal"
     );
-    // console.log("MASUK fetchData 3")
 
     dataTAL &&
       dataTAL.tbl_kpim_scores[dataTAL.tbl_kpim_scores.length - 1].tbl_tals &&
@@ -280,12 +273,10 @@ class DashboardKPIM extends Component {
         delete newTAL.tbl_tal_scores;
         tempTAL.push(newTAL);
       }));
-    // console.log("MASUK fetchData 4")
 
     await this.fetchTALSelected(tempTAL, monthSelected, weekSelected);
     this.setState({ prosesTAL: false });
     // ===== HANDLE TAL ===== //
-    // console.log("MASUK fetchData 5")
 
     // ===== HANDLE TAL TEAM ===== //
     if (this.state.listBawahan.length > 0) {
@@ -302,7 +293,6 @@ class DashboardKPIM extends Component {
       talTeam = await this.fetchDataTALTeam(monthSelected, weekSelected);
     }
     // ==== HANDLE TAL TEAM ===== //
-    // console.log("MASUK fetchData 6")
 
     // ===== HANDLE KPIM ===== //
     let allKPIM = [];
@@ -323,7 +313,6 @@ class DashboardKPIM extends Component {
         kpim.user_id === userId && kpim.indicator_kpim.toLowerCase() === "tal"
     );
     if (KPIMTeam) allKPIM.push(KPIMTeam);
-    // console.log("MASUK fetchData 7")
 
     this.setState({
       kpimSelected: [],
@@ -338,7 +327,6 @@ class DashboardKPIM extends Component {
 
     await this.fetchKPIMSelected(kpimSelected, monthSelected);
     this.setState({ prosesKPIM: false });
-    // console.log("MASUK fetchData 8")
 
     // ===== HANDLE KPIM ===== //
   };
@@ -543,7 +531,6 @@ class DashboardKPIM extends Component {
           } else {
             swal("please try again");
           }
-          // console.log(err)
         });
     } else {
       swal("Weight tal lebih dari 100", "", "warning");

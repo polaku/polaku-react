@@ -14,8 +14,6 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 
-import IjinImg from '../../Assets/ijin.jpeg';
-
 import swal from 'sweetalert';
 
 import { API } from '../../config/API';
@@ -356,14 +354,9 @@ class modalCreateEditPermintaanHRD extends Component {
             {
               this.state.jenisIjin === 6 && <p style={{ fontWeight: 'bold', marginTop: 0, fontSize: 24 }}>Sisa cuti anda {this.props.sisaCuti} hari</p>
             }
-            <img src={IjinImg} alt="Logo" style={{ width: 200 }} />
+            <img src={require('../../Assets/ijin.jpeg').default} alt="Logo" style={{ width: 200 }} />
             <p style={{ fontWeight: 'bold' }}>Ajukan ijin dengan mengisi beberapa detail dibawah ini</p>
             <form noValidate autoComplete="off" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-              {/* <MultipleDatePicker
-                onSubmit={dates => console.log('selected date', dates)
-                }
-                style={{ border: '0px', backgroundColor:'red' }}
-              /> */}
 
               {/* PIlihan cuti, imp, ia */}
               <FormControl style={{ margin: '10px 0 10px 0' }}>

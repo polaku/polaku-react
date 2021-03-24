@@ -84,7 +84,6 @@ class cardSettingIndicator extends Component {
         persenTahun: 0
       })
       let persenTahun, persenBulan
-      // console.log(this.props.data)
       if (this.props.data.targetInverse) {
         persenTahun = Math.floor(((this.props.data.target - this.props.data.pencapaian) / this.props.data.target) * 100)
 
@@ -189,7 +188,6 @@ class cardSettingIndicator extends Component {
       if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
         swal('Gagal', 'Koneksi tidak stabil', 'error')
       }
-      // console.log(err)
     }
   }
 
@@ -352,10 +350,7 @@ class cardSettingIndicator extends Component {
     event.preventDefault()
     this.setState({ proses: true })
     let statusOverWeight = false
-    // let listDate = await this.fetchOptionDateInWeek()
-    // let thereDate20 = listDate.includes(20)
 
-    // if (!thereDate20) {
     if (!this.props.data.weight || Number(this.props.data.weight) === 0) {
       if ((Number(this.props.bobotTAL) + Number(this.state.weight)) > 100) {
         statusOverWeight = true
@@ -367,7 +362,6 @@ class cardSettingIndicator extends Component {
         statusOverWeight = true
       }
     }
-    // }
 
     if (!statusOverWeight) {
       let newData = {
@@ -492,14 +486,6 @@ class cardSettingIndicator extends Component {
   }
 
   // CALENDER GOOGLE
-  // getNumberOfWeek = date => {
-  //   //yyyy-mm-dd (first date in week)
-  //   var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  //   var dayNum = d.getUTCDay() || 7;
-  //   d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-  //   var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  //   return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
-  // }
 
   fetchOptionDateInWeek = () => {
     let date = []
@@ -847,7 +833,7 @@ class cardSettingIndicator extends Component {
               </ListItemIcon>
               <Typography >atur pengulangan</Typography>
             </MenuItem> */}
-            <MenuItem onClick={this.deleteIndicator}>
+            <MenuItem onClick={() => this.deleteIndicator()}>
               <ListItemIcon style={{ marginLeft: 5 }}>
                 <ArchiveOutlinedIcon />
               </ListItemIcon>

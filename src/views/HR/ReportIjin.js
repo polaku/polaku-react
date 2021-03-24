@@ -345,7 +345,6 @@ class ReportIjin extends Component {
                       style={{ margin: 0, width: '100%' }}
                       value={this.state.newMonthStart}
                       onChange={this.handleChange('newMonthStart')}
-                      // defaultValue={new Date((new Date().getFullYear(), new Date().getMonth(), new Date().getDate()))}
                       KeyboardButtonProps={{
                         'aria-label': 'change date',
                       }}

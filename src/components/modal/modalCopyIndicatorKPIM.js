@@ -112,7 +112,6 @@ class modalCopyIndicatorKPIM extends Component {
           }}>
             <Typography style={{ alignSelf: 'center', fontSize: 35, fontWeight: 'bold', marginRight: 20, marginBottom: 50 }}>Duplikat indicator</Typography>
             <SeCreatableSelect
-              // isMulti
               components={animatedComponents}
               options={this.state.users}
               onChange={value => this.handleChangeSelect('user', value)}
@@ -120,11 +119,9 @@ class modalCopyIndicatorKPIM extends Component {
               getOptionValue={(option) => option.user_id}
             />
 
-            {/* <Grid style={{width:'100%'}} > */}
             <Button variant="outlined" color="secondary" style={{ margin: '30px auto 0px auto' }} onClick={this.submitForm} >
               Simpan
               </Button>
-            {/* </Grid> */}
           </Grid>
         </Fade>
       </Modal>

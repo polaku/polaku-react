@@ -66,7 +66,6 @@ class cardBookingRoom extends Component {
             })
             .then(async ({ data }) => {
               swal("Pesanan berhasil dihapus !", "", "success")
-              // await this.props.refresh()
 
               await this.props.setBookingRoom(data.data)
 

@@ -131,13 +131,9 @@ class modalCreateEditBookingRoom extends Component {
       })
     } else {
       let idPartisipan = [], time_in, time_out
-      // if (this.state.partisipan.length > 0) {
       this.state.partisipan.forEach(el => {
         idPartisipan.push(el.user_id)
       })
-      // } else {
-      //   idPartisipan.push(this.props.userId)
-      // }
 
       time_in = `${new Date(this.state.time_in).getHours()}:${new Date(this.state.time_in).getMinutes()}`
       time_out = `${new Date(this.state.time_out).getHours()}:${new Date(this.state.time_out).getMinutes()}`
@@ -176,7 +172,6 @@ class modalCreateEditBookingRoom extends Component {
             this.props.closeModal()
           })
           .catch((err) => {
-            // console.log(err.response)
             if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
               swal('Gagal', 'Koneksi tidak stabil', 'error')
             } else if (err.message === 'Request failed with status code 400') {
