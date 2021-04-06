@@ -128,7 +128,7 @@ class SettingMeetingRoom extends Component {
               <p style={{ fontSize: 20, fontWeight: 'bold' }}>Ruang meeting</p>
               <Grid style={{ display: 'flex', margin: 10 }}>
                 <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-meeting-room/add-meeting-room')}>
-                  <img src={require('../../Assets/add-address.png').default} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
+                  <img src={require('../../Assets/add-address.png').default} loading="lazy" alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                   <p style={{ margin: '0px 0px 0px 5px' }}>Tambah ruang</p>
                 </Grid>
               </Grid>

@@ -287,7 +287,7 @@ class HR extends Component {
             }
           </Grid >
           <Grid style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <img src={require('../../Assets/icon orang.png').default} alt="Logo" style={{ width: 400, maxHeight: 250, }} />
+            <img src={require('../../Assets/icon orang.png').default} loading="lazy" alt="Logo" style={{ width: 400, maxHeight: 250, }} />
           </Grid>
         </Paper >
 

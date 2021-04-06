@@ -665,7 +665,7 @@ class DashboardKPIM extends Component {
         <Grid container style={{ marginBottom: 10 }}>
           <Grid item xs={12}>
             <p style={{ margin: 0, fontWeight: "bold", fontSize: 20 }}>
-              KEY PERFORMANCE INDICATOR MATRIX{" "}
+              KEY PERFORMANCE INDICATOR MONITORING{" "}
               {this.props.location.state &&
                 `(${this.props.location.state.fullname})`}
             </p>

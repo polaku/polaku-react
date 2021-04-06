@@ -248,7 +248,7 @@ class AddAddress extends Component {
           this.state.proses && <Loading loading={this.state.proses} />
         }
         <Grid style={{ display: 'flex' }}>
-          <img src={require('../../Assets/location.png').default} alt="Logo" style={{ width: 60, maxHeight: 60, alignSelf: 'center', marginBottom: 20 }} />
+          <img src={require('../../Assets/location.png').default} loading="lazy" alt="Logo" style={{ width: 60, maxHeight: 60, alignSelf: 'center', marginBottom: 20 }} />
           <Grid style={{ display: 'flex', flexDirection: 'column', marginLeft: '15px' }}>
             <b style={{ fontSize: 20 }}>Tambah alamat perusahaan baru</b>
             <p style={{ margin: '5px 0px' }}>Pastikan alamat dan hari kerja sudah benar</p>

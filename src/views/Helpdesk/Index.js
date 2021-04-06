@@ -122,7 +122,7 @@ class Helpdesk extends Component {
             {/* </Paper> */}
           </Grid>
           <Grid item xs={12} sm={4} style={{ textAlign: 'center' }}>
-            <img src={require('../../Assets/helpdesk.png').default} alt="helpdesk" style={{ width: 250, height: 170, alignSelf: 'center' }} />
+            <img src={require('../../Assets/helpdesk.png').default} loading="lazy" alt="helpdesk" style={{ width: 250, height: 170, alignSelf: 'center' }} />
           </Grid>
         </Grid>
 
@@ -158,7 +158,7 @@ class Helpdesk extends Component {
                     component="label"
                     style={{ minWidth: 30, height: 30, padding: 0, marginRight: 5, backgroundColor: 'white', border: this.state.iconPath ? null : '1px dashed #707070' }}
                   >
-                    <img src={this.state.iconPath || require('../../Assets/add-icon.png').default} alt="add-icon" style={{ width: 20, height: 20 }} />
+                    <img src={this.state.iconPath || require('../../Assets/add-icon.png').default} alt="add-icon" loading="lazy" style={{ width: 20, height: 20 }} />
                     <input
                       type="file"
                       accept="image/png,image/jpeg"

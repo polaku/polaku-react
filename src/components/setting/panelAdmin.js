@@ -200,7 +200,7 @@ class panelAdmin extends Component {
             : <>
               <Grid style={{ display: 'flex', margin: '20px 15px' }}>
                 <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-admin', { index: this.props.index })}>
-                  <img src={require('../../Assets/add-employee.png').default} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
+                  <img src={require('../../Assets/add-employee.png').default} loading="lazy" alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                   <p style={{ margin: '0px 0px 0px 5px' }}>Tambah admin</p>
                 </Grid>
                 <p style={{ color: '#d71149', margin: 0, cursor: 'pointer' }} onClick={this.handleModalLogSetting}>Lihat riwayat perubahan</p>

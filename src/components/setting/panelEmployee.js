@@ -365,15 +365,15 @@ class panelEmployee extends Component {
                   ? <>
                     <Grid style={{ display: 'flex', margin: '20px 15px' }}>
                       <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.handleModalCreateEditMuchEmployee('edit')}>
-                        <img src={require('../../Assets/edit-employee.png').default} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
+                        <img src={require('../../Assets/edit-employee.png').default} loading="lazy" alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                         <p style={{ margin: '0px 0px 0px 5px' }}>Ubah banyak</p>
                       </Grid>
                       <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.handleModalCreateEditMuchEmployee('create')}>
-                        <img src={require('../../Assets/add-much-employee.png').default} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
+                        <img src={require('../../Assets/add-much-employee.png').default} loading="lazy" alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                         <p style={{ margin: '0px 0px 0px 5px' }}>Tambah banyak</p>
                       </Grid>
                       <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-employee', { index: this.props.index })}>
-                        <img src={require('../../Assets/add-employee.png').default} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
+                        <img src={require('../../Assets/add-employee.png').default} loading="lazy" alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                         <p style={{ margin: '0px 0px 0px 5px' }}>Tambah karyawan</p>
                       </Grid>
                       <p style={{ color: '#d71149', margin: 0, cursor: 'pointer' }} onClick={this.handleModalLogSetting}>Lihat riwayat perubahan</p>
@@ -465,7 +465,7 @@ class panelEmployee extends Component {
                   : <>
                     <Grid style={{ display: 'flex', margin: '20px 15px' }}>
                       <Grid style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => this.props.history.push('/setting/setting-perusahaan/add-service', { index: this.props.index })}>
-                        <img src={require('../../Assets/add-employee.png').default} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
+                        <img src={require('../../Assets/add-employee.png').default} loading="lazy" alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center' }} />
                         <p style={{ margin: '0px 0px 0px 5px' }}>Tambah karyawan dinas</p>
                       </Grid>
                       <p style={{ color: '#d71149', margin: 0, cursor: 'pointer' }} onClick={this.handleModalLogSetting}>Lihat riwayat perubahan</p>

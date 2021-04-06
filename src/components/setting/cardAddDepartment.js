@@ -570,7 +570,7 @@ class cardAddDepartment extends Component {
             {
               this.state.position.map((position, index) =>
                 <Grid style={{ width: '50%', margin: 5, minWidth: 300, display: 'flex', alignItems: 'flex-start' }} key={"position" + index}>
-                  <img src={require('../../Assets/dropdown.png').default} alt="dropdown" style={{ width: 20, height: 20, marginRight: 10, marginTop: 10 }} />
+                  <img src={require('../../Assets/dropdown.png').default} loading="lazy" alt="dropdown" style={{ width: 20, height: 20, marginRight: 10, marginTop: 10 }} />
                   <Grid style={{ width: 400 }}>
                     <Grid style={{ height: 40 }}>
                       <CreatableSelect

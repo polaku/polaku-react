@@ -575,7 +575,7 @@ class AddAdmin extends Component {
       <Grid>
         <Grid style={{ display: 'flex' }}>
           <Grid style={{ backgroundColor: '#d71149', padding: 10, borderRadius: 50, width: 75, textAlign: 'center', marginRight: 10 }}>
-            <img src={require('../../Assets/admin.png').default} alt="Logo" style={{ width: 40, height: 50, alignSelf: 'center' }} />
+            <img src={require('../../Assets/admin.png').default} loading="lazy" alt="Logo" style={{ width: 40, height: 50, alignSelf: 'center' }} />
           </Grid>
           <Grid style={{ display: 'flex', flexDirection: 'column' }}>
             <b style={{ fontSize: 20, fontWeight: 'bold' }}>Tambahkan Admin</b>
@@ -837,7 +837,7 @@ class AddAdmin extends Component {
 
           <Grid item sm={12} md={6}>
             <Paper style={{ padding: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', minHeight: 300 }}>
-              <img src={require('../../Assets/tambah-admin.png').default} alt="Logo" style={{ width: 150, height: 100, alignSelf: 'center' }} />
+              <img src={require('../../Assets/tambah-admin.png').default} loading="lazy" alt="Logo" style={{ width: 150, height: 100, alignSelf: 'center' }} />
               <p style={{ fontSize: 13, color: '#d71149', fontWeight: 'bold', marginTop: 0 }}>Tambah Karyawan Baru</p>
             </Paper>
           </Grid>

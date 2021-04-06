@@ -136,7 +136,7 @@ class CardTopics extends Component {
             style={{ minWidth: 30, height: 30, padding: 0, marginRight: 5, backgroundColor: 'white', border: this.state.iconPath ? null : '1px dashed #707070' }}
             disabled={!this.state.isEdit && this.state.iconPath}
           >
-            <img src={this.state.iconPath || require('../../Assets/add-icon.png').default} alt="add-icon" style={{ width: 20, height: 20 }} />
+            <img src={this.state.iconPath || require('../../Assets/add-icon.png').default} loading="lazy" alt="add-icon" width={20} height={20} />
             <input
               type="file"
               accept="image/png,image/jpeg"

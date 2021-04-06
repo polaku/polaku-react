@@ -61,7 +61,6 @@ class DashboardKPIM extends Component {
       firstDateInWeek: new Date().getDate() - (new Date().getDay() - 1),
 
       indicator_tal: "",
-      weight: "",
       when: "",
       load: "",
       achievement: "",
@@ -460,7 +459,6 @@ class DashboardKPIM extends Component {
     this.setState({
       statusAddNewTal: !this.state.statusAddNewTal,
       indicator_tal: "",
-      weight: "",
       when: "",
       load: "",
       achievement: "",
@@ -469,78 +467,71 @@ class DashboardKPIM extends Component {
   };
 
   saveNewTal = async () => {
-    if (Number(this.state.totalWeight) + Number(this.state.weight) <= 100) {
-      this.setState({
-        proses: true,
-      });
-      let newData = {
-        indicator_tal: this.state.indicator_tal,
-        weight: this.state.weight,
-        time: this.state.when,
-        load: this.state.load,
-        kpim_score_id: this.state.kpimTAL.kpim_score_id,
+    this.setState({
+      proses: true,
+    });
+    let newData = {
+      indicator_tal: this.state.indicator_tal,
+      time: this.state.when,
+      load: this.state.load,
+      kpim_score_id: this.state.kpimTAL.kpim_score_id,
 
-        isRepeat: 0,
-        forDay: 1,
-        week: this.state.weekSelected,
-        month: new Date().getMonth() + 1,
-        year: new Date().getFullYear(),
-        user_id: this.props.userId,
-      };
+      isRepeat: 0,
+      forDay: 1,
+      week: this.state.weekSelected,
+      month: new Date().getMonth() + 1,
+      year: new Date().getFullYear(),
+      user_id: this.props.userId,
+    };
 
-      if (this.props.location.state) {
-        newData.user_id = this.props.location.state.userId;
-      } else {
-        newData.user_id = this.props.userId;
-      }
-
-      let token = Cookies.get("POLAGROUP");
-      API.post("/tal", newData, {
-        headers: {
-          token,
-          ip: this.props.ip,
-        },
-      })
-        .then(async ({ data }) => {
-          await this.fetchData(
-            this.state.monthSelected,
-            this.state.weekSelected,
-            this.props.location.state
-              ? this.props.location.state.userId
-              : this.props.userId
-          );
-          this.setState({
-            indicator_tal: "",
-            weight: "",
-            when: "",
-            load: "",
-            achievement: "",
-            link: "",
-            statusAddNewTal: false,
-            lastUpdate: new Date(),
-            proses: false,
-          });
-        })
-        .catch((err) => {
-          this.setState({
-            proses: false,
-          });
-
-          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
-            swal('Gagal', 'Koneksi tidak stabil', 'error')
-          } else {
-            swal("please try again");
-          }
-        });
+    if (this.props.location.state) {
+      newData.user_id = this.props.location.state.userId;
     } else {
-      swal("Weight tal lebih dari 100", "", "warning");
+      newData.user_id = this.props.userId;
     }
+
+    let token = Cookies.get("POLAGROUP");
+    API.post("/tal", newData, {
+      headers: {
+        token,
+        ip: this.props.ip,
+      },
+    })
+      .then(async ({ data }) => {
+        await this.fetchData(
+          this.state.monthSelected,
+          this.state.weekSelected,
+          this.props.location.state
+            ? this.props.location.state.userId
+            : this.props.userId
+        );
+        this.setState({
+          indicator_tal: "",
+          when: "",
+          load: "",
+          achievement: "",
+          link: "",
+          statusAddNewTal: false,
+          lastUpdate: new Date(),
+          proses: false,
+        });
+      })
+      .catch((err) => {
+        this.setState({
+          proses: false,
+        });
+
+        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+          swal('Gagal', 'Koneksi tidak stabil', 'error')
+        } else {
+          swal("please try again");
+        }
+      });
   };
 
   reset = () => {
     this.setState({
       indicator_tal: "",
-      weight: "",
       when: "",
       load: "",
       achievement: "",
@@ -656,7 +647,7 @@ class DashboardKPIM extends Component {
           <Grid item style={{ display: "flex", alignItems: "center" }}>
             <BarChartIcon />
             <p style={{ margin: 0, fontSize: 20 }}>
-              KEY PERFORMANCE INDICATOR MATRIX{" "}
+              KEY PERFORMANCE INDICATOR MONITORING{" "}
               {this.props.location.state &&
                 `(${this.props.location.state.fullname})`}
             </p>
@@ -783,6 +774,7 @@ class DashboardKPIM extends Component {
                   padding: "0px 10px",
                 }}
                 onClick={() => this.props.history.push("/kpim/tal")}
+                aria-label="lihat-minggu-lainnya"
               >
                 lihat minggu lainnya
               </Button>
@@ -842,6 +834,13 @@ class DashboardKPIM extends Component {
                     >
                       Link
                     </TableCell>
+                    {
+                      this.props.userId === 265 &&
+                      <TableCell
+                        align="center"
+                        style={{ width: "5%", padding: "14px 16px 14px 16px" }}
+                      />
+                    }
                   </TableRow>
                 </TableHead>
                 {!this.state.prosesTAL && (
@@ -852,6 +851,7 @@ class DashboardKPIM extends Component {
                         key={index}
                         refresh={this.refresh}
                         weekCurrent={this.state.weekSelected}
+                        dashboard={true}
                       />
                     ))}
                     {this.state.statusAddNewTal && (
@@ -903,42 +903,15 @@ class DashboardKPIM extends Component {
                         <TableCell
                           align="center"
                           style={{ padding: "0px 10px" }}
-                        >
-                          <TextField
-                            type="number"
-                            value={this.state.weight}
-                            onChange={this.handleChange("weight")}
-                            variant="outlined"
-                            InputProps={{
-                              style: { height: 35, padding: 0 },
-                            }}
-                          />
-                        </TableCell>
+                        />
                         <TableCell
                           align="center"
                           style={{ padding: "0px 10px" }}
                         />
-                        {/* <TextField
-                          value={this.state.achievement}
-                          onChange={this.handleChange('achievement')}
-                          variant="outlined"
-                          InputProps={{
-                            style: { height: 35, padding: 0 }
-                          }}
-                        /> */}
-                        {/* </TableCell> */}
                         <TableCell
                           align="center"
                           style={{ padding: "0px 10px" }}
                         >
-                          {/* <TextField
-                          value={this.state.link}
-                          onChange={this.handleChange('link')}
-                          variant="outlined"
-                          InputProps={{
-                            style: { height: 35, padding: 0 }
-                          }}
-                        /> */}
                           <Grid
                             style={{
                               display: "flex",
@@ -951,6 +924,7 @@ class DashboardKPIM extends Component {
                               onClick={this.addNewTal}
                               style={{ height: 40, marginRight: 15 }}
                               disabled={this.state.proses}
+                              aria-label="batal"
                             >
                               batal
                             </Button>
@@ -959,6 +933,7 @@ class DashboardKPIM extends Component {
                               onClick={this.saveNewTal}
                               style={{ height: 40 }}
                               disabled={this.state.proses}
+                              aria-label="simpan"
                             >
                               simpan
                             </Button>
@@ -977,7 +952,7 @@ class DashboardKPIM extends Component {
                   />
                 </Grid>
               )}
-              {!this.state.prosesTAL && this.state.talSelected.length === 0 && (
+              {!this.state.prosesTAL && this.state.talSelected.length === 0 && this.props.userId !== 265 && (
                 <Grid style={{ width: "100%", textAlign: "center" }}>
                   <p>harap komunikasi ke atasan untuk membuat TAL</p>
                 </Grid>

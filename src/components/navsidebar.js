@@ -194,7 +194,8 @@ function Navsidebar(props) {
               admin: data.admin,
               nickname: data.nickname,
               fullname: data.fullname,
-              firstHierarchy: data.firstHierarchy
+              firstHierarchy: data.firstHierarchy,
+              dinas: data.dinas,
             };
 
             let checkPIC = data.admin.find((el) => el.PIC);
@@ -461,6 +462,7 @@ function Navsidebar(props) {
     props.isAdminRoom,
     props.isAdminKPIM,
     props.isAdminHR,
+    isAtasan,
   ]);
 
   useEffect(() => {
@@ -539,9 +541,8 @@ function Navsidebar(props) {
           >
             <Toolbar>
               <div className={classes.grow}>
-                <IconButton
+                <IconButton aria-label="open-drawer"
                   color="inherit"
-                  aria-label="open drawer"
                   onClick={handleDrawerOpen}
                   edge="start"
                   className={clsx(classes.menuButton, {
@@ -551,12 +552,15 @@ function Navsidebar(props) {
                   <MenuIcon />
                 </IconButton>
                 <img
-                  src={require('../Assets/polagroup.png').default}
+                  class="lazyload"
+                  data-src={require('../Assets/polagroup.png').default}
                   alt="Logo"
-                  style={{ width: 175, maxHeight: 50 }}
+                  loading="lazy"
+                  width={175}
+                  height={50}
                 />
               </div>
-              <IconButton color="inherit" onClick={handleClickNotif}>
+              <IconButton aria-label="notif" color="inherit" onClick={handleClickNotif}>
                 {props.dataNewNotif.length !== 0 ? (
                   <Badge
                     badgeContent={props.dataNewNotif.length}
@@ -649,7 +653,7 @@ function Navsidebar(props) {
             open={open}
           >
             <div className={classes.toolbar}>
-              <IconButton onClick={handleDrawerClose}>
+              <IconButton onClick={handleDrawerClose} aria-label="close-drawer">
                 <ChevronLeftIcon style={{ color: "white" }} />
               </IconButton>
             </div>
@@ -666,6 +670,7 @@ function Navsidebar(props) {
                     style={{ textDecoration: "none", color: "black" }}
                   >
                     <ListItem
+                      aria-label="Polanews"
                       button
                       key="Polanews"
                       selected={selectedIndex === 0}
@@ -682,6 +687,7 @@ function Navsidebar(props) {
                       onClick={(event) => handleListItemClick(event, 0)}
                     >
                       <ListItem
+                        aria-label="Polanews"
                         button
                         key="Polanews"
                         selected={selectedIndex === 0}
@@ -703,6 +709,7 @@ function Navsidebar(props) {
                     style={{ textDecoration: "none", color: "black" }}
                   >
                     <ListItem
+                      aria-label="Booking Room"
                       button
                       key="Booking Room"
                       selected={
@@ -725,6 +732,7 @@ function Navsidebar(props) {
                       style={{ textDecoration: "none", fontWeight: "bold" }}
                     >
                       <ListItem
+                        aria-label="Booking Room"
                         button
                         key="Booking Room"
                         selected={
@@ -753,6 +761,7 @@ function Navsidebar(props) {
                       style={{ textDecoration: "none", color: "black" }}
                     >
                       <ListItem
+                        aria-label="Daftar pesan ruangan"
                         button
                         className={classes.nested}
                         selected={selectedIndex === 1}
@@ -767,6 +776,7 @@ function Navsidebar(props) {
                         style={{ textDecoration: "none", color: "black" }}
                       >
                         <ListItem
+                          aria-label="Room Master"
                           button
                           className={classes.nested}
                           selected={selectedIndex === 1.1}
@@ -782,6 +792,7 @@ function Navsidebar(props) {
                             style={{ textDecoration: "none", color: "black" }}
                           >
                             <ListItem
+                              aria-label="Room Assistant"
                               button
                               className={classes.nested}
                               selected={selectedIndex === 1.2}
@@ -798,6 +809,7 @@ function Navsidebar(props) {
                       style={{ textDecoration: "none", color: "black" }}
                     >
                       <ListItem
+                        aria-label="Gedung"
                         button
                         className={classes.nested}
                         selected={selectedIndex === 1.3}
@@ -816,6 +828,7 @@ function Navsidebar(props) {
                     props.isCreatorMaster ||
                     props.isCreatorAssistant ? (
                       <ListItem
+                        aria-label="Event"
                         button
                         key="Event"
                         onClick={(event) => handleClick(event, "openChildEvent")}
@@ -839,6 +852,7 @@ function Navsidebar(props) {
                         style={{ textDecoration: "none", color: "black" }}
                       >
                         <ListItem
+                          aria-label="Event"
                           button
                           key="Event"
                           selected={
@@ -861,6 +875,7 @@ function Navsidebar(props) {
                       onClick={(event) => handleListItemClick(event, 2)}
                     >
                       <ListItem
+                        aria-label="Event"
                         button
                         key="Event"
                         selected={
@@ -885,6 +900,7 @@ function Navsidebar(props) {
                       style={{ textDecoration: "none", color: "black" }}
                     >
                       <ListItem
+                        aria-label="Acara"
                         button
                         className={classes.nested}
                         selected={selectedIndex === 2.1}
@@ -901,6 +917,7 @@ function Navsidebar(props) {
                           style={{ textDecoration: "none", color: "black" }}
                         >
                           <ListItem
+                            aria-label="Acara disetujui"
                             button
                             className={classes.nested}
                             selected={selectedIndex === 2.2}
@@ -916,6 +933,7 @@ function Navsidebar(props) {
                         style={{ textDecoration: "none", color: "black" }}
                       >
                         <ListItem
+                          aria-label="Creator Master"
                           button
                           className={classes.nested}
                           selected={selectedIndex === 2.3}
@@ -931,6 +949,7 @@ function Navsidebar(props) {
                             style={{ textDecoration: "none", color: "black" }}
                           >
                             <ListItem
+                              aria-label="Creator Assistant"
                               button
                               className={classes.nested}
                               selected={selectedIndex === 2.3}
@@ -949,6 +968,7 @@ function Navsidebar(props) {
                 {open ? (
                   props.isAdminHR || props.userId === 1 ? (
                     <ListItem
+                      aria-label="HR"
                       button
                       key="HR"
                       onClick={(event) => handleClick(event, "openChildHR")}
@@ -967,6 +987,7 @@ function Navsidebar(props) {
                         style={{ textDecoration: "none", color: "black" }}
                       >
                         <ListItem
+                          aria-label="HR"
                           button
                           key="HR"
                           selected={selectedIndex === 3 || selectedIndex === 3.1}
@@ -984,6 +1005,7 @@ function Navsidebar(props) {
                       onClick={(event) => handleListItemClick(event, 3)}
                     >
                       <ListItem
+                        aria-label="HR"
                         button
                         key="HR"
                         selected={selectedIndex === 3 || selectedIndex === 3.1}
@@ -1003,6 +1025,7 @@ function Navsidebar(props) {
                       style={{ textDecoration: "none", color: "black" }}
                     >
                       <ListItem
+                        aria-label="Pengajuan"
                         button
                         className={classes.nested}
                         selected={selectedIndex === 3}
@@ -1016,6 +1039,7 @@ function Navsidebar(props) {
                       style={{ textDecoration: "none", color: "black" }}
                     >
                       <ListItem
+                        aria-label="Report"
                         button
                         className={classes.nested}
                         selected={selectedIndex === 3.1}
@@ -1031,6 +1055,7 @@ function Navsidebar(props) {
               <>
                 {open ? (
                   <ListItem
+                    aria-label="KPIM"
                     button
                     key="KPIM"
                     onClick={(event) => handleClick(event, "openChildKPIM")}
@@ -1053,6 +1078,7 @@ function Navsidebar(props) {
                       onClick={(event) => handleListItemClick(event, 4)}
                     >
                       <ListItem
+                        aria-label="KPIM"
                         button
                         key="KPIM"
                         selected={
@@ -1076,6 +1102,7 @@ function Navsidebar(props) {
                       style={{ textDecoration: "none", color: "black" }}
                     >
                       <ListItem
+                        aria-label="Tugasku"
                         button
                         className={classes.nested}
                         selected={selectedIndex === 4}
@@ -1094,6 +1121,7 @@ function Navsidebar(props) {
                               style={{ textDecoration: "none", color: "black" }}
                             >
                               <ListItem
+                                aria-label="Laporan"
                                 button
                                 className={classes.nested}
                                 selected={selectedIndex === 4.2}
@@ -1109,6 +1137,7 @@ function Navsidebar(props) {
                             style={{ textDecoration: "none", color: "black" }}
                           >
                             <ListItem
+                              aria-label="Pengaturan KPIM"
                               button
                               className={classes.nested}
                               selected={selectedIndex === 4.3}
@@ -1132,6 +1161,7 @@ function Navsidebar(props) {
                     style={{ textDecoration: "none", color: "black" }}
                   >
                     <ListItem
+                      aria-label="Helpdesk"
                       button
                       key="Helpdesk"
                       selected={selectedIndex === 5}
@@ -1148,6 +1178,7 @@ function Navsidebar(props) {
                       onClick={(event) => handleListItemClick(event, 5)}
                     >
                       <ListItem
+                        aria-label="Helpdesk"
                         button
                         key="Helpdesk"
                         selected={selectedIndex === 5}
@@ -1176,6 +1207,7 @@ function Navsidebar(props) {
                           style={{ textDecoration: "none", color: "black" }}
                         >
                           <ListItem
+                            aria-label="Setting"
                             button
                             key="Setting"
                             selected={selectedIndex === 99}
@@ -1192,6 +1224,7 @@ function Navsidebar(props) {
                             onClick={(event) => handleListItemClick(event, 99)}
                           >
                             <ListItem
+                              aria-label="Setting"
                               button
                               key="Setting"
                               selected={selectedIndex === 99}
@@ -1219,6 +1252,7 @@ function Navsidebar(props) {
                     style={{ textDecoration: "none", color: "black" }}
                   >
                     <ListItem
+                      aria-label="Profil"
                       button
                       key="Profil"
                       selected={selectedIndex === 100}
@@ -1238,6 +1272,7 @@ function Navsidebar(props) {
                       style={{ textDecoration: "none", color: "black" }}
                     >
                       <ListItem
+                        aria-label="Profil"
                         button
                         key="Profil"
                         selected={selectedIndex === 100}

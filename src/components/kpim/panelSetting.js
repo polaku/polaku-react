@@ -282,7 +282,7 @@ class panelSetting extends Component {
                 }
                 {
                   this.state.needAction === 0 && this.props.status !== "all" && <>
-                    <img src={require('../../Assets/settingKPIM.png').default} alt="Logo" style={{ width: 500, maxHeight: 500, margin: '50px auto 10px auto' }} />
+                    <img src={require('../../Assets/settingKPIM.png').default} loading="lazy" alt="Logo" width={500} maxHeight={500} style={{ margin: '50px auto 10px auto' }} />
                     <p style={{ marginTop: 10, fontFamily: 'Simonetta', fontSize: 20, textShadow: '4px 4px 4px #aaa' }} >TIDAK ADA YANG BUTUH TINDAKAN</p>
                   </>
                 }

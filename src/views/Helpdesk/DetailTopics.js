@@ -253,14 +253,14 @@ class DetailTopics extends Component {
             {
               this.state.iconPath
                 ? <Paper style={{ width: 40, height: 40, display: 'flex', justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
-                  <img src={this.state.iconPath} alt="favicon" style={{ width: 30, height: 30 }} />
+                  <img src={this.state.iconPath} loading="lazy" alt="favicon" style={{ width: 30, height: 30 }} />
                 </Paper>
                 : <Button
                   component="label"
                   style={{ minWidth: 40, height: 40, padding: 0, marginRight: 5, backgroundColor: 'white', border: '1px dashed #707070' }}
                   disabled={this.state.iconPath}
                 >
-                  <img src={require('../../Assets/add-icon.png').default} alt="add-icon" style={{ width: 20, height: 20 }} />
+                  <img src={require('../../Assets/add-icon.png').default} loading="lazy" alt="add-icon" style={{ width: 20, height: 20 }} />
                   <input
                     type="file"
                     accept="image/png,image/jpeg"
@@ -290,10 +290,10 @@ class DetailTopics extends Component {
                           <DeleteIcon style={{ color: 'red', cursor: 'pointer', width: 20 }} onClick={() => this.deleteSubTopics(index)} />
                           <Grid style={{ display: 'flex', flexDirection: 'column', justifyContent: index === 0 || index === this.state.listSubTopics.length - 1 ? 'center' : 'space-between', height: 25 }}>
                             {
-                              index !== 0 && <img src={require('../../Assets/caret-up.png').default} alt={index + "up"} style={{ width: 20, height: 10, cursor: 'pointer' }} onClick={() => this.changeOrder(subTopics.id, 'up')} />
+                              index !== 0 && <img src={require('../../Assets/caret-up.png').default} loading="lazy" alt={index + "up"} style={{ width: 20, height: 10, cursor: 'pointer' }} onClick={() => this.changeOrder(subTopics.id, 'up')} />
                             }
                             {
-                              index !== this.state.listSubTopics.length - 1 && <img src={require('../../Assets/caret-down.png').default} alt={index + "down"} style={{ width: 20, height: 10, cursor: 'pointer' }} onClick={() => this.changeOrder(subTopics.id, 'down')} />
+                              index !== this.state.listSubTopics.length - 1 && <img src={require('../../Assets/caret-down.png').default} loading="lazy" alt={index + "down"} style={{ width: 20, height: 10, cursor: 'pointer' }} onClick={() => this.changeOrder(subTopics.id, 'down')} />
                             }
                           </Grid>
 

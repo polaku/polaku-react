@@ -186,7 +186,7 @@ class ResetPassword extends Component {
     return (
       <Grid style={{ display: 'flex', justifyContent: 'center', margin: '5% 0 0 auto' }}>
         <Grid style={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
-          <img src={require('../Assets/logo.png').default} alt="Logo" />
+          <img src={require('../Assets/logo.png').default} loading="lazy" alt="Logo" />
           <Typography style={{ margin: 10, fontSize: 15, fontWeight: 'bold', marginBottom: 15 }}>RESET PASSWORD</Typography>
           <TextField
             id="password"

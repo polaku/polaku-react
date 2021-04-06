@@ -93,6 +93,7 @@ class AddEmployee extends Component {
   }
 
   sendData = (args) => {
+    console.log("MASUK 1")
     if (this.props.location.state && this.props.location.state.data) {
       let newData = this.state.tempDataForEdit
       newData.push(args)
@@ -132,8 +133,11 @@ class AddEmployee extends Component {
       newData.push(args)
       this.setState({ proses: true })
       let token = Cookies.get('POLAGROUP'), promises = []
+      console.log("MASUK 2")
 
+      console.log(newData.length, this.state.department.length)
       if (newData.length === this.state.department.length) {
+        console.log("MASUK 3")
         newData.forEach(async (data, index) => {
           promises.push(API.post(`/users/register`, data, {
             headers: {
@@ -144,13 +148,15 @@ class AddEmployee extends Component {
         })
         Promise.all(promises)
           .then(async ({ data }) => {
+            console.log("OKEE")
             this.setState({ data: [], proses: false, statusSubmit: false })
             await this.props.fetchDataUsers({ limit: 10, page: 0 })
             swal('Tambah karyawan sukses', '', 'success')
             this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
           })
           .catch(err => {
-            this.setState({ proses: false, statusSubmit: false })
+            console.log("ERROR 1", err)
+            this.setState({ proses: false, statusSubmit: false, department: [false], data: [] })
             if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
               swal('Gagal', 'Koneksi tidak stabil', 'error')
             } else {
@@ -168,7 +174,7 @@ class AddEmployee extends Component {
       <Grid>
         <Grid style={{ display: 'flex' }}>
           <Grid style={{ backgroundColor: '#d71149', padding: 10, borderRadius: 50, width: 60 }}>
-            <img src={require('../../Assets/employee.png').default} alt="Logo" style={{ width: 35, height: 35, alignSelf: 'center' }} />
+            <img src={require('../../Assets/employee.png').default} loading="lazy" alt="Logo" style={{ width: 35, height: 35, alignSelf: 'center' }} />
           </Grid>
           <Grid style={{ display: 'flex', flexDirection: 'column', marginLeft: '15px' }}>
             <b style={{ fontSize: 20 }}>Tambah Karyawan</b>

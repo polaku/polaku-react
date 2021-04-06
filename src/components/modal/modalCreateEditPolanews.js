@@ -247,10 +247,10 @@ class modalCreateEditPolanews extends Component {
                   <Grid style={{ marginTop: 10 }}>
                     {
                       this.props.data && !this.state.imgPreview
-                        ? <img src={this.props.data.thumbnail} alt="thumbnail" style={{ width: 150, height: 180 }} />
+                        ? <img src={this.props.data.thumbnail} loading="lazy" alt="thumbnail" style={{ width: 150, height: 180 }} />
                         : this.state.imgPreview
-                          ? <img src={this.state.imgPreview} alt="thumbnail" style={{ width: 150, height: 180 }} />
-                          : <img src={require('../../Assets/placeholder.png').default} alt="Logo" style={{ width: 150, height: 150 }} />
+                          ? <img src={this.state.imgPreview} loading="lazy" alt="thumbnail" style={{ width: 150, height: 180 }} />
+                          : <img src={require('../../Assets/placeholder.png').default} loading="lazy" alt="Logo" style={{ width: 150, height: 150 }} />
                     }
                   </Grid>
                 </Grid>

@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = {
   webpack: function override(config, _) {
@@ -15,6 +16,7 @@ module.exports = {
       plugins:[
         ...config.plugins,
         // other: OtherPlugin
+        new CompressionPlugin()
       ],
     }
   }

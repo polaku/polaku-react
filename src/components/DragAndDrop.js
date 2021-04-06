@@ -34,12 +34,12 @@ function DragAndDrop(props) {
           : props.status === "room"
             ? files.length === 0
               ? <div style={{ border: '1px #d4d4d4 solid', padding: 20, width: 120, height: 120, textAlign: 'center', margin: 10, cursor: 'pointer' }}>
-                <img src={require('../Assets/tambah-foto-gedung.png').default} alt="foto-gedung" style={{ width: 50, maxHeight: 50, alignSelf: 'center' }} />
+                <img src={require('../Assets/tambah-foto-gedung.png').default} loading="lazy" alt="foto-gedung" width={50} maxHeight={50} style={{ alignSelf: 'center' }} />
                 <p style={{ fontSize: 10, margin: 0, color: '#adadad' }}>Tambah foto Gedung</p>
               </div>
               : files.map((file, index) =>
                 <div key={index} style={{ border: '1px #d4d4d4 solid', padding: 20, width: 120, height: 120, textAlign: 'center', margin: 10, position: 'relative' }}>
-                  <img src={require('../Assets/image.png').default} alt="address" style={{ width: 50, maxHeight: 50, alignSelf: 'center' }} />
+                  <img src={require('../Assets/image.png').default} loading="lazy" alt="address" width={50} maxHeight={50} style={{ alignSelf: 'center' }} />
                   <p style={{ fontSize: 10, margin: 0, overflow: 'hidden' }}>{file.name}</p>
                   <CancelIcon style={{ position: 'absolute', right: -10, top: -10, color: 'red', cursor: 'pointer' }} onClick={resetFile} />
                 </div>
@@ -47,7 +47,7 @@ function DragAndDrop(props) {
             : props.status === "employee"
               ? files.length === 0
                 ? <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 0px' }}>
-                  <img src={require('../Assets/upload-area.png').default} alt="upload-area" style={{ width: 60, maxHeight: 60, alignSelf: 'center' }} />
+                  <img src={require('../Assets/upload-area.png').default} loading="lazy" alt="upload-area" width={60} maxHeight={60} style={{ alignSelf: 'center' }} />
                   <Button variant="outlined" style={{ maxWidth: 161, alignSelf: 'center', fontSize: 10 }} size="small" >
                     Pilih & Upload File
                   </Button>
@@ -58,20 +58,20 @@ function DragAndDrop(props) {
                     <p style={{ margin: 0 }}>proses unggah ...</p>
                   </div>
                   : <div style={{ height: 124, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 0px' }}>
-                    <img src={require('../Assets/upload-area.png').default} alt="upload-area" style={{ width: 60, maxHeight: 60, alignSelf: 'center', marginTop: 10 }} />
+                    <img src={require('../Assets/upload-area.png').default} loading="lazy" width={60} maxHeight={60} alt="upload-area" style={{ alignSelf: 'center', marginTop: 10 }} />
                     <p style={{ margin: 0, marginTop: 10 }}>File sudah terunggah</p>
                   </div>
               : <div style={{ display: 'flex', cursor: 'pointer', flexWrap: 'wrap' }}>
                 {
                   files.map((file, index) =>
                     <div key={index} style={{ border: '1px #d4d4d4 solid', padding: 20, width: 120, height: 120, textAlign: 'center', margin: 10, cursor: 'pointer' }}>
-                      <img src={require('../Assets/image.png').default} alt="address" style={{ width: 50, maxHeight: 50, alignSelf: 'center' }} />
+                      <img src={require('../Assets/image.png').default} loading="lazy" alt="address" width={50} maxHeight={50} style={{ alignSelf: 'center' }} />
                       <p style={{ fontSize: 10, margin: 0, overflow: 'hidden' }}>{file.name}</p>
                     </div>
                   )
                 }
                 <div style={{ border: '1px #d4d4d4 solid', padding: 20, width: 120, height: 120, textAlign: 'center', margin: 10, cursor: 'pointer' }}>
-                  <img src={require('../Assets/tambah-foto-gedung.png').default} alt="foto-gedung" style={{ width: 50, maxHeight: 50, alignSelf: 'center' }} />
+                  <img src={require('../Assets/tambah-foto-gedung.png').default} loading="lazy" alt="foto-gedung" width={50} maxHeight={50}  style={{ alignSelf: 'center' }} />
                   <p style={{ fontSize: 10, margin: 0, color: '#adadad' }}>Tambah foto Gedung</p>
                 </div>
               </div>

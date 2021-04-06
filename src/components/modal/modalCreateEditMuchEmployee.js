@@ -337,14 +337,14 @@ class modalCreateEditMuchEmployee extends Component {
               {
                 this.props.isCreate
                   ? <Grid style={{ display: 'flex', flexDirection: 'column', width: '50%', textAlign: 'center', borderRight: '1px solid #e0e0e0' }}>
-                    <img src={require('../../Assets/download-example.png').default} alt="Logo" style={{ width: 65, maxHeight: 120, alignSelf: 'center', marginTop: 3, marginBottom: 10 }} />
+                    <img src={require('../../Assets/download-example.png').default} loading="lazy" alt="Logo" width={65} maxHeight={120} style={{ alignSelf: 'center', marginTop: 3, marginBottom: 10 }} />
                     <b>1. Unduh file Excel Tambah Sekaligus</b>
                     <Button variant="outlined" style={{ width: '90%', alignSelf: 'center', marginTop: 60 }} onClick={this.downloadTemplate}>
                       Unduh Template Excel
                     </Button>
                   </Grid>
                   : <Grid style={{ display: 'flex', flexDirection: 'column', width: '50%', textAlign: 'center', borderRight: '1px solid #e0e0e0' }}>
-                    <img src={require('../../Assets/upload-logo-1.png').default} alt="Logo" style={{ width: 230, maxHeight: 120, alignSelf: 'center' }} />
+                    <img src={require('../../Assets/upload-logo-1.png').default} loading="lazy" alt="Logo" width={230} maxHeight={120} style={{ alignSelf: 'center' }} />
                     <b>1. Pilih Kolom & Download Template excel</b>
                     <Grid style={{ border: '1px solid #e0e0e0', margin: 10, padding: '5px 10px', height: 100, overflow: 'auto', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
                       <FormControlLabel
@@ -387,7 +387,7 @@ class modalCreateEditMuchEmployee extends Component {
 
 
               <Grid style={{ display: 'flex', flexDirection: 'column', width: '50%', textAlign: 'center' }}>
-                <img src={require('../../Assets/upload-logo-2.png').default} alt="Logo" style={{ width: 230, maxHeight: 120, alignSelf: 'center' }} />
+                <img src={require('../../Assets/upload-logo-2.png').default} loading="lazy" alt="Logo" width={230} maxHeight={120} style={{ alignSelf: 'center' }} />
                 <b>2. Unggah Template Excel yang Sudah Diubah</b>
                 <Grid style={{ margin: '5px 10px' }}>
                   <DragAndDrop handleFiles={this.handleFiles} status="employee" proses={false} />

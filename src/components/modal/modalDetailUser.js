@@ -187,7 +187,7 @@ class modalDetailUser extends Component {
             padding: '40px 30px',
             borderRadius: 5
           }}>
-            <img src={this.props.data.rawData.tbl_account_detail.avatar} alt="avatar" style={{ width: 120, maxHeight: 120, alignSelf: 'center', borderRadius: 60 }} />
+            <img src={this.props.data.rawData.tbl_account_detail.avatar} loading="lazy" alt="avatar" style={{ width: 120, maxHeight: 120, alignSelf: 'center', borderRadius: 60 }} />
 
 
             {

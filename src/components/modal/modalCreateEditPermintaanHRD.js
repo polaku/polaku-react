@@ -40,10 +40,12 @@ class modalCreateEditPermintaanHRD extends Component {
       proses: false,
       editableInput: true,
       hakCuti: 8,
+      company: null
     }
   }
 
   async componentDidMount() {
+    console.log(this.props.listDinas)
     if (this.props.data) {
       this.setState({
         isEdit: true
@@ -133,92 +135,95 @@ class modalCreateEditPermintaanHRD extends Component {
     e.preventDefault()
 
     let valid = true;
-
-    if (this.state.isEdit) {
-      this.editPengajuan()
-    } else {
-      this.setState({
-        proses: true,
-        editableInput: false
-      })
-      let newData = {}, token = Cookies.get('POLAGROUP')
-
-      if (this.state.jenisIjin === 7) {
-        if (Number(this.state.startHour) > Number(this.state.endHour)) {
-          this.setState({
-            proses: false,
-            editableInput: true
-          })
-          return swal("waktu selesai harus lebih besar dari waktu mulai", "", "error");
-        }
-
-        newData = {
-          date_imp: this.state.start_date ||
-            `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
-          start_time_imp: `${new Date(this.state.time_in).getHours()}:${new Date(this.state.time_in).getMinutes()}`,
-          end_time_imp: `${new Date(this.state.time_out).getHours()}:${new Date(this.state.time_out).getMinutes()}`,
-          message: this.state.textarea,
-          categoriId: 7
-        }
-      } else if (this.state.jenisIjin === 6) {
-        if (!this.state.lamaCuti) {
-          valid = false
-          swal("Form lama cuti masih kosong !", "", "warning")
-          this.setState({ proses: false })
-        }
-        newData = {
-          leave_date: this.state.start_date ||
-            `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
-          leave_request: this.state.lamaCuti,
-          leave_date_in: this.state.end_date,
-          message: this.state.textarea,
-          categoriId: 6
-        }
-      } else if (this.state.jenisIjin === 8) {
-        newData = {
-          date_ijin_absen_start: this.state.start_date ||
-            `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
-          date_ijin_absen_end: this.state.end_date ||
-            `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate() + 1}`,
-          message: this.state.textarea,
-          categoriId: 8
-        }
-      }
-
-      newData.type = 'request'
-      newData.contactCategoriesId = 4
-
-      if (valid) {
-        API.post('/contactUs', newData, {
-          headers: {
-            token,
-            ip: this.props.ip
-          }
+    if (this.state.company) {
+      if (this.state.isEdit) {
+        this.editPengajuan()
+      } else {
+        this.setState({
+          proses: true,
+          editableInput: false
         })
-          .then(data => {
-            swal("Terima kasih. Mohon menunggu untuk direspon", "", "success");
+        let newData = {}, token = Cookies.get('POLAGROUP')
 
-            this.props.handleCloseModal()
-            this.props.fetchData()
-            this.reset()
-
+        if (this.state.jenisIjin === 7) {
+          if (Number(this.state.startHour) > Number(this.state.endHour)) {
             this.setState({
               proses: false,
               editableInput: true
             })
-          })
-          .catch(err => {
-            this.setState({
-              proses: false,
-              editableInput: true
-            })
-            if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
-              swal('Gagal', 'Koneksi tidak stabil', 'error')
-            } else {
-              swal('please try again')
+            return swal("waktu selesai harus lebih besar dari waktu mulai", "", "error");
+          }
+
+          newData = {
+            date_imp: this.state.start_date ||
+              `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
+            start_time_imp: `${new Date(this.state.time_in).getHours()}:${new Date(this.state.time_in).getMinutes()}`,
+            end_time_imp: `${new Date(this.state.time_out).getHours()}:${new Date(this.state.time_out).getMinutes()}`,
+            message: this.state.textarea,
+            categoriId: 7
+          }
+        } else if (this.state.jenisIjin === 6) {
+          if (!this.state.lamaCuti) {
+            valid = false
+            swal("Form lama cuti masih kosong !", "", "warning")
+            this.setState({ proses: false })
+          }
+          newData = {
+            leave_date: this.state.start_date ||
+              `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
+            leave_request: this.state.lamaCuti,
+            leave_date_in: this.state.end_date,
+            message: this.state.textarea,
+            categoriId: 6
+          }
+        } else if (this.state.jenisIjin === 8) {
+          newData = {
+            date_ijin_absen_start: this.state.start_date ||
+              `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
+            date_ijin_absen_end: this.state.end_date ||
+              `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate() + 1}`,
+            message: this.state.textarea,
+            categoriId: 8
+          }
+        }
+        newData.company_id = this.state.company
+        newData.type = 'request'
+        newData.contactCategoriesId = 4
+
+        if (valid) {
+          API.post('/contactUs', newData, {
+            headers: {
+              token,
+              ip: this.props.ip
             }
           })
+            .then(data => {
+              swal("Terima kasih. Mohon menunggu untuk direspon", "", "success");
+
+              this.props.handleCloseModal()
+              this.props.fetchData()
+              this.reset()
+
+              this.setState({
+                proses: false,
+                editableInput: true
+              })
+            })
+            .catch(err => {
+              this.setState({
+                proses: false,
+                editableInput: true
+              })
+              if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+                swal('Gagal', 'Koneksi tidak stabil', 'error')
+              } else {
+                swal('please try again')
+              }
+            })
+        }
       }
+    }else{
+      swal('Perusahaan yang dituju kosong', '', 'warning')
     }
   }
 
@@ -266,6 +271,7 @@ class modalCreateEditPermintaanHRD extends Component {
       }
     }
 
+    newData.company_id = this.state.company
     newData.type = 'request'
     newData.contactCategoriesId = 4
 
@@ -354,9 +360,25 @@ class modalCreateEditPermintaanHRD extends Component {
             {
               this.state.jenisIjin === 6 && <p style={{ fontWeight: 'bold', marginTop: 0, fontSize: 24 }}>Sisa cuti anda {this.props.sisaCuti} hari</p>
             }
-            <img src={require('../../Assets/ijin.jpeg').default} alt="Logo" style={{ width: 200 }} />
+            <img src={require('../../Assets/ijin.jpeg').default} loading="lazy" alt="Logo" width={200} height="100%" />
             <p style={{ fontWeight: 'bold' }}>Ajukan ijin dengan mengisi beberapa detail dibawah ini</p>
             <form noValidate autoComplete="off" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+
+              {/* PILIH PERUSHAAN */}
+              <FormControl style={{ margin: '10px 0 0px 0' }}>
+                <InputLabel htmlFor="room">Ajukan ke perusahaan</InputLabel>
+                <SelectOption
+                  value={this.state.company}
+                  onChange={this.handleChange('company')}
+                  disabled={this.state.proses}
+                >
+                  {
+                    this.props.listDinas.map((el, index) =>
+                      el.company_id && el.evaluator && <MenuItem value={el.company_id} index={'pt' + index}>{el.company_name}</MenuItem>
+                    )
+                  }
+                </SelectOption>
+              </FormControl>
 
               {/* PIlihan cuti, imp, ia */}
               <FormControl style={{ margin: '10px 0 10px 0' }}>
@@ -611,13 +633,14 @@ const mapDispatchToProps = {
   fetchDataRooms,
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataRooms, sisaCuti, ip }) => {
+const mapStateToProps = ({ loading, dataUsers, dataRooms, sisaCuti, ip, listDinas }) => {
   return {
     loading,
     dataUsers,
     dataRooms,
     sisaCuti,
-    ip
+    ip,
+    listDinas
   }
 }
 

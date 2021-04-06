@@ -65,7 +65,8 @@ const defaultState = {
   counterEmployeeBerhenti: 0,
   dataDesignation: [],
   lengthAllDataDesignation: 0,
-  dataTopicsHelpdesk: []
+  dataTopicsHelpdesk: [],
+  listDinas: [],
 }
 
 function reducer(state = defaultState, action) {
@@ -97,7 +98,8 @@ function reducer(state = defaultState, action) {
         isAdminHelpdesk: action.payload.isAdminHelpdesk,
         nickname: action.payload.nickname,
         fullname: action.payload.fullname,
-        firstHierarchy: action.payload.firstHierarchy
+        firstHierarchy: action.payload.firstHierarchy,
+        listDinas: action.payload.dinas
       }
     }
     case 'FETCH_DATA_USER_DETAIL_SUCCESS': {

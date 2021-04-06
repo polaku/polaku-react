@@ -75,9 +75,9 @@ class Login extends Component {
           admin: data.data.admin,
           nickname: data.data.nickname,
           fullname: data.data.fullname,
-          firstHierarchy: data.data.firstHierarchy
+          firstHierarchy: data.data.firstHierarchy,
+          dinas: data.data.dinas,
         }
-
 
         let checkPIC = data.data.admin.find(el => el.PIC)
         let PIC = checkPIC ? true : false
@@ -156,7 +156,7 @@ class Login extends Component {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', margin: '5% 0 0 auto' }}>
         <div style={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
-          <img src={require('../Assets/logo.png').default} alt="Logo" />
+          <img src={require('../Assets/logo.png').default} loading="lazy" alt="Logo" />
           <Typography style={{ margin: 10, fontSize: 13 }}>SIGN IN TO CONTINUE.</Typography>
           <form noValidate autoComplete="off" onSubmit={this.signin} style={{ display: 'flex', flexDirection: 'column' }}>
             <TextField

@@ -276,11 +276,11 @@ class cardIndicator extends Component {
                       <p
                         style={{
                           margin: "3px 5px 0px 0px",
-                          fontSize: 10,
+                          fontSize: 14,
                           color:
                             this.state.persenBefore - this.state.persenNow <= 0
                               ? "green"
-                              : "red",
+                              : "#ff3333",
                         }}
                       >
                         {Math.abs(
@@ -335,7 +335,7 @@ class cardIndicator extends Component {
 
             {this.props.data.indicator_kpim.toLowerCase() === "kpim team" && (
               <Grid style={{ width: "100%", textAlign: "end" }}>
-                <Button variant="contained" onClick={this.calculateKPIMScore}>
+                <Button variant="contained" onClick={this.calculateKPIMScore} aria-label="refresh-score">
                   refresh score
                 </Button>
               </Grid>

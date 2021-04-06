@@ -163,7 +163,7 @@ class TAL extends Component {
               {
                 this.state.isEmpty
                   ? <Grid style={{ display: 'flex', margin: '50px auto 10px auto', flexDirection: 'column', textAlign: 'center' }}>
-                    <img src={require('../../Assets/settingKPIM.png').default} alt="Logo" style={{ width: 500, maxHeight: 500 }} />
+                    <img src={require('../../Assets/settingKPIM.png').default} loading="lazy" alt="Logo" style={{ width: 500, maxHeight: 500 }} />
                     <p style={{ marginTop: 10, fontFamily: 'Simonetta', fontSize: 20, textShadow: '4px 4px 4px #aaa' }} >BELUM ADA TAL</p>
                   </Grid>
                   : this.state.dataForDisplay.length > 0 && this.state.dataForDisplay.map((el, index) =>

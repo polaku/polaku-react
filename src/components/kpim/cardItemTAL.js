@@ -3,13 +3,14 @@ import Cookies from 'js-cookie';
 import { connect } from 'react-redux';
 
 import {
-  TableCell, TableRow, Grid, TextField, CircularProgress
+  TableCell, TableRow, Grid, TextField, CircularProgress, IconButton
 } from '@material-ui/core';
 
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 import CancelPresentationIcon from '@material-ui/icons/CancelPresentation';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import { API } from '../../config/API';
 
@@ -127,14 +128,49 @@ class cardTAL extends Component {
     })
   }
 
+  delete = async () => {
+    swal({
+      title: "Apa anda yakin ingin menghapus pesanan ruangan ini?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+      .then(async (yesAnswer) => {
+        if (yesAnswer) {
+          this.setState({
+            proses: true
+          })
+          let token = Cookies.get('POLAGROUP')
+
+          API.delete(`/tal/${this.props.data.tal_score_id}?delete=week`, {
+            headers: {
+              token,
+              ip: this.props.ip
+            }
+          })
+            .then(() => {
+              this.props.refresh()
+              swal('Berhasil', 'Hapus TAL berhasil', 'success')
+            })
+            .catch(err => {
+              if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+                swal('Gagal', 'Koneksi tidak stabil', 'error')
+              } else {
+                swal('please try again')
+              }
+            })
+        }
+      });
+  }
+
   render() {
     return (
       <>
-        <TableRow >
-          <TableCell component="th" scope="row" style={{ display: 'flex', alignItems: 'center', padding: '0px 10px', height: 60 }}>
+        <TableRow>
+          <TableCell component="th" scope="row" style={{ alignItems: 'center', padding: '5px 10px', minHeight: 60 }}>
             {this.props.data.indicator_tal}
           </TableCell>
-          <TableCell align="center" style={{ padding: '0px 10px' }}>
+          <TableCell align="center" style={{ padding: '5px 10px', minHeight: 60 }}>
             {
               this.props.data.load
                 ? this.state.editLoad
@@ -178,17 +214,17 @@ class cardTAL extends Component {
                   </form>
             }
           </TableCell>
-          <TableCell style={{ padding: '0px 10px' }}>
+          <TableCell style={{ padding: '5px 10px', minHeight: 60 }}>
             {this.props.data.when_day || `Tanggal ${this.props.data.when_date}`}
           </TableCell>
-          <TableCell align="center" style={{ padding: '0px 10px' }} >
+          <TableCell align="center" style={{ padding: '5px 10px', minHeight: 60 }} >
             <Grid style={{ width: 40, margin: 0, textAlign: 'center' }}>
               <CircularProgressbar value={this.props.data.weight || 0} text={`${this.props.data.weight || 0}%`} styles={buildStyles({
                 textSize: 33,
               })} />
             </Grid>
           </TableCell>
-          <TableCell align="center" style={{ padding: '0px 10px' }} >{
+          <TableCell align="center" style={{ padding: '5px 10px', minHeight: 60 }} >{
             this.props.data.achievement
               ? this.state.editAchievement
                 ? this.state.prosesAchievment
@@ -232,7 +268,7 @@ class cardTAL extends Component {
                   />
                 </form>
           }</TableCell>
-          <TableCell align="center" style={{ padding: '0px 10px' }} >{
+          <TableCell align="center" style={{ padding: '5px 10px', minHeight: 60 }} >{
             this.props.data.link
               ? this.props.data.link
               : this.state.prosesLink
@@ -253,15 +289,27 @@ class cardTAL extends Component {
                   />
                 </form>
           }</TableCell>
+          {
+            this.props.userId === 265 &&
+            <TableCell
+              align="center"
+              style={{ width: "5%", padding: "14px 16px 14px 16px", minHeight: 60 }}
+            >
+              <IconButton aria-label="delete" onClick={this.delete}>
+                <DeleteIcon />
+              </IconButton>
+            </TableCell>
+          }
         </TableRow>
       </>
     )
   }
 }
 
-const mapStateToProps = ({ ip }) => {
+const mapStateToProps = ({ ip, userId }) => {
   return {
-    ip
+    ip,
+    userId
   }
 }
 

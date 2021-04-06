@@ -85,7 +85,6 @@ class cardBookingRoom extends Component {
             })
         }
       });
-
   }
 
   openModal = () => {

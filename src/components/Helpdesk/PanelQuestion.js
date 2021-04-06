@@ -281,10 +281,10 @@ class PanelQuestion extends Component {
                           {/* ORDER LIST */}
                           <Grid style={{ display: 'flex', flexDirection: 'column', justifyContent: index === 0 || index === this.state.listQuestion.length - 1 ? 'center' : 'space-between', height: 25 }}>
                             {
-                              index !== 0 && <img src={require('../../Assets/caret-up.png').default} alt={index + "up"} style={{ width: 20, height: 10, cursor: 'pointer' }} onClick={() => this.changeOrder(question.id, question.sub_topics_id, 'up', index)} />
+                              index !== 0 && <img src={require('../../Assets/caret-up.png').default} loading="lazy" alt={index + "up"} width={20} height={10} style={{ cursor: 'pointer' }} onClick={() => this.changeOrder(question.id, question.sub_topics_id, 'up', index)} />
                             }
                             {
-                              index !== this.state.listQuestion.length - 1 && <img src={require('../../Assets/caret-down.png').default} alt={index + "down"} style={{ width: 20, height: 10, cursor: 'pointer' }} onClick={() => this.changeOrder(question.id, question.sub_topics_id, 'down', index)} />
+                              index !== this.state.listQuestion.length - 1 && <img src={require('../../Assets/caret-down.png').default} alt={index + "down"} loading="lazy" width={20} height={10} style={{ cursor: 'pointer' }} onClick={() => this.changeOrder(question.id, question.sub_topics_id, 'down', index)} />
                             }
                           </Grid>
                         </>

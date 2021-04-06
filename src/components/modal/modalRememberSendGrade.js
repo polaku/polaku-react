@@ -32,7 +32,7 @@ export default class modalRememberSendGrade extends Component {
             flexDirection: 'column',
             padding: '40px 30px'
           }}>
-            <img src={require('../../Assets/bell.png').default} alt="Logo" style={{ width: 120, maxHeight: 120, alignSelf: 'center', marginBottom: 20 }} />
+            <img src={require('../../Assets/bell.png').default} loading="lazy" alt="Logo" style={{ width: 120, maxHeight: 120, alignSelf: 'center', marginBottom: 20 }} />
             <Typography style={{ alignSelf: 'center', fontSize: 25, fontWeight: 'bold' }}>Sudah waktunya untuk mengirim laporan nilai!</Typography>
             <Typography style={{ alignSelf: 'center', fontSize: 25, fontWeight: 'bold' }}>Sudahkah Anda memeriksa nilai setiap orang?</Typography>
 

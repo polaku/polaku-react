@@ -95,11 +95,15 @@ class cardPolanews extends Component {
           </Grid>
           <Grid style={{ width: '100%', display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
             <a href={this.props.data.attachments} target="_blank" rel="noopener noreferrer">
-              <img src={this.props.data.thumbnail} alt="thumbnail" style={{ width: 120, height: 150, minHeight: 150 }} />
+              <img
+                class="lazyload"
+                data-src={this.props.data.thumbnail} alt="thumbnail" width={120} height={150} style={{ minHeight: 150 }} />
             </a>
           </Grid>
           <Grid style={{ display: 'flex', alignItems: "center", marginBottom: 10 }}>
-            <img src={this.props.data.tbl_user.tbl_account_detail.avatar} alt="avatar" style={{ width: 35, height: 35, borderRadius: 20, marginRight: 10 }} />
+            <img
+              class="lazyload"
+              data-src={this.props.data.tbl_user.tbl_account_detail.avatar} alt="avatar" width={35} height={35} style={{ borderRadius: 20, marginRight: 10 }} />
             <Grid>
               <p style={{ margin: 0 }}>{this.props.data.tbl_user.tbl_account_detail.fullname}</p>
               <p style={{ margin: 0, color: 'gray', fontSize: 11 }}>{getDate(this.props.data.created_at)}</p>

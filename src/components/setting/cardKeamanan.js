@@ -72,7 +72,7 @@ class cardKeamanan extends Component {
           <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '20%' }}>
             <Grid style={{ minWidth: '100px', display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexWrap: 'wrap' }}>
               <Tooltip title="Edit ruang" aria-label="edit-data">
-                <img src={require('../../Assets/edit.png').default} alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-meeting-room/add-meeting-room', { data: this.props.data })} />
+                <img src={require('../../Assets/edit.png').default} loading="lazy" alt="Logo" style={{ width: 23, maxHeight: 23, alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/setting/setting-meeting-room/add-meeting-room', { data: this.props.data })} />
               </Tooltip>
               <Tooltip title="Hapus ruang" aria-label="delete-data">
                 <DeleteIcon style={{ color: 'red', cursor: 'pointer' }} onClick={this.delete} />

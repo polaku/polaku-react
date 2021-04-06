@@ -182,9 +182,10 @@ class cardAddEmployee extends Component {
     let newData = new FormData()
 
     if (this.props.data) newData.append("userId", this.props.data.userId)
-
+console.log(this.state.dateOfBirth)
     if (this.props.data && this.state.password) newData.append("password", this.state.password)
     newData.append("email", this.state.emailPribadi)
+    newData.append("username", this.state.username || this.state.nik)    
     newData.append("fullname", this.state.name)
     newData.append("initial", this.state.initial)
     newData.append("nik", this.state.nik)
@@ -377,7 +378,7 @@ class cardAddEmployee extends Component {
               <FormControl style={{ width: '75%', margin: 0, marginBottom: 5 }}>
                 <KeyboardDatePicker
                   margin="normal"
-                  id="date"
+                  id="dateOfBirth"
                   format="dd/MM/yyyy"
                   inputVariant="outlined"
                   style={{ margin: 0, minWidth: 150, padding: 0 }}
@@ -488,7 +489,7 @@ class cardAddEmployee extends Component {
               <FormControl style={{ margin: 0, marginBottom: 5 }}>
                 <KeyboardDatePicker
                   margin="normal"
-                  id="date"
+                  id="tanggalGabung"
                   format="dd/MM/yyyy"
                   inputVariant="outlined"
                   style={{ width: 300, margin: 0, minWidth: 150, padding: 0 }}
@@ -559,7 +560,7 @@ class cardAddEmployee extends Component {
               <FormControl style={{ margin: 0, marginBottom: 5 }}>
                 <KeyboardDatePicker
                   margin="normal"
-                  id="date"
+                  id="tanggalMulaiCutiBesar"
                   format="dd/MM/yyyy"
                   inputVariant="outlined"
                   style={{ width: 300, margin: 0, minWidth: 150, padding: 0 }}
@@ -607,7 +608,7 @@ class cardAddEmployee extends Component {
               <FormControl style={{ margin: 0, marginBottom: 5 }}>
                 <KeyboardDatePicker
                   margin="normal"
-                  id="date"
+                  id="nextFrame"
                   format="dd/MM/yyyy"
                   inputVariant="outlined"
                   style={{ width: 300, margin: 0, minWidth: 150, padding: 0 }}
@@ -636,7 +637,7 @@ class cardAddEmployee extends Component {
               <FormControl style={{ margin: 0, marginBottom: 5 }}>
                 <KeyboardDatePicker
                   margin="normal"
-                  id="date"
+                  id="nextLensa"
                   format="dd/MM/yyyy"
                   inputVariant="outlined"
                   style={{ width: 300, margin: 0, minWidth: 150, padding: 0 }}
