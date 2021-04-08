@@ -12,6 +12,7 @@ import {
   Divider,
   Grid,
   Button,
+  Popover,
   Table,
   TableBody,
   TableCell,
@@ -22,7 +23,6 @@ import {
   Select,
   MenuItem,
   FormControl,
-  Modal,
 } from "@material-ui/core";
 
 import DateFnsUtils from "@date-io/date-fns";
@@ -93,7 +93,6 @@ class ReportIjin extends Component {
         "November",
         "Desember",
       ],
-      statue: "approved",
       monthSelected: 0,
       value: 0,
       index: 0,
@@ -175,7 +174,7 @@ class ReportIjin extends Component {
   fetchData = async () => {
     let newData = [];
     let data = await this.props.dataAllContactUs.filter(
-      (el) => el.status === this.state.statue
+      (el) => el.status === "approved"
     );
 
     data.forEach((element) => {
@@ -415,10 +414,6 @@ class ReportIjin extends Component {
     }
   };
 
-  handleChangeStatue = (event) => {
-    this.setState({ value: event.target.value });
-  };
-
   render() {
     function getDate(waktuAwal, waktuAkhir) {
       let months = [
@@ -450,13 +445,6 @@ class ReportIjin extends Component {
           waktuAwal
         ).getFullYear()} -${month2} ${new Date(waktuAkhir).getFullYear()}`;
     }
-
-    const statues = [
-      { value: "new" },
-      { value: "new2" },
-      { value: "approved" },
-      { value: "rejected" },
-    ];
 
     return (
       <div style={{ padding: "10px 40px" }}>
@@ -505,11 +493,18 @@ class ReportIjin extends Component {
               >
                 set tanggal
               </Button>
-              <Modal
+              <Popover
                 open={this.state.openFilter}
+                anchorEl={this.state.anchorEl}
                 onClose={this.handleClose}
-                aria-labelledby="simple-modal-title"
-                aria-describedby="simple-modal-description"
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
               >
                 <Grid
                   style={{
@@ -517,13 +512,6 @@ class ReportIjin extends Component {
                     padding: 20,
                     display: "flex",
                     flexDirection: "column",
-                    position: "absolute",
-
-                    backgroundColor: "#fff",
-                    border: "2px solid #000",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
                   }}
                 >
                   <MuiPickersUtilsProvider
@@ -571,22 +559,6 @@ class ReportIjin extends Component {
                       disabled={this.state.proses}
                     />
                   </MuiPickersUtilsProvider>
-                  <br />
-                  <TextField
-                    id="statue"
-                    select
-                    label="Status"
-                    value={this.state.statue}
-                    onChange={(event) =>
-                      this.setState({ statue: event.target.value })
-                    }
-                  >
-                    {statues.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.value}
-                      </MenuItem>
-                    ))}
-                  </TextField>
                   <Button
                     variant="contained"
                     style={{ alignSelf: "flex-end", marginTop: 15 }}
@@ -595,7 +567,7 @@ class ReportIjin extends Component {
                     oke
                   </Button>
                 </Grid>
-              </Modal>
+              </Popover>
             </Grid>
           </Grid>
           <Divider />

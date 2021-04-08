@@ -27,7 +27,6 @@ import {
   Clear,
   ExpandMore,
   PlayArrow,
-  AccountCircleRounded,
   Business,
 } from "@material-ui/icons";
 import React, { Component } from "react";

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import { Button, Grid, Paper } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
 
 import "react-circular-progressbar/dist/styles.css";
 

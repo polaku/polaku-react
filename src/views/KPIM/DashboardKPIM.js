@@ -10,7 +10,6 @@ import {
   Paper,
 } from "@material-ui/core";
 
-import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
 import CardIndicator from "../../components/kpim/cardIndicatorKPIM";
