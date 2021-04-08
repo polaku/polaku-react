@@ -182,8 +182,8 @@ class cardAddEmployee extends Component {
     let newData = new FormData()
 
     if (this.props.data) newData.append("userId", this.props.data.userId)
-console.log(this.state.dateOfBirth)
-    if (this.props.data && this.state.password) newData.append("password", this.state.password)
+
+    // if (this.props.data && this.state.password) newData.append("password", this.state.password)
     newData.append("email", this.state.emailPribadi)
     newData.append("username", this.state.username || this.state.nik)    
     newData.append("fullname", this.state.name)
@@ -768,7 +768,7 @@ console.log(this.state.dateOfBirth)
                   />
                 </Grid>
 
-                <Grid id="password" style={{ display: 'flex', alignItems: 'center' }}>
+                {/* <Grid id="password" style={{ display: 'flex', alignItems: 'center' }}>
                   <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
                     <b style={{ margin: 0 }}>Kata Sandi Baru</b>
                     <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
@@ -788,7 +788,7 @@ console.log(this.state.dateOfBirth)
                     }}
                     disabled={this.props.proses}
                   />
-                </Grid>
+                </Grid> */}
               </>
             }
             <Grid id="email-pribadi" style={{ display: 'flex', alignItems: 'center' }}>

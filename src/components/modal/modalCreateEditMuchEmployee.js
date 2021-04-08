@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Cookies from 'js-cookie';
 
 import {
-  Modal, Fade, Grid, Backdrop, Button, Divider, FormControlLabel, Checkbox
+  Modal, Fade, Grid, Backdrop, Button, Divider, FormControlLabel, Checkbox, CircularProgress
 } from '@material-ui/core';
 
 import CloseIcon from '@material-ui/icons/Close';
@@ -10,6 +10,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import DragAndDrop from '../DragAndDrop';
 import Download from '../../components/exportToExcel';
 import UserFile from '../../Assets/user.xlsx';
+import Loading from '../Loading';
 
 import { API } from '../../config/API';
 
@@ -20,6 +21,7 @@ class modalCreateEditMuchEmployee extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
       proses: false,
       files: [],
 
@@ -63,6 +65,7 @@ class modalCreateEditMuchEmployee extends Component {
     let companySelectedId = this.props.optionCompany[this.props.indexCompany]
 
     let token = Cookies.get('POLAGROUP')
+    this.setState({ loading: true })
     try {
       let query = ''
       if (this.props.keyword) query += `?search=${this.props.keyword}`
@@ -79,7 +82,7 @@ class modalCreateEditMuchEmployee extends Component {
         }
       })
 
-      this.setState({ rawData: getData.data.data })
+      this.setState({ rawData: getData.data.data, loading: false })
     } catch (err) {
       if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
         swal('Gagal', 'Koneksi tidak stabil', 'error')
@@ -375,12 +378,19 @@ class modalCreateEditMuchEmployee extends Component {
                         )
                       }
                     </Grid>
-                    <Download
-                      title="Unduh Template Excel"
-                      report="edit-employee"
-                      labelValue={this.state.labelDownload}
-                      data={this.state.dataDownload}
-                    />
+                    {
+                      this.state.loading
+                        ? <Grid>
+                          <CircularProgress style={{ width: 30, height: 30 }} />
+                        </Grid>
+                        : <Download
+                          title="Unduh Template Excel"
+                          report="edit-employee"
+                          labelValue={this.state.labelDownload}
+                          data={this.state.dataDownload}
+                        />
+                    }
+
 
                   </Grid>
               }

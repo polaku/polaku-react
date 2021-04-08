@@ -786,7 +786,7 @@ class cardSettingIndicator extends Component {
                         }
                       </Grid>
                       {
-                        (!this.props.data.hasConfirm && new Date() <= new Date(new Date().getFullYear(), this.props.data.month, 7)) &&
+                        (!this.props.data.hasConfirm && new Date() <= new Date(new Date().getFullYear(), this.props.data.month, 8)) &&
                         <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick}>
                           <MoreHorizIcon />
                         </Button>
