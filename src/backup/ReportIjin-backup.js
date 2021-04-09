@@ -1,5 +1,5 @@
-import React, { Component, lazy } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { connect } from "react-redux";
 
 import PropTypes from "prop-types";
 
@@ -12,6 +12,7 @@ import {
   Divider,
   Grid,
   Button,
+  Popover,
   Table,
   TableBody,
   TableCell,
@@ -22,7 +23,6 @@ import {
   Select,
   MenuItem,
   FormControl,
-  Modal,
 } from "@material-ui/core";
 
 import DateFnsUtils from "@date-io/date-fns";
@@ -37,16 +37,14 @@ import ArrowDropUpOutlinedIcon from "@material-ui/icons/ArrowDropUpOutlined";
 import ArrowDropDownOutlinedIcon from "@material-ui/icons/ArrowDropDownOutlined";
 import ArchiveIcon from "@material-ui/icons/Archive";
 
-import Download from '../../components/exportToExcel'
-import Loading from '../../components/Loading';
+import CardReport from "../../components/report/CardReport";
+import Download from "../../components/exportToExcel";
 
 import orderBy from "lodash/orderBy";
 
 import swal from "sweetalert";
 
 import { fetchDataContactUs } from "../../store/action";
-
-const CardReport = lazy(() => import('../../components/report/CardReport'));
 
 const invertDirection = {
   asc: "desc",
@@ -81,7 +79,6 @@ class ReportIjin extends Component {
     super(props);
     this._isMounted = false;
     this.state = {
-      loading: true,
       month: [
         "Januari",
         "Februari",
@@ -96,7 +93,6 @@ class ReportIjin extends Component {
         "November",
         "Desember",
       ],
-      statue: "approved",
       monthSelected: 0,
       value: 0,
       index: 0,
@@ -178,25 +174,23 @@ class ReportIjin extends Component {
   fetchData = async () => {
     let newData = [];
     let data = await this.props.dataAllContactUs.filter(
-      (el) => el.status === this.state.statue
+      (el) => el.status === "approved"
     );
-    console.log(this.state.statue)
-    console.log(this.props.dataAllContactUs)
 
     data.forEach((element) => {
       if (element.date_imp) {
         //IMP
         if (
           new Date(element.date_imp).getMonth() >=
-          new Date(this.state.monthStart).getMonth() &&
+            new Date(this.state.monthStart).getMonth() &&
           new Date(element.date_imp).getFullYear() >=
-          new Date(this.state.monthStart).getFullYear() &&
+            new Date(this.state.monthStart).getFullYear() &&
           ((new Date(element.date_imp).getMonth() <=
             new Date(this.state.monthEnd).getMonth() &&
             new Date(element.date_imp).getFullYear() <=
-            new Date(this.state.monthEnd).getFullYear()) ||
+              new Date(this.state.monthEnd).getFullYear()) ||
             new Date(element.date_imp).getFullYear() <
-            new Date(this.state.monthEnd).getFullYear())
+              new Date(this.state.monthEnd).getFullYear())
         ) {
           element.statusIjin = "IMP";
           element.tglMulai = `${element.date_imp.slice(
@@ -213,9 +207,10 @@ class ReportIjin extends Component {
             0,
             4
           )} (${element.end_time_imp.slice(0, 5)})`;
-          element.lamaIjin = `${Number(element.end_time_imp.slice(0, 2)) -
+          element.lamaIjin = `${
+            Number(element.end_time_imp.slice(0, 2)) -
             Number(element.start_time_imp.slice(0, 2))
-            } jam`;
+          } jam`;
           element.sisaCuti = element.tbl_user.tbl_account_detail.leave;
 
           newData.push(element);
@@ -226,15 +221,15 @@ class ReportIjin extends Component {
 
         if (
           new Date(startDate).getMonth() >=
-          new Date(this.state.monthStart).getMonth() &&
+            new Date(this.state.monthStart).getMonth() &&
           new Date(startDate).getFullYear() >=
-          new Date(this.state.monthStart).getFullYear() &&
+            new Date(this.state.monthStart).getFullYear() &&
           ((new Date(startDate).getMonth() <=
             new Date(this.state.monthEnd).getMonth() &&
             new Date(startDate).getFullYear() <=
-            new Date(this.state.monthEnd).getFullYear()) ||
+              new Date(this.state.monthEnd).getFullYear()) ||
             new Date(startDate).getFullYear() <
-            new Date(this.state.monthEnd).getFullYear())
+              new Date(this.state.monthEnd).getFullYear())
         ) {
           element.statusIjin = "Cuti";
           element.tglMulai = `${element.leave_date.slice(
@@ -273,15 +268,15 @@ class ReportIjin extends Component {
         //IA
         if (
           new Date(element.date_ijin_absen_start).getMonth() >=
-          new Date(this.state.monthStart).getMonth() &&
+            new Date(this.state.monthStart).getMonth() &&
           new Date(element.date_ijin_absen_start).getFullYear() >=
-          new Date(this.state.monthStart).getFullYear() &&
+            new Date(this.state.monthStart).getFullYear() &&
           ((new Date(element.date_ijin_absen_start).getMonth() <=
             new Date(this.state.monthEnd).getMonth() &&
             new Date(element.date_ijin_absen_start).getFullYear() <=
-            new Date(this.state.monthEnd).getFullYear()) ||
+              new Date(this.state.monthEnd).getFullYear()) ||
             new Date(element.date_ijin_absen_start).getFullYear() <
-            new Date(this.state.monthEnd).getFullYear())
+              new Date(this.state.monthEnd).getFullYear())
         ) {
           element.statusIjin = "Ijin Absen";
           element.tglMulai = `${element.date_ijin_absen_start.slice(
@@ -298,23 +293,24 @@ class ReportIjin extends Component {
             5,
             7
           )}/${element.date_ijin_absen_end.slice(0, 4)}`;
-          element.lamaIjin = `${Number(element.date_ijin_absen_end.slice(8, 10)) -
+          element.lamaIjin = `${
+            Number(element.date_ijin_absen_end.slice(8, 10)) -
             Number(element.date_ijin_absen_start.slice(8, 10)) +
             1
-            } hari`;
+          } hari`;
           element.sisaCuti = element.tbl_user.tbl_account_detail.leave;
 
           newData.push(element);
         }
       }
     });
-console.log(newData)
-    this._isMounted && this.setState({
-      dataForDisplay: newData,
-      data: newData,
-      loading: false
-    })
-  }
+
+    this._isMounted &&
+      this.setState({
+        dataForDisplay: newData,
+        data: newData,
+      });
+  };
 
   handleChangeTabs = (event, newValue) => {
     this.setState({ value: newValue });
@@ -354,9 +350,7 @@ console.log(newData)
       dataForDisplay: [],
       data: [],
       page: 0,
-      loading: true
-    })
-
+    });
     await this.props.fetchDataContactUs({
       limit: this.state.rowsPerPage,
       page: 0,
@@ -420,10 +414,6 @@ console.log(newData)
     }
   };
 
-  handleChangeStatue = (event) => {
-    this.setState({ value: event.target.value });
-  };
-
   render() {
     function getDate(waktuAwal, waktuAkhir) {
       let months = [
@@ -455,13 +445,6 @@ console.log(newData)
           waktuAwal
         ).getFullYear()} -${month2} ${new Date(waktuAkhir).getFullYear()}`;
     }
-
-    const statues = [
-      { value: "new" },
-      { value: "new2" },
-      { value: "approved" },
-      { value: "rejected" },
-    ];
 
     return (
       <div style={{ padding: "10px 40px" }}>
@@ -510,11 +493,18 @@ console.log(newData)
               >
                 set tanggal
               </Button>
-              <Modal
+              <Popover
                 open={this.state.openFilter}
+                anchorEl={this.state.anchorEl}
                 onClose={this.handleClose}
-                aria-labelledby="simple-modal-title"
-                aria-describedby="simple-modal-description"
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
               >
                 <Grid
                   style={{
@@ -522,13 +512,6 @@ console.log(newData)
                     padding: 20,
                     display: "flex",
                     flexDirection: "column",
-                    position: "absolute",
-
-                    backgroundColor: "#fff",
-                    border: "2px solid #000",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
                   }}
                 >
                   <MuiPickersUtilsProvider
@@ -576,22 +559,6 @@ console.log(newData)
                       disabled={this.state.proses}
                     />
                   </MuiPickersUtilsProvider>
-                  <br />
-                  <TextField
-                    id="statue"
-                    select
-                    label="Status"
-                    value={this.state.statue}
-                    onChange={(event) =>
-                      this.setState({ statue: event.target.value })
-                    }
-                  >
-                    {statues.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.value}
-                      </MenuItem>
-                    ))}
-                  </TextField>
                   <Button
                     variant="contained"
                     style={{ alignSelf: "flex-end", marginTop: 15 }}
@@ -600,7 +567,7 @@ console.log(newData)
                     oke
                   </Button>
                 </Grid>
-              </Modal>
+              </Popover>
             </Grid>
           </Grid>
           <Divider />
@@ -655,16 +622,16 @@ console.log(newData)
                     Terbaru <ArrowDropDownOutlinedIcon />
                   </>
                 ) : (
-                    <>
-                      Terlama <ArrowDropUpOutlinedIcon />
-                    </>
-                  )
-              ) : (
                   <>
-                    Terbaru
-                  <ArrowDropDownOutlinedIcon />
+                    Terlama <ArrowDropUpOutlinedIcon />
                   </>
-                )}
+                )
+              ) : (
+                <>
+                  Terbaru
+                  <ArrowDropDownOutlinedIcon />
+                </>
+              )}
             </Button>
           </Grid>
         </Paper>
@@ -693,8 +660,8 @@ console.log(newData)
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -709,8 +676,8 @@ console.log(newData)
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -725,8 +692,8 @@ console.log(newData)
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -741,8 +708,8 @@ console.log(newData)
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -757,8 +724,8 @@ console.log(newData)
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -773,8 +740,8 @@ console.log(newData)
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -792,40 +759,39 @@ console.log(newData)
                         this.state.rowsPerPage
                     )
                     .map((el, index) => (
-                    <CardReport data={el} key={index} />
-                  ))}
+                      <CardReport data={el} key={index} />
+                    ))}
                 </TableBody>
               </Table>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 20]}
-              component="div"
-              count={this.state.dataForDisplay.length}
-              // count={this.props.totalDataContactUs}
-              rowsPerPage={this.state.rowsPerPage}
-              page={this.state.page}
-              backIconButtonProps={{
-                "aria-label": "previous page",
-              }}
-              nextIconButtonProps={{
-                "aria-label": "next page",
-              }}
-              onChangePage={this.handleChangePage}
-              onChangeRowsPerPage={this.handleChangeRowsPerPage}
-            />
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 20]}
+                component="div"
+                count={this.state.dataForDisplay.length}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                backIconButtonProps={{
+                  "aria-label": "previous page",
+                }}
+                nextIconButtonProps={{
+                  "aria-label": "next page",
+                }}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
             </Paper>
           </TabPanel>
 
-        {/* Alamat */}
-        <TabPanel value={this.state.value} index={1}>
-          Alamat
+          {/* Alamat */}
+          <TabPanel value={this.state.value} index={1}>
+            Alamat
           </TabPanel>
 
-        {/* Struktur */}
-        <TabPanel value={this.state.value} index={2}>
-          Struktur
+          {/* Struktur */}
+          <TabPanel value={this.state.value} index={2}>
+            Struktur
           </TabPanel>
         </SwipeableViews>
-      </div >
+      </div>
     );
   }
 }
