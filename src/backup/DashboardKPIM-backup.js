@@ -27,13 +27,13 @@ import {
   fetchDataAllKPIM,
   fetchDataAllTAL,
   fetchDataRewardKPIM,
-} from "../../store/action";
-import { API } from "../../config/API";
+} from "../store/action";
+import { API } from "../config/API";
 
 import swal from "sweetalert";
 
-const CardIndicator = lazy(() => import('../../components/kpim/cardIndicatorKPIM'));
-const CardItemTAL = lazy(() => import('../../components/kpim/cardItemTAL'));
+const CardIndicator = lazy(() => import('../components/kpim/cardIndicatorKPIM'));
+const CardItemTAL = lazy(() => import('../components/kpim/cardItemTAL'));
 
 class DashboardKPIM extends Component {
   constructor(props) {

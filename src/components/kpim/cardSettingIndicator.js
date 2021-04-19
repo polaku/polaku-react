@@ -97,6 +97,8 @@ class cardSettingIndicator extends Component {
         persenTahun = Math.floor((this.props.data.pencapaian / this.props.data.target) * 100)
         persenBulan = Math.floor((this.props.data.pencapaian_monthly / this.props.data.target_monthly) * 100)
       }
+      if (persenBulan > 100) persenBulan = 100
+      if (persenTahun > 100) persenTahun = 100
 
       if (isNaN(persenBulan)) persenBulan = 0
       if (isNaN(persenTahun)) persenTahun = 0

@@ -30,7 +30,7 @@ const HR = lazy(() => import('./views/HR/HR'));
 const ReportIjin = lazy(() => import('./views/HR/ReportIjin'));
 // import KPIM from './views/KPIM/DashboardKPIM';
 // const KPIM = lazy(() => import('./views/KPIM/DashboardKPIM-backup'));
-const KPIM = lazy(() => import('./views/KPIM/DashboardKPIM'));
+const KPIM = lazy(() => import('./backup/DashboardKPIM-backup'));
 const TAL = lazy(() => import('./views/KPIM/TAL'));
 const ReportKPIM = lazy(() => import('./views/KPIM/ReportKPIM'));
 const SettingKPIM = lazy(() => import('./views/KPIM/SettingKPIM'));
