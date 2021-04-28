@@ -10,7 +10,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import DragAndDrop from '../DragAndDrop';
 import Download from '../../components/exportToExcel';
 import UserFile from '../../Assets/user.xlsx';
-import Loading from '../Loading';
+// import Loading from '../Loading';
 
 import { API } from '../../config/API';
 

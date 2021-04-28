@@ -143,7 +143,7 @@ class modalCreateEditPermintaanHRD extends Component {
           proses: true,
           editableInput: false
         })
-        let newData = {}, token = Cookies.get('POLAGROUP')
+        let newData = new FormData(), token = Cookies.get('POLAGROUP')
 
         if (this.state.jenisIjin === 7) {
           if (Number(this.state.startHour) > Number(this.state.endHour)) {
@@ -154,41 +154,31 @@ class modalCreateEditPermintaanHRD extends Component {
             return swal("waktu selesai harus lebih besar dari waktu mulai", "", "error");
           }
 
-          newData = {
-            date_imp: this.state.start_date ||
-              `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
-            start_time_imp: `${new Date(this.state.time_in).getHours()}:${new Date(this.state.time_in).getMinutes()}`,
-            end_time_imp: `${new Date(this.state.time_out).getHours()}:${new Date(this.state.time_out).getMinutes()}`,
-            message: this.state.textarea,
-            categoriId: 7
-          }
+          newData.append('date_imp', this.state.start_date || `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`)
+          newData.append('start_time_imp', `${new Date(this.state.time_in).getHours()}:${new Date(this.state.time_in).getMinutes()}`)
+          newData.append('end_time_imp', `${new Date(this.state.time_out).getHours()}:${new Date(this.state.time_out).getMinutes()}`)
+          newData.append('message', this.state.textarea)
+          newData.append('categoriId', 7)
         } else if (this.state.jenisIjin === 6) {
           if (!this.state.lamaCuti) {
             valid = false
             swal("Form lama cuti masih kosong !", "", "warning")
             this.setState({ proses: false })
           }
-          newData = {
-            leave_date: this.state.start_date ||
-              `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
-            leave_request: this.state.lamaCuti,
-            leave_date_in: this.state.end_date,
-            message: this.state.textarea,
-            categoriId: 6
-          }
+          newData.append('leave_date', this.state.start_date || `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`)
+          newData.append('leave_request', this.state.lamaCuti)
+          newData.append('leave_date_in', this.state.end_date)
+          newData.append('message', this.state.textarea)
+          newData.append('categoriId', 6)
         } else if (this.state.jenisIjin === 8) {
-          newData = {
-            date_ijin_absen_start: this.state.start_date ||
-              `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
-            date_ijin_absen_end: this.state.end_date ||
-              `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate() + 1}`,
-            message: this.state.textarea,
-            categoriId: 8
-          }
+          newData.append('date_ijin_absen_start', this.state.start_date || `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`)
+          newData.append('date_ijin_absen_end', this.state.end_date || `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate() + 1}`)
+          newData.append('message', this.state.textarea)
+          newData.append('categoriId', 8)
         }
-        newData.company_id = this.state.company
-        newData.type = 'request'
-        newData.contactCategoriesId = 4
+        newData.append('company_id', this.state.company)
+        newData.append('type', 'request')
+        newData.append('contactCategoriesId', 4)
 
         if (valid) {
           API.post('/contactUs', newData, {
@@ -222,7 +212,7 @@ class modalCreateEditPermintaanHRD extends Component {
             })
         }
       }
-    }else{
+    } else {
       swal('Perusahaan yang dituju kosong', '', 'warning')
     }
   }
@@ -232,7 +222,7 @@ class modalCreateEditPermintaanHRD extends Component {
       proses: true,
       editableInput: false
     })
-    let newData = {}, token = Cookies.get('POLAGROUP')
+    let newData = new FormData(), token = Cookies.get('POLAGROUP')
 
     if (this.state.jenisIjin === 7) {
       if (Number(this.state.startHour) > Number(this.state.endHour)) {
@@ -243,37 +233,27 @@ class modalCreateEditPermintaanHRD extends Component {
         return swal("waktu selesai harus lebih besar dari waktu mulai", "", "error");
       }
 
-      newData = {
-        date_imp: this.state.start_date ||
-          `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
-        start_time_imp: `${new Date(this.state.time_in).getHours()}:${new Date(this.state.time_in).getMinutes()}`,
-        end_time_imp: `${new Date(this.state.time_out).getHours()}:${new Date(this.state.time_out).getMinutes()}`,
-        message: this.state.textarea,
-        categoriId: 7
-      }
+      newData.append('date_imp', this.state.start_date || `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`)
+      newData.append('start_time_imp', `${new Date(this.state.time_in).getHours()}:${new Date(this.state.time_in).getMinutes()}`)
+      newData.append('end_time_imp', `${new Date(this.state.time_out).getHours()}:${new Date(this.state.time_out).getMinutes()}`)
+      newData.append('message', this.state.textarea)
+      newData.append('categoriId', 7)
     } else if (this.state.jenisIjin === 6) {
-      newData = {
-        leave_date: this.state.start_date ||
-          `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
-        leave_request: this.state.lamaCuti,
-        leave_date_in: this.state.end_date,
-        message: this.state.textarea,
-        categoriId: 6
-      }
+      newData.append('leave_date', this.state.start_date || `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`)
+      newData.append('leave_request', this.state.lamaCuti)
+      newData.append('leave_date_in', this.state.end_date)
+      newData.append('message', this.state.textarea)
+      newData.append('categoriId', 6)
     } else if (this.state.jenisIjin === 8) {
-      newData = {
-        date_ijin_absen_start: this.state.start_date ||
-          `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
-        date_ijin_absen_end: this.state.end_date ||
-          `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate() + 1}`,
-        message: this.state.textarea,
-        categoriId: 8
-      }
+      newData.append('date_ijin_absen_start', this.state.start_date || `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`)
+      newData.append('date_ijin_absen_end', this.state.end_date || `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate() + 1}`)
+      newData.append('message', this.state.textarea)
+      newData.append('categoriId', 8)
     }
 
-    newData.company_id = this.state.company
-    newData.type = 'request'
-    newData.contactCategoriesId = 4
+    newData.append('company_id', this.state.company)
+    newData.append('type', 'request')
+    newData.append('contactCategoriesId', 4)
 
     API.patch(`/contactUs/${this.props.data.contact_id}`, newData, {
       headers: {
@@ -388,9 +368,13 @@ class modalCreateEditPermintaanHRD extends Component {
                   onChange={this.handleChange('jenisIjin')}
                   disabled={this.state.proses}
                 >
-                  <MenuItem value={6}>Cuti</MenuItem>
+                  {
+                    this.props.sisaCuti > 0
+                      ? <MenuItem value={6}>Cuti</MenuItem>
+                      : <MenuItem value={8}>Ijin Absen</MenuItem>
+                  }
                   <MenuItem value={7}>IMP</MenuItem>
-                  <MenuItem value={8}>Ijin Absen</MenuItem>
+
                 </SelectOption>
               </FormControl>
 

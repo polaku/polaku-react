@@ -38,7 +38,7 @@ import ArrowDropDownOutlinedIcon from "@material-ui/icons/ArrowDropDownOutlined"
 import ArchiveIcon from "@material-ui/icons/Archive";
 
 import Download from '../../components/exportToExcel'
-import Loading from '../../components/Loading';
+// import Loading from '../../components/Loading';
 
 import orderBy from "lodash/orderBy";
 
