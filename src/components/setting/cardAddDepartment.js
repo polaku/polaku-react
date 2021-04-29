@@ -124,7 +124,7 @@ class cardAddDepartment extends Component {
 
       this.setState({ listUser })
     } catch (err) {
-      console.log(err)
+      // console.log(err)
       if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
         swal('Gagal', 'Koneksi tidak stabil', 'error')
       }
@@ -243,12 +243,10 @@ class cardAddDepartment extends Component {
   };
 
   deletePosition = index => {
-    console.log(index)
     let newArray = this.state.position;
     this.setState({
       position: []
     });
-    console.log(newArray.splice(index, 1));
     this.setState({
       position: newArray
     });

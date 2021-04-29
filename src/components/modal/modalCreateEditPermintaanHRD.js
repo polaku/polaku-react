@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
 import {
-  Modal, Backdrop, Fade, TextField, Typography, Button, CircularProgress, InputLabel, MenuItem, FormControl, Select as SelectOption
+  Modal, Backdrop, Fade, TextField, Typography, Button, CircularProgress, InputLabel, MenuItem, FormControl, Select as SelectOption, FormControlLabel, Checkbox
 } from '@material-ui/core';
 
 import DateFnsUtils from '@date-io/date-fns';
@@ -40,12 +40,13 @@ class modalCreateEditPermintaanHRD extends Component {
       proses: false,
       editableInput: true,
       hakCuti: 8,
-      company: null
+      company: null,
+      suratDokter: null,
+      lampirkanSuratDokter: false
     }
   }
 
   async componentDidMount() {
-    console.log(this.props.listDinas)
     if (this.props.data) {
       this.setState({
         isEdit: true
@@ -180,6 +181,10 @@ class modalCreateEditPermintaanHRD extends Component {
         newData.append('type', 'request')
         newData.append('contactCategoriesId', 4)
 
+        if (this.state.lampirkanSuratDokter) {
+          newData.append("doctor_letter", this.state.suratDokter)
+        }
+
         if (valid) {
           API.post('/contactUs', newData, {
             headers: {
@@ -255,6 +260,10 @@ class modalCreateEditPermintaanHRD extends Component {
     newData.append('type', 'request')
     newData.append('contactCategoriesId', 4)
 
+    if (this.state.lampirkanSuratDokter) {
+      newData.append("doctor_letter", this.state.suratDokter)
+    }
+
     API.patch(`/contactUs/${this.props.data.contact_id}`, newData, {
       headers: {
         token,
@@ -305,6 +314,14 @@ class modalCreateEditPermintaanHRD extends Component {
       editableInput: true
     })
   }
+
+  handleUploadFile = args => (e) => {
+    this.setState({ suratDokter: e.target.files[0] })
+  }
+
+  handleCheck = (event) => {
+    this.setState({ lampirkanSuratDokter: event.target.checked });
+  };
 
   render() {
     return (
@@ -438,6 +455,28 @@ class modalCreateEditPermintaanHRD extends Component {
                       disabled={this.state.proses}
                     />
                   </FormControl>
+                  <FormControlLabel
+                    control={<Checkbox checked={this.state.lampirkanSuratDokter} onChange={this.handleCheck} name="kpim" />}
+                    label="Lampirkan surat dokter"
+                    disabled={this.state.proses}
+                  />
+                  <Button
+                    variant="contained"
+                    component="label"
+                    style={{ marginBottom: 5 }}
+                    disabled={!this.state.lampirkanSuratDokter}
+                  >
+                    {
+                      this.state.suratDokter
+                        ? this.state.suratDokter.name
+                        : "Select File"
+                    }
+                    <input
+                      type="file"
+                      style={{ display: "none" }}
+                      onChange={this.handleUploadFile("cuti")}
+                    />
+                  </Button>
                 </>
               }
 
@@ -490,6 +529,28 @@ class modalCreateEditPermintaanHRD extends Component {
                       disabled={this.state.proses}
                     />
                   </FormControl>
+                  <FormControlLabel
+                    control={<Checkbox checked={this.state.lampirkanSuratDokter} onChange={this.handleCheck} name="kpim" />}
+                    label="Lampirkan surat dokter"
+                    disabled={this.state.proses}
+                  />
+                  <Button
+                    variant="contained"
+                    component="label"
+                    style={{ marginBottom: 5 }}
+                    disabled={!this.state.lampirkanSuratDokter}
+                  >
+                    {
+                      this.state.suratDokter
+                        ? this.state.suratDokter.name
+                        : "Select File"
+                    }
+                    <input
+                      type="file"
+                      style={{ display: "none" }}
+                      onChange={this.handleUploadFile("cuti")}
+                    />
+                  </Button>
                 </>
               }
 

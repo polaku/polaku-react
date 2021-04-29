@@ -180,8 +180,6 @@ class ReportIjin extends Component {
     let data = await this.props.dataAllContactUs.filter(
       (el) => el.status === this.state.statue
     );
-    console.log(this.state.statue)
-    console.log(this.props.dataAllContactUs)
 
     data.forEach((element) => {
       if (element.date_imp) {
@@ -308,7 +306,7 @@ class ReportIjin extends Component {
         }
       }
     });
-console.log(newData)
+
     this._isMounted && this.setState({
       dataForDisplay: newData,
       data: newData,

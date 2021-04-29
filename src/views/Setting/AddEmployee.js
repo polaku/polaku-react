@@ -93,7 +93,7 @@ class AddEmployee extends Component {
   }
 
   sendData = (args) => {
-    console.log("MASUK 1")
+    // console.log("MASUK 1")
     if (this.props.location.state && this.props.location.state.data) {
       let newData = this.state.tempDataForEdit
       newData.push(args)
@@ -133,11 +133,11 @@ class AddEmployee extends Component {
       newData.push(args)
       this.setState({ proses: true })
       let token = Cookies.get('POLAGROUP'), promises = []
-      console.log("MASUK 2")
+      // console.log("MASUK 2")
 
-      console.log(newData.length, this.state.department.length)
+      // console.log(newData.length, this.state.department.length)
       if (newData.length === this.state.department.length) {
-        console.log("MASUK 3")
+        // console.log("MASUK 3")
         newData.forEach(async (data, index) => {
           promises.push(API.post(`/users/register`, data, {
             headers: {
@@ -148,14 +148,14 @@ class AddEmployee extends Component {
         })
         Promise.all(promises)
           .then(async ({ data }) => {
-            console.log("OKEE")
+            // console.log("OKEE")
             this.setState({ data: [], proses: false, statusSubmit: false })
             await this.props.fetchDataUsers({ limit: 10, page: 0 })
             swal('Tambah karyawan sukses', '', 'success')
             this.props.history.push('/setting/setting-perusahaan', { index: this.props.location.state.index })
           })
           .catch(err => {
-            console.log("ERROR 1", err)
+            // console.log("ERROR 1", err)
             this.setState({ proses: false, statusSubmit: false, department: [false], data: [] })
             if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
               swal('Gagal', 'Koneksi tidak stabil', 'error')

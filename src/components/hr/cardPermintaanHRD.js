@@ -320,6 +320,13 @@ class cardPermintaanHRD extends Component {
               <p style={{ margin: 0, fontWeight: 'bold', width: 75 }}>Pengajuan</p>
               <p style={{ margin: 0 }}>: {this.props.data.created_at.slice(0, 10)} {this.props.data.created_at.slice(11, 16)}</p>
             </Grid>
+            {
+              this.props.data.doctor_letter && <Grid style={{ display: 'flex' }}>
+                <p style={{ margin: 0, fontWeight: 'bold', width: 75 }}>Lampiran</p>
+                <p style={{ margin: 0 }}>: <a href={this.props.data.doctor_letter} target="_blank" rel="noreferrer" >Link</a></p>
+              </Grid>
+            }
+
           </Grid>
 
           {
