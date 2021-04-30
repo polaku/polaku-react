@@ -77,6 +77,7 @@ class Login extends Component {
           fullname: data.data.fullname,
           firstHierarchy: data.data.firstHierarchy,
           dinas: data.data.dinas,
+          statusEmployee: data.data.status_employee
         }
 
         let checkPIC = data.data.admin.find(el => el.PIC)

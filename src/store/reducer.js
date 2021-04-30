@@ -25,6 +25,7 @@ const defaultState = {
   evaluator1: null,
   evaluator2: null,
   bawahan: [],
+  statusEmployee: null,
   loading: false,
   error: {},
   isLogin: false,
@@ -99,7 +100,8 @@ function reducer(state = defaultState, action) {
         nickname: action.payload.nickname,
         fullname: action.payload.fullname,
         firstHierarchy: action.payload.firstHierarchy,
-        listDinas: action.payload.dinas
+        listDinas: action.payload.dinas,
+        statusEmployee: action.payload.statusEmployee
       }
     }
     case 'FETCH_DATA_USER_DETAIL_SUCCESS': {

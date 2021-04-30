@@ -83,6 +83,10 @@ class modalCreateEditPermintaanHRD extends Component {
         time_out: new Date().setHours(new Date().getHours() + 1, new Date().getMinutes()),
       })
     }
+
+    if (this.props.listDinas) {
+      this.setState({company: this.props.listDinas[0].company_id})
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -100,6 +104,10 @@ class modalCreateEditPermintaanHRD extends Component {
           end_date: new Date()
         })
       }
+    }
+
+    if (prevProps.listDinas !== this.props.listDinas) {
+      this.setState({company: this.props.listDinas[0].company_id})
     }
   }
 
@@ -386,10 +394,9 @@ class modalCreateEditPermintaanHRD extends Component {
                   disabled={this.state.proses}
                 >
                   {
-                    this.props.sisaCuti > 0
-                      ? <MenuItem value={6}>Cuti</MenuItem>
-                      : <MenuItem value={8}>Ijin Absen</MenuItem>
+                    this.props.statusEmployee === 'Tetap' && <MenuItem value={6}>Cuti</MenuItem>
                   }
+                  <MenuItem value={8}>Ijin Absen</MenuItem>
                   <MenuItem value={7}>IMP</MenuItem>
 
                 </SelectOption>
@@ -678,14 +685,15 @@ const mapDispatchToProps = {
   fetchDataRooms,
 }
 
-const mapStateToProps = ({ loading, dataUsers, dataRooms, sisaCuti, ip, listDinas }) => {
+const mapStateToProps = ({ loading, dataUsers, dataRooms, sisaCuti, ip, listDinas, statusEmployee }) => {
   return {
     loading,
     dataUsers,
     dataRooms,
     sisaCuti,
     ip,
-    listDinas
+    listDinas,
+    statusEmployee
   }
 }
 

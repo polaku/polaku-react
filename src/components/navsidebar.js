@@ -196,6 +196,7 @@ function Navsidebar(props) {
               fullname: data.fullname,
               firstHierarchy: data.firstHierarchy,
               dinas: data.dinas,
+              statusEmployee: data.status_employee
             };
 
             let checkPIC = data.admin.find((el) => el.PIC);
