@@ -48,13 +48,14 @@ class modalCreateEditMuchEmployee extends Component {
       bigLeave: false,
       nextFrameDate: false,
       nextLensaDate: false,
+      dateStatus: false,
 
       key: ["fullname", "nickname", "initial", "date_of_birth", "address", "phone", "selfEmail", "officeEmail", "username",
         "company", "evaluator1", "evaluator2",
-        "leave", "statusEmpolyee", "joinDate", "startBigLeave", "bigLeave", "nextFrameDate", "nextLensaDate"],
+        "leave", "statusEmpolyee", "joinDate", "startBigLeave", "bigLeave", "nextFrameDate", "nextLensaDate", "dateStatus"],
       label: ['Nama Lengkap', 'Nama Panggilan', 'Inisial', 'Tanggal Lahir', 'Alamat', 'No Telepon', 'Email Pribadi', 'Email Kantor', 'Username',
         'Perusahaan', 'Evaluator 1', 'Evaluator 2',
-        'Sisa Cuti', 'Status Karyawan', 'Tanggal Gabung', 'Tanggal Mulai Cuti Besar', 'Sisa Cuti Besar', 'Tanggal Frame Selanjutnya', 'Tanggal Lensa Selanjutnya'],
+        'Sisa Cuti', 'Status Karyawan', 'Tanggal Gabung', 'Tanggal Mulai Cuti Besar', 'Sisa Cuti Besar', 'Tanggal Frame Selanjutnya', 'Tanggal Lensa Selanjutnya', 'Tanggal Ubah Status'],
       dataDownload: [],
       rawData: [],
       labelDownload: []
@@ -81,7 +82,7 @@ class modalCreateEditMuchEmployee extends Component {
           ip: this.props.ip
         }
       })
-
+      console.log(getData.data.data)
       this.setState({ rawData: getData.data.data, loading: false })
     } catch (err) {
       if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
@@ -120,8 +121,9 @@ class modalCreateEditMuchEmployee extends Component {
       (this.state.startBigLeave !== prevState.startBigLeave) ||
       (this.state.bigLeave !== prevState.bigLeave) ||
       (this.state.nextFrameDate !== prevState.nextFrameDate) ||
-      (this.state.nextLensaDate !== prevState.nextLensaDate)) {
-      if (!this.state.fullname || !this.state.nickname || !this.state.initial || !this.state.date_of_birth || !this.state.address || !this.state.phone || !this.state.selfEmail || !this.state.username || !this.state.building || !this.state.company || !this.state.evaluator1 || !this.state.evaluator2 || !this.state.department || !this.state.position || !this.state.leave || !this.state.statusEmpolyee || !this.state.joinDate || !this.state.startBigLeave || !this.state.bigLeave || !this.state.nextFrameDate || !this.state.nextLensaDate) this.setState({ semua: false })
+      (this.state.nextLensaDate !== prevState.nextLensaDate) ||
+      (this.state.dateStatus !== prevState.dateStatus)) {
+      if (!this.state.fullname || !this.state.nickname || !this.state.initial || !this.state.date_of_birth || !this.state.address || !this.state.phone || !this.state.selfEmail || !this.state.username || !this.state.building || !this.state.company || !this.state.evaluator1 || !this.state.evaluator2 || !this.state.department || !this.state.position || !this.state.leave || !this.state.statusEmpolyee || !this.state.joinDate || !this.state.startBigLeave || !this.state.bigLeave || !this.state.nextFrameDate || !this.state.nextLensaDate || !this.state.dateStatus) this.setState({ semua: false })
     }
 
     if (
@@ -145,15 +147,16 @@ class modalCreateEditMuchEmployee extends Component {
       (this.state.startBigLeave !== prevState.startBigLeave) ||
       (this.state.bigLeave !== prevState.bigLeave) ||
       (this.state.nextFrameDate !== prevState.nextFrameDate) ||
-      (this.state.nextLensaDate !== prevState.nextLensaDate)) {
-      if (this.state.fullname && this.state.nickname && this.state.initial && this.state.date_of_birth && this.state.address && this.state.phone && this.state.selfEmail && this.state.username && this.state.building && this.state.company && this.state.evaluator1 && this.state.evaluator2 && this.state.department && this.state.position && this.state.leave && this.state.statusEmpolyee && this.state.joinDate && this.state.startBigLeave && this.state.bigLeave && this.state.nextFrameDate && this.state.nextLensaDate) this.setState({ semua: true })
+      (this.state.nextLensaDate !== prevState.nextLensaDate) ||
+      (this.state.dateStatus !== prevState.dateStatus)) {
+      if (this.state.fullname && this.state.nickname && this.state.initial && this.state.date_of_birth && this.state.address && this.state.phone && this.state.selfEmail && this.state.username && this.state.building && this.state.company && this.state.evaluator1 && this.state.evaluator2 && this.state.department && this.state.position && this.state.leave && this.state.statusEmpolyee && this.state.joinDate && this.state.startBigLeave && this.state.bigLeave && this.state.nextFrameDate && this.state.nextLensaDate && this.state.dateStatus) this.setState({ semua: true })
 
     }
   }
 
   handleChangeCheck = async (event, name) => {
     await this.setState({ [name]: event.target.checked, proses: true });
-    this.fetchDataReport()
+    await this.fetchDataReport()
 
     if (name === 'semua') {
       this.setState({
@@ -179,6 +182,7 @@ class modalCreateEditMuchEmployee extends Component {
         bigLeave: this.state.semua,
         nextFrameDate: this.state.semua,
         nextLensaDate: this.state.semua,
+        dateStatus: this.state.semua
       })
     }
   };
@@ -247,6 +251,7 @@ class modalCreateEditMuchEmployee extends Component {
 
   fetchDataReport = () => {
     let data = [], label = []
+    this.setState({ loading: true })
 
     label.push({ label: 'id (tidak boleh diubah)', value: 'id' })
     label.push({ label: 'nik', value: 'nik' })
@@ -269,6 +274,7 @@ class modalCreateEditMuchEmployee extends Component {
     if (this.state.semua || this.state.bigLeave) label.push({ label: 'bigLeave', value: 'bigLeave' })
     if (this.state.semua || this.state.nextFrameDate) label.push({ label: 'nextFrameDate', value: 'nextFrameDate' })
     if (this.state.semua || this.state.nextLensaDate) label.push({ label: 'nextLensaDate', value: 'nextLensaDate' })
+    if (this.state.semua || this.state.dateStatus) label.push({ label: 'dateStatus', value: 'dateStatus' })
 
     this.state.rawData.forEach(element => {
       let newData = { id: element.user_id, nik: element.tbl_account_detail.nik }
@@ -291,11 +297,12 @@ class modalCreateEditMuchEmployee extends Component {
       if (this.state.semua || this.state.bigLeave) newData.bigLeave = element.tbl_account_detail.leave_big
       if (this.state.semua || this.state.nextFrameDate) newData.nextFrameDate = element.tbl_account_detail.next_frame_date
       if (this.state.semua || this.state.nextLensaDate) newData.nextLensaDate = element.tbl_account_detail.next_lensa_date
+      if (this.state.semua || this.state.dateStatus) newData.dateStatus = element.tbl_status_employee_dates.length > 0 ? element.tbl_status_employee_dates[element.tbl_status_employee_dates.length - 1].start_date : null
 
       data.push(newData)
     });
 
-    this.setState({ proses: false, dataDownload: data, labelDownload: label })
+    this.setState({ proses: false, dataDownload: data, labelDownload: label, loading: false })
   }
 
   render() {
