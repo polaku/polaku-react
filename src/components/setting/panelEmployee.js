@@ -109,7 +109,8 @@ class panelEmployee extends Component {
           isActive: user.activated,
           position: user.tbl_department_positions,
           rawData: user,
-          status: user.tbl_account_detail.status_employee
+          status: user.tbl_account_detail.status_employee,
+          updatedStatus: user.tbl_status_employee_dates.length > 0 ? user.tbl_status_employee_dates[user.tbl_status_employee_dates.length - 1].start_date : null
         }
         tempNewDataUsers.push(objUser)
       });
@@ -457,7 +458,9 @@ class panelEmployee extends Component {
                           this.state.columnToSort === 'status' ? (this.state.sortDirection === "desc" ? <ArrowDropUpOutlinedIcon /> : <ArrowDropDownOutlinedIcon />) : null
                         }
                       </Grid>
-                      <p style={{ margin: 0, width: '10%', textAlign: 'center' }}>Aksi</p>
+                      {
+                        this.props.isAdminHR && <p style={{ margin: 0, width: '10%', textAlign: 'center' }}>Aksi</p>
+                      }
                     </Paper>
 
                   </>

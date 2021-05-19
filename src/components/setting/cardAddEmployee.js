@@ -37,6 +37,7 @@ class cardAddEmployee extends Component {
       evaluator2: '',
       evaluator2Selected: null,
       tanggalGabung: null,
+      dateStatus: null,
       dateOfBirth: null,
       statusKaryawan: '',
       sisaCuti: '',
@@ -166,6 +167,7 @@ class cardAddEmployee extends Component {
       alamat: this.props.data.rawData.tbl_account_detail.address,
 
       isDinas: this.props.data.rawData.dinas.length > 0 ? true : false,
+      dateStatus: this.props.data.updatedStatus || null
     })
 
   }
@@ -179,38 +181,43 @@ class cardAddEmployee extends Component {
   }
 
   submit = async () => {
-    let newData = new FormData()
+    if (this.validate()) {
+      let newData = new FormData()
 
-    if (this.props.data) newData.append("userId", this.props.data.userId)
+      if (this.props.data) newData.append("userId", this.props.data.userId)
 
-    // if (this.props.data && this.state.password) newData.append("password", this.state.password)
-    newData.append("email", this.state.emailPribadi)
-    newData.append("username", this.state.username || this.state.nik)    
-    newData.append("fullname", this.state.name)
-    newData.append("initial", this.state.initial)
-    newData.append("nik", this.state.nik)
-    newData.append("address", this.state.alamat)
-    if (this.state.dateOfBirth && new Date(this.state.dateOfBirth) !== 'Invalid Date' && new Date(this.state.dateOfBirth) !== 'Invalid date' && new Date(this.state.dateOfBirth) !== 'invalid date') newData.append("dateOfBirth", this.state.dateOfBirth)
-    if (this.state.sisaCuti) newData.append("leave", this.state.sisaCuti)
-    if (this.state.companyAddress) newData.append("building_id", this.state.companyAddress)
-    if (this.state.company) newData.append("company_id", this.state.company)
-    newData.append("phone", this.state.telepon)
-    newData.append("name_evaluator_1", this.state.evaluator1)
-    newData.append("name_evaluator_2", this.state.evaluator2)
-    newData.append("nickname", this.state.nickname)
-    newData.append("statusEmployee", this.state.statusKaryawan)
-    if (this.state.tanggalGabung) newData.append("joinDate", this.state.tanggalGabung)
-    if (this.state.tanggalMulaiCutiBesar) newData.append("startLeaveBig", this.state.tanggalMulaiCutiBesar)
-    if (this.state.sisaCutiBesar) newData.append("leaveBig", this.state.sisaCutiBesar)
-    if (this.state.nextFrame) newData.append("nextFrameDate", this.state.nextFrame)
-    if (this.state.nextLensa) newData.append("nextLensaDate", this.state.nextLensa)
-    if (!this.props.data) newData.append("dinasId", this.state.isDinas ? this.state.companyDinas : '')
-    if (!this.props.data) newData.append("dinasBuildingId", this.state.isDinas ? this.state.companyDinasAddress : '')
-    newData.append("officeEmail", this.state.emailKantor)
+      // if (this.props.data && this.state.password) newData.append("password", this.state.password)
+      newData.append("email", this.state.emailPribadi)
+      newData.append("username", this.state.username || this.state.nik)
+      newData.append("fullname", this.state.name)
+      newData.append("initial", this.state.initial)
+      newData.append("nik", this.state.nik)
+      newData.append("address", this.state.alamat)
+      if (this.state.dateOfBirth && new Date(this.state.dateOfBirth) !== 'Invalid Date') newData.append("dateOfBirth", this.state.dateOfBirth)
+      if (this.state.sisaCuti) newData.append("leave", this.state.sisaCuti)
+      if (this.state.companyAddress) newData.append("building_id", this.state.companyAddress)
+      if (this.state.company) newData.append("company_id", this.state.company)
+      newData.append("phone", this.state.telepon)
+      newData.append("name_evaluator_1", this.state.evaluator1)
+      newData.append("name_evaluator_2", this.state.evaluator2)
+      newData.append("nickname", this.state.nickname)
+      newData.append("statusEmployee", this.state.statusKaryawan)
+      if (this.state.tanggalGabung) newData.append("joinDate", this.state.tanggalGabung)
+      if (this.state.tanggalMulaiCutiBesar) newData.append("startLeaveBig", this.state.tanggalMulaiCutiBesar)
+      if (this.state.sisaCutiBesar) newData.append("leaveBig", this.state.sisaCutiBesar)
+      if (this.state.nextFrame) newData.append("nextFrameDate", this.state.nextFrame)
+      if (this.state.nextLensa) newData.append("nextLensaDate", this.state.nextLensa)
+      if (!this.props.data) newData.append("dinasId", this.state.isDinas ? this.state.companyDinas : '')
+      if (!this.props.data) newData.append("dinasBuildingId", this.state.isDinas ? this.state.companyDinasAddress : '')
+      newData.append("officeEmail", this.state.emailKantor)
+      if (this.state.dateStatus) newData.append("dateStatus", `${this.state.dateStatus.getFullYear()}-${this.state.dateStatus.getMonth() + 1 < 10 ? `0${this.state.dateStatus.getMonth() + 1}` : this.state.dateStatus.getMonth() + 1}-${this.state.dateStatus.getDate() < 10 ? `0${this.state.dateStatus.getDate()}` : this.state.dateStatus.getDate()}`)
 
-    if (this.state.avatar) newData.append("avatar", this.state.avatar)
+      if (this.state.avatar) newData.append("avatar", this.state.avatar)
 
-    this.props.sendData(newData)
+      this.props.sendData(newData)
+    } else {
+      this.props.cancelSubmit()
+    }
   }
 
   handleChangeAddress = (newValue, actionMeta) => {
@@ -284,6 +291,63 @@ class cardAddEmployee extends Component {
     this.setState({ [name]: date })
   }
 
+  validate = () => {
+    let status = true, reason = []
+
+    if (this.state.name === '') {
+      status = false
+      reason.push('Nama lengkap')
+    }
+    if (this.state.initial === '') {
+      status = false
+      reason.push('Akronim')
+    }
+    if (this.state.dateOfBirth === null) {
+      status = false
+      reason.push('Tanggal lahir')
+    }
+    if (this.state.company === '') {
+      status = false
+      reason.push('PT')
+    }
+    if (this.state.nik === '') {
+      status = false
+      reason.push('NIK')
+    }
+    if (this.state.evaluator1 === '') {
+      status = false
+      reason.push('Evaluator 1')
+    }
+    if (this.state.tanggalGabung === null) {
+      status = false
+      reason.push('Tanggal bergabung')
+    }
+    if (this.state.statusKaryawan === '') {
+      status = false
+      reason.push('Status karyawan')
+    }
+    if (this.state.sisaCuti === '') {
+      status = false
+      reason.push('Sisa cuti')
+    }
+    if (this.state.companyAddress === '') {
+      status = false
+      reason.push('Lokasi')
+    }
+    if (this.state.emailPribadi === '') {
+      status = false
+      reason.push('Email pribadi')
+    }
+    if (this.state.dateStatus === null) {
+      status = false
+      reason.push('Tanggal ubah status')
+    }
+
+    if (reason.length > 0) swal('Peringatan', `Data ${reason.join(', ')} belum lengkap`, 'warning')
+
+    return status
+  }
+
   render() {
     return (
       <>
@@ -333,7 +397,6 @@ class cardAddEmployee extends Component {
             <Grid id="nama-panggilan" style={{ display: 'flex', alignItems: 'center' }}>
               <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
                 <b style={{ margin: 0 }}>Nama Panggilan</b>
-                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
               </Grid>
 
               <OutlinedInput
@@ -516,7 +579,7 @@ class cardAddEmployee extends Component {
                 <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
               </Grid>
 
-              <FormControl variant="outlined" size="small" style={{ width: '75%', height: 40, margin: '5px 0px', minWidth: 150 }}>
+              <FormControl variant="outlined" size="small" style={{ width: '28%', height: 40, margin: '5px 0px', minWidth: 150 }}>
                 <Select
                   value={this.state.statusKaryawan}
                   onChange={this.handleChange('statusKaryawan')}
@@ -530,6 +593,40 @@ class cardAddEmployee extends Component {
                   <MenuItem value="Intern">Intern</MenuItem>
                 </Select>
               </FormControl>
+
+              <Grid style={{ width: '2%' }} />
+
+              <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
+                <b style={{ margin: 0 }}>Tanggal ubah status</b>
+                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
+              </Grid>
+
+              <Grid style={{ width: '28%', height: 40, margin: '5px 0px' }}>
+                <KeyboardDatePicker
+                  margin="normal"
+                  id="dateStatus"
+                  format="dd/MM/yyyy"
+                  inputVariant="outlined"
+                  style={{ margin: 0, minWidth: 150, padding: 0 }}
+                  value={this.state.dateStatus}
+                  onChange={(date) => this.handleDateChange('dateStatus', date)}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                  inputProps={{
+                    style: {
+                      height: 20,
+                      paddingTop: 10,
+                      paddingBottom: 10
+                    }
+                  }}
+                  disabled={this.state.proses}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid style={{ display: 'flex', alignItems: 'center' }}>
+
             </Grid>
 
             <Grid id="sisa-cuti" style={{ display: 'flex', alignItems: 'center' }}>
@@ -837,7 +934,6 @@ class cardAddEmployee extends Component {
             <Grid id="telpon" style={{ display: 'flex', alignItems: 'center' }}>
               <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
                 <b style={{ margin: 0 }}>No Telpon</b>
-                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
               </Grid>
 
               <OutlinedInput
@@ -858,7 +954,6 @@ class cardAddEmployee extends Component {
             <Grid id="alamat" style={{ display: 'flex', alignItems: 'center' }}>
               <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
                 <b style={{ margin: 0 }}>Alamat</b>
-                <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
               </Grid>
 
               <OutlinedInput

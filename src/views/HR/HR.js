@@ -8,7 +8,7 @@ import Loading from '../../components/Loading';
 
 import { fetchDataContactUs } from '../../store/action';
 
-const ModalCreateEditPermintaanHRD = lazy(() => import('../../components/modal/modalCreateEditPermintaanHRD'));
+const ModalCreateEditPermintaanHRD = lazy(() => import('../../components/modal/modalCreateEditPermintaanHRD copy'));
 const CardPermintaanHRD = lazy(() => import('../../components/hr/cardPermintaanHRD'));
 
 class HR extends Component {
@@ -78,13 +78,19 @@ class HR extends Component {
           Number(el.date_imp.slice(5, 7)) === new Date().getMonth() + 1 &&
           Number(el.date_imp.slice(8, 10)) === new Date().getDate())) { //imp
           tempDataStaffSedangIjin.push(el)
-        } else if (el.date_ijin_absen_start && (
-          new Date(el.date_ijin_absen_start.slice(0, 4), el.date_ijin_absen_start.slice(5, 7) - 1, el.date_ijin_absen_start.slice(8, 10), 5, 0, 0) <= new Date() &&
-          new Date(el.date_ijin_absen_end.slice(0, 4), el.date_ijin_absen_end.slice(5, 7) - 1, el.date_ijin_absen_end.slice(8, 10), 23, 0, 0) >= new Date()
-        )) { //ijin absen
-          tempDataStaffSedangIjin.push(el)
+        } else if (el.date_ijin_absen_start) { //ijin absen
+          let ijinAbsenDate = el.date_ijin_absen_start.split(','), lastDate
+
+          if (el.date_ijin_absen_end) lastDate = el.date_ijin_absen_end
+          else lastDate = ijinAbsenDate[ijinAbsenDate.length - 1]
+
+          if (
+            new Date(ijinAbsenDate[0].slice(0, 4), ijinAbsenDate[0].slice(5, 7) - 1, ijinAbsenDate[0].slice(8, 10), 5, 0, 0) <= new Date() &&
+            new Date(lastDate.slice(0, 4), lastDate.slice(5, 7) - 1, lastDate.slice(8, 10), 23, 0, 0) >= new Date()
+          ) {
+            tempDataStaffSedangIjin.push(el)
+          }
         } else if (el.leave_request) {
-          let lastDate = el.leave_date.split(" ")
 
           if (el.leave_date_in) { // pakai leave_date_in
 
@@ -96,22 +102,24 @@ class HR extends Component {
             }
           } else { // tdk pakai leave_date_in
 
-            if (lastDate.length > 1) { // input data dari mobile (yyyy-mm-dd hh:mm:ss)
-              if (
-                new Date(el.leave_date.slice(0, 4), el.leave_date.slice(5, 7) - 1, el.leave_date.slice(8, 10), 0, 0, 0) <= new Date() &&
-                new Date(el.leave_date.slice(0, 4), el.leave_date.slice(5, 7) - 1, Number(el.leave_date.slice(8, 10)) + (Number(el.leave_request) - 1), 23, 0, 0) >= new Date()
-              ) {
-                tempDataStaffSedangIjin.push(el)
-              }
-            } else { // input data dari web php (yyyy-mm-dd,yyy-mm-dd)
-              if (
-                new Date(el.leave_date.slice(0, 4), el.leave_date.slice(5, 7) - 1, el.leave_date.slice(8, 10), 0, 0, 0) <= new Date() &&
-                new Date(el.leave_date.slice(el.leave_date.length - 10, el.leave_date.length - 6), el.leave_date.slice(el.leave_date.length - 5, el.leave_date.length - 3) - 1, el.leave_date.slice(el.leave_date.length - 2, el.leave_date.length), 23, 0, 0) >= new Date()
-              ) {
-                tempDataStaffSedangIjin.push(el)
-              }
+            // if (lastDate.length > 1) { // input data dari mobile (yyyy-mm-dd hh:mm:ss)
+            //   if (
+            //     new Date(el.leave_date.slice(0, 4), el.leave_date.slice(5, 7) - 1, el.leave_date.slice(8, 10), 0, 0, 0) <= new Date() &&
+            //     new Date(el.leave_date.slice(0, 4), el.leave_date.slice(5, 7) - 1, Number(el.leave_date.slice(8, 10)) + (Number(el.leave_request) - 1), 23, 0, 0) >= new Date()
+            //   ) {
+            //     tempDataStaffSedangIjin.push(el)
+            //   }
+            // } else { // input data dari web php (yyyy-mm-dd,yyy-mm-dd)
+            let lastDate = el.leave_date.split(",")
+
+            if (
+              new Date(lastDate[0].slice(0, 4), lastDate[0].slice(5, 7) - 1, lastDate[0].slice(8, 10), 0, 0, 0) <= new Date() &&
+              new Date(lastDate[lastDate.length - 1].slice(0, 4), lastDate[lastDate.length - 1].slice(5, 7) - 1, lastDate[lastDate.length - 1].slice(8, 10), 23, 0, 0) >= new Date()
+            ) {
+              tempDataStaffSedangIjin.push(el)
             }
           }
+          // }
         }
       }
 
@@ -125,8 +133,13 @@ class HR extends Component {
         } else {
           tempDataIjinSudahLewat.push(el)
         }
-      } else if (el.date_ijin_absen_end) {
-        if (new Date(el.date_ijin_absen_end) > new Date()) {
+      } else if (el.date_ijin_absen_start) {
+        let ijinAbsenDate = el.date_ijin_absen_start.split(','), lastDate
+
+        if (el.date_ijin_absen_end) lastDate = el.date_ijin_absen_end
+        else lastDate = ijinAbsenDate[ijinAbsenDate.length - 1]
+
+        if (new Date(lastDate) > new Date()) {
           if (el.status === 'approved') {
             tempDataIjinDisetujui.push(el)
           } else if (el.status === 'new' || el.status === 'new2') {
@@ -136,14 +149,27 @@ class HR extends Component {
           tempDataIjinSudahLewat.push(el)
         }
       } else if (el.leave_request) {
-        if (new Date(el.leave_date_in.slice(0, 4), el.leave_date_in.slice(5, 7) - 1, el.leave_date_in.slice(8, 10), 0, 0, 0) > new Date()) {
-          if (el.status === 'approved') {
-            tempDataIjinDisetujui.push(el)
-          } else if (el.status === 'new' || el.status === 'new2') {
-            tempDataPengajuanStaff.push(el)
+        if (el.leave_date_in) {
+          if (new Date(el.leave_date_in.slice(0, 4), el.leave_date_in.slice(5, 7) - 1, el.leave_date_in.slice(8, 10), 0, 0, 0) > new Date()) {
+            if (el.status === 'approved') {
+              tempDataIjinDisetujui.push(el)
+            } else if (el.status === 'new' || el.status === 'new2') {
+              tempDataPengajuanStaff.push(el)
+            }
+          } else {
+            tempDataIjinSudahLewat.push(el)
           }
         } else {
-          tempDataIjinSudahLewat.push(el)
+          let newDate = el.leave_date.split(',')
+          if (new Date(newDate[newDate.length - 1].slice(0, 4), newDate[newDate.length - 1].slice(5, 7) - 1, newDate[newDate.length - 1].slice(8, 10), 0, 0, 0) > new Date()) {
+            if (el.status === 'approved') {
+              tempDataIjinDisetujui.push(el)
+            } else if (el.status === 'new' || el.status === 'new2') {
+              tempDataPengajuanStaff.push(el)
+            }
+          } else {
+            tempDataIjinSudahLewat.push(el)
+          }
         }
       }
     })

@@ -30,14 +30,21 @@ class cardPermintaanHRD extends Component {
 
   async componentDidMount() {
     if (this.props.data.date_ijin_absen_start) {
-      let selisih = new Date(this.props.data.date_ijin_absen_end).getDate() - new Date(this.props.data.date_ijin_absen_start).getDate() + 1
+      let selisih, endDate, ijinAbsenDate = this.props.data.date_ijin_absen_start.split(',')
+      if (this.props.data.date_ijin_absen_end) {
+        selisih = new Date(this.props.data.date_ijin_absen_end).getDate() - new Date(this.props.data.date_ijin_absen_start).getDate() + 1
+        endDate = this.props.data.date_ijin_absen_end
+      } else {
+        selisih = ijinAbsenDate.length
+        endDate = ijinAbsenDate[ijinAbsenDate.length - 1]
+      }
 
       await this.setState({
         category: 'IA',
         keterangan: `${selisih} hari`,
-        waktu1: `${this.props.data.date_ijin_absen_start}`,
-        waktu2: `${this.props.data.date_ijin_absen_end}`,
-        hasPassed: new Date(this.props.data.date_ijin_absen_start) < new Date() ? true : false
+        waktu1: `${ijinAbsenDate[0]}`,
+        waktu2: `${endDate}`,
+        hasPassed: new Date(ijinAbsenDate[0]) < new Date() ? true : false
       })
     } else if (this.props.data.leave_request) {
       let tempWaktu = this.props.data.leave_date.split(',')
@@ -56,10 +63,12 @@ class cardPermintaanHRD extends Component {
               this.props.data.leave_date_in.slice(5, 7) - 1,
               Number(this.props.data.leave_date_in.slice(8, 10)) - 1)
         } else {
-          dateOut = new Date
-            (this.props.data.leave_date.slice(this.props.data.leave_date.length - 10, this.props.data.leave_date.length - 6),
-              this.props.data.leave_date.slice(this.props.data.leave_date.length - 5, this.props.data.leave_date.length - 3) - 1,
-              this.props.data.leave_date.slice(this.props.data.leave_date.length - 2, this.props.data.leave_date.length))
+          // dateOut = new Date
+          //   (this.props.data.leave_date.slice(this.props.data.leave_date.length - 10, this.props.data.leave_date.length - 6),
+          //     this.props.data.leave_date.slice(this.props.data.leave_date.length - 5, this.props.data.leave_date.length - 3) - 1,
+          //     this.props.data.leave_date.slice(this.props.data.leave_date.length - 2, this.props.data.leave_date.length))
+          let leaveDate = this.props.data.leave_date.split(',')
+          dateOut = new Date(leaveDate[leaveDate.length - 1])
         }
 
         this.setState({

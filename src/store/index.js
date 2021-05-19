@@ -390,14 +390,13 @@ const api = store => next => async action => {
         await getData.data.data.forEach(el => {
 
           if (el.leave_date) {  // cuti
-            let lastDate = el.leave_date.split(" ")[0].split(",")
+            let lastDate = el.leave_date.split(",")
             let newLastDate = lastDate[lastDate.length - 1]
             if (
               (Number(newLastDate.slice(newLastDate.length - 5, newLastDate.length - 3)) >= new Date().getMonth() + 1
                 && Number(newLastDate.slice(newLastDate.length - 10, newLastDate.length - 6)) >= new Date().getFullYear()) ||
               Number(newLastDate.slice(newLastDate.length - 10, newLastDate.length - 6)) > new Date().getFullYear()
             ) {
-
               if (el.user_id === action.payload) newData.push(el)
               else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload || action.payload === 1) newDataStaff.push(el)
 
@@ -422,18 +421,23 @@ const api = store => next => async action => {
               if (el.user_id === action.payload) newData.push(el)
               else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload || action.payload === 1) newDataStaff.push(el)
             }
-          } else if (el.date_ijin_absen_end) {  // ia
+          } else if (el.date_ijin_absen_start) {  // ia
+            let ijinAbsenDate = el.date_ijin_absen_start.split(','), lastDate
+
+            if (el.date_ijin_absen_end) lastDate = el.date_ijin_absen_end
+            else lastDate = ijinAbsenDate[ijinAbsenDate.length - 1]
+
             if (
-              Number(el.date_ijin_absen_end.slice(el.date_ijin_absen_end.length - 5, el.date_ijin_absen_end.length - 3)) > new Date().getMonth()
-              && Number(el.date_ijin_absen_end.slice(el.date_ijin_absen_end.length - 10, el.date_ijin_absen_end.length - 6)) >= new Date().getFullYear()) {
+              Number(lastDate.slice(lastDate.length - 5, lastDate.length - 3)) > new Date().getMonth()
+              && Number(lastDate.slice(lastDate.length - 10, lastDate.length - 6)) >= new Date().getFullYear()) {
 
               if (el.user_id === action.payload) newData.push(el)
               else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload || action.payload === 1) newDataStaff.push(el)
 
-              // if (Number(el.date_ijin_absen_end.slice(el.date_ijin_absen_end.length - 2, el.date_ijin_absen_end.length)) > new Date().getDate()) {
+              // if (Number(lastDate.slice(lastDate.length - 2, lastDate.length)) > new Date().getDate()) {
               // }
 
-            } else if (Number(el.date_ijin_absen_end.slice(el.date_ijin_absen_end.length - 10, el.date_ijin_absen_end.length - 6)) > new Date().getFullYear()) {  // if next year
+            } else if (Number(lastDate.slice(lastDate.length - 10, lastDate.length - 6)) > new Date().getFullYear()) {  // if next year
               if (el.user_id === action.payload) newData.push(el)
               else if (el.evaluator_1 === action.payload || el.evaluator_2 === action.payload || action.payload === 1) newDataStaff.push(el)
             }

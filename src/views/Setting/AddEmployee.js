@@ -169,6 +169,10 @@ class AddEmployee extends Component {
     }
   }
 
+  cancelSubmit = () => {
+    this.setState({ proses: false, statusSubmit: false, department: [false], data: [] })
+  }
+
   render() {
     return (
       <Grid>
@@ -194,7 +198,7 @@ class AddEmployee extends Component {
                   </>
                 }
               </Grid>
-              <CardAddEmployee statusSubmit={this.state.statusSubmit} companyId={this.state.companyId} sendData={this.sendData} data={this.state.dataForEdit[index]} proses={this.state.proses} optionUser={this.state.optionUser} />
+              <CardAddEmployee statusSubmit={this.state.statusSubmit} companyId={this.state.companyId} sendData={this.sendData} data={this.state.dataForEdit[index]} proses={this.state.proses} optionUser={this.state.optionUser} cancelSubmit={this.cancelSubmit} />
             </Grid>
           )
         }
@@ -202,8 +206,13 @@ class AddEmployee extends Component {
           this.state.dataForEdit.length === 0 && <p style={{ margin: 0, color: '#d91b51', cursor: 'pointer' }} onClick={this.AddEmployee} disabled={this.state.proses}>+ tambah karyawan baru</p>
         }
 
-        <Button variant="outlined" color="secondary" style={{ width: 150, margin: 10 }} onClick={() => this.props.history.goBack()} disabled={this.state.proses}>batalkan</Button>
-        <Button variant="contained" color="secondary" style={{ width: 150, margin: 10 }} onClick={this.submit} disabled={this.state.proses}>simpan</Button>
+        <Grid style={{ flexDirection: 'column' }}>
+          <i>Password adalah tanggal lahir (DDMMYYYY)</i>
+          <Grid style={{ marginTop: 5 }}>
+            <Button variant="outlined" color="secondary" style={{ width: 150, margin: 10 }} onClick={() => this.props.history.goBack()} disabled={this.state.proses}>batalkan</Button>
+            <Button variant="contained" color="secondary" style={{ width: 150, margin: 10 }} onClick={this.submit} disabled={this.state.proses}>simpan</Button>
+          </Grid>
+        </Grid>
       </Grid>
     )
   }

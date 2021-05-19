@@ -32,10 +32,22 @@ class CardReport extends Component {
 
   componentDidMount() {
     if (this.props.data.categori_id === 6) {
+      let dateOut
+      if (this.props.data.leave_date_in) {
+        dateOut = `${this.props.data.leave_date_in.slice(8, 10)}/${this.props.data.leave_date_in.slice(5, 7)}/${this.props.data.leave_date_in.slice(0, 4)}`
+      } else {
+        // dateOut = new Date
+        //   (this.props.data.leave_date.slice(this.props.data.leave_date.length - 10, this.props.data.leave_date.length - 6),
+        //     this.props.data.leave_date.slice(this.props.data.leave_date.length - 5, this.props.data.leave_date.length - 3) - 1,
+        //     this.props.data.leave_date.slice(this.props.data.leave_date.length - 2, this.props.data.leave_date.length))
+        let leaveDate = this.props.data.leave_date.split(',')
+        dateOut = `${leaveDate[leaveDate.length - 1].slice(8, 10)}/${leaveDate[leaveDate.length - 1].slice(5, 7)}/${leaveDate[leaveDate.length - 1].slice(0, 4)}`
+      }
+
       this.setState({
         statusIjin: "Cuti",
         tglMulai: `${this.props.data.leave_date.slice(8, 10)}/${this.props.data.leave_date.slice(5, 7)}/${this.props.data.leave_date.slice(0, 4)}`,
-        tglSelesai: `${this.props.data.leave_date_in.slice(8, 10)}/${this.props.data.leave_date_in.slice(5, 7)}/${this.props.data.leave_date_in.slice(0, 4)}`,
+        tglSelesai: dateOut,
         lamaIjin: `${this.props.data.leave_request} hari`
       })
     } else if (this.props.data.categori_id === 7) {
@@ -49,11 +61,23 @@ class CardReport extends Component {
       })
 
     } else if (this.props.data.categori_id === 8) {
+      let tglMulai, tglSelesai, lamaIjin, ijinAbsenDate = this.props.data.date_ijin_absen_start.split(',')
+
+      if (this.props.data.date_ijin_absen_end) {
+        tglMulai = `${ijinAbsenDate[0].slice(8, 10)}/${ijinAbsenDate[0].slice(5, 7)}/${ijinAbsenDate[0].slice(0, 4)}`
+        tglSelesai = `${this.props.data.date_ijin_absen_end.slice(8, 10)}/${this.props.data.date_ijin_absen_end.slice(5, 7)}/${this.props.data.date_ijin_absen_end.slice(0, 4)}`
+        lamaIjin = `${Number(this.props.data.date_ijin_absen_end.slice(8, 10)) - Number(this.props.data.date_ijin_absen_start.slice(8, 10)) + 1} hari`
+      } else {
+        tglMulai = `${ijinAbsenDate[0].slice(8, 10)}/${ijinAbsenDate[0].slice(5, 7)}/${ijinAbsenDate[0].slice(0, 4)}`
+        tglSelesai = `${ijinAbsenDate[ijinAbsenDate.length - 1].slice(8, 10)}/${ijinAbsenDate[ijinAbsenDate.length - 1].slice(5, 7)}/${ijinAbsenDate[ijinAbsenDate.length - 1].slice(0, 4)}`
+        lamaIjin = `${ijinAbsenDate.length} hari`
+      }
+
       this.setState({
         statusIjin: "Ijin Absen",
-        tglMulai: `${this.props.data.date_ijin_absen_start.slice(8, 10)}/${this.props.data.date_ijin_absen_start.slice(5, 7)}/${this.props.data.date_ijin_absen_start.slice(0, 4)}`,
-        tglSelesai: `${this.props.data.date_ijin_absen_end.slice(8, 10)}/${this.props.data.date_ijin_absen_end.slice(5, 7)}/${this.props.data.date_ijin_absen_end.slice(0, 4)}`,
-        lamaIjin: `${Number(this.props.data.date_ijin_absen_end.slice(8, 10)) - Number(this.props.data.date_ijin_absen_start.slice(8, 10)) + 1} hari`
+        tglMulai,
+        tglSelesai,
+        lamaIjin
       })
     }
 

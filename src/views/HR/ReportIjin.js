@@ -175,6 +175,25 @@ class ReportIjin extends Component {
     this._isMounted = false;
   }
 
+  async componentDidUpdate(prevProps, prevState) {
+    if (this.state.value !== prevState.value) {
+      let newStatus
+      if (this.state.value === 1) newStatus = 'new'
+      else if (this.state.value === 2) newStatus = 'new2'
+      else if (this.state.value === 3) newStatus = 'approved'
+      else if (this.state.value === 4) newStatus = 'rejected'
+
+      await this.props.fetchDataContactUs({
+        statue: newStatus,
+        limit: this.state.rowsPerPage,
+        page: 0,
+        startDate: this.state.newMonthStart,
+        endDate: this.state.newMonthEnd,
+      });
+      await this.fetchData();
+    }
+  }
+
   fetchData = async () => {
     let newData = [];
     let data = await this.props.dataAllContactUs.filter(
@@ -253,53 +272,65 @@ class ReportIjin extends Component {
               5,
               7
             )}/${element.leave_date_in.slice(0, 4)}`;
-          else
-            element.tglSelesai = `${element.leave_date.slice(
-              element.leave_date.length - 2,
-              element.leave_date.length
-            )}/${element.leave_date.slice(
-              element.leave_date.length - 5,
-              element.leave_date.length - 3
-            )}/${element.leave_date.slice(
-              element.leave_date.length - 10,
-              element.leave_date.length - 6
-            )}`;
+          else {
+            // element.tglSelesai = `${element.leave_date.slice(
+            //   element.leave_date.length - 2,
+            //   element.leave_date.length
+            // )}/${element.leave_date.slice(
+            //   element.leave_date.length - 5,
+            //   element.leave_date.length - 3
+            // )}/${element.leave_date.slice(
+            //   element.leave_date.length - 10,
+            //   element.leave_date.length - 6
+            // )}`;
+            let leaveDate = element.leave_date.split(',')
+            element.tglSelesai = new Date(leaveDate[leaveDate.length - 1])
+          }
 
           newData.push(element);
         }
       } else if (element.date_ijin_absen_start) {
+        let ijinAbsenDate = element.date_ijin_absen_start.split(',')
         //IA
         if (
-          new Date(element.date_ijin_absen_start).getMonth() >=
+          new Date(ijinAbsenDate[0]).getMonth() >=
           new Date(this.state.monthStart).getMonth() &&
-          new Date(element.date_ijin_absen_start).getFullYear() >=
+          new Date(ijinAbsenDate[0]).getFullYear() >=
           new Date(this.state.monthStart).getFullYear() &&
-          ((new Date(element.date_ijin_absen_start).getMonth() <=
+          ((new Date(ijinAbsenDate[0]).getMonth() <=
             new Date(this.state.monthEnd).getMonth() &&
-            new Date(element.date_ijin_absen_start).getFullYear() <=
+            new Date(ijinAbsenDate[0]).getFullYear() <=
             new Date(this.state.monthEnd).getFullYear()) ||
-            new Date(element.date_ijin_absen_start).getFullYear() <
+            new Date(ijinAbsenDate[0]).getFullYear() <
             new Date(this.state.monthEnd).getFullYear())
         ) {
           element.statusIjin = "Ijin Absen";
-          element.tglMulai = `${element.date_ijin_absen_start.slice(
-            8,
-            10
-          )}/${element.date_ijin_absen_start.slice(
-            5,
-            7
-          )}/${element.date_ijin_absen_start.slice(0, 4)}`;
-          element.tglSelesai = `${element.date_ijin_absen_end.slice(
-            8,
-            10
-          )}/${element.date_ijin_absen_end.slice(
-            5,
-            7
-          )}/${element.date_ijin_absen_end.slice(0, 4)}`;
-          element.lamaIjin = `${Number(element.date_ijin_absen_end.slice(8, 10)) -
-            Number(element.date_ijin_absen_start.slice(8, 10)) +
-            1
-            } hari`;
+          element.tglMulai = `${ijinAbsenDate[0].slice(8, 10)}/${ijinAbsenDate[0].slice(5, 7)}/${ijinAbsenDate[0].slice(0, 4)}`;
+
+          if (element.date_ijin_absen_end) {
+            element.tglSelesai = `${element.date_ijin_absen_end.slice(
+              8,
+              10
+            )}/${element.date_ijin_absen_end.slice(
+              5,
+              7
+            )}/${element.date_ijin_absen_end.slice(0, 4)}`;
+            element.lamaIjin = `${Number(element.date_ijin_absen_end.slice(8, 10)) -
+              Number(element.date_ijin_absen_start.slice(8, 10)) +
+              1
+              } hari`;
+          } else {
+            element.tglSelesai = `${ijinAbsenDate[ijinAbsenDate.length - 1].slice(
+              8,
+              10
+            )}/${ijinAbsenDate[ijinAbsenDate.length - 1].slice(
+              5,
+              7
+            )}/${ijinAbsenDate[ijinAbsenDate.length - 1].slice(0, 4)}`;
+            element.lamaIjin = `${ijinAbsenDate.length} hari`;
+          }
+
+
           element.sisaCuti = element.tbl_user.tbl_account_detail.leave;
 
           newData.push(element);
@@ -454,13 +485,6 @@ class ReportIjin extends Component {
         ).getFullYear()} -${month2} ${new Date(waktuAkhir).getFullYear()}`;
     }
 
-    const statues = [
-      { value: "new" },
-      { value: "new2" },
-      { value: "approved" },
-      { value: "rejected" },
-    ];
-
     return (
       <div style={{ padding: "10px 40px" }}>
         <p style={{ fontSize: 24, fontWeight: "bold", margin: 0 }}>
@@ -494,8 +518,10 @@ class ReportIjin extends Component {
               onChange={this.handleChangeTabs}
             >
               <Tab label="Semua" style={{ marginRight: 30 }} />
-              {/* <Tab label="PIP" style={{ marginRight: 30 }} />
-              <Tab label="BPW" style={{ marginRight: 30 }} /> */}
+              <Tab label="Ijin Baru" style={{ marginRight: 30 }} />
+              <Tab label="Menunggu persetujuan evaluator 2" style={{ marginRight: 30 }} />
+              <Tab label="Disetujui" style={{ marginRight: 30 }} />
+              <Tab label="Ditolak" style={{ marginRight: 30 }} />
             </Tabs>
             <Grid style={{ display: "flex", alignItems: "center" }}>
               <Typography>
@@ -574,22 +600,6 @@ class ReportIjin extends Component {
                       disabled={this.state.proses}
                     />
                   </MuiPickersUtilsProvider>
-                  <br />
-                  <TextField
-                    id="statue"
-                    select
-                    label="Status"
-                    value={this.state.statue}
-                    onChange={(event) =>
-                      this.setState({ statue: event.target.value })
-                    }
-                  >
-                    {statues.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.value}
-                      </MenuItem>
-                    ))}
-                  </TextField>
                   <Button
                     variant="contained"
                     style={{ alignSelf: "flex-end", marginTop: 15 }}
@@ -787,41 +797,600 @@ class ReportIjin extends Component {
                     .slice(
                       this.state.page * this.state.rowsPerPage,
                       this.state.page * this.state.rowsPerPage +
-                        this.state.rowsPerPage
+                      this.state.rowsPerPage
                     )
                     .map((el, index) => (
-                    <CardReport data={el} key={index} />
-                  ))}
+                      <CardReport data={el} key={index} />
+                    ))}
                 </TableBody>
               </Table>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 20]}
-              component="div"
-              count={this.state.dataForDisplay.length}
-              // count={this.props.totalDataContactUs}
-              rowsPerPage={this.state.rowsPerPage}
-              page={this.state.page}
-              backIconButtonProps={{
-                "aria-label": "previous page",
-              }}
-              nextIconButtonProps={{
-                "aria-label": "next page",
-              }}
-              onChangePage={this.handleChangePage}
-              onChangeRowsPerPage={this.handleChangeRowsPerPage}
-            />
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 20]}
+                component="div"
+                count={this.state.dataForDisplay.length}
+                // count={this.props.totalDataContactUs}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                backIconButtonProps={{
+                  "aria-label": "previous page",
+                }}
+                nextIconButtonProps={{
+                  "aria-label": "next page",
+                }}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
             </Paper>
           </TabPanel>
 
-        {/* Alamat */}
-        <TabPanel value={this.state.value} index={1}>
-          Alamat
+          {/* Baru */}
+          <TabPanel
+            value={this.state.value}
+            index={1}
+            style={{ height: "85vh" }}
+          >
+            <Paper style={{ padding: 10, marginBottom: 5 }}>
+              <Table>
+                <TableHead style={{ backgroundColor: "#f8f8f8" }}>
+                  <TableRow>
+                    <TableCell
+                      style={{ marginLeft: 50, width: "40%" }}
+                      onClick={() => this.handleSort("name")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Nama
+                        {this.state.columnToSort === "name" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "10%" }}
+                      align="center"
+                      onClick={() => this.handleSort("tglMulai")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Tgl Mulai
+                        {this.state.columnToSort === "tglMulai" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "10%" }}
+                      align="center"
+                      onClick={() => this.handleSort("tglSelesai")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Tgl Selesai
+                        {this.state.columnToSort === "tglSelesai" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "10%" }}
+                      align="center"
+                      onClick={() => this.handleSort("lamaIjin")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Lama
+                        {this.state.columnToSort === "lamaIjin" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "15%" }}
+                      align="center"
+                      onClick={() => this.handleSort("categori_id")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Status
+                        {this.state.columnToSort === "categori_id" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "10%" }}
+                      align="center"
+                      onClick={() => this.handleSort("sisaCuti")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Sisa Cuti
+                        {this.state.columnToSort === "sisaCuti" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {orderBy(
+                    this.state.dataForDisplay,
+                    this.state.columnToSort,
+                    this.state.sortDirection
+                  )
+                    .slice(
+                      this.state.page * this.state.rowsPerPage,
+                      this.state.page * this.state.rowsPerPage +
+                      this.state.rowsPerPage
+                    )
+                    .map((el, index) => (
+                      <CardReport data={el} key={index} />
+                    ))}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 20]}
+                component="div"
+                count={this.state.dataForDisplay.length}
+                // count={this.props.totalDataContactUs}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                backIconButtonProps={{
+                  "aria-label": "previous page",
+                }}
+                nextIconButtonProps={{
+                  "aria-label": "next page",
+                }}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
+            </Paper>
           </TabPanel>
 
-        {/* Struktur */}
-        <TabPanel value={this.state.value} index={2}>
-          Struktur
+          {/* Evaluator 2 */}
+          <TabPanel
+            value={this.state.value}
+            index={2}
+            style={{ height: "85vh" }}
+          >
+            <Paper style={{ padding: 10, marginBottom: 5 }}>
+              <Table>
+                <TableHead style={{ backgroundColor: "#f8f8f8" }}>
+                  <TableRow>
+                    <TableCell
+                      style={{ marginLeft: 50, width: "40%" }}
+                      onClick={() => this.handleSort("name")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Nama
+                        {this.state.columnToSort === "name" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "10%" }}
+                      align="center"
+                      onClick={() => this.handleSort("tglMulai")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Tgl Mulai
+                        {this.state.columnToSort === "tglMulai" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "10%" }}
+                      align="center"
+                      onClick={() => this.handleSort("tglSelesai")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Tgl Selesai
+                        {this.state.columnToSort === "tglSelesai" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "10%" }}
+                      align="center"
+                      onClick={() => this.handleSort("lamaIjin")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Lama
+                        {this.state.columnToSort === "lamaIjin" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "15%" }}
+                      align="center"
+                      onClick={() => this.handleSort("categori_id")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Status
+                        {this.state.columnToSort === "categori_id" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "10%" }}
+                      align="center"
+                      onClick={() => this.handleSort("sisaCuti")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Sisa Cuti
+                        {this.state.columnToSort === "sisaCuti" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {orderBy(
+                    this.state.dataForDisplay,
+                    this.state.columnToSort,
+                    this.state.sortDirection
+                  )
+                    .slice(
+                      this.state.page * this.state.rowsPerPage,
+                      this.state.page * this.state.rowsPerPage +
+                      this.state.rowsPerPage
+                    )
+                    .map((el, index) => (
+                      <CardReport data={el} key={index} />
+                    ))}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 20]}
+                component="div"
+                count={this.state.dataForDisplay.length}
+                // count={this.props.totalDataContactUs}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                backIconButtonProps={{
+                  "aria-label": "previous page",
+                }}
+                nextIconButtonProps={{
+                  "aria-label": "next page",
+                }}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
+            </Paper>
           </TabPanel>
+
+          {/* Disetujui */}
+          <TabPanel
+            value={this.state.value}
+            index={3}
+            style={{ height: "85vh" }}
+          >
+            <Paper style={{ padding: 10, marginBottom: 5 }}>
+              <Table>
+                <TableHead style={{ backgroundColor: "#f8f8f8" }}>
+                  <TableRow>
+                    <TableCell
+                      style={{ marginLeft: 50, width: "40%" }}
+                      onClick={() => this.handleSort("name")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Nama
+                        {this.state.columnToSort === "name" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "10%" }}
+                      align="center"
+                      onClick={() => this.handleSort("tglMulai")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Tgl Mulai
+                        {this.state.columnToSort === "tglMulai" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "10%" }}
+                      align="center"
+                      onClick={() => this.handleSort("tglSelesai")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Tgl Selesai
+                        {this.state.columnToSort === "tglSelesai" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "10%" }}
+                      align="center"
+                      onClick={() => this.handleSort("lamaIjin")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Lama
+                        {this.state.columnToSort === "lamaIjin" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "15%" }}
+                      align="center"
+                      onClick={() => this.handleSort("categori_id")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Status
+                        {this.state.columnToSort === "categori_id" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "10%" }}
+                      align="center"
+                      onClick={() => this.handleSort("sisaCuti")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Sisa Cuti
+                        {this.state.columnToSort === "sisaCuti" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {orderBy(
+                    this.state.dataForDisplay,
+                    this.state.columnToSort,
+                    this.state.sortDirection
+                  )
+                    .slice(
+                      this.state.page * this.state.rowsPerPage,
+                      this.state.page * this.state.rowsPerPage +
+                      this.state.rowsPerPage
+                    )
+                    .map((el, index) => (
+                      <CardReport data={el} key={index} />
+                    ))}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 20]}
+                component="div"
+                count={this.state.dataForDisplay.length}
+                // count={this.props.totalDataContactUs}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                backIconButtonProps={{
+                  "aria-label": "previous page",
+                }}
+                nextIconButtonProps={{
+                  "aria-label": "next page",
+                }}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
+            </Paper>
+          </TabPanel>
+
+          {/* Ditolak */}
+          <TabPanel
+            value={this.state.value}
+            index={4}
+            style={{ height: "85vh" }}
+          >
+            <Paper style={{ padding: 10, marginBottom: 5 }}>
+              <Table>
+                <TableHead style={{ backgroundColor: "#f8f8f8" }}>
+                  <TableRow>
+                    <TableCell
+                      style={{ marginLeft: 50, width: "40%" }}
+                      onClick={() => this.handleSort("name")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Nama
+                        {this.state.columnToSort === "name" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "10%" }}
+                      align="center"
+                      onClick={() => this.handleSort("tglMulai")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Tgl Mulai
+                        {this.state.columnToSort === "tglMulai" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "10%" }}
+                      align="center"
+                      onClick={() => this.handleSort("tglSelesai")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Tgl Selesai
+                        {this.state.columnToSort === "tglSelesai" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "10%" }}
+                      align="center"
+                      onClick={() => this.handleSort("lamaIjin")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Lama
+                        {this.state.columnToSort === "lamaIjin" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "15%" }}
+                      align="center"
+                      onClick={() => this.handleSort("categori_id")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Status
+                        {this.state.columnToSort === "categori_id" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                    <TableCell
+                      style={{ width: "10%" }}
+                      align="center"
+                      onClick={() => this.handleSort("sisaCuti")}
+                    >
+                      <Grid style={{ display: "flex", alignItems: "center" }}>
+                        Sisa Cuti
+                        {this.state.columnToSort === "sisaCuti" ? (
+                          this.state.sortDirection === "desc" ? (
+                            <ArrowDropUpOutlinedIcon />
+                          ) : (
+                              <ArrowDropDownOutlinedIcon />
+                            )
+                        ) : null}
+                      </Grid>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {orderBy(
+                    this.state.dataForDisplay,
+                    this.state.columnToSort,
+                    this.state.sortDirection
+                  )
+                    .slice(
+                      this.state.page * this.state.rowsPerPage,
+                      this.state.page * this.state.rowsPerPage +
+                      this.state.rowsPerPage
+                    )
+                    .map((el, index) => (
+                      <CardReport data={el} key={index} />
+                    ))}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 20]}
+                component="div"
+                count={this.state.dataForDisplay.length}
+                // count={this.props.totalDataContactUs}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                backIconButtonProps={{
+                  "aria-label": "previous page",
+                }}
+                nextIconButtonProps={{
+                  "aria-label": "next page",
+                }}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
+            </Paper>
+          </TabPanel>
+
         </SwipeableViews>
       </div >
     );

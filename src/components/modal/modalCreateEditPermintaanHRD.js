@@ -2,7 +2,7 @@ import 'date-fns';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
-
+import DatePickers from "react-multi-date-picker";
 import {
   Modal, Backdrop, Fade, TextField, Typography, Button, CircularProgress, InputLabel, MenuItem, FormControl, Select as SelectOption, FormControlLabel, Checkbox
 } from '@material-ui/core';
@@ -19,6 +19,7 @@ import swal from 'sweetalert';
 import { API } from '../../config/API';
 import { fetchDataUsers, fetchDataRooms } from '../../store/action';
 
+const value = [new Date(), new Date(new Date().setDate(new Date().getDate() + 1))]
 
 class modalCreateEditPermintaanHRD extends Component {
   constructor(props) {
@@ -52,10 +53,18 @@ class modalCreateEditPermintaanHRD extends Component {
         isEdit: true
       })
       if (this.props.data.categori_id === 6) { //cuti
+        let endDate
+        if (this.props.data.leave_date_in) {
+          endDate = new Date(this.props.data.leave_date_in)
+        } else {
+          let leaveDate = this.props.data.leave_date.split(',')
+          endDate = new Date(leaveDate[leaveDate.length - 1])
+        }
+
         this.setState({
           jenisIjin: 6,
           start_date: new Date(this.props.data.leave_date.slice(0, 10)),
-          end_date: new Date(this.props.data.leave_date_in),
+          end_date: endDate,
           lamaCuti: this.props.data.leave_request,
           textarea: this.props.data.message
         })
@@ -68,10 +77,20 @@ class modalCreateEditPermintaanHRD extends Component {
           textarea: this.props.data.message
         })
       } else if (this.props.data.categori_id === 8) { //ia
+        let start_date, end_date, ijinAbsenDate = this.props.data.date_ijin_absen_start.split(',')
+
+        if (this.props.data.date_ijin_absen_end) {
+          start_date = new Date(ijinAbsenDate[0])
+          end_date = new Date(this.props.data.date_ijin_absen_end)
+        } else {
+          start_date = new Date(ijinAbsenDate[0])
+          end_date = new Date(ijinAbsenDate[ijinAbsenDate.length - 1])
+        }
+
         this.setState({
           jenisIjin: 8,
-          start_date: new Date(this.props.data.date_ijin_absen_start),
-          end_date: new Date(this.props.data.date_ijin_absen_end),
+          start_date,
+          end_date,
           textarea: this.props.data.message
         })
       }
@@ -85,7 +104,7 @@ class modalCreateEditPermintaanHRD extends Component {
     }
 
     if (this.props.listDinas) {
-      this.setState({company: this.props.listDinas[0].company_id})
+      this.setState({ company: this.props.listDinas[0].company_id })
     }
   }
 
@@ -107,7 +126,7 @@ class modalCreateEditPermintaanHRD extends Component {
     }
 
     if (prevProps.listDinas !== this.props.listDinas) {
-      this.setState({company: this.props.listDinas[0].company_id})
+      this.setState({ company: this.props.listDinas[0].company_id })
     }
   }
 
@@ -331,6 +350,10 @@ class modalCreateEditPermintaanHRD extends Component {
     this.setState({ lampirkanSuratDokter: event.target.checked });
   };
 
+  _setDate = (args) => {
+    console.log(args.toUTC())
+  }
+
   render() {
     return (
       <Modal
@@ -416,7 +439,13 @@ class modalCreateEditPermintaanHRD extends Component {
                     />
                   </FormControl>
                   <FormControl style={{ margin: '10px 0 10px 0' }}>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils} style={{ margin: 0 }}>
+                    <DatePickers
+                      value={value}
+                      format="MMMM DD YYYY"
+                      onChange={this._setDate}
+                      sort
+                      multiple />
+                    {/* <MuiPickersUtilsProvider utils={DateFnsUtils} style={{ margin: 0 }}>
                       <KeyboardDatePicker
                         margin="normal"
                         id="start_date"
@@ -431,7 +460,7 @@ class modalCreateEditPermintaanHRD extends Component {
                         minDate={new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7)}
                         disabled={this.state.proses}
                       />
-                    </MuiPickersUtilsProvider>
+                    </MuiPickersUtilsProvider> */}
                   </FormControl>
                   <FormControl style={{ margin: '10px 0 10px 0' }}>
                     <MuiPickersUtilsProvider utils={DateFnsUtils} style={{ margin: 0 }}>

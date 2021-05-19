@@ -182,15 +182,15 @@ class ReportIjin extends Component {
         //IMP
         if (
           new Date(element.date_imp).getMonth() >=
-            new Date(this.state.monthStart).getMonth() &&
+          new Date(this.state.monthStart).getMonth() &&
           new Date(element.date_imp).getFullYear() >=
-            new Date(this.state.monthStart).getFullYear() &&
+          new Date(this.state.monthStart).getFullYear() &&
           ((new Date(element.date_imp).getMonth() <=
             new Date(this.state.monthEnd).getMonth() &&
             new Date(element.date_imp).getFullYear() <=
-              new Date(this.state.monthEnd).getFullYear()) ||
+            new Date(this.state.monthEnd).getFullYear()) ||
             new Date(element.date_imp).getFullYear() <
-              new Date(this.state.monthEnd).getFullYear())
+            new Date(this.state.monthEnd).getFullYear())
         ) {
           element.statusIjin = "IMP";
           element.tglMulai = `${element.date_imp.slice(
@@ -207,10 +207,9 @@ class ReportIjin extends Component {
             0,
             4
           )} (${element.end_time_imp.slice(0, 5)})`;
-          element.lamaIjin = `${
-            Number(element.end_time_imp.slice(0, 2)) -
+          element.lamaIjin = `${Number(element.end_time_imp.slice(0, 2)) -
             Number(element.start_time_imp.slice(0, 2))
-          } jam`;
+            } jam`;
           element.sisaCuti = element.tbl_user.tbl_account_detail.leave;
 
           newData.push(element);
@@ -221,15 +220,15 @@ class ReportIjin extends Component {
 
         if (
           new Date(startDate).getMonth() >=
-            new Date(this.state.monthStart).getMonth() &&
+          new Date(this.state.monthStart).getMonth() &&
           new Date(startDate).getFullYear() >=
-            new Date(this.state.monthStart).getFullYear() &&
+          new Date(this.state.monthStart).getFullYear() &&
           ((new Date(startDate).getMonth() <=
             new Date(this.state.monthEnd).getMonth() &&
             new Date(startDate).getFullYear() <=
-              new Date(this.state.monthEnd).getFullYear()) ||
+            new Date(this.state.monthEnd).getFullYear()) ||
             new Date(startDate).getFullYear() <
-              new Date(this.state.monthEnd).getFullYear())
+            new Date(this.state.monthEnd).getFullYear())
         ) {
           element.statusIjin = "Cuti";
           element.tglMulai = `${element.leave_date.slice(
@@ -250,54 +249,65 @@ class ReportIjin extends Component {
               5,
               7
             )}/${element.leave_date_in.slice(0, 4)}`;
-          else
-            element.tglSelesai = `${element.leave_date.slice(
-              element.leave_date.length - 2,
-              element.leave_date.length
-            )}/${element.leave_date.slice(
-              element.leave_date.length - 5,
-              element.leave_date.length - 3
-            )}/${element.leave_date.slice(
-              element.leave_date.length - 10,
-              element.leave_date.length - 6
-            )}`;
+          else {
+            // element.tglSelesai = `${element.leave_date.slice(
+            //   element.leave_date.length - 2,
+            //   element.leave_date.length
+            // )}/${element.leave_date.slice(
+            //   element.leave_date.length - 5,
+            //   element.leave_date.length - 3
+            // )}/${element.leave_date.slice(
+            //   element.leave_date.length - 10,
+            //   element.leave_date.length - 6
+            // )}`;
+            let leaveDate = element.leave_date.split(',')
+            element.tglSelesai = new Date(leaveDate[leaveDate.length - 1])
+          }
 
           newData.push(element);
         }
       } else if (element.date_ijin_absen_start) {
+        let ijinAbsenDate = element.date_ijin_absen_start.split(',')
         //IA
         if (
-          new Date(element.date_ijin_absen_start).getMonth() >=
-            new Date(this.state.monthStart).getMonth() &&
-          new Date(element.date_ijin_absen_start).getFullYear() >=
-            new Date(this.state.monthStart).getFullYear() &&
-          ((new Date(element.date_ijin_absen_start).getMonth() <=
+          new Date(ijinAbsenDate[0]).getMonth() >=
+          new Date(this.state.monthStart).getMonth() &&
+          new Date(ijinAbsenDate[0]).getFullYear() >=
+          new Date(this.state.monthStart).getFullYear() &&
+          ((new Date(ijinAbsenDate[0]).getMonth() <=
             new Date(this.state.monthEnd).getMonth() &&
-            new Date(element.date_ijin_absen_start).getFullYear() <=
-              new Date(this.state.monthEnd).getFullYear()) ||
-            new Date(element.date_ijin_absen_start).getFullYear() <
-              new Date(this.state.monthEnd).getFullYear())
+            new Date(ijinAbsenDate[0]).getFullYear() <=
+            new Date(this.state.monthEnd).getFullYear()) ||
+            new Date(ijinAbsenDate[0]).getFullYear() <
+            new Date(this.state.monthEnd).getFullYear())
         ) {
           element.statusIjin = "Ijin Absen";
-          element.tglMulai = `${element.date_ijin_absen_start.slice(
-            8,
-            10
-          )}/${element.date_ijin_absen_start.slice(
-            5,
-            7
-          )}/${element.date_ijin_absen_start.slice(0, 4)}`;
-          element.tglSelesai = `${element.date_ijin_absen_end.slice(
-            8,
-            10
-          )}/${element.date_ijin_absen_end.slice(
-            5,
-            7
-          )}/${element.date_ijin_absen_end.slice(0, 4)}`;
-          element.lamaIjin = `${
-            Number(element.date_ijin_absen_end.slice(8, 10)) -
-            Number(element.date_ijin_absen_start.slice(8, 10)) +
-            1
-          } hari`;
+          element.tglMulai = `${ijinAbsenDate[0].slice(8, 10)}/${ijinAbsenDate[0].slice(5, 7)}/${ijinAbsenDate[0].slice(0, 4)}`;
+
+          if (element.date_ijin_absen_end) {
+            element.tglSelesai = `${element.date_ijin_absen_end.slice(
+              8,
+              10
+            )}/${element.date_ijin_absen_end.slice(
+              5,
+              7
+            )}/${element.date_ijin_absen_end.slice(0, 4)}`;
+            element.lamaIjin = `${Number(element.date_ijin_absen_end.slice(8, 10)) -
+              Number(element.date_ijin_absen_start.slice(8, 10)) +
+              1
+              } hari`;
+          } else {
+            element.tglSelesai = `${ijinAbsenDate[ijinAbsenDate.length - 1].slice(
+              8,
+              10
+            )}/${ijinAbsenDate[ijinAbsenDate.length - 1].slice(
+              5,
+              7
+            )}/${ijinAbsenDate[ijinAbsenDate.length - 1].slice(0, 4)}`;
+            element.lamaIjin = `${ijinAbsenDate.length} hari`;
+          }
+
+
           element.sisaCuti = element.tbl_user.tbl_account_detail.leave;
 
           newData.push(element);
@@ -622,16 +632,16 @@ class ReportIjin extends Component {
                     Terbaru <ArrowDropDownOutlinedIcon />
                   </>
                 ) : (
-                  <>
-                    Terlama <ArrowDropUpOutlinedIcon />
-                  </>
-                )
+                    <>
+                      Terlama <ArrowDropUpOutlinedIcon />
+                    </>
+                  )
               ) : (
-                <>
-                  Terbaru
+                  <>
+                    Terbaru
                   <ArrowDropDownOutlinedIcon />
-                </>
-              )}
+                  </>
+                )}
             </Button>
           </Grid>
         </Paper>
@@ -660,8 +670,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                            <ArrowDropDownOutlinedIcon />
-                          )
+                              <ArrowDropDownOutlinedIcon />
+                            )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -676,8 +686,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                            <ArrowDropDownOutlinedIcon />
-                          )
+                              <ArrowDropDownOutlinedIcon />
+                            )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -692,8 +702,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                            <ArrowDropDownOutlinedIcon />
-                          )
+                              <ArrowDropDownOutlinedIcon />
+                            )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -708,8 +718,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                            <ArrowDropDownOutlinedIcon />
-                          )
+                              <ArrowDropDownOutlinedIcon />
+                            )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -724,8 +734,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                            <ArrowDropDownOutlinedIcon />
-                          )
+                              <ArrowDropDownOutlinedIcon />
+                            )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -740,8 +750,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                            <ArrowDropDownOutlinedIcon />
-                          )
+                              <ArrowDropDownOutlinedIcon />
+                            )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -756,7 +766,7 @@ class ReportIjin extends Component {
                     .slice(
                       this.state.page * this.state.rowsPerPage,
                       this.state.page * this.state.rowsPerPage +
-                        this.state.rowsPerPage
+                      this.state.rowsPerPage
                     )
                     .map((el, index) => (
                       <CardReport data={el} key={index} />
@@ -783,7 +793,7 @@ class ReportIjin extends Component {
 
           {/* Alamat */}
           <TabPanel value={this.state.value} index={1}>
-            Alamat
+            m,nmnm,nmnnn,
           </TabPanel>
 
           {/* Struktur */}
