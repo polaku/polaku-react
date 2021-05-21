@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 import DatePickers from "react-multi-date-picker";
 import {
-  Modal, Backdrop, Fade, TextField, Typography, Button, CircularProgress, InputLabel, MenuItem, FormControl, Select as SelectOption, FormControlLabel, Checkbox, FormLabel
+  Modal, Backdrop, Fade, TextField, Typography, Button, CircularProgress, InputLabel, MenuItem, FormControl, Select as SelectOption, FormControlLabel, Checkbox, FormLabel, FormHelperText
 } from '@material-ui/core';
 
 import DateFnsUtils from '@date-io/date-fns';
@@ -32,7 +32,7 @@ function ModalCreateEditPermintaanHRD(props) {
   const [suratDokter, setSuratDokter] = useState(null)
   const [lampirkanSuratDokter, setLampirkanSuratDokter] = useState(false)
 
-  const [Value, setValue] = useState([new Date()])
+  const [Value, setValue] = useState([])
 
   useEffect(() => {
     if (props.data) {
@@ -123,9 +123,17 @@ function ModalCreateEditPermintaanHRD(props) {
           let listDate = '', counter = 0
 
           if (Value.length > 0) Value.forEach(el => {
-            let date = el.day < 10 ? `0${el.day}` : el.day
-            let month = el.month < 10 ? `0${el.month}` : el.month
-            let year = el.year
+            let date, month, year;
+
+            if (el.day) {
+              date = el.day < 10 ? `0${el.day}` : el.day
+              month = el.month < 10 ? `0${el.month}` : el.month
+              year = el.year
+            } else {
+              date = el.getDate() < 10 ? `0${el.getDate()}` : el.getDate()
+              month = el.getMonth() + 1 < 10 ? `0${el.getMonth() + 1}` : el.getMonth() + 1
+              year = el.getFullYear()
+            }
 
             if (listDate !== '') listDate += `,${year}-${month}-${date}`
             else listDate += `${year}-${month}-${date}`
@@ -141,9 +149,17 @@ function ModalCreateEditPermintaanHRD(props) {
           let listDate = ''
 
           if (Value.length > 0) Value.forEach(el => {
-            let date = el.day < 10 ? `0${el.day}` : el.day
-            let month = el.month < 10 ? `0${el.month}` : el.month
-            let year = el.year
+            let date, month, year;
+
+            if (el.day) {
+              date = el.day < 10 ? `0${el.day}` : el.day
+              month = el.month < 10 ? `0${el.month}` : el.month
+              year = el.year
+            } else {
+              date = el.getDate() < 10 ? `0${el.getDate()}` : el.getDate()
+              month = el.getMonth() + 1 < 10 ? `0${el.getMonth() + 1}` : el.getMonth() + 1
+              year = el.getFullYear()
+            }
 
             if (listDate !== '') listDate += `,${year}-${month}-${date}`
             else listDate += `${year}-${month}-${date}`
@@ -352,7 +368,8 @@ function ModalCreateEditPermintaanHRD(props) {
                 disabled={proses}
               >
                 {
-                  props.statusEmployee === 'Tetap' && <MenuItem value={6}>Cuti</MenuItem>
+                  // props.statusEmployee === 'Tetap' && <MenuItem value={6}>Cuti</MenuItem>
+                  +props.sisaCuti > 0 && <MenuItem value={6}>Cuti</MenuItem>
                 }
                 <MenuItem value={8}>Ijin Absen</MenuItem>
                 <MenuItem value={7}>IMP</MenuItem>
@@ -374,14 +391,17 @@ function ModalCreateEditPermintaanHRD(props) {
                   />
                 </FormControl> */}
                 <FormControl style={{ margin: '10px 0 10px 0' }}>
-                  <FormLabel style={{ fontSize: 13, marginBottom: 10 }}>Tanggal Cuti</FormLabel>
+                  <FormLabel style={{ fontSize: 13, marginBottom: 10 }}>Pilih Tanggal Cuti</FormLabel>
                   <DatePickers
                     value={Value}
                     format="DD-MM-YYYY"
                     onChange={setValue}
                     sort
                     multiple
+                    calendarPosition="top-center"
+                    minDate={new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7)}
                     style={{ width: '100%', height: 32 }} />
+                  <FormHelperText>format tanggal: ddMMyyyy</FormHelperText>
                   {/* <MuiPickersUtilsProvider utils={DateFnsUtils} style={{ margin: 0 }}>
                     <KeyboardDatePicker
                       margin="normal"
@@ -435,14 +455,17 @@ function ModalCreateEditPermintaanHRD(props) {
             {
               jenisIjin === 8 && <>
                 <FormControl style={{ margin: '10px 0 10px 0' }}>
-                  <FormLabel style={{ fontSize: 13, marginBottom: 10 }}>Tanggal Ijin Absen</FormLabel>
+                  <FormLabel style={{ fontSize: 13, marginBottom: 10 }}>Pilih Tanggal Ijin Absen</FormLabel>
                   <DatePickers
                     value={Value}
                     format="DD/MM/YYYY"
                     onChange={setValue}
                     sort
                     multiple
+                    calendarPosition="top-center"
+                    minDate={new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7)}
                     style={{ width: '100%', height: 32 }} />
+                  <FormHelperText>format tanggal: ddMMyyyy</FormHelperText>
                 </FormControl>
                 {/* <FormControl style={{ margin: '10px 0 10px 0' }}>
                   <MuiPickersUtilsProvider utils={DateFnsUtils} style={{ margin: 0 }}>

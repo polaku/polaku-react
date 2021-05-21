@@ -590,14 +590,14 @@ class cardAddEmployee extends Component {
                   <MenuItem value="Kontrak" >Kontrak</MenuItem>
                   <MenuItem value="Probation" >Probation</MenuItem>
                   <MenuItem value="Berhenti" >Berhenti</MenuItem>
-                  <MenuItem value="Intern">Intern</MenuItem>
+                  <MenuItem value="Intern" >Intern</MenuItem>
                 </Select>
               </FormControl>
 
               <Grid style={{ width: '2%' }} />
 
               <Grid style={{ width: '20%', marginRight: 10, display: 'flex' }}>
-                <b style={{ margin: 0 }}>Tanggal ubah status</b>
+                <b style={{ margin: 0 }}>Tanggal status karyawan dimulai</b>
                 <p style={{ margin: 0, color: 'red', marginLeft: 3 }}>*</p>
               </Grid>
 

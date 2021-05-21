@@ -351,7 +351,7 @@ class modalCreateEditPermintaanHRD extends Component {
   };
 
   _setDate = (args) => {
-    console.log(args.toUTC())
+    // console.log(args.toUTC())
   }
 
   render() {

@@ -38,13 +38,13 @@ import ArrowDropDownOutlinedIcon from "@material-ui/icons/ArrowDropDownOutlined"
 import ArchiveIcon from "@material-ui/icons/Archive";
 
 import Download from '../../components/exportToExcel'
-// import Loading from '../../components/Loading';
+import Loading from '../../components/Loading';
 
 import orderBy from "lodash/orderBy";
 
 import swal from "sweetalert";
 
-import { fetchDataContactUs } from "../../store/action";
+import { fetchDataContactUs, fetchDataCompanies } from "../../store/action";
 
 const CardReport = lazy(() => import('../../components/report/CardReport'));
 
@@ -96,7 +96,7 @@ class ReportIjin extends Component {
         "November",
         "Desember",
       ],
-      statue: "approved",
+      statue: "",
       monthSelected: 0,
       value: 0,
       index: 0,
@@ -154,12 +154,15 @@ class ReportIjin extends Component {
 
       searchName: "",
       filterCategori: "",
+      optionCompany: [],
+      valueTabCompany: 0
     };
   }
 
   async componentDidMount() {
     this._isMounted = true;
 
+    this.setState({ loading: true })
     if (this._isMounted) {
       await this.props.fetchDataContactUs({
         limit: this.state.rowsPerPage,
@@ -169,6 +172,16 @@ class ReportIjin extends Component {
       });
       await this.fetchData();
     }
+
+    if (this.props.dataCompanies.length === 0) {
+      await this.props.fetchDataCompanies()
+    }
+
+    if (this.props.dataCompanies.length > 0 && this.props.admin) {
+      this.fetchOptionCompany()
+    }
+
+    this.setState({ loading: false })
   }
 
   componentWillUnmount() {
@@ -177,28 +190,47 @@ class ReportIjin extends Component {
 
   async componentDidUpdate(prevProps, prevState) {
     if (this.state.value !== prevState.value) {
+      this.setState({ loading: true })
+
       let newStatus
       if (this.state.value === 1) newStatus = 'new'
       else if (this.state.value === 2) newStatus = 'new2'
       else if (this.state.value === 3) newStatus = 'approved'
       else if (this.state.value === 4) newStatus = 'rejected'
 
-      await this.props.fetchDataContactUs({
-        statue: newStatus,
-        limit: this.state.rowsPerPage,
-        page: 0,
-        startDate: this.state.newMonthStart,
-        endDate: this.state.newMonthEnd,
-      });
+      await this.setState({ statue: newStatus })
+      // await this.props.fetchDataContactUs({
+      //   limit: this.state.rowsPerPage,
+      //   page: 0,
+      //   startDate: this.state.newMonthStart,
+      //   endDate: this.state.newMonthEnd,
+      // });
       await this.fetchData();
+
+      this.setState({ loading: false })
+    }
+
+    if (this.props.dataCompanies !== prevProps.dataCompanies || this.props.admin !== prevProps.admin) {
+      this.fetchOptionCompany()
     }
   }
 
-  fetchData = async () => {
-    let newData = [];
-    let data = await this.props.dataAllContactUs.filter(
-      (el) => el.status === this.state.statue
-    );
+  fetchData = async (companyId) => {
+    let newData = [], data;
+
+    if (this.state.statue) {
+      data = await this.props.dataAllContactUs.filter(
+        (el) => el.status === this.state.statue
+      );
+    } else {
+      data = this.props.dataAllContactUs
+    }
+
+    if (companyId) {
+      data = await this.props.dataAllContactUs.filter(
+        (el) => el.company_id === companyId
+      );
+    }
 
     data.forEach((element) => {
       if (element.date_imp) {
@@ -393,11 +425,14 @@ class ReportIjin extends Component {
       endDate: this.state.newMonthEnd,
     });
     await this.fetchData();
+
+    this.setState({ loading: false })
   };
 
   handleChangePage = async (event, newPage) => {
     this.setState({
       page: newPage,
+      loading: true
     });
     await this.props.fetchDataContactUs({
       limit: this.state.rowsPerPage,
@@ -406,12 +441,14 @@ class ReportIjin extends Component {
       endDate: this.state.newMonthEnd,
     });
     await this.fetchData();
+    this.setState({ loading: false })
   };
 
   handleChangeRowsPerPage = async (event) => {
     this.setState({
       rowsPerPage: event.target.value,
       page: 0,
+      loading: true
     });
     await this.props.fetchDataContactUs({
       limit: event.target.value,
@@ -420,6 +457,7 @@ class ReportIjin extends Component {
       endDate: this.state.newMonthEnd,
     });
     await this.fetchData();
+    this.setState({ loading: false })
   };
 
   handleSort = (columnName) => {
@@ -451,6 +489,48 @@ class ReportIjin extends Component {
 
   handleChangeStatue = (event) => {
     this.setState({ value: event.target.value });
+  };
+
+  fetchOptionCompany = async () => {
+    if (this.props.isAdminsuper) {
+      this.setState({ optionCompany: [{ acronym: 'Semua' }, ...this.props.dataCompanies] })
+    } else {
+      let optionCompany = []
+
+      let idCompany = []
+
+      await this.props.admin.forEach(el => {
+        if (idCompany.indexOf(el.company_id) === -1) {
+
+          let check = this.props.dataCompanies.find(element => el.company_id === element.company_id)
+          if (check) {
+            idCompany.push(el.company_id)
+            optionCompany.push(check)
+          }
+        }
+      })
+
+      if (idCompany.length > 1) {
+        optionCompany.unshift({ acronym: 'Semua' })
+      }
+
+      this.setState({ optionCompany })
+    }
+  }
+
+  handleChangeTabB = async (event, newValue) => {
+    this.setState({ valueTabCompany: newValue })
+
+    let companySelected = this.state.optionCompany[newValue]
+
+    this.setState({ loading: true })
+    if (newValue === 0) {
+      await this.fetchData()
+    } else {
+      await this.fetchData(companySelected.company_id)
+    }
+    this.setState({ loading: false })
+
   };
 
   render() {
@@ -485,6 +565,8 @@ class ReportIjin extends Component {
         ).getFullYear()} -${month2} ${new Date(waktuAkhir).getFullYear()}`;
     }
 
+    if (this.state.loading) return <Loading loading={this.state.loading} />;
+
     return (
       <div style={{ padding: "10px 40px" }}>
         <p style={{ fontSize: 24, fontWeight: "bold", margin: 0 }}>
@@ -518,7 +600,7 @@ class ReportIjin extends Component {
               onChange={this.handleChangeTabs}
             >
               <Tab label="Semua" style={{ marginRight: 30 }} />
-              <Tab label="Ijin Baru" style={{ marginRight: 30 }} />
+              <Tab label="Menunggu persetujuan evaluator 1" style={{ marginRight: 30 }} />
               <Tab label="Menunggu persetujuan evaluator 2" style={{ marginRight: 30 }} />
               <Tab label="Disetujui" style={{ marginRight: 30 }} />
               <Tab label="Ditolak" style={{ marginRight: 30 }} />
@@ -611,7 +693,27 @@ class ReportIjin extends Component {
               </Modal>
             </Grid>
           </Grid>
+
           <Divider />
+
+          {
+            this.state.optionCompany.length > 1 && <>
+              <Tabs
+                value={this.state.valueTabCompany}
+                indicatorColor="secondary"
+                textColor="secondary"
+                onChange={this.handleChangeTabB}
+              >
+                {
+                  this.state.optionCompany.map((el, index) =>
+                    <Tab key={index} label={el.acronym} style={{ marginRight: 10, minWidth: 80 }} />
+                  )
+                }
+              </Tabs>
+              <Divider />
+            </>
+          }
+
           <Grid
             style={{
               marginTop: 10,
@@ -1399,11 +1501,15 @@ class ReportIjin extends Component {
 
 const mapDispatchToProps = {
   fetchDataContactUs,
+  fetchDataCompanies
 };
 
-const mapStateToProps = ({ dataAllContactUs }) => {
+const mapStateToProps = ({ dataAllContactUs, isAdminsuper, dataCompanies, admin }) => {
   return {
     dataAllContactUs,
+    isAdminsuper,
+    dataCompanies,
+    admin
   };
 };
 

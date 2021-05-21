@@ -136,7 +136,8 @@ class PanelFormQuestion extends Component {
       let answer = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
 
       if (this.state.subTopik && this.state.question && answer && this.state.inviteOption &&
-        ((this.state.inviteOption === 'company' && this.state.company) ||
+        ((this.state.inviteOption === 'all' ||
+          this.state.inviteOption === 'company' && this.state.company) ||
           (this.state.inviteOption === 'department' && this.state.department) ||
           (this.state.inviteOption === 'employee' && this.state.employee))
       ) {

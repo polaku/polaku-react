@@ -553,10 +553,8 @@ function Navsidebar(props) {
                   <MenuIcon />
                 </IconButton>
                 <img
-                  class="lazyload"
-                  data-src={require('../Assets/polagroup.png').default}
+                  src={require('../Assets/polagroup.png').default}
                   alt="Logo"
-                  loading="lazy"
                   width={175}
                   height={50}
                 />
