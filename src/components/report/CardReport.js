@@ -5,7 +5,7 @@ import { TableCell, TableRow, Checkbox, IconButton, Tooltip } from '@material-ui
 
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
-import { API } from '../../config/API';
+import { API, BaseURL } from '../../config/API';
 
 import swal from 'sweetalert';
 import { connect } from 'react-redux';
@@ -138,14 +138,18 @@ class CardReport extends Component {
       <>
         {
           this.props.data.statusIjin && <TableRow  >{/* Untuk report Ijin */}
-            <TableCell component="th" scope="row" style={{ display: 'flex', alignItems: 'center', height: 80 }}>
-              {this.props.data.name}
+            <TableCell component="th" scope="row" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: 80 }}>
+              <b style={{fontSize:15}}>{this.props.data.name}</b>
+              <p style={{ margin: 0 }}>Keterangan: {this.props.data.message}</p>
+              {
+                this.props.data.doctor_letter && <a href={`${BaseURL}/${this.props.data.doctor_letter}`} style={{ margin: 0 }}>Lampiran</a>
+              }
             </TableCell>
-            <TableCell>{this.props.data.tglMulai}</TableCell>
-            <TableCell>{this.props.data.tglSelesai}</TableCell>
-            <TableCell>{this.props.data.lamaIjin}</TableCell>
-            <TableCell>{this.props.data.statusIjin}</TableCell>
-            <TableCell>{this.props.data.sisaCuti}</TableCell>
+            <TableCell>{this.state.tglMulai}</TableCell>
+            <TableCell>{this.state.tglSelesai}</TableCell>
+            <TableCell>{this.state.lamaIjin}</TableCell>
+            <TableCell>{this.state.statusIjin}</TableCell>
+            <TableCell>{this.state.sisaCuti}</TableCell>
           </TableRow>
         }
 

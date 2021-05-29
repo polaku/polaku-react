@@ -215,7 +215,7 @@ class ReportIjin extends Component {
     }
   }
 
-  fetchData = async (companyId) => {
+  fetchData = async () => {
     let newData = [], data;
 
     if (this.state.statue) {
@@ -226,9 +226,11 @@ class ReportIjin extends Component {
       data = this.props.dataAllContactUs
     }
 
-    if (companyId) {
+    if (this.state.valueTabCompany !== 0) {
+      let companySelected = this.state.optionCompany[this.state.valueTabCompany]
+
       data = await this.props.dataAllContactUs.filter(
-        (el) => el.company_id === companyId
+        (el) => el.company_id === companySelected.company_id
       );
     }
 
@@ -415,7 +417,9 @@ class ReportIjin extends Component {
       dataForDisplay: [],
       data: [],
       page: 0,
-      loading: true
+      loading: true,
+      valueTabCompany: 0,
+      statue: "",
     })
 
     await this.props.fetchDataContactUs({
@@ -519,18 +523,9 @@ class ReportIjin extends Component {
   }
 
   handleChangeTabB = async (event, newValue) => {
-    this.setState({ valueTabCompany: newValue })
-
-    let companySelected = this.state.optionCompany[newValue]
-
-    this.setState({ loading: true })
-    if (newValue === 0) {
-      await this.fetchData()
-    } else {
-      await this.fetchData(companySelected.company_id)
-    }
+    await this.setState({ loading: true, valueTabCompany: newValue })
+    await this.fetchData()
     this.setState({ loading: false })
-
   };
 
   render() {

@@ -207,10 +207,10 @@ class cardAddEmployee extends Component {
       if (this.state.sisaCutiBesar) newData.append("leaveBig", this.state.sisaCutiBesar)
       if (this.state.nextFrame) newData.append("nextFrameDate", this.state.nextFrame)
       if (this.state.nextLensa) newData.append("nextLensaDate", this.state.nextLensa)
-      if (!this.props.data) newData.append("dinasId", this.state.isDinas ? this.state.companyDinas : '')
-      if (!this.props.data) newData.append("dinasBuildingId", this.state.isDinas ? this.state.companyDinasAddress : '')
+      if (!this.props.data && this.state.isDinas) newData.append("dinasId", this.state.companyDinas)
+      if (!this.props.data && this.state.isDinas) newData.append("dinasBuildingId", this.state.companyDinasAddress)
       newData.append("officeEmail", this.state.emailKantor)
-      if (this.state.dateStatus) newData.append("dateStatus", `${this.state.dateStatus.getFullYear()}-${this.state.dateStatus.getMonth() + 1 < 10 ? `0${this.state.dateStatus.getMonth() + 1}` : this.state.dateStatus.getMonth() + 1}-${this.state.dateStatus.getDate() < 10 ? `0${this.state.dateStatus.getDate()}` : this.state.dateStatus.getDate()}`)
+      if (this.state.dateStatus) newData.append("dateStatus", `${new Date(this.state.dateStatus).getFullYear()}-${new Date(this.state.dateStatus).getMonth() + 1 < 10 ? `0${new Date(this.state.dateStatus).getMonth() + 1}` : new Date(this.state.dateStatus).getMonth() + 1}-${new Date(this.state.dateStatus).getDate() < 10 ? `0${new Date(this.state.dateStatus).getDate()}` : new Date(this.state.dateStatus).getDate()}`)
 
       if (this.state.avatar) newData.append("avatar", this.state.avatar)
 
@@ -341,6 +341,16 @@ class cardAddEmployee extends Component {
     if (this.state.dateStatus === null) {
       status = false
       reason.push('Tanggal ubah status')
+    }
+    if (this.state.isDinas) {
+      if (this.state.companyDinas === '') {
+        status = false
+        reason.push('Perusahaan dinas')
+      }
+      if (this.state.companyDinasAddress === '') {
+        status = false
+        reason.push('Alamat perusahaan dinas')
+      }
     }
 
     if (reason.length > 0) swal('Peringatan', `Data ${reason.join(', ')} belum lengkap`, 'warning')

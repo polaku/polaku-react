@@ -77,12 +77,13 @@ function ModalCreateEditPermintaanHRD(props) {
   }, [props.data])
 
   useEffect(() => {
-    if (jenisIjin === 6) {
-      if (!props.data) {
-        setStart_date(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7))
+    console.log(jenisIjin)
+    if (!props.data) {
+      if (jenisIjin === 6) {
+        setValue([new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7)])
+      } else {
+        setValue([new Date()])
       }
-    } else {
-      setStart_date(new Date())
     }
   }, [jenisIjin, props.data])
 
@@ -335,7 +336,7 @@ function ModalCreateEditPermintaanHRD(props) {
           maxHeight: '80%',
           overflowX: 'auto'
         }}>
-          <Typography style={{ margin: 10, fontSize: 17 }}>Pengajuan ijin</Typography>
+          <Typography style={{ margin: 10, fontSize: 17 }}>Pengajuan Ijin</Typography>
           {
             jenisIjin === 6 && <p style={{ fontWeight: 'bold', marginTop: 0, fontSize: 24 }}>Sisa cuti anda {props.sisaCuti} hari</p>
           }
@@ -364,16 +365,15 @@ function ModalCreateEditPermintaanHRD(props) {
               <InputLabel htmlFor="room">Jenis</InputLabel>
               <SelectOption
                 value={jenisIjin}
-                onChange={(event) => setJenisIjin(event.target.value)}
+                onChange={(event) => {
+                  console.log("object", event.target.value)
+                  setJenisIjin(event.target.value)}}
                 disabled={proses}
               >
-                {
-                  // props.statusEmployee === 'Tetap' && <MenuItem value={6}>Cuti</MenuItem>
-                  +props.sisaCuti > 0 && <MenuItem value={6}>Cuti</MenuItem>
-                }
+                <MenuItem value={6} disabled={+props.sisaCuti < 1}>Cuti{+props.sisaCuti < 1 && ': Stok cuti habis'}</MenuItem>
+                {/* <MenuItem value={6}>Cuti{+props.sisaCuti < 1 && ': Stok cuti habis'}</MenuItem> */}
                 <MenuItem value={8}>Ijin Absen</MenuItem>
                 <MenuItem value={7}>IMP</MenuItem>
-
               </SelectOption>
             </FormControl>
 
@@ -463,7 +463,8 @@ function ModalCreateEditPermintaanHRD(props) {
                     sort
                     multiple
                     calendarPosition="top-center"
-                    minDate={new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7)}
+                    minDate={new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 7)}
+                    maxDate={new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7)}
                     style={{ width: '100%', height: 32 }} />
                   <FormHelperText>format tanggal: ddMMyyyy</FormHelperText>
                 </FormControl>
