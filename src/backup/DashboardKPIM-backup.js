@@ -63,6 +63,7 @@ class DashboardKPIM extends Component {
       indicator_tal: "",
       when: "",
       load: "",
+      weight: "",
       achievement: "",
       link: "",
 
@@ -352,7 +353,7 @@ class DashboardKPIM extends Component {
       this.setState({
         validateCreateTAL,
         talSelected,
-        persenTAL: tempPersenTAL,
+        persenTAL: Math.round(tempPersenTAL),
         totalWeight: tempTotalWeight,
       });
   };
@@ -474,6 +475,7 @@ class DashboardKPIM extends Component {
       indicator_tal: this.state.indicator_tal,
       time: this.state.when,
       load: this.state.load,
+      weight: this.state.weight,
       kpim_score_id: this.state.kpimTAL.kpim_score_id,
 
       isRepeat: 0,
@@ -606,7 +608,7 @@ class DashboardKPIM extends Component {
       awalMingguSekarang++;
     }
 
-    let day = ["Setiap hari"];
+    let day = [];
     date.forEach((el) => {
       let date = new Date(
         new Date().getFullYear(),
@@ -625,6 +627,8 @@ class DashboardKPIM extends Component {
 
       day.push(listDay[date]);
     });
+
+    if (day.length === 7) day.splice(0, 0, 'Setiap hari')
 
     this.setState({
       chooseWhen: day,
@@ -903,7 +907,16 @@ class DashboardKPIM extends Component {
                         <TableCell
                           align="center"
                           style={{ padding: "0px 10px" }}
-                        />
+                        >
+                          <TextField
+                            value={this.state.weight}
+                            onChange={this.handleChange("weight")}
+                            variant="outlined"
+                            InputProps={{
+                              style: { height: 35, padding: 0 },
+                            }}
+                          />
+                        </TableCell>
                         <TableCell
                           align="center"
                           style={{ padding: "0px 10px" }}
@@ -952,7 +965,7 @@ class DashboardKPIM extends Component {
                   />
                 </Grid>
               )}
-              {!this.state.prosesTAL && this.state.talSelected.length === 0 && this.props.userId !== 265 && (
+              {!this.state.prosesTAL && !this.state.kpimTAL && this.props.userId !== 265 && (
                 <Grid style={{ width: "100%", textAlign: "center" }}>
                   <p>harap komunikasi ke atasan untuk membuat TAL</p>
                 </Grid>

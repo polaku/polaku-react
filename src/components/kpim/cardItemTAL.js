@@ -53,7 +53,13 @@ class cardTAL extends Component {
   }
 
   handleChange = name => event => {
-    this.setState({ [name]: event.target.value });
+    if (name !== "achievement") {
+      this.setState({ [name]: event.target.value });
+    } else {
+      if (Number(event.target.value) || !event.target.value) {
+        this.setState({ [name]: event.target.value });
+      }
+    }
   };
 
   submitData = args => async (event) => {

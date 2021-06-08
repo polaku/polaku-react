@@ -5,7 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import {
   Grid, LinearProgress, Select as SelectOption, MenuItem, CircularProgress
 } from '@material-ui/core';
-
+// import
 import BarChartIcon from '@material-ui/icons/BarChart';
 import 'react-circular-progressbar/dist/styles.css';
 
@@ -25,7 +25,8 @@ class TAL extends Component {
       mingguAkhirBulan: 0,
       persenanTALMonth: 0,
       monthSelected: 0,
-      isEmpty: false
+      isEmpty: false,
+      proses: false
     }
   }
 
@@ -42,7 +43,15 @@ class TAL extends Component {
         monthSelected: new Date().getMonth()
       })
 
-      await this.fetchData(new Date().getMonth() + 1)
+      if (this.props.userId) {
+        await this.fetchData(new Date().getMonth() + 1)
+      }
+    }
+  }
+
+  async componentDidUpdate(prevProps, prevState) {
+    if (this.props.userId !== prevProps.userId) {
+      await this.fetchData(this.state.monthSelected + 1)
     }
   }
 
@@ -51,7 +60,9 @@ class TAL extends Component {
   }
 
   fetchData = async (monthSelected) => {
-    await this.props.fetchDataAllTAL({ "for-dashboard": true, year: new Date().getFullYear(), month: monthSelected, week: null, 'user-id': this.props.userId })
+    this.setState({ proses: true })
+
+    await this.props.fetchDataAllTAL({ "for-dashboard": true, year: new Date().getFullYear(), month: monthSelected, week: null, 'userId': this.props.userId })
 
     let tempTAL = [], isEmpty = true, tempPersenanTALMonth = 0, pembagi = 0
 
@@ -77,11 +88,13 @@ class TAL extends Component {
       tempTAL.push(newObj)
     }
 
-    let persenanTALMonth = Math.round(tempPersenanTALMonth / pembagi)
+    let persenanTALMonth = Math.round(tempPersenanTALMonth / pembagi) || 0
+    console.log(persenanTALMonth)
     this._isMounted && this.setState({
       isEmpty,
       dataForDisplay: tempTAL,
-      persenanTALMonth
+      persenanTALMonth,
+      proses: false
     })
   }
 
@@ -132,6 +145,7 @@ class TAL extends Component {
           <SelectOption
             value={this.state.monthSelected}
             onChange={this.handleChange('monthSelected')}
+            disabled={this.state.proses}
           >
             {
               this.state.months.map((month, index) =>

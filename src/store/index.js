@@ -515,7 +515,7 @@ const api = store => next => async action => {
     next({
       type: 'FETCH_DATA_LOADING'
     })
-
+console.log(action.payload)
     let getData
     try {
       if (action.payload && action.payload["for-setting"]) getData = await API.get(`/tal?for-setting=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}`, {

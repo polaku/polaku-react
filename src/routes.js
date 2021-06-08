@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Cookies from 'js-cookie';
+// import AddEmployee from './views/Setting/AddEmployee';
 
 const Login = lazy(() => import('./views/Login'));
 const BookingRoom = lazy(() => import('./views/Facility/BookingRoom'));
@@ -41,6 +42,10 @@ const Helpdesk = lazy(() => import('./views/Helpdesk/Index'));
 const DetailTopics = lazy(() => import('./views/Helpdesk/DetailTopics'));
 const ForgetPassword = lazy(() => import('./views/ForgetPassword'));
 const ResetPassword = lazy(() => import('./views/ResetPassword'));
+const Notifikasi = lazy(() => import('./views/Notifikasi/Notifikasi'));
+const DetailNotifikasi = lazy(() => import('./views/Notifikasi/DetailNotifikasi'));
+const AddNotifikasi = lazy(() => import('./views/Notifikasi/AddNotifikasi'));
+const SettingNotifikasi = lazy(() => import('./views/Notifikasi/SettingNotifikasi'));
 
 
 const useStyles = makeStyles(theme => ({
@@ -102,6 +107,10 @@ function Routes() {
           <AuthenticatedRoute path="/helpdesk/detail/:id/sub-topics/:idSub" component={DetailTopics} />
           <AuthenticatedRoute path="/helpdesk/detail/:id" component={DetailTopics} />
           <AuthenticatedRoute path="/helpdesk" component={Helpdesk} />
+          <AuthenticatedRoute path="/notifikasi/create" component={AddNotifikasi} />
+          <AuthenticatedRoute path="/notifikasi/setting" component={SettingNotifikasi} />
+          <AuthenticatedRoute path="/notifikasi/:id" component={DetailNotifikasi} />
+          <AuthenticatedRoute path="/notifikasi" component={Notifikasi} />
           <Redirect from="/" to="/login" />
         </Switch>
       </Suspense>
