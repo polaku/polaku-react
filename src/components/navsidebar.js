@@ -173,6 +173,7 @@ function Navsidebar(props) {
   const [selectedIndex, setSelectedIndex] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [tabNotif, setTabNotif] = React.useState(0);
+  const [prosesNotif, setProsesNotif] = React.useState(false);
 
   function handleDrawerOpen() {
     setOpen(true);
@@ -312,7 +313,7 @@ function Navsidebar(props) {
               newData.adminContactCategori = data.adminContactCategori;
             }
             await props.setUser(newData);
-            await props.fetchDataNotification();
+            await props.fetchDataNotification({ page: 0, limit: 10, "is-notif-polaku": 1 });
           })
           .catch((err) => {
             Cookies.remove("POLAGROUP");
@@ -560,6 +561,17 @@ function Navsidebar(props) {
       });
   };
 
+  const removeHTML = (str) => {
+    var tmp = document.createElement("DIV")
+    tmp.innerHTML = str
+    return tmp.textContent || tmp.innerText || ""
+  }
+
+  const _handleTabNotif = async (args) => {
+    setTabNotif(args)
+    await props.fetchDataNotification({ page: 0, limit: 10, "is-notif-polaku": args === 0 ? '1' : '0' });
+  }
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -590,7 +602,7 @@ function Navsidebar(props) {
                   height={50}
                 />
               </div>
-              {/* <IconButton aria-label="notif" color="inherit" onClick={handleClickNotif}>
+              <IconButton aria-label="notif" color="inherit" onClick={handleClickNotif}>
                 {props.dataNewNotif.length !== 0 ? (
                   <Badge
                     badgeContent={props.dataNewNotif.length}
@@ -601,7 +613,7 @@ function Navsidebar(props) {
                 ) : (
                     <NotificationsNoneIcon />
                   )}
-              </IconButton> */}
+              </IconButton>
               <Menu
                 id="long-menu"
                 anchorEl={anchorEl}
@@ -638,153 +650,64 @@ function Navsidebar(props) {
                   indicatorColor="secondary"
                   textColor="secondary"
                   onChange={(event, newValue) => {
-                    setTabNotif(newValue)
+                    _handleTabNotif(newValue)
                   }}
                 >
                   <Tab label="Polaku" style={{ color: '#d71149', width: '50%' }} />
                   <Tab label="Update" style={{ color: '#d71149', width: '50%' }} />
                 </Tabs>
                 <Divider />
-                {/* <Grid style={{ height: 270, overflowX: 'auto' }}>
-                  {props.dataNotification.length > 0 &&
-                    props.dataNotification.map((notif, index) => {
-                      <Grid key={'notif', index}>
-                        <Grid style={{ padding: '10px 15px' }}>
-                          <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                            <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                            <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                          </Grid>
-                          <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                          <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                        </Grid>
-                        <Divider />
-                      </Grid>
-                    })
-                  }
-                </Grid> */}
                 <SwipeableViews
                   index={tabNotif}
-                  onChangeIndex={index => setTabNotif(index)}
+                  onChangeIndex={index => _handleTabNotif(index)}
                   style={{ height: '100%' }}>
 
                   {/* POLAKU */}
                   <TabPanel value={tabNotif} index={0} style={{ height: 200, overflowX: 'auto' }}>
-                    <Grid>
-                      <Grid style={{ padding: '10px 15px' }}>
-                        <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                          <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                          <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                        </Grid>
-                        <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                        <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                      </Grid>
-                      <Divider />
-                    </Grid>
-                    <Grid>
-                      <Grid style={{ padding: '10px 15px' }}>
-                        <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                          <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                          <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                        </Grid>
-                        <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                        <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                      </Grid>
-                      <Divider />
-                    </Grid>
-                    <Grid>
-                      <Grid style={{ padding: '10px 15px' }}>
-                        <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                          <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                          <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                        </Grid>
-                        <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                        <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                      </Grid>
-                      <Divider />
-                    </Grid>
-                    <Grid>
-                      <Grid style={{ padding: '10px 15px' }}>
-                        <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                          <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                          <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                        </Grid>
-                        <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                        <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                      </Grid>
-                      <Divider />
-                    </Grid>
-                    <Grid >
-                      <Grid style={{ padding: '10px 15px' }}>
-                        <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                          <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                          <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                        </Grid>
-                        <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                        <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                      </Grid>
-                      <Divider />
-                    </Grid>
+                    {
+                      props.dataNotification.length > 0 &&
+                      props.dataNotification.map(notif =>
+                        <>
+                          <Grid style={{ padding: '10px 15px' }}>
+                            <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
+                              <p style={{ margin: 0, marginRight: 5 }}>{notif.tbl_notification_category ? notif.tbl_notification_category.name : (notif.title || notif.value)}</p>
+                              <TimeAgo
+                                date={notif.created_at}
+                                style={{ fontSize: 12, color: 'gray' }}
+                              />
+                            </Grid>
+                            <b style={{ fontSize: 15, margin: '5px 0px' }}>{notif.title || notif.value}</b>
+                            <p style={{ margin: 0, fontSize: 13 }}>{notif.description.replace(/<[^>]*>?/gm, '').replace('&nbsp;', '')}</p>
+                            {/* <Grid dangerouslySetInnerHTML={{ __html: this.state.questionSelected.answer }} /> */}
+                          </Grid>
+                          <Divider />
+                        </>
+                      )
+                    }
                   </TabPanel>
 
                   {/* UPDATE */}
                   <TabPanel value={tabNotif} index={1} style={{ height: 200, overflowX: 'auto' }}>
-                    <Grid >
-                      <Grid>
-                        <Grid style={{ padding: '10px 15px' }}>
-                          <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                            <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                            <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
+                  {
+                      props.dataNotification.length > 0 &&
+                      props.dataNotification.map(notif =>
+                        <>
+                          <Grid style={{ padding: '10px 15px' }}>
+                            <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
+                              <p style={{ margin: 0, marginRight: 5 }}>{notif.tbl_notification_category ? notif.tbl_notification_category.name : (notif.title || notif.value)}</p>
+                              <TimeAgo
+                                date={notif.created_at}
+                                style={{ fontSize: 12, color: 'gray' }}
+                              />
+                            </Grid>
+                            <b style={{ fontSize: 15, margin: '5px 0px' }}>{notif.title || notif.value}</b>
+                            <p style={{ margin: 0, fontSize: 13 }}>{notif.description.replace(/<[^>]*>?/gm, '').replace('&nbsp;', '')}</p>
+                            {/* <Grid dangerouslySetInnerHTML={{ __html: this.state.questionSelected.answer }} /> */}
                           </Grid>
-                          <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                          <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                        </Grid>
-                        <Divider />
-                      </Grid>
-                      <Grid>
-                        <Grid style={{ padding: '10px 15px' }}>
-                          <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                            <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                            <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                          </Grid>
-                          <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                          <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                        </Grid>
-                        <Divider />
-                      </Grid>
-                      <Grid>
-                        <Grid style={{ padding: '10px 15px' }}>
-                          <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                            <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                            <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                          </Grid>
-                          <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                          <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                        </Grid>
-                        <Divider />
-                      </Grid>
-                      <Grid>
-                        <Grid style={{ padding: '10px 15px' }}>
-                          <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                            <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                            <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                          </Grid>
-                          <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                          <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                        </Grid>
-                        <Divider />
-                      </Grid>
-                      <Grid >
-                        <Grid style={{ padding: '10px 15px' }}>
-                          <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                            <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                            <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                          </Grid>
-                          <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                          <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                        </Grid>
-                        <Divider />
-                      </Grid>
-                    </Grid>
+                          <Divider />
+                        </>
+                      )
+                    }
                   </TabPanel>
                 </SwipeableViews>
 

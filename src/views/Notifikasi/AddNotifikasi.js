@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
-import { Grid, Breadcrumbs, Link, FormControl, TextField, Button, FormControlLabel, RadioGroup, Radio, Typography } from '@material-ui/core';
+import { Grid, Breadcrumbs, Link, FormControl, TextField, Button, FormControlLabel, RadioGroup, Radio, Typography, Select, MenuItem } from '@material-ui/core';
 import ReactSelect from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
@@ -22,15 +22,16 @@ class addNotifikasi extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      subTopik: null,
-      question: null,
+      category: null,
+      title: null,
       editorState: EditorState.createEmpty(),
       help: null,
       inviteOption: 'all',
       company: null,
       department: null,
       employee: null,
-      listUser: []
+      listUser: [],
+      categoryNotifikasi: []
     };
   }
   async componentDidMount() {
@@ -81,14 +82,9 @@ class addNotifikasi extends Component {
   fetchNotificationCategory = async () => {
     try {
       let token = Cookies.get('POLAGROUP')
+      let { data } = await API.get(`/notification/category`, { headers: { token } })
 
-      let getData = await API.get(`/notification/category`, { headers: { token } })
-
-      let listUser = []
-      await getData.data.data.forEach(user => {
-        listUser.push({ value: user.user_id, label: user.tbl_account_detail.fullname, nik: user.tbl_account_detail.nik })
-      })
-      this.setState({ listUser })
+      this.setState({ categoryNotifikasi: data.data })
     } catch (err) {
       if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
         swal('Gagal', 'Koneksi tidak stabil', 'error')
@@ -116,45 +112,43 @@ class addNotifikasi extends Component {
     this.setState({ inviteOption: event.target.value });
   };
 
-  handleInputChange = (inputValue, actionMeta) => {
-    if (inputValue) {
-      this.setState({
-        subTopik: inputValue
-      })
-    }
-  };
-
   submit = async () => {
     try {
-      let answer = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
+      let answer = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())), promises = []
+      console.log(this.state)
 
-      if (this.state.subTopik && this.state.question && answer && this.state.inviteOption &&
+      if (this.state.category && this.state.title && answer && this.state.inviteOption &&
         (this.state.inviteOption === 'all' ||
           (this.state.inviteOption === 'company' && this.state.company) ||
           (this.state.inviteOption === 'department' && this.state.department))
       ) {
-
         let token = Cookies.get('POLAGROUP')
         let newData = {
-          topicsId: this.props.topicsId,
-          subTopik: this.state.subTopik.value,
-          question: this.state.question,
-          editorState: answer,
-          help: this.state.help,
+          category_notification_id: this.state.category,
+          title: this.state.title,
+          description: answer,
+          contact: this.state.help,
           option: this.state.inviteOption,
           company: this.state.company,
-          department: this.state.department
+          department: this.state.department,
+          is_notif_polaku: this.props.isAdminsuper ? this.state.isNotifPolaku : 1
         }
 
-        if (this.props.questionSelectedForEdit) {
-          await API.put(`helpdesk/question/${this.props.questionSelectedForEdit.id}`, newData, { headers: { token } })
-          swal('Edit pertanyaan berhasil', '', 'success')
-          this.props.refresh()
-        } else {
-          await API.post('helpdesk/question', newData, { headers: { token } })
-          swal('Tambah pertanyaan berhasil', '', 'success')
-          this.props.refresh()
-        }
+        await API.post('/notification', newData, { headers: { token } })
+        swal('Tambah notifikasi berhasil', '', 'success')
+
+        this.props.history.push('/notifikasi')
+        //   this.props.refresh()
+
+        // if (this.props.questionSelectedForEdit) {
+        //   await API.put(`helpdesk/question/${this.props.questionSelectedForEdit.id}`, newData, { headers: { token } })
+        //   swal('Edit pertanyaan berhasil', '', 'success')
+        //   this.props.refresh()
+        // } else {
+        //   await API.post('helpdesk/question', newData, { headers: { token } })
+        //   swal('Tambah pertanyaan berhasil', '', 'success')
+        //   this.props.refresh()
+        // }
       } else {
         swal('Data tidak lengkap')
       }
@@ -176,15 +170,52 @@ class addNotifikasi extends Component {
           <Typography style={{ color: '#d71149', fontSize: 14 }}>Notifikasi baru</Typography>
         </Breadcrumbs>
 
-        <p style={{ margin: '10px 0px 0px' }}>Pesan dibuat oleh: IT</p>
+        <Grid style={{ display: 'flex', flexDirection: 'column', marginTop: 10 }}>
+          {
+            this.props.isAdminsuper && <Grid id="form-is-notif-polaku" style={{ display: 'flex', flexDirection: 'column', marginTop: 10, marginBottom: 20 }}>
+              <b style={{ margin: 0, fontSize: 15 }} htmlFor="pertanyaan">Jenis Notifikasi</b>
+              <FormControl variant="outlined" style={{ width: '100%', height: 40 }} size="small">
+                <Select
+                  value={this.state.isNotifPolaku}
+                  onChange={this.handleChange('isNotifPolaku')}
+                  disabled={this.state.proses}
+                  style={{ marginTop: 10 }}
+                >
+                  <MenuItem value={1}>Polaku</MenuItem>
+                  <MenuItem value={0}>Update sistem</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          }
 
-        <Grid style={{ display: 'flex', flexDirection: 'column' }}>
-          <Grid id="form-pertanyaan" style={{ display: 'flex', flexDirection: 'column', marginTop: 10 }}>
+          {
+            (!this.props.isAdminsuper || (this.props.isAdminsuper && this.state.isNotifPolaku)) 
+            ? <Grid id="form-category" style={{ display: 'flex', flexDirection: 'column', marginTop: 10, marginBottom: 20 }}>
+              <b style={{ margin: 0, fontSize: 15 }} htmlFor="pertanyaan">Kategori Notifikasi</b>
+              <FormControl variant="outlined" style={{ width: '100%', height: 40 }} size="small">
+                <Select
+                  value={this.state.category}
+                  onChange={this.handleChange('category')}
+                  disabled={this.state.proses}
+                  style={{ marginTop: 10 }}
+                >
+                  {
+                    this.state.categoryNotifikasi.map((notifikasi, index) =>
+                      <MenuItem value={notifikasi.id} key={"notifikasi" + index}>{notifikasi.name}</MenuItem>
+                    )
+                  }
+                </Select>
+              </FormControl>
+            </Grid>
+            : null
+          }
+
+          <Grid id="form-pertanyaan" style={{ display: 'flex', flexDirection: 'column', marginTop: 10, marginBottom: 10 }}>
             <b style={{ margin: 0, fontSize: 15 }} htmlFor="pertanyaan">Judul</b>
             <TextField
               id="pertanyaan"
-              value={this.state.question}
-              onChange={this.handleChange('question')}
+              value={this.state.title}
+              onChange={this.handleChange('title')}
               margin="normal"
               variant="outlined"
               disabled={this.state.proses}
@@ -289,10 +320,11 @@ class addNotifikasi extends Component {
   }
 }
 
-const mapStateToProps = ({ dataCompanies, dataDepartments }) => {
+const mapStateToProps = ({ dataCompanies, dataDepartments, isAdminsuper }) => {
   return {
     dataCompanies,
-    dataDepartments
+    dataDepartments,
+    isAdminsuper
   }
 }
 

@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
+import Cookies from 'js-cookie';
 
 import { Grid, Paper, Tab, Tabs, Divider, Typography, Box, Button } from '@material-ui/core';
 import SwipeableViews from 'react-swipeable-views';
 
+import swal from 'sweetalert';
+import { API } from '../../config/API';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -31,7 +34,56 @@ TabPanel.propTypes = {
 export default class notifikasi extends Component {
   state = {
     tabNotif: 0,
-    category: 'HR'
+    category: null,
+    categoryNotifikasi: [],
+    limit: 5,
+    page: 0
+
+  }
+
+  async componentDidMount() {
+    await this.fetchNotificationCategory()
+    await this.fetchDataNotification()
+  }
+
+  async componentDidUpdate(prevProps, prevState) {
+    if (this.state.category !== prevState.category) {
+      await this.fetchDataNotification()
+    }
+  }
+
+
+  fetchNotificationCategory = async () => {
+    try {
+      let token = Cookies.get('POLAGROUP')
+      let { data } = await API.get(`/notification/category`, { headers: { token } })
+      console.log(data.data)
+      this.setState({ categoryNotifikasi: data.data, category: data.data[0].id || null })
+    } catch (err) {
+      if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+        swal('Gagal', 'Koneksi tidak stabil', 'error')
+      }
+    }
+  }
+
+  fetchDataNotification = async () => {
+    try {
+      let token = Cookies.get('POLAGROUP'), query = []
+
+      if (this.state.tabNotif === 0) query.push(`is-notif-polaku=1`)
+      else query.push(`is-notif-polaku=0`)
+
+      if (this.state.category !== null) query.push(`category-notification=${this.state.category}`)
+
+      query.length > 0 ? query = query.join('&') : query = ''
+
+      let { data } = await API.get(`/notification?${query}`, { headers: { token } })
+
+      console.log(data.data)
+      // let { data }
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   render() {
@@ -66,8 +118,11 @@ export default class notifikasi extends Component {
             <TabPanel value={this.state.tabNotif} index={0}>
               <Grid style={{ display: 'flex', alignItems: 'center', padding: 15 }}>
                 <p style={{ margin: 0, marginRight: 15 }}>Kategori :</p>
-                <Button variant={this.state.category === "HR" ? "contained" : "outlined"} color="secondary" style={{ marginRight: 10, height: 30 }} onClick={() => this.setState({ category: 'HR' })}>HR</Button>
-                <Button variant={this.state.category === "KPI" ? "contained" : "outlined"} color="secondary" style={{ marginRight: 10, height: 30 }} onClick={() => this.setState({ category: 'KPI' })}>KPI</Button>
+                {
+                  this.state.categoryNotifikasi.map((category, index) =>
+                    <Button variant={this.state.category === category.id ? "contained" : "outlined"} color="secondary" style={{ marginRight: 10, height: 30 }} onClick={() => this.setState({ category: category.id })}>{category.name}</Button>
+                  )
+                }
               </Grid>
               <Divider />
 

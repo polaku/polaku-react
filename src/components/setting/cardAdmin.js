@@ -47,6 +47,8 @@ class cardAdmin extends Component {
       let checkMeetingRoom = element.tbl_designation.tbl_user_roles.find(el => el.menu_id === 6)
       let checkKPIM = element.tbl_designation.tbl_user_roles.find(el => el.menu_id === 7)
       let checkHR = element.tbl_designation.tbl_user_roles.find(el => el.menu_id === 8)
+      let checkHelpdesk = element.tbl_designation.tbl_user_roles.find(el => el.menu_id === 9)
+      let checkNotifikasi = element.tbl_designation.tbl_user_roles.find(el => el.menu_id === 10)
       let statusAdmin = []
 
       if (checkAlamat && checkStruktur && checkKaryawan && checkAdmin && checkMeetingRoom && checkKPIM && checkHR) {
@@ -60,6 +62,8 @@ class cardAdmin extends Component {
         if (checkMeetingRoom) statusAdmin.push('Meeting Room')
         if (checkKPIM) statusAdmin.push('KPIM & TAL')
         if (checkHR) statusAdmin.push('HR')
+        if (checkHelpdesk) statusAdmin.push('Helpdeks')
+        if (checkNotifikasi) statusAdmin.push('Notifikasi')
       }
 
       let statusTemp = `${element.tbl_company.acronym} (Admin: ${statusAdmin.join(', ')})`

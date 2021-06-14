@@ -73,9 +73,10 @@ export function fetchDataDepartment() {
   }
 }
 
-export function fetchDataNotification() {
+export function fetchDataNotification(payload) {
   return {
-    type: 'FETCH_DATA_NOTIFICATION'
+    type: 'FETCH_DATA_NOTIFICATION',
+    payload
   }
 }
 

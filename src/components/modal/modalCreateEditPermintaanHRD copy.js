@@ -77,7 +77,6 @@ function ModalCreateEditPermintaanHRD(props) {
   }, [props.data])
 
   useEffect(() => {
-    console.log(jenisIjin)
     if (!props.data) {
       if (jenisIjin === 6) {
         setValue([new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7)])
@@ -365,9 +364,7 @@ function ModalCreateEditPermintaanHRD(props) {
               <InputLabel htmlFor="room">Jenis</InputLabel>
               <SelectOption
                 value={jenisIjin}
-                onChange={(event) => {
-                  console.log("object", event.target.value)
-                  setJenisIjin(event.target.value)}}
+                onChange={(event) => setJenisIjin(event.target.value)}
                 disabled={proses}
               >
                 <MenuItem value={6} disabled={+props.sisaCuti < 1}>Cuti{+props.sisaCuti < 1 && ': Stok cuti habis'}</MenuItem>

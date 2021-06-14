@@ -156,11 +156,11 @@ class PanelFormQuestion extends Component {
         }
 
         if (this.props.questionSelectedForEdit) {
-          await API.put(`helpdesk/question/${this.props.questionSelectedForEdit.id}`, newData, { headers: { token } })
+          await API.put(`/helpdesk/question/${this.props.questionSelectedForEdit.id}`, newData, { headers: { token } })
           swal('Edit pertanyaan berhasil', '', 'success')
           this.props.refresh()
         } else {
-          await API.post('helpdesk/question', newData, { headers: { token } })
+          await API.post('/helpdesk/question', newData, { headers: { token } })
           swal('Tambah pertanyaan berhasil', '', 'success')
           this.props.refresh()
         }

@@ -89,7 +89,7 @@ class TAL extends Component {
     }
 
     let persenanTALMonth = Math.round(tempPersenanTALMonth / pembagi) || 0
-    console.log(persenanTALMonth)
+
     this._isMounted && this.setState({
       isEmpty,
       dataForDisplay: tempTAL,

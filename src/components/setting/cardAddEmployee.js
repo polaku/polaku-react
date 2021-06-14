@@ -60,6 +60,7 @@ class cardAddEmployee extends Component {
       isDinas: false,
 
       optionCompany: [],
+      isEdit: false
     }
   }
 
@@ -69,6 +70,7 @@ class cardAddEmployee extends Component {
     await this.props.fetchDataPosition()
     await this.props.fetchDataAddress({ forOption: true })
     if (this.props.data) {
+      this.setState({ isEdit: true })
       await this.fetchDataEdit()
     }
   }
@@ -342,7 +344,7 @@ class cardAddEmployee extends Component {
       status = false
       reason.push('Tanggal ubah status')
     }
-    if (this.state.isDinas) {
+    if (this.state.isDinas && !this.state.isEdit) {
       if (this.state.companyDinas === '') {
         status = false
         reason.push('Perusahaan dinas')

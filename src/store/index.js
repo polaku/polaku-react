@@ -333,12 +333,18 @@ const api = store => next => async action => {
 
     let getData
     try {
-      getData = await API.get('/notification', {
+      let query = ''
+      if (action.payload && action.payload.limit) query += `limit=${action.payload.limit}&page=${action.payload.page}`
+      if (action.payload['is-notif-polaku']) query += `&is-notif-polaku=${action.payload['is-notif-polaku']}`
+
+      // if (this.state.category !== null) query.push(`&category-notification=${this.state.category}`)
+
+      getData = await API.get(`/notification?${query}`, {
         headers: {
           token,
         }
       })
-
+console.log(getData.data.data)
       let datas = getData.data.data.filter(el => el.read_inline === 0 && el.read !== 1)
       next({
         type: 'FETCH_DATA_NOTIFICATION_SUCCESS',
@@ -515,7 +521,7 @@ const api = store => next => async action => {
     next({
       type: 'FETCH_DATA_LOADING'
     })
-console.log(action.payload)
+
     let getData
     try {
       if (action.payload && action.payload["for-setting"]) getData = await API.get(`/tal?for-setting=true&year=${action.payload.year}&month=${action.payload.month}&week=${action.payload.week}`, {

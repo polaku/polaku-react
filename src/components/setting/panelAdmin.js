@@ -43,6 +43,7 @@ class panelAdmin extends Component {
   async componentDidMount() {
     await this.props.fetchDataCompanies()
     await this.props.fetchDataDesignation({ limit: this.state.rowsPerPage, page: this.state.page })
+    await this.fetchData()
 
     if (this.props.dataCompanies && this.props.admin) {
       this.fetchOptionCompany()
@@ -64,22 +65,8 @@ class panelAdmin extends Component {
 
   fetchData = async () => {
     let label = this.state.labelTab, tempNewDataUsers = []
-
-    await this.props.dataUsers.forEach(user => {
-      let objUser = {
-        userId: user.user_id,
-        company: user.tbl_account_detail.tbl_company !== null ? user.tbl_account_detail.tbl_company.company_name : "",
-        name: user.tbl_account_detail ? user.tbl_account_detail.fullname : "",
-        evaluator1: user.tbl_account_detail.idEvaluator1 ? user.tbl_account_detail.idEvaluator1.tbl_account_detail.initial : "-",
-        evaluator2: user.tbl_account_detail.idEvaluator2 ? user.tbl_account_detail.idEvaluator2.tbl_account_detail.initial : "-",
-        isActive: user.activated,
-        position: user.tbl_account_detail.tbl_position ? user.tbl_account_detail.tbl_position.position : '-',
-        rawData: user
-      }
-      tempNewDataUsers.push(objUser)
-    });
-
-    this.setState({ data: tempNewDataUsers, dataForDisplay: tempNewDataUsers, label })
+    this.setState({ dataForDisplay: [] })
+    this.setState({ data: this.props.dataDesignation, dataForDisplay: this.props.dataDesignation, label })
   }
 
   fetchOptionCompany = async () => {
@@ -178,13 +165,13 @@ class panelAdmin extends Component {
   }
 
   handleChangeTab = async (event, newValue) => {
-    this.setState({ value: newValue, search: '', page: 0 })
+    this.setState({ company: newValue, search: '', page: 0 })
 
     if (newValue === 0) {
       await this.props.fetchDataDesignation({ limit: this.state.rowsPerPage, page: 0 })
       await this.fetchData()
     } else {
-      await this.props.fetchDataDesignation({ limit: this.state.rowsPerPage, page: 0, company: this.state.company })
+      await this.props.fetchDataDesignation({ limit: this.state.rowsPerPage, page: 0, company: this.state.optionCompany[newValue].company_id })
       await this.fetchData()
     }
   };
@@ -208,7 +195,7 @@ class panelAdmin extends Component {
 
               <Paper id="search" style={{ padding: 10, paddingLeft: 20, paddingBottom: 20, marginBottom: 20 }}>
                 <Tabs
-                  value={this.state.value}
+                  value={this.state.company}
                   indicatorColor="secondary"
                   textColor="secondary"
                   onChange={this.handleChangeTab}
@@ -257,7 +244,7 @@ class panelAdmin extends Component {
                   ? <div style={{ textAlign: 'center' }}>
                     <CircularProgress color="secondary" style={{ marginTop: 20 }} />
                   </div>
-                  : this.props.dataDesignation.map((designation, index) =>
+                  : this.state.dataForDisplay.map((designation, index) =>
                     <CardAdmin key={"admin" + index} selectAll={this.state.selectAll} handleCheck={this.handleCheck} refresh={this.refresh} data={designation} />
                   )
               }
