@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 
 import { Grid, Breadcrumbs, Link, FormControl, TextField, Button, FormControlLabel, RadioGroup, Radio, Typography, Select, MenuItem } from '@material-ui/core';
 import ReactSelect from 'react-select';
-import CreatableSelect from 'react-select/creatable';
+// import CreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, convertToRaw, ContentState, convertFromHTML } from 'draft-js';
@@ -31,7 +31,8 @@ class addNotifikasi extends Component {
       department: null,
       employee: null,
       listUser: [],
-      categoryNotifikasi: []
+      categoryNotifikasi: [],
+      optionCompany: []
     };
   }
   async componentDidMount() {
@@ -73,18 +74,41 @@ class addNotifikasi extends Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     if (this.state.inviteOption !== prevState.inviteOption) {
       this.setState({ company: null, department: null })
+    }
+
+    if (this.state.category !== prevState.category) {
+      let optionCompany = []
+      let categorySelected = this.state.categoryNotifikasi.find(el => el.id === this.state.category)
+
+      await categorySelected.admin.forEach(el => {
+        if (el.user_id === this.props.userId) {
+          let check = this.props.dataCompanies.find(element => element.company_id === el.company_id)
+          if (check) optionCompany.push(check)
+        }
+      })
+      this.setState({ optionCompany })
+      // let checkAdmin = el.admin.find(element => element.user_id === this.props.userId)
     }
   }
 
   fetchNotificationCategory = async () => {
     try {
-      let token = Cookies.get('POLAGROUP')
-      let { data } = await API.get(`/notification/category`, { headers: { token } })
+      let token = Cookies.get('POLAGROUP'), datas = []
+      let { data } = await API.get('/notification/category/setting', { headers: { token } })
 
-      this.setState({ categoryNotifikasi: data.data })
+      if (this.props.isAdminsuper) {
+        datas = data.data
+      } else {
+        data.data.forEach(el => {
+          let checkAdmin = el.admin.find(element => element.user_id === this.props.userId)
+          if (checkAdmin) datas.push(el)
+        })
+      }
+
+      this.setState({ categoryNotifikasi: datas })
     } catch (err) {
       if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
         swal('Gagal', 'Koneksi tidak stabil', 'error')
@@ -114,10 +138,9 @@ class addNotifikasi extends Component {
 
   submit = async () => {
     try {
-      let answer = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())), promises = []
-      console.log(this.state)
+      let answer = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
 
-      if (this.state.category && this.state.title && answer && this.state.inviteOption &&
+      if (((!this.props.isAdminsuper && this.state.category) || (this.props.isAdminsuper && ((this.state.isNotifPolaku === 1 && this.state.category) || this.state.isNotifPolaku === 0))) && this.state.title && answer && this.state.inviteOption &&
         (this.state.inviteOption === 'all' ||
           (this.state.inviteOption === 'company' && this.state.company) ||
           (this.state.inviteOption === 'department' && this.state.department))
@@ -189,25 +212,25 @@ class addNotifikasi extends Component {
           }
 
           {
-            (!this.props.isAdminsuper || (this.props.isAdminsuper && this.state.isNotifPolaku)) 
-            ? <Grid id="form-category" style={{ display: 'flex', flexDirection: 'column', marginTop: 10, marginBottom: 20 }}>
-              <b style={{ margin: 0, fontSize: 15 }} htmlFor="pertanyaan">Kategori Notifikasi</b>
-              <FormControl variant="outlined" style={{ width: '100%', height: 40 }} size="small">
-                <Select
-                  value={this.state.category}
-                  onChange={this.handleChange('category')}
-                  disabled={this.state.proses}
-                  style={{ marginTop: 10 }}
-                >
-                  {
-                    this.state.categoryNotifikasi.map((notifikasi, index) =>
-                      <MenuItem value={notifikasi.id} key={"notifikasi" + index}>{notifikasi.name}</MenuItem>
-                    )
-                  }
-                </Select>
-              </FormControl>
-            </Grid>
-            : null
+            (!this.props.isAdminsuper || (this.props.isAdminsuper && this.state.isNotifPolaku))
+              ? <Grid id="form-category" style={{ display: 'flex', flexDirection: 'column', marginTop: 10, marginBottom: 20 }}>
+                <b style={{ margin: 0, fontSize: 15 }} htmlFor="pertanyaan">Kategori Notifikasi</b>
+                <FormControl variant="outlined" style={{ width: '100%', height: 40 }} size="small">
+                  <Select
+                    value={this.state.category}
+                    onChange={this.handleChange('category')}
+                    disabled={this.state.proses}
+                    style={{ marginTop: 10 }}
+                  >
+                    {
+                      this.state.categoryNotifikasi.map((notifikasi, index) =>
+                        <MenuItem value={notifikasi.id} key={"notifikasi" + index}>{notifikasi.name}</MenuItem>
+                      )
+                    }
+                  </Select>
+                </FormControl>
+              </Grid>
+              : null
           }
 
           <Grid id="form-pertanyaan" style={{ display: 'flex', flexDirection: 'column', marginTop: 10, marginBottom: 10 }}>
@@ -279,7 +302,7 @@ class addNotifikasi extends Component {
                     isMulti
                     value={this.state.company}
                     components={animatedComponents}
-                    options={this.props.dataCompanies}
+                    options={this.state.optionCompany}
                     onChange={value => this.handleChangeSelect('company', value)}
                     getOptionLabel={(option) => option.company_name}
                     getOptionValue={(option) => option.company_id}
@@ -320,8 +343,9 @@ class addNotifikasi extends Component {
   }
 }
 
-const mapStateToProps = ({ dataCompanies, dataDepartments, isAdminsuper }) => {
+const mapStateToProps = ({ userId, dataCompanies, dataDepartments, isAdminsuper }) => {
   return {
+    userId,
     dataCompanies,
     dataDepartments,
     isAdminsuper

@@ -74,7 +74,7 @@ function ModalCreateEditPermintaanHRD(props) {
     if (props.listDinas) {
       setCompany(props.listDinas[0].company_id)
     }
-  }, [props.data])
+  }, [props.data, props.listDinas])
 
   useEffect(() => {
     if (!props.data) {
