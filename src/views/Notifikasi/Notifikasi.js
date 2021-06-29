@@ -1,12 +1,14 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Cookies from 'js-cookie';
 
-import { Grid, Paper, Tab, Tabs, Divider, Typography, Box, Button } from '@material-ui/core';
+import { Grid, Paper, Tab, Tabs, Divider, Typography, Box, Button, CircularProgress } from '@material-ui/core';
 import SwipeableViews from 'react-swipeable-views';
+import TimeAgo from "react-timeago";
 
 import swal from 'sweetalert';
-import { API } from '../../config/API';
+import { API, BaseURL } from '../../config/API';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -31,23 +33,25 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-export default class notifikasi extends Component {
+class notifikasi extends Component {
   state = {
     tabNotif: 0,
     category: null,
     categoryNotifikasi: [],
-    limit: 5,
-    page: 0
-
+    limit: 2,
+    page: 0,
+    data: [],
+    canLoadMore: false
   }
 
   async componentDidMount() {
     await this.fetchNotificationCategory()
-    await this.fetchDataNotification()
+    // await this.fetchDataNotification()
   }
 
   async componentDidUpdate(prevProps, prevState) {
-    if (this.state.category !== prevState.category) {
+    if (this.state.category !== prevState.category || this.state.tabNotif !== prevState.tabNotif) {
+      await this.setState({ page: 0, data: [] })
       await this.fetchDataNotification()
     }
   }
@@ -57,7 +61,7 @@ export default class notifikasi extends Component {
     try {
       let token = Cookies.get('POLAGROUP')
       let { data } = await API.get(`/notification/category`, { headers: { token } })
-      console.log(data.data)
+
       this.setState({ categoryNotifikasi: data.data, category: data.data[0].id || null })
     } catch (err) {
       if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
@@ -68,22 +72,32 @@ export default class notifikasi extends Component {
 
   fetchDataNotification = async () => {
     try {
-      let token = Cookies.get('POLAGROUP'), query = []
+      let token = Cookies.get('POLAGROUP'), query = [`page=${this.state.page}&limit=${this.state.limit}`]
 
-      if (this.state.tabNotif === 0) query.push(`is-notif-polaku=1`)
+      if (this.state.tabNotif === 0) {
+        query.push(`is-notif-polaku=1`)
+        if (this.state.category !== null) query.push(`category-notification=${this.state.category}`)
+      }
       else query.push(`is-notif-polaku=0`)
-
-      if (this.state.category !== null) query.push(`category-notification=${this.state.category}`)
 
       query.length > 0 ? query = query.join('&') : query = ''
 
       let { data } = await API.get(`/notification?${query}`, { headers: { token } })
 
-      console.log(data.data)
-      // let { data }
+      if (data.data.length > 0) {
+        this.setState({ data: [...this.state.data, ...data.data], canLoadMore: true })
+      } else {
+        this.setState({ canLoadMore: false })
+      }
     } catch (err) {
-      console.log(err)
+      // console.log(err)
     }
+  }
+
+  _loadMore = async () => {
+    await this.setState({ page: this.state.page + 1, prosesLoadMore: true })
+    await this.fetchDataNotification()
+    await this.setState({ prosesLoadMore: false })
   }
 
   render() {
@@ -105,7 +119,10 @@ export default class notifikasi extends Component {
               <Tab label="Polaku" style={{ color: '#d71149', maxWidth: 150 }} />
               <Tab label="Update" style={{ color: '#d71149', maxWidth: 150 }} />
             </Tabs>
-            <img src={require('../../Assets/settings.png').default} loading="lazy" alt="address" width={25} maxHeight={25} style={{ alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/notifikasi/setting')} />
+            {
+              (this.props.isAdminNotification || this.props.isAdminsuper) &&
+              <img src={require('../../Assets/settings.png').default} loading="lazy" alt="address" width={25} maxHeight={25} style={{ alignSelf: 'center', cursor: 'pointer' }} onClick={() => this.props.history.push('/notifikasi/setting')} />
+            }
           </Grid>
           <Divider />
 
@@ -127,201 +144,106 @@ export default class notifikasi extends Component {
               <Divider />
 
               <Grid style={{ maxHeight: 500, overflowX: 'auto' }}>
-                <Grid>
-                  <Grid onClick={() => this.props.history.push('/notifikasi/1')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-                    <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                      <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                      <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                    </Grid>
-                    <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                    <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                  </Grid>
-                  <Divider />
-                </Grid>
-                <Grid>
-                  <Grid onClick={() => this.props.history.push('/notifikasi/1')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-                    <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                      <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                      <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                    </Grid>
-                    <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                    <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                  </Grid>
-                  <Divider />
-                </Grid>
-                <Grid>
-                  <Grid onClick={() => this.props.history.push('/notifikasi/1')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-                    <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                      <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                      <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                    </Grid>
-                    <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                    <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                  </Grid>
-                  <Divider />
-                </Grid>
-                <Grid>
-                  <Grid onClick={() => this.props.history.push('/notifikasi/1')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-                    <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                      <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                      <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                    </Grid>
-                    <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                    <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                  </Grid>
-                  <Divider />
-                </Grid>
-                <Grid>
-                  <Grid onClick={() => this.props.history.push('/notifikasi/1')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-                    <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                      <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                      <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                    </Grid>
-                    <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                    <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                  </Grid>
-                  <Divider />
-                </Grid>
-                <Grid>
-                  <Grid onClick={() => this.props.history.push('/notifikasi/1')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-                    <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                      <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                      <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                    </Grid>
-                    <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                    <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                  </Grid>
-                  <Divider />
-                </Grid>
-                <Grid>
-                  <Grid onClick={() => this.props.history.push('/notifikasi/1')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-                    <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                      <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                      <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                    </Grid>
-                    <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                    <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                  </Grid>
-                  <Divider />
-                </Grid>
-                <Grid>
-                  <Grid onClick={() => this.props.history.push('/notifikasi/1')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-                    <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                      <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                      <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                    </Grid>
-                    <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                    <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                  </Grid>
-                  <Divider />
+                {
+                  this.state.data.length > 0 &&
+                  this.state.data.map(notif =>
+                    <>
+                      <Grid style={{
+                        padding: '10px 15px',
+                        backgroundColor: !notif.read
+                          ? "#ffebeb"
+                          : "white",
+                        cursor: 'pointer'
+                      }}>
+                        <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
+                          <p style={{ margin: 0, marginRight: 5 }}>{notif.tbl_notification_category ? notif.tbl_notification_category.name : (notif.title || notif.value)}</p>
+                          {
+                            notif.tbl_notification_category && notif.tbl_notification_category.icon
+                              ? <img
+                                src={`${BaseURL}/${notif.tbl_notification_category.icon}`}
+                                alt="Logo"
+                                width={10}
+                                height={10}
+                                style={{ marginBottom: 5, marginRight: 5 }}
+                              />
+                              : null
+                          }
+                          <TimeAgo
+                            date={notif.created_at}
+                            style={{ fontSize: 12, color: 'gray' }}
+                          />
+                        </Grid>
+                        <b style={{ fontSize: 15, margin: '5px 0px' }}>{notif.title || notif.value}</b>
+                        {/* <p style={{ margin: 0, fontSize: 13 }}>{notif.description.replace(/<[^>]*>?/gm, '').replace('&nbsp;', '')}</p> */}
+                        <Grid dangerouslySetInnerHTML={{ __html: notif.description }} style={{ fontSize: 13 }} />
+                      </Grid>
+                      <Divider />
+                    </>
+                  )
+                }
+                <Grid style={{ textAlign: 'center', margin: 20 }}>
+                  {
+                    this.state.prosesLoadMore
+                      ? <CircularProgress />
+                      : this.state.canLoadMore && <Button variant="contained" color="secondary" onClick={this._loadMore} >Load More</Button>
+                  }
                 </Grid>
               </Grid>
             </TabPanel>
 
-            {/* POLAKU */}
+            {/* UPDATED */}
             <TabPanel value={this.state.tabNotif} index={1}>
-              <Grid style={{ display: 'flex', alignItems: 'center', padding: 15 }}>
-                <p style={{ margin: 0, marginRight: 15 }}>Kategori :</p>
-                <Button variant={this.state.category === "HR" ? "contained" : "outlined"} color="secondary" style={{ marginRight: 10, height: 30 }} onClick={() => this.setState({ category: 'HR' })}>HR</Button>
-                <Button variant={this.state.category === "KPI" ? "contained" : "outlined"} color="secondary" style={{ marginRight: 10, height: 30 }} onClick={() => this.setState({ category: 'KPI' })}>KPI</Button>
-              </Grid>
-              <Divider />
-
               <Grid style={{ maxHeight: 500, overflowX: 'auto' }}>
-                <Grid>
-                  <Grid onClick={() => this.props.history.push('/notifikasi/1')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-                    <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                      <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                      <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                    </Grid>
-                    <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                    <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                  </Grid>
-                  <Divider />
-                </Grid>
-                <Grid>
-                  <Grid onClick={() => this.props.history.push('/notifikasi/1')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-                    <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                      <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                      <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                    </Grid>
-                    <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                    <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                  </Grid>
-                  <Divider />
-                </Grid>
-                <Grid>
-                  <Grid onClick={() => this.props.history.push('/notifikasi/1')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-                    <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                      <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                      <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                    </Grid>
-                    <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                    <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                  </Grid>
-                  <Divider />
-                </Grid>
-                <Grid>
-                  <Grid onClick={() => this.props.history.push('/notifikasi/1')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-                    <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                      <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                      <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                    </Grid>
-                    <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                    <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                  </Grid>
-                  <Divider />
-                </Grid>
-                <Grid>
-                  <Grid onClick={() => this.props.history.push('/notifikasi/1')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-                    <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                      <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                      <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                    </Grid>
-                    <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                    <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                  </Grid>
-                  <Divider />
-                </Grid>
-                <Grid>
-                  <Grid onClick={() => this.props.history.push('/notifikasi/1')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-                    <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                      <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                      <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                    </Grid>
-                    <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                    <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                  </Grid>
-                  <Divider />
-                </Grid>
-                <Grid>
-                  <Grid onClick={() => this.props.history.push('/notifikasi/1')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-                    <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                      <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                      <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                    </Grid>
-                    <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                    <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                  </Grid>
-                  <Divider />
-                </Grid>
-                <Grid>
-                  <Grid onClick={() => this.props.history.push('/notifikasi/1')} style={{ padding: '10px 15px', cursor: 'pointer' }}>
-                    <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
-                      <p style={{ margin: 0, color: 'gray' }}>HR</p>
-                      <p style={{ margin: 0, marginLeft: 5, color: 'gray', fontSize: 12 }}>kemarin</p>
-                    </Grid>
-                    <b style={{ fontSize: 15, margin: '5px 0px' }}>Cuti Bersama Lebaran</b>
-                    <p style={{ margin: 0, fontSize: 13 }}>Dalam rangka lebaran dan idul fitri, PT Pola Inti Perkasa akan cuti Bersama mulai tanggal 13-14 Mei 2021.</p>
-                  </Grid>
-                  <Divider />
+                {
+                  this.state.data.length > 0 &&
+                  this.state.data.map(notif =>
+                    <>
+                      <Grid style={{
+                        padding: '10px 15px',
+                        backgroundColor: !notif.read
+                          ? "#ffebeb"
+                          : "white",
+                        cursor: 'pointer'
+                      }}>
+                        <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
+                          <p style={{ margin: 0, marginRight: 5 }}>{notif.tbl_notification_category ? notif.tbl_notification_category.name : (notif.title || notif.value)}</p>
+                          <TimeAgo
+                            date={notif.created_at}
+                            style={{ fontSize: 12, color: 'gray' }}
+                          />
+                        </Grid>
+                        <b style={{ fontSize: 15, margin: '5px 0px' }}>{notif.title || notif.value}</b>
+                        {/* <p style={{ margin: 0,  }}>{notif.description.replace(/<[^>]*>?/gm, '').replace('&nbsp;', '')}</p> */}
+                        <Grid dangerouslySetInnerHTML={{ __html: notif.description }} style={{ fontSize: 13 }} />
+                      </Grid>
+                      <Divider />
+                    </>
+                  )
+                }
+                <Grid style={{ textAlign: 'center', margin: 20 }}>
+                  {
+                    this.state.prosesLoadMore
+                      ? <CircularProgress />
+                      : this.state.canLoadMore && <Button variant="contained" color="secondary" onClick={this._loadMore} >Load More</Button>
+                  }
                 </Grid>
               </Grid>
             </TabPanel>
           </SwipeableViews>
-          <p style={{ margin: '10px', color: 'gray', cursor: 'pointer' }} onClick={() => this.props.history.push('/notifikasi/create')}>+ tambah notifikasi baru</p>
+          {
+            (this.props.isAdminNotification || this.props.isAdminsuper) &&
+            <p style={{ margin: '10px', color: 'gray', cursor: 'pointer' }} onClick={() => this.props.history.push('/notifikasi/create')}>+ tambah notifikasi baru</p>
+          }
         </Paper>
       </Grid>
     )
   }
 }
+
+const mapStateToProps = ({ isAdminNotification, isAdminsuper }) => {
+  return {
+    isAdminNotification,
+    isAdminsuper
+  }
+}
+export default connect(mapStateToProps)(notifikasi)

@@ -345,7 +345,7 @@ const api = store => next => async action => {
         }
       })
 console.log(getData.data.data)
-      let datas = getData.data.data.filter(el => el.read_inline === 0 && el.read !== 1)
+      let datas = getData.data.data.filter(el => el.read_inline === 0 && el.read === 0)
       next({
         type: 'FETCH_DATA_NOTIFICATION_SUCCESS',
         payload: { notif: getData.data.data, newNotif: datas }

@@ -20,7 +20,6 @@ import {
   Collapse,
   Badge,
   Menu,
-  MenuItem,
   Grid,
   Tab,
   Tabs,
@@ -38,9 +37,6 @@ import PersonOutlineOutlinedIcon from "@material-ui/icons/PersonOutlineOutlined"
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import NotificationsNoneIcon from "@material-ui/icons/NotificationsNone";
-import SendIcon from "@material-ui/icons/Send";
-import MeetingRoomIcon from "@material-ui/icons/MeetingRoom";
-import EventIcon from "@material-ui/icons/Event";
 import SettingsOutlinedIcon from "@material-ui/icons/SettingsOutlined";
 import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
 import BarChartIcon from "@material-ui/icons/BarChart";
@@ -48,7 +44,7 @@ import ImportContactsRoundedIcon from "@material-ui/icons/ImportContactsRounded"
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 
 import { setUser, fetchDataNotification, userLogout } from "../store/action";
-import { API } from "../config/API";
+import { API, BaseURL } from "../config/API";
 
 import TimeAgo from "react-timeago";
 
@@ -173,7 +169,7 @@ function Navsidebar(props) {
   const [selectedIndex, setSelectedIndex] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [tabNotif, setTabNotif] = React.useState(0);
-  const [prosesNotif, setProsesNotif] = React.useState(false);
+  // const [prosesNotif, setProsesNotif] = React.useState(false);
 
   function handleDrawerOpen() {
     setOpen(true);
@@ -205,7 +201,6 @@ function Navsidebar(props) {
 
   useEffect(() => {
     async function fetchData() {
-      console.log(new Date())
       let token = Cookies.get("POLAGROUP");
       if (token) {
         API.get("/users/check-token", {
@@ -242,7 +237,8 @@ function Navsidebar(props) {
               isAdminRoom = false,
               isAdminKPIM = false,
               isAdminHR = false,
-              isAdminHelpdesk = false;
+              isAdminHelpdesk = false,
+              isAdminNotification = false;
 
             await data.admin.forEach((admin) => {
               if (admin.tbl_designation) {
@@ -290,6 +286,12 @@ function Navsidebar(props) {
                   (menu) => menu.menu_id === 9
                 );
                 if (checkHelpdesk) isAdminHelpdesk = true;
+
+                let checkNotification = admin.tbl_designation.tbl_user_roles.find(
+                  (menu) => menu.menu_id === 10
+                );
+                if (checkNotification) isAdminNotification = true;
+
               }
             });
 
@@ -302,6 +304,7 @@ function Navsidebar(props) {
             newData.isAdminKPIM = isAdminKPIM;
             newData.isAdminHR = isAdminHR;
             newData.isAdminHelpdesk = isAdminHelpdesk;
+            newData.isAdminNotification = isAdminNotification;
 
             if (data.role_id === 1) {
               newData.isAdminsuper = true;
@@ -515,6 +518,7 @@ function Navsidebar(props) {
   const handleClickNotif = async (event) => {
     let newData = [],
       token = Cookies.get("POLAGROUP");
+
     setAnchorEl(event.currentTarget);
     props.dataNewNotif.forEach((element) => {
       newData.push(element.notifications_id);
@@ -531,7 +535,7 @@ function Navsidebar(props) {
       }
     )
       .then(async (data) => {
-        await props.fetchDataNotification();
+        await props.fetchDataNotification({ page: 0, limit: 10, "is-notif-polaku": tabNotif === 0 ? '1' : '0' });
       })
       .catch((err) => {
         swal("please try again");
@@ -555,21 +559,44 @@ function Navsidebar(props) {
         },
       }
     )
-      .then(async (data) => { })
+      .then(async () => {
+        props.fetchDataNotification({ page: 0, limit: 10, "is-notif-polaku": tabNotif === 0 ? '1' : '0' });
+      })
       .catch((err) => {
         swal("please try again");
       });
   };
 
-  const removeHTML = (str) => {
-    var tmp = document.createElement("DIV")
-    tmp.innerHTML = str
-    return tmp.textContent || tmp.innerText || ""
-  }
-
   const _handleTabNotif = async (args) => {
     setTabNotif(args)
     await props.fetchDataNotification({ page: 0, limit: 10, "is-notif-polaku": args === 0 ? '1' : '0' });
+  }
+
+  const _handleMarkAllHasRead = () => {
+    let newData = [],
+      token = Cookies.get("POLAGROUP");
+
+    props.dataNotification.forEach((element) => {
+      newData.push(element.notifications_id);
+    });
+
+    API.put(
+      "/notification",
+      { notifications_id: newData },
+      {
+        headers: {
+          token,
+          ip: props.ip,
+        },
+      }
+    )
+      .then(async (data) => {
+        await props.fetchDataNotification({ page: 0, limit: 10, "is-notif-polaku": tabNotif === 0 ? '1' : '0' });
+      })
+      .catch((err) => {
+        console.log(err)
+        swal("please try again");
+      });
   }
 
   return (
@@ -633,15 +660,21 @@ function Navsidebar(props) {
                 <Grid style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 15px 10px 15px', alignItems: 'center' }}>
                   <Grid style={{ display: 'flex', alignItems: 'center' }}>
                     <b style={{ fontSize: 18 }}>Notifikasi</b>
-                    <img src={require('../Assets/plus.png').default} loading="lazy" alt="address" width={25} maxHeight={25} style={{ alignSelf: 'center', marginLeft: 10, cursor: 'pointer' }} onClick={() => {
-                      handleClose()
-                      props.history.push('/notifikasi/create')
-                    }} />
+                    {
+                      (props.isAdminNotification || props.isAdminsuper) &&
+                      <img src={require('../Assets/plus.png').default} loading="lazy" alt="address" width={25} maxHeight={25} style={{ alignSelf: 'center', marginLeft: 10, cursor: 'pointer' }} onClick={() => {
+                        handleClose()
+                        props.history.push('/notifikasi/create')
+                      }} />
+                    }
                   </Grid>
-                  <img src={require('../Assets/settings.png').default} loading="lazy" alt="address" width={25} maxHeight={25} style={{ alignSelf: 'center', cursor: 'pointer' }} onClick={() => {
-                    handleClose()
-                    props.history.push('/notifikasi/setting')
-                  }} />
+                  {
+                    (props.isAdminNotification || props.isAdminsuper) && <img src={require('../Assets/settings.png').default} loading="lazy" alt="address" width={25} maxHeight={25} style={{ alignSelf: 'center', cursor: 'pointer' }} onClick={() => {
+                      handleClose()
+                      props.history.push('/notifikasi/setting')
+                    }} />
+                  }
+
                 </Grid>
                 <Divider />
 
@@ -668,9 +701,26 @@ function Navsidebar(props) {
                       props.dataNotification.length > 0 &&
                       props.dataNotification.map(notif =>
                         <>
-                          <Grid style={{ padding: '10px 15px' }}>
+                          <Grid style={{
+                            padding: '10px 15px', backgroundColor: !notif.read
+                              ? "#ffebeb"
+                              : "white",
+                            cursor: 'pointer'
+                          }}
+                            onClick={() => updateStatus(notif.notifications_id)}>
                             <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
                               <p style={{ margin: 0, marginRight: 5 }}>{notif.tbl_notification_category ? notif.tbl_notification_category.name : (notif.title || notif.value)}</p>
+                              {
+                                notif.tbl_notification_category && notif.tbl_notification_category.icon
+                                  ? <img
+                                    src={`${BaseURL}/${notif.tbl_notification_category.icon}`}
+                                    alt="Logo"
+                                    width={10}
+                                    height={10}
+                                    style={{marginBottom: 5, marginRight: 5}}
+                                  />
+                                  : null
+                              }
                               <TimeAgo
                                 date={notif.created_at}
                                 style={{ fontSize: 12, color: 'gray' }}
@@ -688,11 +738,17 @@ function Navsidebar(props) {
 
                   {/* UPDATE */}
                   <TabPanel value={tabNotif} index={1} style={{ height: 200, overflowX: 'auto' }}>
-                  {
+                    {
                       props.dataNotification.length > 0 &&
                       props.dataNotification.map(notif =>
                         <>
-                          <Grid style={{ padding: '10px 15px' }}>
+                          <Grid style={{
+                            padding: '10px 15px', backgroundColor: !notif.read
+                              ? "#ffebeb"
+                              : "white",
+                            cursor: 'pointer'
+                          }}
+                            onClick={() => updateStatus(notif.notifications_id)}>
                             <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
                               <p style={{ margin: 0, marginRight: 5 }}>{notif.tbl_notification_category ? notif.tbl_notification_category.name : (notif.title || notif.value)}</p>
                               <TimeAgo
@@ -714,7 +770,7 @@ function Navsidebar(props) {
 
                 <Divider />
                 <Grid style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Grid style={{ color: '#d71149', width: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', height: 40, cursor: 'pointer' }}>
+                  <Grid style={{ color: '#d71149', width: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', height: 40, cursor: 'pointer' }} onClick={_handleMarkAllHasRead}>
                     Tandai semua dibaca
                   </Grid>
                   <Grid style={{ color: '#d71149', width: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', height: 40, cursor: 'pointer' }} onClick={() => {
@@ -1455,6 +1511,7 @@ const mapStateToProps = ({
   isAdminRoom,
   isAdminKPIM,
   isAdminHR,
+  isAdminNotification,
 }) => {
   return {
     isAdminsuper,
@@ -1476,6 +1533,7 @@ const mapStateToProps = ({
     isAdminRoom,
     isAdminKPIM,
     isAdminHR,
+    isAdminNotification,
   };
 };
 

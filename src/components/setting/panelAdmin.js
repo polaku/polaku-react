@@ -64,7 +64,7 @@ class panelAdmin extends Component {
   }
 
   fetchData = async () => {
-    let label = this.state.labelTab, tempNewDataUsers = []
+    let label = this.state.labelTab
     this.setState({ dataForDisplay: [] })
     this.setState({ data: this.props.dataDesignation, dataForDisplay: this.props.dataDesignation, label })
   }

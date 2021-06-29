@@ -3,13 +3,17 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Cookies from 'js-cookie';
 
-import { Grid, Paper, Tab, Tabs, Divider, Typography, Box, FormControlLabel, Checkbox, TextField, Button, FormControl, Select, MenuItem } from '@material-ui/core';
+import {
+  Grid, Paper, Typography, Box, FormControlLabel, Checkbox, TextField, Button, FormControl, Select, MenuItem,
+  // Tab, Tabs, Divider
+} from '@material-ui/core';
 import ReactSelect from 'react-select';
 import makeAnimated from 'react-select/animated';
-import SwipeableViews from 'react-swipeable-views';
+// import SwipeableViews from 'react-swipeable-views';
 import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
 import swal from 'sweetalert';
+import Loading from '../../components/Loading';
 
 import { API, BaseURL } from '../../config/API';
 import { fetchDataCompanies } from '../../store/action';
@@ -41,6 +45,7 @@ TabPanel.propTypes = {
 
 class SettingNotifikasi extends Component {
   state = {
+    proses: true,
     tabNotif: 1,
     notifikasi: [
       {
@@ -80,10 +85,12 @@ class SettingNotifikasi extends Component {
   }
 
   async componentDidMount() {
+    this.setState({ proses: true })
     await this.props.fetchDataCompanies()
     await this.fetchDataUsers()
     await this.fetchOptionCompany()
     this.fetchSettingNotification()
+    this.setState({ proses: false })
   }
 
   // FETCHING
@@ -104,7 +111,7 @@ class SettingNotifikasi extends Component {
         }
       })
     }
-    console.log(optionCompany)
+
     this.setState({ optionCompany })
   }
 
@@ -129,10 +136,19 @@ class SettingNotifikasi extends Component {
 
   fetchSettingNotification = async () => {
     try {
-      let token = Cookies.get('POLAGROUP')
+      let token = Cookies.get('POLAGROUP'), datas = []
       let { data } = await API.get('/notification/category/setting', { headers: { token } })
 
-      this.setState({ settingNotifikasi: data.data })
+      if (this.props.isAdminsuper) {
+        datas = data.data
+      } else {
+        data.data.forEach(el => {
+          let check = el.admin.find(element => element.user_id === this.props.userId)
+          if (check) datas.push(el)
+        })
+      }
+
+      this.setState({ settingNotifikasi: datas })
     } catch (err) {
       swal('please try again', '', 'error')
     }
@@ -158,7 +174,7 @@ class SettingNotifikasi extends Component {
     newData[index].icon = e.target.files[0]
     newData[index].iconPath = URL.createObjectURL(e.target.files[0])
     await this.setState({ settingNotifikasi: newData })
-    console.log('asdddd')
+
     this.saveSettingNotifikasi(index)
   }
 
@@ -278,7 +294,7 @@ class SettingNotifikasi extends Component {
   // ADMIN NOTIFIKASI
   handleAddAdminNotifikasi = (indexNotif) => {
     let newData = this.state.settingNotifikasi
-    console.log(newData[indexNotif].admin)
+
     newData[indexNotif].addNewAdmin = true
 
     newData[indexNotif].newAdminName = ''
@@ -407,7 +423,10 @@ class SettingNotifikasi extends Component {
 
     return (
       <>
-        <Paper style={{ paddingBottom: 5, marginBottom: 20 }}>
+        {
+          this.state.proses && <Loading loading={this.state.proses} />
+        }
+        {/* <Paper style={{ paddingBottom: 5, marginBottom: 20 }}>
           <Grid style={{ display: 'flex', justifyContent: 'space-between', paddingRight: 20 }}>
             <Tabs
               value={this.state.tabNotif}
@@ -429,11 +448,11 @@ class SettingNotifikasi extends Component {
             style={{ height: '100%' }}>
 
             {/* BIODATA */}
-            <TabPanel value={this.state.tabNotif} index={0} style={{ padding: '10px 20px' }}>
+        {/* <TabPanel value={this.state.tabNotif} index={0} style={{ padding: '10px 20px' }}>
             </TabPanel>
 
             {/* NOTIFIKASI */}
-            <TabPanel value={this.state.tabNotif} index={1} style={{ padding: '10px 20px' }}>
+        {/* <TabPanel value={this.state.tabNotif} index={1} style={{ padding: '10px 20px' }}>
               <p style={{ fontSize: 13, margin: 0 }}>Atur notifikasi yang kamu terima disini</p>
 
               <Grid id="header-top" style={{ display: 'flex', backgroundColor: '#f8f8f8', padding: 10 }}>
@@ -465,7 +484,7 @@ class SettingNotifikasi extends Component {
 
             </TabPanel>
           </SwipeableViews>
-        </Paper>
+        </Paper> */}
 
         {
           this.state.tabNotif === 1 && <>
@@ -578,7 +597,7 @@ class SettingNotifikasi extends Component {
                           </Grid>
 
                           <Grid style={{ width: '20%', textAlign: 'center' }}>
-                            <SaveIcon style={{ color: 'green', width: 30, height: 30, cursor: 'pointer' }} onClick={this.saveAdminNotifikasi(index, indexAdmin)} />
+                            <SaveIcon style={{ color: 'green', width: 30, height: 30, cursor: 'pointer', marginRight: 20 }} onClick={this.saveAdminNotifikasi(index, indexAdmin)} />
                             <CancelIcon style={{ color: 'red', width: 30, height: 30, cursor: 'pointer' }} onClick={() => this.handleCancelAddAmin(index, indexAdmin)} />
                           </Grid>
                         </Grid>
@@ -657,8 +676,9 @@ class SettingNotifikasi extends Component {
   }
 }
 
-const mapStateToProps = ({ isAdminsuper, dataUsers, admin, dataCompanies }) => {
+const mapStateToProps = ({ userId, isAdminsuper, dataUsers, admin, dataCompanies }) => {
   return {
+    userId,
     isAdminsuper,
     dataUsers,
     admin,
