@@ -56,6 +56,15 @@ class cardIndicator extends Component {
     }
   }
 
+  getNumberOfWeek = (date) => {
+    //yyyy-mm-dd (first date in week)
+    var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    var dayNum = d.getUTCDay();
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+  }
+
   fetchData = async () => {
     let persenBefore = 0,
       persenNow = 0,
@@ -73,22 +82,22 @@ class cardIndicator extends Component {
       delete dataNow.tbl_kpim_scores;
 
       if (this.props.data.indicator_kpim.toLowerCase() === "kpim team") {
-        if (isNaN(Math.ceil(dataBefore.score_kpim_monthly))) persenBefore = 0;
+        if (isNaN(Math.ceil(+dataBefore.score_kpim_monthly))) persenBefore = 0;
         else
           persenBefore =
-            Math.round(Math.ceil(dataBefore.score_kpim_monthly)) || 0;
+            Math.round(Math.ceil(+dataBefore.score_kpim_monthly)) || 0;
 
-        if (isNaN(Math.ceil(dataNow.score_kpim_monthly))) persenNow = 0;
-        else persenNow = Math.round(Math.ceil(dataNow.score_kpim_monthly)) || 0;
+        if (isNaN(Math.ceil(+dataNow.score_kpim_monthly))) persenNow = 0;
+        else persenNow = Math.round(Math.ceil(+dataNow.score_kpim_monthly)) || 0;
       } else if (this.props.data.indicator_kpim.toLowerCase() !== "tal") {
-        if (dataBefore.pencapaian_monthly && dataBefore.target_monthly !== 0)
+        if (dataBefore.pencapaian_monthly && +dataBefore.target_monthly !== 0)
           persenBefore = Math.round(
             (Math.ceil(Number(dataBefore.pencapaian_monthly)) /
               Number(dataBefore.target_monthly)) *
             100
           );
 
-        if (dataNow.target_monthly !== 0)
+        if (+dataNow.target_monthly !== 0)
           persenNow = Math.round(
             Math.ceil(
               (Number(dataNow.pencapaian_monthly) /
@@ -97,15 +106,15 @@ class cardIndicator extends Component {
             )
           );
       } else {
-        if (isNaN(Math.ceil(dataBefore.score_kpim_monthly))) persenBefore = 0;
+        if (isNaN(Math.ceil(+dataBefore.score_kpim_monthly))) persenBefore = 0;
         else
           persenBefore =
-            Math.round(Math.ceil(dataBefore.score_kpim_monthly)) || 0;
+            Math.round(Math.ceil(+dataBefore.score_kpim_monthly)) || 0;
 
-        if (isNaN(Math.ceil(dataNow.score_kpim_monthly))) persenNow = 0;
-        else persenNow = Math.round(Math.ceil(dataNow.score_kpim_monthly)) || 0;
+        if (isNaN(Math.ceil(+dataNow.score_kpim_monthly))) persenNow = 0;
+        else persenNow = Math.round(Math.ceil(+dataNow.score_kpim_monthly)) || 0;
       }
-      bobotNow = dataNow.bobot;
+      bobotNow = +dataNow.bobot;
     }
 
     this.setState({
@@ -157,31 +166,6 @@ class cardIndicator extends Component {
   };
 
   render() {
-    function getNumberOfWeek(date) {
-      //yyyy-mm-dd
-      let theDay = date;
-      var target = new Date(theDay);
-      var dayNr = (new Date(theDay).getDay() + 6) % 7;
-
-      target.setDate(target.getDate() - dayNr + 3);
-
-      var reference = new Date(target.getFullYear(), 0, 4);
-      var dayDiff = (target - reference) / 86400000;
-      var weekNr = 1 + Math.ceil(dayDiff / 7);
-
-      return weekNr;
-    }
-
-    // CALENDER GOOGLE
-    // function getNumberOfWeek(date) {
-    //   //yyyy-mm-dd (first date in week)
-    //   var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-    //   var dayNum = d.getUTCDay() || 7;
-    //   d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-    //   var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    //   return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
-    // }
-
     return (
       <>
         <Grid item xs={3} md={2} style={{ padding: 3 }}>
@@ -244,7 +228,7 @@ class cardIndicator extends Component {
                   </p>
                   <p style={{ margin: 0, fontSize: 12 }}>
                     Minggu{" "}
-                    {this.props.weekSelected === getNumberOfWeek(new Date())
+                    {this.props.weekSelected === this.getNumberOfWeek(new Date())
                       ? "ini"
                       : this.props.weekSelected}
                   </p>
@@ -262,39 +246,39 @@ class cardIndicator extends Component {
                 </Grid>
               </Grid>
             ) : (
-                  <>
-                    <p style={{ margin: 0, fontSize: 30 }}>
-                      {Math.floor(this.state.persenNow)}%
+              <>
+                <p style={{ margin: 0, fontSize: 30 }}>
+                  {Math.floor(this.state.persenNow)}%
                 </p>
-                    <Grid style={{ display: "flex", alignItems: "center" }}>
-                      {this.state.persenBefore - this.state.persenNow <= 0 ? (
-                        <ArrowDropUpIcon style={{ color: "green" }} />
-                      ) : (
-                          <ArrowDropDownIcon style={{ color: "red" }} />
-                        )}
+                <Grid style={{ display: "flex", alignItems: "center" }}>
+                  {this.state.persenBefore - this.state.persenNow <= 0 ? (
+                    <ArrowDropUpIcon style={{ color: "green" }} />
+                  ) : (
+                    <ArrowDropDownIcon style={{ color: "red" }} />
+                  )}
 
-                      <p
-                        style={{
-                          margin: "3px 5px 0px 0px",
-                          fontSize: 14,
-                          color:
-                            this.state.persenBefore - this.state.persenNow <= 0
-                              ? "green"
-                              : "#ff3333",
-                        }}
-                      >
-                        {Math.abs(
-                          Math.floor(this.state.persenBefore - this.state.persenNow)
-                        )}
+                  <p
+                    style={{
+                      margin: "3px 5px 0px 0px",
+                      fontSize: 14,
+                      color:
+                        this.state.persenBefore - this.state.persenNow <= 0
+                          ? "green"
+                          : "#ff3333",
+                    }}
+                  >
+                    {Math.abs(
+                      Math.floor(this.state.persenBefore - this.state.persenNow)
+                    )}
                     %
                   </p>
-                      <p style={{ margin: "3px 0px 0px 0px", fontSize: 10 }}>
-                        {" "}
+                  <p style={{ margin: "3px 0px 0px 0px", fontSize: 10 }}>
+                    {" "}
                     dari periode sebelumnya
                   </p>
-                    </Grid>
-                  </>
-                )}
+                </Grid>
+              </>
+            )}
           </Grid>
         </Grid>
 

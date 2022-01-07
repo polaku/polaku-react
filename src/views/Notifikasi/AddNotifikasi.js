@@ -32,7 +32,8 @@ class addNotifikasi extends Component {
       employee: null,
       listUser: [],
       categoryNotifikasi: [],
-      optionCompany: []
+      optionCompany: [],
+      isNotifPolaku: null
     };
   }
   async componentDidMount() {
@@ -103,8 +104,11 @@ class addNotifikasi extends Component {
         datas = data.data
       } else {
         data.data.forEach(el => {
-          let checkAdmin = el.admin.find(element => element.user_id === this.props.userId)
-          if (checkAdmin) datas.push(el)
+          let flag = false
+          if (el.user_id === this.props.userId) flag = true
+
+          let check = el.admin.find(element => element.user_id === this.props.userId)
+          if (check || flag) datas.push(el)
         })
       }
 
@@ -229,6 +233,7 @@ class addNotifikasi extends Component {
                     }
                   </Select>
                 </FormControl>
+                <p style={{ margin: 0, marginTop: 10, color: 'gray' }} htmlFor="pertanyaan">Jika tidak ada pilihan harap menambahkan kategori notifikasi di menu Setting Notifikasi</p>
               </Grid>
               : null
           }

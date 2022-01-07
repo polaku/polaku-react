@@ -16,10 +16,10 @@ import {
   MenuItem,
   Select as SelectOption,
   CircularProgress,
-  // Paper
+  Paper
 } from "@material-ui/core";
 
-// import BarChartIcon from "@material-ui/icons/BarChart";
+import BarChartIcon from "@material-ui/icons/BarChart";
 
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -33,12 +33,12 @@ import { API } from "../config/API";
 
 import swal from "sweetalert";
 
-// import NavTugasku from "../components/navigation/navTugasku";
-// import TableTaskWeek from "../components/kpim/tableTaskWeek";
-// import TableBacklog from "../components/kpim/tableBacklog";
+import NavTugasku from "../components/navigation/navTugasku";
+import TableTaskWeek from "../components/kpim/tableTaskWeek";
+import TableBacklog from "../components/kpim/tableBacklog";
 
-// import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-// import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
 const CardIndicator = lazy(() => import('../components/kpim/cardIndicatorKPIM'));
 const CardItemTAL = lazy(() => import('../components/kpim/cardItemTAL'));
@@ -50,19 +50,18 @@ class DashboardKPIM extends Component {
     this.state = {
       proses: false,
       months: [
-        "",
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
+        "Januari",
+        "Februari",
+        "Maret",
+        "April",
         "Mei",
-        "Jun",
-        "Jul",
-        "Agu",
-        "Sep",
-        "Okt",
-        "Nov",
-        "Des",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember",
       ],
       statusAddNewTal: false,
       chooseWhen: [],
@@ -410,7 +409,6 @@ class DashboardKPIM extends Component {
 
     // ===== FETCH TAL WEEK (START) ===== //
     let talBawahanThisWeek = [];
-
     this.state.listBawahan &&
       (await this.state.listBawahan.forEach(async (element) => {
         //fetch kpim per user
@@ -485,73 +483,67 @@ class DashboardKPIM extends Component {
   };
 
   saveNewTal = async () => {
-    if (this.state.totalWeight + +this.state.weight > 100) {
-      swal("Total bobot TAL lebih dari 100", "", "warning")
-    } else if (isNaN(+this.state.weight)) {
-      swal("Bobot hanya berisi angka", "", "warning")
+    this.setState({
+      proses: true,
+    });
+    let newData = {
+      indicator_tal: this.state.indicator_tal,
+      time: this.state.when,
+      load: this.state.load,
+      weight: this.state.weight,
+      kpim_score_id: this.state.kpimTAL.kpim_score_id,
+
+      isRepeat: 0,
+      forDay: 1,
+      week: this.state.weekSelected,
+      month: new Date().getMonth() + 1,
+      year: new Date().getFullYear(),
+      user_id: this.props.userId,
+    };
+
+    if (this.props.location.state) {
+      newData.user_id = this.props.location.state.userId;
     } else {
-      this.setState({
-        proses: true,
-      });
-      let newData = {
-        indicator_tal: this.state.indicator_tal,
-        time: this.state.when,
-        load: this.state.load,
-        weight: this.state.weight,
-        kpim_score_id: this.state.kpimTAL.kpim_score_id,
-
-        isRepeat: 0,
-        forDay: 1,
-        week: this.state.weekSelected,
-        month: new Date().getMonth() + 1,
-        year: new Date().getFullYear(),
-        user_id: this.props.userId,
-      };
-
-      if (this.props.location.state) {
-        newData.user_id = this.props.location.state.userId;
-      } else {
-        newData.user_id = this.props.userId;
-      }
-
-      let token = Cookies.get("POLAGROUP");
-      API.post("/tal", newData, {
-        headers: {
-          token,
-          ip: this.props.ip,
-        },
-      })
-        .then(async ({ data }) => {
-          await this.fetchData(
-            this.state.monthSelected,
-            this.state.weekSelected,
-            this.props.location.state
-              ? this.props.location.state.userId
-              : this.props.userId
-          );
-          this.setState({
-            indicator_tal: "",
-            when: "",
-            load: "",
-            achievement: "",
-            link: "",
-            statusAddNewTal: false,
-            lastUpdate: new Date(),
-            proses: false,
-          });
-        })
-        .catch((err) => {
-          this.setState({
-            proses: false,
-          });
-
-          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
-            swal('Gagal', 'Koneksi tidak stabil', 'error')
-          } else {
-            swal("please try again");
-          }
-        });
+      newData.user_id = this.props.userId;
     }
+
+    let token = Cookies.get("POLAGROUP");
+    API.post("/tal", newData, {
+      headers: {
+        token,
+        ip: this.props.ip,
+      },
+    })
+      .then(async ({ data }) => {
+        await this.fetchData(
+          this.state.monthSelected,
+          this.state.weekSelected,
+          this.props.location.state
+            ? this.props.location.state.userId
+            : this.props.userId
+        );
+        this.setState({
+          indicator_tal: "",
+          when: "",
+          load: "",
+          achievement: "",
+          link: "",
+          statusAddNewTal: false,
+          lastUpdate: new Date(),
+          proses: false,
+        });
+      })
+      .catch((err) => {
+        this.setState({
+          proses: false,
+        });
+
+        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+          swal('Gagal', 'Koneksi tidak stabil', 'error')
+        } else {
+          swal("please try again");
+        }
+      });
   };
 
   reset = () => {
@@ -676,22 +668,20 @@ class DashboardKPIM extends Component {
               </SelectOption>
             } */}
           </Grid>
-          {/* SELECT MONTH OLD */}
-          {this.state.monthSelected !== null && (
-            <SelectOption
-              value={this.state.monthSelected}
-              onChange={this.handleChange("monthSelected")}
-            >
-              {this.state.months.map((month, index) => (
-                <MenuItem value={index} key={index}>
-                  {month} {new Date().getFullYear()}
-                </MenuItem>
-              ))}
-            </SelectOption>
-          )}
-
-          {/* SELECT MONTH NEW */}
-          {/* <Grid style={{ display: 'flex', alignItems: 'center' }}>
+          {/* {this.state.monthSelected !== null && (
+            // <SelectOption
+            //   value={this.state.monthSelected}
+            //   onChange={this.handleChange("monthSelected")}
+            // >
+            //   {this.state.months.map((month, index) => (
+            //     <MenuItem value={index} key={index}>
+            //       {month} {new Date().getFullYear()}
+            //     </MenuItem>
+            //   ))}
+            // </SelectOption>
+            
+          )} */}
+          <Grid style={{ display: 'flex', alignItems: 'center' }}>
             <Grid style={{ width: 25 }}>
               {
                 this.state.monthSelected > 1 && <NavigateBeforeIcon style={{ cursor: 'pointer' }} onClick={() => this.setState({ monthSelected: this.state.monthSelected - 1 })} />
@@ -703,18 +693,12 @@ class DashboardKPIM extends Component {
                 this.state.monthSelected < 12 && <NavigateNextIcon style={{ cursor: 'pointer' }} onClick={() => this.setState({ monthSelected: this.state.monthSelected + 1 })} />
               }
             </Grid>
-          </Grid> */}
+          </Grid>
         </Grid>
         <Grid
-          container
-          style={{
-            display: "flex",
-            marginBottom: 10,
-            border: "1px solid black",
-            borderRadius: 5,
-          }}
+          container spacing={3} style={{ marginBottom: 10 }}
         >
-          <Grid
+          {/* <Grid
             item
             xs={12}
             md={8}
@@ -750,7 +734,8 @@ class DashboardKPIM extends Component {
               {this.state.currentReward}
             </p>
           </Grid>
-          {/* <Grid item md={6} sm={12}>
+         */}
+          <Grid item md={6} sm={12}>
             <Paper style={{ padding: 10 }}>
               <p style={{ margin: "0px 0px 5px 0px", fontSize: 17, fontWeight: 'bold' }}>
                 Performa KPIM
@@ -799,7 +784,7 @@ class DashboardKPIM extends Component {
                 >{`${this.state.persenKPIM}/100`}</p>
               </Grid>
             </Paper>
-          </Grid> */}
+          </Grid>
 
         </Grid>
         <Grid container style={{ display: "flex" }}>
@@ -830,7 +815,7 @@ class DashboardKPIM extends Component {
         </Grid>
 
         {/* TAL */}
-        <Grid style={{ marginTop: 10, border: "1px solid black" }}>
+        {/* <Grid style={{ marginTop: 10, border: "1px solid black" }}>
           <Grid
             style={{
               display: "flex",
@@ -868,6 +853,7 @@ class DashboardKPIM extends Component {
               }}
             >
               {/* <p style={{ margin: 0, marginBottom: 10, textAlign: 'center' }}>Bobot: {this.state.kpimTAL ? this.state.kpimTAL.bobot : 0}</p> */}
+        {/* 
               <CircularProgressbar
                 value={this.state.persenTAL}
                 text={`${this.state.persenTAL}%`}
@@ -1062,15 +1048,15 @@ class DashboardKPIM extends Component {
             </Grid>
           </Grid>
         </Grid>
-
+      */}
 
 
         {/* TUGASKU */}
-        {/* <Grid style={{ marginTop: 20 }}>
+        <Grid style={{ marginTop: 20 }}>
           <NavTugasku />
           <TableTaskWeek monthSelected={this.state.monthSelected} weekSelected={this.state.weekSelected} />
           <TableBacklog />
-        </Grid> */}
+        </Grid>
       </Grid>
     );
   }

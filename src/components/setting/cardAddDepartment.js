@@ -242,13 +242,25 @@ class cardAddDepartment extends Component {
     }
   };
 
-  deletePosition = index => {
-    let newArray = this.state.position;
-    this.setState({
+  deletePosition = async (index) => {
+    let newArray = this.state.position, selectedUserPosition = [], selectedPosition = [];
+    await this.setState({
       position: []
     });
+    newArray.splice(index, 1)
+
+    newArray.forEach(element => {
+      let selected = this.state.listPosition.find(el => el.value === element.position)
+      let userSelect = this.state.listUser.find(el => el.value === element.user)
+
+      selectedUserPosition.push(userSelect) //user in position
+      selectedPosition.push(selected)
+    })
+
     this.setState({
-      position: newArray
+      position: newArray,
+      selectedUserPosition,
+      selectedPosition
     });
   }
 

@@ -5,7 +5,7 @@ import { TableCell, TableRow, Checkbox, IconButton, Tooltip } from '@material-ui
 
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
-import { API, BaseURL } from '../../config/API';
+import { API } from '../../config/API';
 
 import swal from 'sweetalert';
 import { connect } from 'react-redux';
@@ -142,7 +142,7 @@ class CardReport extends Component {
               <b style={{fontSize:15}}>{this.props.data.name}</b>
               <p style={{ margin: 0 }}>Keterangan: {this.props.data.message}</p>
               {
-                this.props.data.doctor_letter && <a href={`${BaseURL}/${this.props.data.doctor_letter}`} style={{ margin: 0 }}>Lampiran</a>
+                this.props.data.doctor_letter && <a href={`${this.props.data.doctor_letter}`} style={{ margin: 0 }}>Lampiran</a>
               }
             </TableCell>
             <TableCell>{this.state.tglMulai}</TableCell>

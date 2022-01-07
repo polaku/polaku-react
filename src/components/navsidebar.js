@@ -42,6 +42,7 @@ import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
 import BarChartIcon from "@material-ui/icons/BarChart";
 import ImportContactsRoundedIcon from "@material-ui/icons/ImportContactsRounded";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
+import ModalPemberitahuan from './modal/modalPemberitahuan';
 
 import { setUser, fetchDataNotification, userLogout } from "../store/action";
 import { API, BaseURL } from "../config/API";
@@ -165,6 +166,7 @@ function Navsidebar(props) {
   const [openChildHR, setOpenChildHR] = React.useState(false);
   const [openChildKPIM, setOpenChildKPIM] = React.useState(false);
   const [isAtasan, setIsAtasan] = React.useState(false);
+  const [openModalPemberitahuan, setOpenModalPemberitahuan] = React.useState(true);
 
   const [selectedIndex, setSelectedIndex] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -638,8 +640,8 @@ function Navsidebar(props) {
                     <NotificationsIcon />
                   </Badge>
                 ) : (
-                    <NotificationsNoneIcon />
-                  )}
+                  <NotificationsNoneIcon />
+                )}
               </IconButton>
               <Menu
                 id="long-menu"
@@ -717,7 +719,7 @@ function Navsidebar(props) {
                                     alt="Logo"
                                     width={10}
                                     height={10}
-                                    style={{marginBottom: 5, marginRight: 5}}
+                                    style={{ marginBottom: 5, marginRight: 5 }}
                                   />
                                   : null
                               }
@@ -875,22 +877,22 @@ function Navsidebar(props) {
                     </ListItem>
                   </Link>
                 ) : (
-                    <Link
-                      to="/polanews"
-                      onClick={(event) => handleListItemClick(event, 0)}
+                  <Link
+                    to="/polanews"
+                    onClick={(event) => handleListItemClick(event, 0)}
+                  >
+                    <ListItem
+                      aria-label="Polanews"
+                      button
+                      key="Polanews"
+                      selected={selectedIndex === 0}
                     >
-                      <ListItem
-                        aria-label="Polanews"
-                        button
-                        key="Polanews"
-                        selected={selectedIndex === 0}
-                      >
-                        <ListItemIcon style={{ marginLeft: 8 }}>
-                          <ImportContactsRoundedIcon />
-                        </ListItemIcon>
-                      </ListItem>
-                    </Link>
-                  )}
+                      <ListItemIcon style={{ marginLeft: 8 }}>
+                        <ImportContactsRoundedIcon />
+                      </ListItemIcon>
+                    </ListItem>
+                  </Link>
+                )}
               </>
 
               {/* Booking Room */}
@@ -919,28 +921,28 @@ function Navsidebar(props) {
                     </ListItem>
                   </Link>
                 ) : (
-                    <Link
-                      to="/booking-room"
-                      onClick={(event) => handleListItemClick(event, 1)}
-                      style={{ textDecoration: "none", fontWeight: "bold" }}
+                  <Link
+                    to="/booking-room"
+                    onClick={(event) => handleListItemClick(event, 1)}
+                    style={{ textDecoration: "none", fontWeight: "bold" }}
+                  >
+                    <ListItem
+                      aria-label="Booking Room"
+                      button
+                      key="Booking Room"
+                      selected={
+                        selectedIndex === 1 ||
+                        selectedIndex === 1.1 ||
+                        selectedIndex === 1.2 ||
+                        selectedIndex === 1.3
+                      }
                     >
-                      <ListItem
-                        aria-label="Booking Room"
-                        button
-                        key="Booking Room"
-                        selected={
-                          selectedIndex === 1 ||
-                          selectedIndex === 1.1 ||
-                          selectedIndex === 1.2 ||
-                          selectedIndex === 1.3
-                        }
-                      >
-                        <ListItemIcon style={{ marginLeft: 8 }}>
-                          <MeetingRoomOutlinedIcon />
-                        </ListItemIcon>
-                      </ListItem>
-                    </Link>
-                  )}
+                      <ListItemIcon style={{ marginLeft: 8 }}>
+                        <MeetingRoomOutlinedIcon />
+                      </ListItemIcon>
+                    </ListItem>
+                  </Link>
+                )}
 
                 <Collapse
                   in={openChildBookingRoom}
@@ -978,23 +980,23 @@ function Navsidebar(props) {
                         </ListItem>
                       </Link>
                     ) : (
-                        props.isRoomMaster && (
-                          <Link
-                            to="/booking-room/room-assistant"
-                            onClick={(event) => handleListItemClick(event, 1.2)}
-                            style={{ textDecoration: "none", color: "black" }}
+                      props.isRoomMaster && (
+                        <Link
+                          to="/booking-room/room-assistant"
+                          onClick={(event) => handleListItemClick(event, 1.2)}
+                          style={{ textDecoration: "none", color: "black" }}
+                        >
+                          <ListItem
+                            aria-label="Room Assistant"
+                            button
+                            className={classes.nested}
+                            selected={selectedIndex === 1.2}
                           >
-                            <ListItem
-                              aria-label="Room Assistant"
-                              button
-                              className={classes.nested}
-                              selected={selectedIndex === 1.2}
-                            >
-                              <ListItemText primary="Room Assistant" />
-                            </ListItem>
-                          </Link>
-                        )
-                      )}
+                            <ListItemText primary="Room Assistant" />
+                          </ListItem>
+                        </Link>
+                      )
+                    )}
 
                     <Link
                       to="/booking-room/rooms"
@@ -1020,52 +1022,29 @@ function Navsidebar(props) {
                   props.isAdminsuper ||
                     props.isCreatorMaster ||
                     props.isCreatorAssistant ? (
-                      <ListItem
-                        aria-label="Event"
-                        button
-                        key="Event"
-                        onClick={(event) => handleClick(event, "openChildEvent")}
-                        selected={
-                          selectedIndex === 2 ||
-                          selectedIndex === 2.1 ||
-                          selectedIndex === 2.2 ||
-                          selectedIndex === 2.3
-                        }
-                      >
-                        <ListItemIcon>
-                          <EventOutlinedIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Acara" />
-                        {openChildEvent ? <ExpandLess /> : <ExpandMore />}
-                      </ListItem>
-                    ) : (
-                      <Link
-                        to="/event"
-                        onClick={(event) => handleListItemClick(event, 2)}
-                        style={{ textDecoration: "none", color: "black" }}
-                      >
-                        <ListItem
-                          aria-label="Event"
-                          button
-                          key="Event"
-                          selected={
-                            selectedIndex === 2 ||
-                            selectedIndex === 2.1 ||
-                            selectedIndex === 2.2 ||
-                            selectedIndex === 2.3
-                          }
-                        >
-                          <ListItemIcon>
-                            <EventOutlinedIcon />
-                          </ListItemIcon>
-                          <ListItemText primary="Acara" />
-                        </ListItem>
-                      </Link>
-                    )
-                ) : (
+                    <ListItem
+                      aria-label="Event"
+                      button
+                      key="Event"
+                      onClick={(event) => handleClick(event, "openChildEvent")}
+                      selected={
+                        selectedIndex === 2 ||
+                        selectedIndex === 2.1 ||
+                        selectedIndex === 2.2 ||
+                        selectedIndex === 2.3
+                      }
+                    >
+                      <ListItemIcon>
+                        <EventOutlinedIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Acara" />
+                      {openChildEvent ? <ExpandLess /> : <ExpandMore />}
+                    </ListItem>
+                  ) : (
                     <Link
                       to="/event"
                       onClick={(event) => handleListItemClick(event, 2)}
+                      style={{ textDecoration: "none", color: "black" }}
                     >
                       <ListItem
                         aria-label="Event"
@@ -1078,12 +1057,35 @@ function Navsidebar(props) {
                           selectedIndex === 2.3
                         }
                       >
-                        <ListItemIcon style={{ marginLeft: 8 }}>
+                        <ListItemIcon>
                           <EventOutlinedIcon />
                         </ListItemIcon>
+                        <ListItemText primary="Acara" />
                       </ListItem>
                     </Link>
-                  )}
+                  )
+                ) : (
+                  <Link
+                    to="/event"
+                    onClick={(event) => handleListItemClick(event, 2)}
+                  >
+                    <ListItem
+                      aria-label="Event"
+                      button
+                      key="Event"
+                      selected={
+                        selectedIndex === 2 ||
+                        selectedIndex === 2.1 ||
+                        selectedIndex === 2.2 ||
+                        selectedIndex === 2.3
+                      }
+                    >
+                      <ListItemIcon style={{ marginLeft: 8 }}>
+                        <EventOutlinedIcon />
+                      </ListItemIcon>
+                    </ListItem>
+                  </Link>
+                )}
 
                 <Collapse in={openChildEvent} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
@@ -1135,23 +1137,23 @@ function Navsidebar(props) {
                         </ListItem>
                       </Link>
                     ) : (
-                        props.isCreatorMaster && (
-                          <Link
-                            to="/event/creator-master-and-assistant"
-                            onClick={(event) => handleListItemClick(event, 2.3)}
-                            style={{ textDecoration: "none", color: "black" }}
+                      props.isCreatorMaster && (
+                        <Link
+                          to="/event/creator-master-and-assistant"
+                          onClick={(event) => handleListItemClick(event, 2.3)}
+                          style={{ textDecoration: "none", color: "black" }}
+                        >
+                          <ListItem
+                            aria-label="Creator Assistant"
+                            button
+                            className={classes.nested}
+                            selected={selectedIndex === 2.3}
                           >
-                            <ListItem
-                              aria-label="Creator Assistant"
-                              button
-                              className={classes.nested}
-                              selected={selectedIndex === 2.3}
-                            >
-                              <ListItemText primary="Creator Assistant" />
-                            </ListItem>
-                          </Link>
-                        )
-                      )}
+                            <ListItemText primary="Creator Assistant" />
+                          </ListItem>
+                        </Link>
+                      )
+                    )}
                   </List>
                 </Collapse>
               </>
@@ -1174,28 +1176,10 @@ function Navsidebar(props) {
                       {openChildHR ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
                   ) : (
-                      <Link
-                        to="/hr"
-                        onClick={(event) => handleListItemClick(event, 3)}
-                        style={{ textDecoration: "none", color: "black" }}
-                      >
-                        <ListItem
-                          aria-label="HR"
-                          button
-                          key="HR"
-                          selected={selectedIndex === 3 || selectedIndex === 3.1}
-                        >
-                          <ListItemIcon>
-                            <SupervisorAccountIcon />
-                          </ListItemIcon>
-                          <ListItemText primary="HR" />
-                        </ListItem>
-                      </Link>
-                    )
-                ) : (
                     <Link
                       to="/hr"
                       onClick={(event) => handleListItemClick(event, 3)}
+                      style={{ textDecoration: "none", color: "black" }}
                     >
                       <ListItem
                         aria-label="HR"
@@ -1203,12 +1187,30 @@ function Navsidebar(props) {
                         key="HR"
                         selected={selectedIndex === 3 || selectedIndex === 3.1}
                       >
-                        <ListItemIcon style={{ marginLeft: 8 }}>
+                        <ListItemIcon>
                           <SupervisorAccountIcon />
                         </ListItemIcon>
+                        <ListItemText primary="HR" />
                       </ListItem>
                     </Link>
-                  )}
+                  )
+                ) : (
+                  <Link
+                    to="/hr"
+                    onClick={(event) => handleListItemClick(event, 3)}
+                  >
+                    <ListItem
+                      aria-label="HR"
+                      button
+                      key="HR"
+                      selected={selectedIndex === 3 || selectedIndex === 3.1}
+                    >
+                      <ListItemIcon style={{ marginLeft: 8 }}>
+                        <SupervisorAccountIcon />
+                      </ListItemIcon>
+                    </ListItem>
+                  </Link>
+                )}
 
                 <Collapse in={openChildHR} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
@@ -1266,27 +1268,27 @@ function Navsidebar(props) {
                     {openChildKPIM ? <ExpandLess /> : <ExpandMore />}
                   </ListItem>
                 ) : (
-                    <Link
-                      to="/kpim"
-                      onClick={(event) => handleListItemClick(event, 4)}
+                  <Link
+                    to="/kpim"
+                    onClick={(event) => handleListItemClick(event, 4)}
+                  >
+                    <ListItem
+                      aria-label="KPIM"
+                      button
+                      key="KPIM"
+                      selected={
+                        selectedIndex === 4 ||
+                        selectedIndex === 4.1 ||
+                        selectedIndex === 4.2 ||
+                        selectedIndex === 4.3
+                      }
                     >
-                      <ListItem
-                        aria-label="KPIM"
-                        button
-                        key="KPIM"
-                        selected={
-                          selectedIndex === 4 ||
-                          selectedIndex === 4.1 ||
-                          selectedIndex === 4.2 ||
-                          selectedIndex === 4.3
-                        }
-                      >
-                        <ListItemIcon style={{ marginLeft: 8 }}>
-                          <BarChartIcon />
-                        </ListItemIcon>
-                      </ListItem>
-                    </Link>
-                  )}
+                      <ListItemIcon style={{ marginLeft: 8 }}>
+                        <BarChartIcon />
+                      </ListItemIcon>
+                    </ListItem>
+                  </Link>
+                )}
                 <Collapse in={openChildKPIM} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
                     <Link
@@ -1366,22 +1368,22 @@ function Navsidebar(props) {
                     </ListItem>
                   </Link>
                 ) : (
-                    <Link
-                      to="/helpdesk"
-                      onClick={(event) => handleListItemClick(event, 5)}
+                  <Link
+                    to="/helpdesk"
+                    onClick={(event) => handleListItemClick(event, 5)}
+                  >
+                    <ListItem
+                      aria-label="Helpdesk"
+                      button
+                      key="Helpdesk"
+                      selected={selectedIndex === 5}
                     >
-                      <ListItem
-                        aria-label="Helpdesk"
-                        button
-                        key="Helpdesk"
-                        selected={selectedIndex === 5}
-                      >
-                        <ListItemIcon style={{ marginLeft: 8 }}>
-                          <ContactSupportIcon />
-                        </ListItemIcon>
-                      </ListItem>
-                    </Link>
-                  )}
+                      <ListItemIcon style={{ marginLeft: 8 }}>
+                        <ContactSupportIcon />
+                      </ListItemIcon>
+                    </ListItem>
+                  </Link>
+                )}
               </>
 
               {/* Menu Setting */}
@@ -1412,22 +1414,22 @@ function Navsidebar(props) {
                           </ListItem>
                         </Link>
                       ) : (
-                          <Link
-                            to="/setting"
-                            onClick={(event) => handleListItemClick(event, 99)}
+                        <Link
+                          to="/setting"
+                          onClick={(event) => handleListItemClick(event, 99)}
+                        >
+                          <ListItem
+                            aria-label="Setting"
+                            button
+                            key="Setting"
+                            selected={selectedIndex === 99}
                           >
-                            <ListItem
-                              aria-label="Setting"
-                              button
-                              key="Setting"
-                              selected={selectedIndex === 99}
-                            >
-                              <ListItemIcon style={{ marginLeft: 8 }}>
-                                <SettingsOutlinedIcon />
-                              </ListItemIcon>
-                            </ListItem>
-                          </Link>
-                        )}
+                            <ListItemIcon style={{ marginLeft: 8 }}>
+                              <SettingsOutlinedIcon />
+                            </ListItemIcon>
+                          </ListItem>
+                        </Link>
+                      )}
                     </>
                   )}
               </>
@@ -1458,29 +1460,32 @@ function Navsidebar(props) {
                   </Link>
                 </List>
               ) : (
-                  <List>
-                    <Link
-                      to="/profil"
-                      onClick={(event) => handleListItemClick(event, 100)}
-                      style={{ textDecoration: "none", color: "black" }}
+                <List>
+                  <Link
+                    to="/profil"
+                    onClick={(event) => handleListItemClick(event, 100)}
+                    style={{ textDecoration: "none", color: "black" }}
+                  >
+                    <ListItem
+                      aria-label="Profil"
+                      button
+                      key="Profil"
+                      selected={selectedIndex === 100}
                     >
-                      <ListItem
-                        aria-label="Profil"
-                        button
-                        key="Profil"
-                        selected={selectedIndex === 100}
-                      >
-                        <ListItemIcon style={{ marginLeft: 8 }}>
-                          <MaterialIcon icon="PersonOutlineOutlinedIcon" />
-                        </ListItemIcon>
-                      </ListItem>
-                    </Link>
-                  </List>
-                )}
+                      <ListItemIcon style={{ marginLeft: 8 }}>
+                        <MaterialIcon icon="PersonOutlineOutlinedIcon" />
+                      </ListItemIcon>
+                    </ListItem>
+                  </Link>
+                </List>
+              )}
             </>
           </Drawer>
         </>
       )}
+      {
+        openModalPemberitahuan && <ModalPemberitahuan open={openModalPemberitahuan} close={() => setOpenModalPemberitahuan(false)} history={props.history}/>
+      }
     </div>
   );
 }

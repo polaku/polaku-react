@@ -29,7 +29,7 @@ export default class cardTAL extends Component {
   fetchData = () => {
     let tempScore = 0
     this.props.data.length > 0 && this.props.data.forEach(tal => {
-      tempScore += tal.score_tal
+      tempScore += +tal.score_tal
     });
 
     this.setState({
@@ -68,7 +68,7 @@ export default class cardTAL extends Component {
           </Grid>
         </Grid>
         {
-          this.state.openModal && <ModalDetailTAL status={this.state.openModal} closeModal={this.closeModal} data={this.props.data.TALs} refresh={this.refresh} />
+          this.state.openModal && <ModalDetailTAL status={this.state.openModal} closeModal={this.closeModal} data={this.props.data.TALs} refresh={this.refresh} week={this.props.data.week}/>
         }
 
       </>

@@ -18,11 +18,12 @@ import EditIcon from '@material-ui/icons/Edit';
 import swal from 'sweetalert';
 
 import { API } from '../../config/API';
+import CardSettingIndicator from './cardSettingIndicator';
 
 const ModalReward = lazy(() => import('../modal/modalReward'));
 const ModalSettingTargetKPIM = lazy(() => import('../modal/modalSettingTargetKPIM'));
 const ModalSendGrade = lazy(() => import('../modal/modalSendGrade'));
-const CardSettingIndicator = lazy(() => import('./cardSettingIndicator'));
+// const CardSettingIndicator = lazy(() => import('./cardSettingIndicator'));
 
 class cardSettingUserKPIM extends Component {
   constructor(props) {
@@ -83,7 +84,7 @@ class cardSettingUserKPIM extends Component {
       optionTimeTAL: day
     })
 
-    if ((this.state.KPIM.length === 0 && this.state.TAL.length === 0) || this.state.bobotKPIM < 100 || this.state.bobotTAL < 100 || this.state.adaBobotKPIMYangKosong || this.state.adaWeightTALYangKosong) {
+    if ((this.state.KPIM.length === 0 && this.state.TAL.length === 0) || +this.state.bobotKPIM < 100 || +this.state.bobotTAL < 100 || this.state.adaBobotKPIMYangKosong || this.state.adaWeightTALYangKosong) {
       this.props.setNeedAction(this.props.data.user_id)
     }
     else {
@@ -168,6 +169,15 @@ class cardSettingUserKPIM extends Component {
     }
   }
 
+  getNumberOfWeek = (date) => {
+    //yyyy-mm-dd (first date in week)
+    var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    var dayNum = d.getUTCDay();
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+  }
+
   fetchData = async () => {
     let tempKPIM = [], tempTAL = [], tempBobotKPIM = 0, tempBobotTAL = 0, tempTALMonth = null, statusSudahKirimNilai = false
     this.setState({
@@ -186,15 +196,15 @@ class cardSettingUserKPIM extends Component {
           kpim_id: kpim.kpim_id,
           kpim_score_id: kpimCurrentMonth.kpim_score_id,
           indicator_kpim: kpim.indicator_kpim,
-          target: kpim.target,
+          target: +kpim.target,
           unit: kpim.unit,
           pencapaian: kpim.pencapaian,
           year: kpim.year,
           month: kpimCurrentMonth.month,
-          target_monthly: kpimCurrentMonth.target_monthly,
-          pencapaian_monthly: kpimCurrentMonth.pencapaian_monthly,
-          score_kpim_monthly: kpimCurrentMonth.score_kpim_monthly,
-          bobot: kpimCurrentMonth.bobot,
+          target_monthly: +kpimCurrentMonth.target_monthly,
+          pencapaian_monthly: +kpimCurrentMonth.pencapaian_monthly,
+          score_kpim_monthly: +kpimCurrentMonth.score_kpim_monthly,
+          bobot: +kpimCurrentMonth.bobot,
           score: kpimCurrentMonth.score,
           kpimScore: kpim.kpimScore,
           user_id: kpim.user_id,
@@ -203,7 +213,7 @@ class cardSettingUserKPIM extends Component {
         }
         tempKPIM.push(newScoreKPIM)
 
-        if (kpimCurrentMonth.bobot) tempBobotKPIM += kpimCurrentMonth.bobot
+        if (kpimCurrentMonth.bobot) tempBobotKPIM += +kpimCurrentMonth.bobot
         else this.setState({ adaBobotKPIMYangKosong: true })
 
         if (kpimCurrentMonth.hasConfirm) statusSudahKirimNilai = true
@@ -235,15 +245,15 @@ class cardSettingUserKPIM extends Component {
       TALMonth: tempTALMonth,
       TAL: tempTAL,
       user_id: this.props.data.user_id,
-      bobotKPIM: tempBobotKPIM,
-      bobotTAL: tempBobotTAL,
+      bobotKPIM: +tempBobotKPIM,
+      bobotTAL: +tempBobotTAL,
       statusSudahKirimNilai,
       proses: false
     })
 
     if (tempTALMonth) {
       this.setState({
-        bobot: tempTALMonth.bobot
+        bobot: +tempTALMonth.bobot
       })
     }
   }
@@ -287,7 +297,7 @@ class cardSettingUserKPIM extends Component {
   fetchOptionDateInWeek = () => {
     let date = []
 
-    let awalMingguSekarang = new Date().getDate() - new Date().getDay() + 1
+    let awalMingguSekarang = new Date().getDate() - new Date().getDay()
     let selisihMinggu = this.props.week - this.getNumberOfWeek(new Date())
     for (let i = 1; i <= 7; i++) {
       let newDate = new Date(new Date().getFullYear(), new Date().getMonth(), (awalMingguSekarang + (selisihMinggu * 7)))
@@ -353,7 +363,7 @@ class cardSettingUserKPIM extends Component {
             newDataKPIM: {},
             statusCreateKPIM: false
           })
-          this.props.refresh()
+          await this.props.refresh()
         })
         .catch(err => {
           if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
@@ -385,7 +395,7 @@ class cardSettingUserKPIM extends Component {
 
     if (!statusOverBobot) {
       let token = Cookies.get('POLAGROUP')
-      let weekNow = this.getNumberOfWeek(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()))
+      let weekNow = this.getNumberOfWeek(new Date())
       let firstDateInWeekNow = this.props.firstDateInWeek
 
       if (this.props.week !== weekNow) {
@@ -424,7 +434,7 @@ class cardSettingUserKPIM extends Component {
             newTimeTAL: '',
             newBobotTAL: '',
           })
-          this.props.refresh()
+          await this.props.refresh()
         })
         .catch(err => {
           if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
@@ -439,8 +449,8 @@ class cardSettingUserKPIM extends Component {
     this.setState({ proses: false })
   }
 
-  refresh = () => {
-    this.props.refresh()
+  refresh = async () => {
+    await this.props.refresh()
   }
 
   updateKPIMMonthly = async (event) => {
@@ -449,7 +459,7 @@ class cardSettingUserKPIM extends Component {
     this.setState({ proses: true })
 
     let newData = {
-      bobot: this.state.bobot,
+      bobot: +this.state.bobot,
     }
 
     API.put(`/kpim/${this.state.TALMonth.kpim_score_id}?update=month`, newData, {
@@ -458,13 +468,13 @@ class cardSettingUserKPIM extends Component {
         ip: this.props.ip
       }
     })
-      .then(data => {
+      .then(async data => {
         this.setState({
           editBobotTAL: false,
           proses: false
         })
 
-        this.props.refresh()
+        await this.props.refresh()
       })
       .catch(err => {
         if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
@@ -474,22 +484,6 @@ class cardSettingUserKPIM extends Component {
         }
       })
   }
-
-  getNumberOfWeek = date => {
-    let theDay = date
-    var target = new Date(theDay);
-    var dayNr = (new Date(theDay).getDay() + 6) % 7;
-
-    target.setDate(target.getDate() - dayNr + 3);
-
-    var reference = new Date(target.getFullYear(), 0, 4);
-    var dayDiff = (target - reference) / 86400000;
-    var weekNr = 1 + Math.ceil(dayDiff / 7);
-
-    return weekNr;
-  }
-
-  // CALENDER GOOGLE
 
   kirimNilai = () => {
     swal({
@@ -573,9 +567,10 @@ class cardSettingUserKPIM extends Component {
               </Button>
             </Grid>
             {
-              !this.state.statusSudahKirimNilai && this.state.statusValid && <Button style={{ margin: '0px 0px 0px 30px' }} variant="contained" color="secondary" onClick={this.kirimNilai} disabled={this.state.proses}>
+              // !this.state.statusSudahKirimNilai && this.state.statusValid && <Button style={{ margin: '0px 0px 0px 30px' }} variant="contained" color="secondary" onClick={this.kirimNilai} disabled={this.state.proses}>
+              !this.state.statusSudahKirimNilai && <Button style={{ margin: '0px 0px 0px 30px' }} variant="contained" color="secondary" onClick={this.kirimNilai} disabled={this.state.proses}>
                 Kirim Nilai
-            </Button>
+              </Button>
             }
           </Grid>
 
@@ -593,6 +588,7 @@ class cardSettingUserKPIM extends Component {
 
                     ) &&  */}
                   {
+                    // ((this.state.KPIM.length < 5 && !this.state.statusSudahKirimNilai) || (this.props.userId === 36 || this.props.userId === 1404)) && 
                     this.state.KPIM.length < 5 && !this.state.statusSudahKirimNilai && <Button onClick={this.handleCreateKPIM}
                       style={{ borderRadius: 15, minWidth: 24, backgroundColor: '#e0e0e0', padding: 0 }} disabled={this.state.proses}>
                       <AddIcon />
@@ -654,7 +650,7 @@ class cardSettingUserKPIM extends Component {
               {/* PANEL KPIM */}
               {
                 this.state.openKPIM && this.state.KPIM.map((el, index) =>
-                  <CardSettingIndicator data={el} status="KPIM" key={index} refresh={this.refresh} bobotKPIM={this.state.bobotKPIM} bobotTAL={this.state.bobotTAL} />
+                  <CardSettingIndicator data={el} status="KPIM" key={index} refresh={this.refresh} bobotKPIM={this.state.bobotKPIM} bobotTAL={this.state.bobotTAL} month={this.props.month}/>
                 )
               }
 
@@ -706,6 +702,7 @@ class cardSettingUserKPIM extends Component {
 
                       {/* (!this.state.statusCreateTAL && this.props.weekCurrent <= this.props.week && !this.state.statusSudahKirimNilai) &&  */}
                       {
+                        // (!this.state.statusSudahKirimNilai || (this.props.userId === 36 || this.props.userId === 1404)) && 
                         !this.state.statusSudahKirimNilai && <Button onClick={this.handleCreateTAL}
                           style={{ borderRadius: 15, minWidth: 24, backgroundColor: '#e0e0e0', padding: 0 }} disabled={this.state.proses}>
                           <AddIcon />
@@ -729,7 +726,7 @@ class cardSettingUserKPIM extends Component {
                         </Grid>
                       }
                       {
-                        ((this.state.TALMonth && (this.state.TALMonth.bobot === 0 || this.state.TALMonth.bobot === null)) || this.state.editBobotTAL) && <form onSubmit={this.updateKPIMMonthly}>
+                        ((this.state.TALMonth && (+this.state.TALMonth.bobot === 0 || this.state.TALMonth.bobot === null)) || this.state.editBobotTAL) && <form onSubmit={this.updateKPIMMonthly}>
                           <TextField
                             type="number"
                             label="Bobot"

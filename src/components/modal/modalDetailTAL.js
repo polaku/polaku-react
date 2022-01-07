@@ -45,7 +45,7 @@ export default class modalDetailTAL extends Component {
             overflowY: 'auto'
           }}>
             <Grid style={{ padding: '15px 25px', backgroundColor: '#d71149', color: 'white', fontSize: 18 }}>
-              Week {this.props.data.week}
+              Week {this.props.week}
             </Grid>
             <Table style={{ padding: '14px 16px 14px 16px' }}>
               <TableHead style={{ backgroundColor: '#f8f8f8' }}>

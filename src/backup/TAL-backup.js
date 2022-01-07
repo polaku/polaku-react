@@ -59,6 +59,15 @@ class TAL extends Component {
     this._isMounted = false
   }
 
+  getNumberOfWeek = (date) => {
+    //yyyy-mm-dd (first date in week)
+    var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    var dayNum = d.getUTCDay();
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+  }
+
   fetchData = async (monthSelected) => {
     this.setState({ proses: true })
 
@@ -73,7 +82,7 @@ class TAL extends Component {
         if (talScore) {
           let obj = { ...tal, ...talScore }
           delete obj.tbl_tal_scores
-          persenWeek += talScore.score_tal
+          persenWeek += +talScore.score_tal
           tempTALweek.push(obj)
         }
       })
@@ -98,25 +107,8 @@ class TAL extends Component {
     })
   }
 
-  getNumberOfWeek = date => {
-    //date format yyyy-mm-dd
-    let theDay = date
-    var target = new Date(theDay);
-    var dayNr = (new Date(theDay).getDay() + 6) % 7;
-
-    target.setDate(target.getDate() - dayNr + 3);
-
-    var reference = new Date(target.getFullYear(), 0, 4);
-    var dayDiff = (target - reference) / 86400000;
-    var weekNr = 1 + Math.ceil(dayDiff / 7);
-
-    return weekNr;
-  }
-
-  // CALENDER GOOGLE
-
   handleChange = name => async event => {
-    let mingguAwalBulan = this.getNumberOfWeek(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
+    let mingguAwalBulan = this.getNumberOfWeek(new Date(new Date().getFullYear(), event.target.value, 1))
     if (mingguAwalBulan >= 52) mingguAwalBulan = 1
     this.setState({
       mingguAwalBulan,

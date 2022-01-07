@@ -93,7 +93,7 @@ class pencapaianKPIM extends Component {
             this.props.indicator.toLowerCase() === "tal" || this.props.indicator.toLowerCase() === "kpim team"
               ? <Grid style={{ display: 'flex', justifyContent: 'space-between' }} >
                 <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)}</p>
-                <p style={{ margin: 0, fontSize: 13 }}>{isNaN(this.props.data.score_kpim_monthly) ? 0 : Math.ceil(this.props.data.score_kpim_monthly)} %</p>
+                <p style={{ margin: 0, fontSize: 13 }}>{isNaN(+this.props.data.score_kpim_monthly) ? 0 : Math.ceil(+this.props.data.score_kpim_monthly)} %</p>
               </Grid>
 
               : this.props.indicator.toLowerCase() === "tal team"
@@ -101,7 +101,7 @@ class pencapaianKPIM extends Component {
                   <p style={{ margin: 0, fontSize: 13, color: 'gray', maxWidth: '75%' }}>{this.props.data.fullname}</p>
                   {/* <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{this.props.data.tal[0].fullname}</p>
                     <p style={{ margin: 0, fontSize: 13, color: 'gray' }}>{getMonth(this.props.data.month)}{this.props.year.slice(2, 4)}</p> */}
-                  <p style={{ margin: 0, fontSize: 13 }}>{isNaN(this.props.data.score_tal) ? 0 : Math.round(Math.ceil(this.props.data.score_tal))} %</p>
+                  <p style={{ margin: 0, fontSize: 13 }}>{isNaN(+this.props.data.score_tal) ? 0 : Math.round(Math.ceil(+this.props.data.score_tal))} %</p>
                 </Grid>
                 : this.props.data.pencapaian_monthly
                   ? this.state.editIndicator

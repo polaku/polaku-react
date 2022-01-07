@@ -344,7 +344,7 @@ const api = store => next => async action => {
           token,
         }
       })
-console.log(getData.data.data)
+
       let datas = getData.data.data.filter(el => el.read_inline === 0 && el.read === 0)
       next({
         type: 'FETCH_DATA_NOTIFICATION_SUCCESS',
@@ -494,11 +494,30 @@ console.log(getData.data.data)
           token,
         }
       })
-      else if (action.payload && action.payload["for-report"]) getDataKPIM = await API.get(`/kpim?for-report=true&year=${action.payload.year}&month=${action.payload.month}`, {
-        headers: {
-          token,
+      else if (action.payload && action.payload["for-report"]) {
+        let query = ''
+
+        if (action.payload.userId === 1) query += '&is-superadmin=true'
+        else if (action.payload.isAdminHR) {
+          query += '&is-admin-hr=true'
+          await action.payload.admin.forEach(async el => {
+            let checkHR = await el.tbl_designation?.tbl_user_roles?.find(role => role.menu_id === 8)
+            console.log(checkHR)
+            if (checkHR) query += `&perusahaan=${el.company_id}`
+          })
         }
-      })
+        else if (action.payload.bawahan) {
+          query += '&is-supervisor=true'
+          let asd = [...action.payload.bawahan, ...action.payload.bawahan]
+          asd.forEach(el => query += `&bawahan=${el.user_id}`)
+        }
+
+        getDataKPIM = await API.get(`/kpim?for-report=true&year=${action.payload.year}&month=${action.payload.month}${query}`, {
+          headers: {
+            token,
+          }
+        })
+      }
       else getDataKPIM = await API.get(`/kpim`, {
         headers: {
           token,

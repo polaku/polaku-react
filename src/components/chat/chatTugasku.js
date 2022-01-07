@@ -130,6 +130,7 @@ export default function Index() {
           <IconButton
             aria-label="testimoni"
             onClick={toggleDrawer(anchor, true)}
+            style={{padding:0}}
           >
             <QuestionAnswerOutlinedIcon style={{ color: "#d71149" }} />
           </IconButton>

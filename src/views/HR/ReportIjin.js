@@ -150,6 +150,18 @@ class ReportIjin extends Component {
           label: "sisa_cuti",
           value: "sisaCuti",
         },
+        {
+          label: "keterangan",
+          value: "message",
+        },
+        {
+          label: "status_ijin",
+          value: "status",
+        },
+        {
+          label: "lampiran",
+          value: "doctor_letter",
+        },
       ],
 
       searchName: "",
@@ -370,8 +382,14 @@ class ReportIjin extends Component {
           newData.push(element);
         }
       }
+
+      if(element.status === 'new') element.status = 'Menunggu disetujui evaluator 1'
+      if(element.status === 'new2') element.status = 'Menunggu disetujui evaluator 2'
+      if(element.status === 'approved') element.status = 'Disetujui'
+      if(element.status === 'cancel') element.status = 'Dibatalkan'
     });
 
+    // newData = await newData.filter(el => el.status !== 'cancel')
     this._isMounted && this.setState({
       dataForDisplay: newData,
       data: newData,
@@ -760,16 +778,16 @@ class ReportIjin extends Component {
                     Terbaru <ArrowDropDownOutlinedIcon />
                   </>
                 ) : (
-                    <>
-                      Terlama <ArrowDropUpOutlinedIcon />
-                    </>
-                  )
-              ) : (
                   <>
-                    Terbaru
-                  <ArrowDropDownOutlinedIcon />
+                    Terlama <ArrowDropUpOutlinedIcon />
                   </>
-                )}
+                )
+              ) : (
+                <>
+                  Terbaru
+                  <ArrowDropDownOutlinedIcon />
+                </>
+              )}
             </Button>
           </Grid>
         </Paper>
@@ -798,8 +816,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -814,8 +832,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -830,8 +848,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -846,8 +864,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -862,8 +880,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -878,8 +896,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -940,8 +958,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -956,8 +974,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -972,8 +990,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -988,8 +1006,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1004,8 +1022,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1020,8 +1038,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1082,8 +1100,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1098,8 +1116,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1114,8 +1132,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1130,8 +1148,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1146,8 +1164,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1162,8 +1180,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1224,8 +1242,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1240,8 +1258,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1256,8 +1274,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1272,8 +1290,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1288,8 +1306,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1304,8 +1322,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1366,8 +1384,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1382,8 +1400,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1398,8 +1416,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1414,8 +1432,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1430,8 +1448,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>
@@ -1446,8 +1464,8 @@ class ReportIjin extends Component {
                           this.state.sortDirection === "desc" ? (
                             <ArrowDropUpOutlinedIcon />
                           ) : (
-                              <ArrowDropDownOutlinedIcon />
-                            )
+                            <ArrowDropDownOutlinedIcon />
+                          )
                         ) : null}
                       </Grid>
                     </TableCell>

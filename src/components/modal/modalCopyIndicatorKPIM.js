@@ -57,7 +57,7 @@ class modalCopyIndicatorKPIM extends Component {
     }
 
     this.props.data.kpimScore.forEach(el => {
-      tempMonthly[el.month - 1] = el.target_monthly
+      tempMonthly[el.month - 1] = +el.target_monthly
     })
 
     newData.monthly = tempMonthly

@@ -51,7 +51,7 @@ class cardSettingIndicator extends Component {
       newOptionTimeTAL: 1,
       newTimeTAL: '',
 
-      optionTimeTAL: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+      optionTimeTAL: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
     }
   }
 
@@ -77,6 +77,15 @@ class cardSettingIndicator extends Component {
     }
   }
 
+  getNumberOfWeek = (date) => {
+    //yyyy-mm-dd (first date in week)
+    var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    var dayNum = d.getUTCDay();
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+  }
+
   fetchData = () => {
     this.setState({ proses: true })
     if (this.props.status !== "TAL") {
@@ -85,17 +94,17 @@ class cardSettingIndicator extends Component {
       })
       let persenTahun, persenBulan
       if (this.props.data.targetInverse) {
-        persenTahun = Math.floor(((this.props.data.target - this.props.data.pencapaian) / this.props.data.target) * 100)
+        persenTahun = Math.floor(((+this.props.data.target - +this.props.data.pencapaian) / +this.props.data.target) * 100)
 
         if (this.props.data.score_kpim_monthly) {
-          if (this.props.data.target_monthly < this.props.data.pencapaian_monthly) persenBulan = 0
+          if (+this.props.data.target_monthly < +this.props.data.pencapaian_monthly) persenBulan = 0
           else {
-            persenBulan = Math.floor(((this.props.data.target_monthly - this.props.data.pencapaian_monthly) / this.props.data.target_monthly) * 100)
+            persenBulan = Math.floor(((+this.props.data.target_monthly - +this.props.data.pencapaian_monthly) / +this.props.data.target_monthly) * 100)
           }
         }
       } else {
-        persenTahun = Math.floor((this.props.data.pencapaian / this.props.data.target) * 100)
-        persenBulan = Math.floor((this.props.data.pencapaian_monthly / this.props.data.target_monthly) * 100)
+        persenTahun = Math.floor((+this.props.data.pencapaian / +this.props.data.target) * 100)
+        persenBulan = Math.floor((+this.props.data.pencapaian_monthly / +this.props.data.target_monthly) * 100)
       }
       if (persenBulan > 100) persenBulan = 100
       if (persenTahun > 100) persenTahun = 100
@@ -105,19 +114,19 @@ class cardSettingIndicator extends Component {
 
       if (this.props.data.unit === 'Rp') {
         this.setState({
-          target_monthly: `Rp. ${this.formatRupiah(this.props.data.target_monthly)}`,
-          capaian_monthly: `Rp. ${this.formatRupiah(this.props.data.pencapaian_monthly)}`
+          target_monthly: `Rp. ${this.formatRupiah(+this.props.data.target_monthly)}`,
+          capaian_monthly: `Rp. ${this.formatRupiah(+this.props.data.pencapaian_monthly)}`
         })
       } else {
         this.setState({
-          target_monthly: `${this.props.data.target_monthly} ${this.props.data.unit}`,
-          capaian_monthly: `${this.props.data.pencapaian_monthly} ${this.props.data.unit}`
+          target_monthly: `${+this.props.data.target_monthly} ${this.props.data.unit}`,
+          capaian_monthly: `${+this.props.data.pencapaian_monthly} ${this.props.data.unit}`
         })
       }
       this.setState({
         indicatorKPIM: this.props.data.indicator_kpim,
         capaian: this.props.data.pencapaian_monthly,
-        bobot: this.props.data.bobot,
+        bobot: +this.props.data.bobot,
         persenTahun,
         persenBulan
       })
@@ -179,6 +188,7 @@ class cardSettingIndicator extends Component {
         this.setState({
           dataForEdit: {
             target: allKPIM.data.data.target,
+            is_inverse: allKPIM.data.data.is_inverse,
             unit: allKPIM.data.data.unit,
             year: allKPIM.data.data.year,
             tbl_kpim_scores: allKPIM.data.data.kpimScore,
@@ -206,8 +216,8 @@ class cardSettingIndicator extends Component {
     await this.state.dataForEdit.tbl_kpim_scores.forEach((el, index) => {
       let tempNewTarget = {
         kpim_score_id: el.kpim_score_id,
-        target_monthly: data.monthly[el.month - 1].target_monthly,
-        month: data.monthly[el.month - 1].month
+        target_monthly: +data.monthly[index].target_monthly,
+        month: data.monthly[index].month
       }
       newTarget.push(tempNewTarget)
     })
@@ -220,7 +230,7 @@ class cardSettingIndicator extends Component {
   updateKPIM = async () => {
     let statusOverBobot = false
     this.setState({ proses: true })
-    if (!this.props.data.bobot || this.props.data.bobot === 0 || this.props.data.bobot === null) {
+    if (!this.props.data.bobot || +this.props.data.bobot === 0 || this.props.data.bobot === null) {
       if ((Number(this.props.bobotKPIM) + Number(this.state.bobot)) > 100) {
         statusOverBobot = true
       }
@@ -245,7 +255,7 @@ class cardSettingIndicator extends Component {
           })
 
           newData = {
-            target: allKPIM.data.data.target,
+            target: +allKPIM.data.data.target,
             unit: allKPIM.data.data.unit,
             year: allKPIM.data.data.year,
             tbl_kpim_scores: allKPIM.data.data.kpimScore,
@@ -262,7 +272,7 @@ class cardSettingIndicator extends Component {
 
         newData.monthly.forEach(el => {
           if (Number(el.month) === Number(this.props.data.month)) {
-            el.bobot = this.state.bobot
+            el.bobot = +this.state.bobot
             el.pencapaian_monthly = this.state.capaian
           }
         })
@@ -308,7 +318,7 @@ class cardSettingIndicator extends Component {
   updateKPIMMonthly = async (event) => {
     event.preventDefault()
     let statusOverBobot = false
-    if (!this.props.data.bobot || this.props.data.bobot === 0 || this.props.data.bobot === null) {
+    if (!this.props.data.bobot || +this.props.data.bobot === 0 || this.props.data.bobot === null) {
       if ((Number(this.props.bobotKPIM) + Number(this.state.bobot)) > 100) {
         statusOverBobot = true
       }
@@ -324,7 +334,7 @@ class cardSettingIndicator extends Component {
       let token = Cookies.get('POLAGROUP')
 
       let newData = {
-        bobot: this.state.bobot,
+        bobot: +this.state.bobot,
         pencapaian_monthly: this.state.capaian
       }
       API.put(`/kpim/${this.props.data.kpim_score_id}?update=month`, newData, {
@@ -456,7 +466,7 @@ class cardSettingIndicator extends Component {
   fetchNewOptionTimeTAL = () => {
     let date = []
 
-    let awalMingguSekarang = new Date().getDate() - new Date().getDay() + 1
+    let awalMingguSekarang = new Date().getDate() - new Date().getDay()
     let selisihMinggu = this.props.week - this.getNumberOfWeek(new Date())
 
     for (let i = 1; i <= 7; i++) {
@@ -473,26 +483,10 @@ class cardSettingIndicator extends Component {
     })
   }
 
-  getNumberOfWeek = date => {
-    let theDay = date
-    var target = new Date(theDay);
-    var dayNr = (new Date(theDay).getDay() + 6) % 7;
-
-    target.setDate(target.getDate() - dayNr + 3);
-
-    var reference = new Date(target.getFullYear(), 0, 4);
-    var dayDiff = (target - reference) / 86400000;
-    var weekNr = 1 + Math.ceil(dayDiff / 7);
-
-    return weekNr;
-  }
-
-  // CALENDER GOOGLE
-
   fetchOptionDateInWeek = () => {
     let date = []
 
-    let awalMingguSekarang = new Date().getDate() - new Date().getDay() + 1
+    let awalMingguSekarang = new Date().getDate() - new Date().getDay()
     let selisihMinggu = this.props.week - this.getNumberOfWeek(new Date())
     for (let i = 1; i <= 7; i++) {
       let newDate = new Date(new Date().getFullYear(), new Date().getMonth(), (awalMingguSekarang + (selisihMinggu * 7)))
@@ -648,9 +642,10 @@ class cardSettingIndicator extends Component {
                           }
                         </>
                       }
+                      {/* {
+                        // ((!this.props.data.hasConfirm && new Date() <= new Date(new Date().getFullYear(), this.props.data.month, 8)) || (this.props.userId === 36 || this.props.userId === 1404)) && */}
                       {
-                        (!this.props.data.hasConfirm && new Date() <= new Date(new Date().getFullYear(), this.props.data.month, 7)) &&
-                        <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick} disabled={this.state.proses}>
+                        !this.props.data.hasConfirm && <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick} disabled={this.state.proses}>
                           <MoreHorizIcon />
                         </Button>
                       }
@@ -706,7 +701,7 @@ class cardSettingIndicator extends Component {
                         />
                         <Button style={{ borderRadius: 5, minWidth: 40, color: 'green' }} onClick={this.openModalTargetKPIM}>
                           setting target
-                    </Button>
+                        </Button>
                       </>
                     }
                     <Grid>
@@ -725,10 +720,10 @@ class cardSettingIndicator extends Component {
                     </Grid>
                     <Grid style={{ display: 'flex', alignItems: 'center' }}>
                       {
-                        this.props.data.bobot > 0 && <p style={{ margin: '0px 10px 0px 0px' }}>bobot: {this.props.data.bobot}</p>
+                        +this.props.data.bobot > 0 && <p style={{ margin: '0px 10px 0px 0px' }}>bobot: {this.props.data.bobot}</p>
                       }
                       {
-                        (this.props.data.bobot === 0 || this.props.data.bobot === null) && <form onSubmit={this.updateKPIMMonthly} style={{ display: 'flex' }}>
+                        (+this.props.data.bobot === 0 || this.props.data.bobot === null) && <form onSubmit={this.updateKPIMMonthly} style={{ display: 'flex' }}>
                           <TextField
                             type="number"
                             label="Bobot"
@@ -759,9 +754,9 @@ class cardSettingIndicator extends Component {
                       </Grid>
                       <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
                         {
-                          (this.props.data.bobot !== 0 && this.props.data.bobot !== null)
+                          (+this.props.data.bobot !== 0 && this.props.data.bobot !== null)
                           && (
-                            ((this.props.data.pencapaian_monthly === 0 || this.props.data.pencapaian_monthly === null) && (this.props.data.score_kpim_monthly === 0 || this.props.data.score_kpim_monthly === null)) &&
+                            ((this.props.data.pencapaian_monthly === 0 || this.props.data.pencapaian_monthly === null) && (+this.props.data.score_kpim_monthly === 0 || this.props.data.score_kpim_monthly === null)) &&
                               this.props.data.indicator_kpim.toLowerCase() !== 'kpim team'
                               ? <form onSubmit={this.updateKPIMMonthly} style={{ display: 'flex' }}>
                                 <TextField
@@ -783,13 +778,14 @@ class cardSettingIndicator extends Component {
                           )
                         }
                         {
-                          (this.props.data.bobot !== 0 && this.props.data.bobot !== null && this.props.data.indicator_kpim.toLowerCase() !== 'kpim team') &&
+                          (+this.props.data.bobot !== 0 && this.props.data.bobot !== null && this.props.data.indicator_kpim.toLowerCase() !== 'kpim team') &&
                           <p style={{ margin: '0px 10px 4px 0px', fontSize: 10 }}>/ {this.state.target_monthly}</p>
                         }
                       </Grid>
+                      {/* {
+                        // ((!this.props.data.hasConfirm && new Date() <= new Date(new Date().getFullYear(), this.props.data.month, 8)) || (this.props.userId === 36 || this.props.userId === 1404)) && */}
                       {
-                        (!this.props.data.hasConfirm && new Date() <= new Date(new Date().getFullYear(), this.props.data.month, 8)) &&
-                        <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick}>
+                        !this.props.data.hasConfirm && <Button style={{ borderRadius: 5, minWidth: 40, padding: 0 }} onClick={this.handleClick}>
                           <MoreHorizIcon />
                         </Button>
                       }
@@ -850,7 +846,8 @@ class cardSettingIndicator extends Component {
             closeModal={this.closeModalTargetKPIM}
             indicator={this.state.newIndicatorKPIM}
             submitForm={this.setNewDataKPIM}
-            data={this.state.dataForEdit} />
+            data={this.state.dataForEdit}
+            month={this.props.month}  />
         }
 
         {
@@ -859,7 +856,8 @@ class cardSettingIndicator extends Component {
             closeModal={this.closeModalCopyIndicatorKPIM}
             data={this.props.data}
             userId={this.props.data.user_id}
-            refresh={this.refresh} />
+            refresh={this.refresh}
+            month={this.props.month} />
         }
 
       </>
@@ -867,9 +865,10 @@ class cardSettingIndicator extends Component {
   }
 }
 
-const mapStateToProps = ({ ip }) => {
+const mapStateToProps = ({ ip, userId }) => {
   return {
-    ip
+    ip,
+    userId
   }
 }
 

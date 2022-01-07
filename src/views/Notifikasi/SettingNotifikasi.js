@@ -143,8 +143,11 @@ class SettingNotifikasi extends Component {
         datas = data.data
       } else {
         data.data.forEach(el => {
+          let flag = false
+          if (el.user_id === this.props.userId) flag = true
+
           let check = el.admin.find(element => element.user_id === this.props.userId)
-          if (check) datas.push(el)
+          if (check || flag) datas.push(el)
         })
       }
 

@@ -96,6 +96,15 @@ class panelSetting extends Component {
     this._isMounted = false
   }
 
+  getNumberOfWeek = (date) => {
+    //yyyy-mm-dd (first date in week)
+    var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    var dayNum = d.getUTCDay();
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+  }
+
   fetchData = async (month, week) => {
     let temp = [], tempForDisplay = []
 
@@ -122,7 +131,7 @@ class panelSetting extends Component {
     await tempForDisplay.forEach(async user => {
       let tempScoreKPIMBefore = 0, tempPembagi = 0
       await user.kpim.forEach(async kpim => {
-        tempScoreKPIMBefore += kpim.tbl_kpim_scores[0].score_kpim_monthly
+        tempScoreKPIMBefore += +kpim.tbl_kpim_scores[0].score_kpim_monthly
         tempPembagi += 1
       })
       if (tempPembagi !== 0) user.scoreKPIMBefore = tempScoreKPIMBefore / tempPembagi
@@ -152,22 +161,6 @@ class panelSetting extends Component {
   refresh = () => {
     this.fetchData(this.state.bulan, this.state.minggu)
   }
-
-  getNumberOfWeek = date => {
-    let theDay = date
-    var target = new Date(theDay);
-    var dayNr = (new Date(theDay).getDay() + 6) % 7;
-
-    target.setDate(target.getDate() - dayNr + 3);
-
-    var reference = new Date(target.getFullYear(), 0, 4);
-    var dayDiff = (target - reference) / 86400000;
-    var weekNr = 1 + Math.ceil(dayDiff / 7);
-
-    return weekNr;
-  }
-
-  // CALENDER GOOGLE
 
   setNeedAction = args => {
     let temp = this.state.needAction + 1

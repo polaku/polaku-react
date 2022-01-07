@@ -219,7 +219,8 @@ class cardPermintaanHRD extends Component {
         if (yesAnswer) {
           let newStatus, token = Cookies.get('POLAGROUP')
           if (this.props.data.status === 'new') {
-            newStatus = 'new2'
+            if (this.props.data.evaluator2) newStatus = 'new2'
+            else newStatus = 'approved'
           } else if (this.props.data.status === 'new2') {
             newStatus = 'approved'
           }
@@ -350,15 +351,15 @@ class cardPermintaanHRD extends Component {
                   ? <Grid style={{ textAlign: 'right', margin: 10, marginBottom: 15 }}>
                     <Button color="secondary" onClick={this.handleOpenModal}>
                       ubah
-                </Button>
+                    </Button>
                     <Button variant="contained" color="secondary" onClick={this.cancelPermintaan}>
                       batal
-                </Button>
+                    </Button>
                   </Grid>
                   : <Grid style={{ textAlign: 'right', margin: '0px 10px 15px' }}>
                     <Button variant="contained" color="secondary" onClick={this.cancelPermintaan}>
                       batal
-                </Button>
+                    </Button>
                   </Grid>)
               )
           }
@@ -367,10 +368,10 @@ class cardPermintaanHRD extends Component {
             && <Grid style={{ textAlign: 'right', margin: '0px 10px 15px' }}>
               <Button color="secondary" onClick={this.rejected}>
                 tolak
-            </Button>
+              </Button>
               <Button variant="contained" color="secondary" onClick={this.approved}>
                 setujui
-            </Button>
+              </Button>
             </Grid>
           }
 

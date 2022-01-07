@@ -4,7 +4,7 @@ import {
   Modal, Fade, Grid, Backdrop, Typography, Button, TextField, Select as SelectOption, MenuItem, Checkbox, FormControlLabel
 } from '@material-ui/core';
 
-import swal from 'sweetalert';
+// import swal from 'sweetalert';
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
@@ -31,101 +31,113 @@ export default class modalSettingTargetKPIM extends Component {
       Oct: '',
       Nov: '',
       Dec: '',
+
+      KPIMBulanPertama: 12
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     if (this.props.data) {
-      let Jan = 0, Feb = 0, Mar = 0, Apr = 0, May = 0, Jun = 0, Jul = 0, Aug = 0, Sep = 0, Oct = 0, Nov = 0, Dec = 0
+      let Jan = null, Feb = null, Mar = null, Apr = null, May = null, Jun = null, Jul = null, Aug = null, Sep = null, Oct = null, Nov = null, Dec = null, limit = 11
 
       this.props.data.tbl_kpim_scores.forEach(element => {
         if (element.month === 1) {
           Jan = element.target_monthly
+          if (limit > 0) limit = 0
         } else if (element.month === 2) {
           Feb = element.target_monthly
+          if (limit > 1) limit = 1
         } else if (element.month === 3) {
           Mar = element.target_monthly
+          if (limit > 2) limit = 2
         } else if (element.month === 4) {
           Apr = element.target_monthly
+          if (limit > 3) limit = 3
         } else if (element.month === 5) {
           May = element.target_monthly
+          if (limit > 4) limit = 4
         } else if (element.month === 6) {
           Jun = element.target_monthly
+          if (limit > 5) limit = 5
         } else if (element.month === 7) {
           Jul = element.target_monthly
+          if (limit > 6) limit = 6
         } else if (element.month === 8) {
           Aug = element.target_monthly
+          if (limit > 7) limit = 7
         } else if (element.month === 9) {
           Sep = element.target_monthly
+          if (limit > 8) limit = 8
         } else if (element.month === 10) {
           Oct = element.target_monthly
+          if (limit > 9) limit = 9
         } else if (element.month === 11) {
           Nov = element.target_monthly
+          if (limit > 10) limit = 10
         } else if (element.month === 12) {
           Dec = element.target_monthly
         }
       });
-
-      this.setState({
+      await this.setState({
         tahunSelected: this.props.data.year,
-        targetTahunan: this.props.data.target,
+        targetTahunan: +this.props.data.target,
         unit: this.props.data.unit,
         Jan, Feb, Mar, Apr, May, Jun,
-        Jul, Aug, Sep, Oct, Nov, Dec
+        Jul, Aug, Sep, Oct, Nov, Dec,
+        targetInverse: this.props.data.is_inverse,
+        KPIMBulanPertama: limit,
+        batasBulan: this.props.month - 1 && this.props.month - 1 > limit ? this.props.month - 1 : limit,
       })
     } else {
       let year = new Date().getFullYear(), newTahun = []
       for (let i = year; i < (year + 3); i++) {
         newTahun.push(i)
       }
-      this.setState({ tahun: newTahun })
+      this.setState({ tahun: newTahun, batasBulan: this.props.month - 1 })
     }
-
-    this.setState({
-      batasBulan: this.props.month - 1
-    })
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.targetInverse !== prevState.targetInverse || (this.state.targetTahunan !== prevState.targetTahunan && !this.state.targetInverse)) {
+    if ((this.state.targetInverse !== prevState.targetInverse || (this.state.targetTahunan !== prevState.targetTahunan && !this.state.targetInverse)) && !this.props.data) {
       this.fetchTargetInverse()
     }
 
     if (
-      (this.state.targetTahunan !== prevState.targetTahunan && (this.state.unit === '%' || this.state.unit.toLowerCase() === "persen")) || 
-      (this.state.unit !== prevState.unit && (this.state.unit === '%' || this.state.unit.toLowerCase() === "persen") && this.state.targetTahunan)) {
+      ((this.state.targetTahunan !== prevState.targetTahunan && (this.state.unit === '%' || this.state.unit.toLowerCase() === "persen")) ||
+        (this.state.unit !== prevState.unit && (this.state.unit === '%' || this.state.unit.toLowerCase() === "persen") && this.state.targetTahunan)) && !this.props.data) {
       this.fetchTargetInverse(true)
     }
   }
 
   fetchTargetInverse = (args) => {
-    if (this.state.targetInverse || args) {
-      let targetMonth = {}
+    if (!this.props.data) {
+      if (this.state.targetInverse || args) {
+        let targetMonth = {}
+        months.forEach((element, index) => {
+          if (this.state.batasBulan <= index) {
+            targetMonth[element] = +this.state.targetTahunan
+          }
+        });
 
-      months.forEach((element, index) => {
-        if (this.state.batasBulan <= index) {
-          targetMonth[element] = this.state.targetTahunan
-        }
-      });
-
-      this.setState({
-        ...targetMonth
-      })
-    } else {
-      this.setState({
-        Jan: '',
-        Feb: '',
-        Mar: '',
-        Apr: '',
-        May: '',
-        Jun: '',
-        Jul: '',
-        Aug: '',
-        Sep: '',
-        Oct: '',
-        Nov: '',
-        Dec: '',
-      })
+        this.setState({
+          ...targetMonth
+        })
+      } else {
+        this.setState({
+          Jan: '',
+          Feb: '',
+          Mar: '',
+          Apr: '',
+          May: '',
+          Jun: '',
+          Jul: '',
+          Aug: '',
+          Sep: '',
+          Oct: '',
+          Nov: '',
+          Dec: '',
+        })
+      }
     }
   }
 
@@ -142,74 +154,56 @@ export default class modalSettingTargetKPIM extends Component {
   };
 
   submitForm = async () => {
-    let perbandingan
+    // if (this.state.unit === '%' || this.state.unit.toLowerCase() === "persen") {
+    //   let pembagi = await this.checkMonthIsEmpty()
+    //   perbandingan = (Number(this.state.Jan) + Number(this.state.Feb) + Number(this.state.Mar) + Number(this.state.Apr) + Number(this.state.May) + Number(this.state.Jun) + Number(this.state.Jul) + Number(this.state.Aug) + Number(this.state.Sep) + Number(this.state.Oct) + Number(this.state.Nov) + Number(this.state.Dec)) / pembagi
 
-    if (this.state.unit === '%' || this.state.unit.toLowerCase() === "persen") {
-      let pembagi = await this.checkMonthIsEmpty()
-      perbandingan = (Number(this.state.Jan) + Number(this.state.Feb) + Number(this.state.Mar) + Number(this.state.Apr) + Number(this.state.May) + Number(this.state.Jun) + Number(this.state.Jul) + Number(this.state.Aug) + Number(this.state.Sep) + Number(this.state.Oct) + Number(this.state.Nov) + Number(this.state.Dec)) / pembagi
+    // } else {
+    //   perbandingan = Number(this.state.Jan) + Number(this.state.Feb) + Number(this.state.Mar) + Number(this.state.Apr) + Number(this.state.May) + Number(this.state.Jun) + Number(this.state.Jul) + Number(this.state.Aug) + Number(this.state.Sep) + Number(this.state.Oct) + Number(this.state.Nov) + Number(this.state.Dec)
+    // }
 
-    } else {
-      perbandingan = Number(this.state.Jan) + Number(this.state.Feb) + Number(this.state.Mar) + Number(this.state.Apr) + Number(this.state.May) + Number(this.state.Jun) + Number(this.state.Jul) + Number(this.state.Aug) + Number(this.state.Sep) + Number(this.state.Oct) + Number(this.state.Nov) + Number(this.state.Dec)
-    }
+    // if (Number(this.state.targetTahunan) === Number(perbandingan) || this.state.targetInverse) {
+    let data = [], limit = this.state.KPIMBulanPertama < this.state.batasBulan ? this.state.KPIMBulanPertama : this.state.batasBulan
 
-    if (Number(this.state.targetTahunan) === Number(perbandingan) || this.state.targetInverse) {
-      let newData = {
-        indicator_kpim: this.props.indicator,
-        target: this.state.targetTahunan,
-        unit: this.state.unit,
-        year: this.state.tahunSelected,
-        is_inverse: this.state.targetInverse,
-        monthly: [
-          { month: 1, target_monthly: this.state.Jan || 0 },
-          { month: 2, target_monthly: this.state.Feb || 0 },
-          { month: 3, target_monthly: this.state.Mar || 0 },
-          { month: 4, target_monthly: this.state.Apr || 0 },
-          { month: 5, target_monthly: this.state.May || 0 },
-          { month: 6, target_monthly: this.state.Jun || 0 },
-          { month: 7, target_monthly: this.state.Jul || 0 },
-          { month: 8, target_monthly: this.state.Aug || 0 },
-          { month: 9, target_monthly: this.state.Sep || 0 },
-          { month: 10, target_monthly: this.state.Oct || 0 },
-          { month: 11, target_monthly: this.state.Nov || 0 },
-          { month: 12, target_monthly: this.state.Dec || 0 }
-        ]
+    await months.forEach((element, index) => {
+      if (limit <= index) {
+
+        data.push({ month: index + 1, target_monthly: this.state[element] || 0 })
+
       }
-      this.props.submitForm(newData)
+    });
 
-      this.setState({
-        tahunSelected: '',
-        targetTahunan: '',
-        unit: '',
-        Jan: '',
-        Feb: '',
-        Mar: '',
-        Apr: '',
-        May: '',
-        Jun: '',
-        Jul: '',
-        Aug: '',
-        Sep: '',
-        Oct: '',
-        Nov: '',
-        Dec: ''
-      })
-    } else {
-      swal("Total target bulanan tidak sesuai dengan target tahunan", "", "warning")
+    let newData = {
+      indicator_kpim: this.props.indicator,
+      target: +this.state.targetTahunan,
+      unit: this.state.unit,
+      year: this.state.tahunSelected,
+      is_inverse: this.state.targetInverse,
+      monthly: data
     }
-  }
 
-  getNumberOfWeek = date => {
-    let theDay = date
-    var target = new Date(theDay);
-    var dayNr = (new Date(theDay).getDay() + 6) % 7;
+    this.props.submitForm(newData)
 
-    target.setDate(target.getDate() - dayNr + 3);
-
-    var reference = new Date(target.getFullYear(), 0, 4);
-    var dayDiff = (target - reference) / 86400000;
-    var weekNr = 1 + Math.ceil(dayDiff / 7);
-
-    return weekNr;
+    this.setState({
+      tahunSelected: '',
+      targetTahunan: '',
+      unit: '',
+      Jan: '',
+      Feb: '',
+      Mar: '',
+      Apr: '',
+      May: '',
+      Jun: '',
+      Jul: '',
+      Aug: '',
+      Sep: '',
+      Oct: '',
+      Nov: '',
+      Dec: ''
+    })
+    // } else {
+    //   swal("Total target bulanan tidak sesuai dengan target tahunan", "", "warning")
+    // }
   }
 
   // CALENDER GOOGLE
@@ -286,10 +280,10 @@ export default class modalSettingTargetKPIM extends Component {
             overflowY: 'auto'
           }}>
             <Grid style={{ display: 'flex', margin: '10px auto 20px auto' }}>
-              <Typography style={{ alignSelf: 'center', fontSize: 35, fontWeight: 'bold', marginRight: 20 }}>Set target untuk</Typography>
+              <Typography style={{ alignSelf: 'center', fontSize: 35, fontWeight: 'bold', marginRight: 15 }}>Set target untuk</Typography>
               {
                 this.props.data
-                  ? <Typography style={{ alignSelf: 'center', fontSize: 35, fontWeight: 'bold', marginRight: 20 }}>{this.props.data.year}</Typography>
+                  ? <Typography style={{ alignSelf: 'center', fontSize: 35, fontWeight: 'bold' }}>{this.props.data.year}</Typography>
                   : <SelectOption
                     value={this.state.tahunSelected}
                     onChange={this.handleChange('tahunSelected')}
@@ -329,7 +323,6 @@ export default class modalSettingTargetKPIM extends Component {
                 label="Target Inverse (seperti keluhan, reject, kerugian, dll)"
               />
             </Grid>
-
             <p style={{ marginBottom: 0 }}>Target bulanan</p>
             <Grid style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
               {
@@ -342,7 +335,16 @@ export default class modalSettingTargetKPIM extends Component {
                     onChange={this.handleChange(el)}
                     variant="outlined"
                     style={{ width: '32%', marginTop: 13 }}
-                    disabled={this.state.batasBulan > index || this.state.targetTahunan === "" || (this.props.data && this.state[el] === 0) || this.state.targetInverse || this.state.unit === '%' || this.state.unit.toLowerCase() === "persen"}
+                    // disabled={this.state.batasBulan > index || this.state.targetTahunan === "" || (this.props.data && this.state[el] === 0) || this.state.targetInverse || this.state.unit === '%' || this.state.unit.toLowerCase() === "persen"}
+                    disabled={
+                      this.state.batasBulan > index
+                      || this.state.targetTahunan === ""
+                      || (this.props.data && this.state[el] === 0)
+                      || this.state.targetInverse
+                      || (new Date().getMonth() >= index && new Date().getDate() > 5
+                        && new Date().getMonth() !== 0 && this.state.KPIMBulanPertama !== new Date().getMonth()
+                      )
+                    }
                   />
                 )
               }

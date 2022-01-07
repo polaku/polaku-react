@@ -166,10 +166,7 @@ class DashboardKPIM extends Component {
             weekSelected: this.getNumberOfWeek(new Date()),
           });
         } else {
-          let mingguAwalBulan = this.getNumberOfWeek(
-            new Date(new Date().getFullYear(), this.state.monthSelected, 1)
-          );
-
+          let mingguAwalBulan = this.getNumberOfWeek(new Date(new Date().getFullYear(), this.state.monthSelected, 1))
           this.setState({
             weekSelected: mingguAwalBulan,
           });
@@ -238,6 +235,15 @@ class DashboardKPIM extends Component {
 
   componentWillUnmount() {
     this._isMounted = false;
+  }
+
+  getNumberOfWeek = (date) => {
+    //yyyy-mm-dd (first date in week)
+    var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    var dayNum = d.getUTCDay();
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
   }
 
   fetchData = async (monthSelected, weekSelected, userId) => {
@@ -399,7 +405,7 @@ class DashboardKPIM extends Component {
           let talScore = await el.tbl_tal_scores.find(
             (tal_score) => tal_score.week === weekSelected
           );
-          if (talScore) tempTALScore += talScore.score_tal;
+          if (talScore) tempTALScore += +talScore.score_tal;
         });
         let talBawahan = {
           fullname: element.fullname,
@@ -419,7 +425,7 @@ class DashboardKPIM extends Component {
         : null;
     await this.props.dataAllTAL.forEach(async (tal) => {
       await tal.tbl_tal_scores.forEach((tal_score) => {
-        tempTALScore += tal_score.score_tal;
+        tempTALScore += +tal_score.score_tal;
         if (tempWeekBawahan.indexOf(tal_score.week) < 0)
           tempWeekBawahan.push(tal_score.week);
         if (userIdProcessing !== tal.user_id) {
@@ -539,23 +545,6 @@ class DashboardKPIM extends Component {
     });
   };
 
-  getNumberOfWeek = (date) => {
-    //yyyy-mm-dd (first date in week)
-    let theDay = date;
-    var target = new Date(theDay);
-    var dayNr = (new Date(theDay).getDay() + 6) % 7;
-
-    target.setDate(target.getDate() - dayNr + 3);
-
-    var reference = new Date(target.getFullYear(), 0, 4);
-    var dayDiff = (target - reference) / 86400000;
-    var weekNr = 1 + Math.ceil(dayDiff / 7);
-
-    return weekNr;
-  };
-
-  // CALENDER GOOGLE
-
   refresh = async () => {
     await this.fetchData(
       this.state.monthSelected,
@@ -592,7 +581,7 @@ class DashboardKPIM extends Component {
   fetchOptionDateInWeek = (monthSelected, weekSelected) => {
     let date = [];
 
-    let awalMingguSekarang = new Date().getDate() - new Date().getDay() + 1;
+    let awalMingguSekarang = new Date().getDate() - new Date().getDay();
     let selisihMinggu = weekSelected - this.getNumberOfWeek(new Date());
 
     for (let i = 1; i <= 7; i++) {

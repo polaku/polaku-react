@@ -213,8 +213,11 @@ class ReportIjin extends Component {
 
     this.setState({
       monthSelected: new Date().getMonth(),
-      optionYear
+      optionYear,
+      loading: true,
     })
+
+    // await this.fetchData()
   };
 
   async componentDidUpdate(prevProps, prevState) {
@@ -285,7 +288,7 @@ class ReportIjin extends Component {
       })
     }
 
-    if (prevState.weekSelected !== this.state.weekSelected || prevState.yearSelected !== this.state.yearSelected) {
+    if ((prevState.weekSelected !== this.state.weekSelected && prevState.weekSelected !== null) || prevState.yearSelected !== this.state.yearSelected) {
       this.setState({
         loading: true,
         selectAll: false,
@@ -301,10 +304,18 @@ class ReportIjin extends Component {
     }
   };
 
+  getNumberOfWeek = (date) => {
+    //yyyy-mm-dd (first date in week)
+    var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    var dayNum = d.getUTCDay();
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+  }
 
   fetchData = async () => {
     let tempData = [], forDisplay = []
-    await this.props.fetchDataAllKPIM({ 'for-report': true, year: this.state.yearSelected, month: this.state.monthSelected + 1 })
+    await this.props.fetchDataAllKPIM({ 'for-report': true, year: this.state.yearSelected, month: this.state.monthSelected + 1, isAdminHR: this.props.isAdminHR, bawahan: this.props.bawahan, userId: this.props.userId, admin: this.props.admin })
 
     await this.props.dataAllKPIM.sort(this.sortingUser)
     if (this.props.dataAllKPIM.length > 0) {
@@ -403,7 +414,7 @@ class ReportIjin extends Component {
           kpim: tempDataForDisplayKPIM,
           tal: tempTAL,
           nilaiKPI: Math.round(nilaiKPI),
-          nilaiTAL: Math.round(tempTAL.score_kpim_monthly),
+          nilaiTAL: Math.round(+tempTAL.score_kpim_monthly),
           userId: args[0].user_id,
           fullname: args[0].tbl_user.tbl_account_detail.fullname,
           evaluator: args[0].tbl_user.tbl_account_detail.idEvaluator1 ? args[0].tbl_user.tbl_account_detail.idEvaluator1.tbl_account_detail.fullname : '',
@@ -430,7 +441,7 @@ class ReportIjin extends Component {
     let newArr = [null, null, null, null, null], tempTotalNilai = 0, tempDataKPIM = [], tempDataTAL = []
 
     kpim.forEach((el, index) => {
-      newArr[index] = el.score_kpim_monthly
+      newArr[index] = +el.score_kpim_monthly
 
       tempTotalNilai += Number(el.score_kpim_monthly) * (Number(el.bobot) / 100)
     })
@@ -457,7 +468,7 @@ class ReportIjin extends Component {
       }
     ]
 
-    if (tal) dataNilaiReport[0].TAL = tal.score_kpim_monthly
+    if (tal) dataNilaiReport[0].TAL = +tal.score_kpim_monthly
 
     // FETCH DATA KPIM
     await newData.forEach(el => {
@@ -468,7 +479,7 @@ class ReportIjin extends Component {
         nikEvaluator: nikEvaluator,
         namaEvaluator: evaluatorFullname,
         indikator: el ? el.indicator_kpim : "",
-        nilai: el ? Math.round(el.score_kpim_monthly) : "",
+        nilai: el ? Math.round(+el.score_kpim_monthly) : "",
         bulan: this.state.monthSelected + 1,
         tahun: this.state.yearSelected
       }
@@ -485,7 +496,7 @@ class ReportIjin extends Component {
         namaEvaluator: evaluatorFullname,
         tal: el.indicator_tal,
         minggu: el.week,
-        nilai: Math.round(el.score_tal)
+        nilai: Math.round(+el.score_tal)
       }
       tempDataTAL.push(tempObj)
     })
@@ -643,22 +654,6 @@ class ReportIjin extends Component {
     })
   };
 
-  getNumberOfWeek = date => {
-    let theDay = date
-    var target = new Date(theDay);
-    var dayNr = (new Date(theDay).getDay() + 6) % 7;
-
-    target.setDate(target.getDate() - dayNr + 3);
-
-    var reference = new Date(target.getFullYear(), 0, 4);
-    var dayDiff = (target - reference) / 86400000;
-    var weekNr = 1 + Math.ceil(dayDiff / 7);
-
-    return weekNr;
-  };
-
-  // CALENDER GOOGLE
-
   render() {
 
     return (
@@ -686,7 +681,7 @@ class ReportIjin extends Component {
               >
                 <MenuItem value={0}>
                   week sebulan
-                  </MenuItem>
+                </MenuItem>
                 {
                   this.state.optionMinggu.map((el, index) =>
                     <MenuItem value={el} key={index}>{el}</MenuItem>
@@ -877,9 +872,13 @@ const mapDispatchToProps = {
   fetchDataAllKPIM
 }
 
-const mapStateToProps = ({ dataAllKPIM }) => {
+const mapStateToProps = ({ dataAllKPIM, bawahan, isAdminHR, userId, admin }) => {
   return {
-    dataAllKPIM
+    dataAllKPIM,
+    bawahan,
+    isAdminHR,
+    userId,
+    admin
   }
 }
 
