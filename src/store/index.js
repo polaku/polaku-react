@@ -502,7 +502,6 @@ const api = store => next => async action => {
           query += '&is-admin-hr=true'
           await action.payload.admin.forEach(async el => {
             let checkHR = await el.tbl_designation?.tbl_user_roles?.find(role => role.menu_id === 8)
-            console.log(checkHR)
             if (checkHR) query += `&perusahaan=${el.company_id}`
           })
         }

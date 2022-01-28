@@ -277,8 +277,10 @@ function Navsidebar(props) {
                 let checkKPIM = admin.tbl_designation.tbl_user_roles.find(
                   (menu) => menu.menu_id === 7
                 );
-                if (checkKPIM) isAdminKPIM = true;
-
+                if (checkKPIM) {
+                  isAdminKPIM = true;
+                  console.log("ADMIN KPIM");
+                }
                 let checkHR = admin.tbl_designation.tbl_user_roles.find(
                   (menu) => menu.menu_id === 8
                 );
@@ -596,7 +598,7 @@ function Navsidebar(props) {
         await props.fetchDataNotification({ page: 0, limit: 10, "is-notif-polaku": tabNotif === 0 ? '1' : '0' });
       })
       .catch((err) => {
-        console.log(err)
+        // console.log(err)
         swal("please try again");
       });
   }
@@ -701,8 +703,8 @@ function Navsidebar(props) {
                   <TabPanel value={tabNotif} index={0} style={{ height: 200, overflowX: 'auto' }}>
                     {
                       props.dataNotification.length > 0 &&
-                      props.dataNotification.map(notif =>
-                        <>
+                      props.dataNotification.map((notif, index) =>
+                        <Grid key={'notif' + index}>
                           <Grid style={{
                             padding: '10px 15px', backgroundColor: !notif.read
                               ? "#ffebeb"
@@ -733,7 +735,7 @@ function Navsidebar(props) {
                             {/* <Grid dangerouslySetInnerHTML={{ __html: this.state.questionSelected.answer }} /> */}
                           </Grid>
                           <Divider />
-                        </>
+                        </Grid>
                       )
                     }
                   </TabPanel>
@@ -742,8 +744,8 @@ function Navsidebar(props) {
                   <TabPanel value={tabNotif} index={1} style={{ height: 200, overflowX: 'auto' }}>
                     {
                       props.dataNotification.length > 0 &&
-                      props.dataNotification.map(notif =>
-                        <>
+                      props.dataNotification.map((notif, index) =>
+                        <Grid key={'notif-update' + index}>
                           <Grid style={{
                             padding: '10px 15px', backgroundColor: !notif.read
                               ? "#ffebeb"
@@ -763,7 +765,7 @@ function Navsidebar(props) {
                             {/* <Grid dangerouslySetInnerHTML={{ __html: this.state.questionSelected.answer }} /> */}
                           </Grid>
                           <Divider />
-                        </>
+                        </Grid>
                       )
                     }
                   </TabPanel>
@@ -1305,7 +1307,7 @@ function Navsidebar(props) {
                         <ListItemText primary="Tugasku" />
                       </ListItem>
                     </Link>
-                    {(isAtasan || props.isAdminsuper) && (
+                    {(isAtasan || props.isAdminsuper || props.isAdminKPIM) && (
                       <>
                         {(isAtasan ||
                           props.isAdminKPIM ||
@@ -1325,7 +1327,7 @@ function Navsidebar(props) {
                               </ListItem>
                             </Link>
                           )}
-                        {!props.isAdminsuper && (
+                        {isAtasan && (
                           <Link
                             to="/kpim/setting"
                             onClick={(event) => handleListItemClick(event, 4.3)}
@@ -1484,7 +1486,7 @@ function Navsidebar(props) {
         </>
       )}
       {
-        openModalPemberitahuan && <ModalPemberitahuan open={openModalPemberitahuan} close={() => setOpenModalPemberitahuan(false)} history={props.history}/>
+        openModalPemberitahuan && <ModalPemberitahuan open={openModalPemberitahuan} close={() => setOpenModalPemberitahuan(false)} history={props.history} />
       }
     </div>
   );

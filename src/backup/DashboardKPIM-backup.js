@@ -253,11 +253,25 @@ class DashboardKPIM extends Component {
 
   getNumberOfWeek = (date) => {
     //yyyy-mm-dd (first date in week)
-    var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-    var dayNum = d.getUTCDay();
-    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+    if (new Date().getFullYear() === 2021) {
+      let theDay = date;
+      var target = new Date(theDay);
+      var dayNr = (new Date(theDay).getDay() + 6) % 7;
+
+      target.setDate(target.getDate() - dayNr + 3);
+
+      var reference = new Date(target.getFullYear(), 0, 4);
+      var dayDiff = (target - reference) / 86400000;
+      var weekNr = 1 + Math.ceil(dayDiff / 7);
+
+      return weekNr;
+    } else {
+      var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+      var dayNum = d.getUTCDay();
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+      var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+    }
   }
 
   fetchData = async (monthSelected, weekSelected, userId) => {

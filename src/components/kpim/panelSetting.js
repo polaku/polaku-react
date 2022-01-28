@@ -50,9 +50,9 @@ class panelSetting extends Component {
         loopingWeek.push(batasBawah)
       }
 
-      if (batasAtas === 53) {
-        loopingWeek[loopingWeek.length - 1] = 1
-      }
+      // if (batasAtas === 53) {
+      //   loopingWeek[loopingWeek.length - 1] = 1
+      // }
 
       this.setState({
         optionMinggu: loopingWeek,
@@ -80,9 +80,9 @@ class panelSetting extends Component {
         loopingWeek.push(i)
       }
 
-      if (batasAtas === 53) {
-        loopingWeek[loopingWeek.length - 1] = 1
-      }
+      // if (batasAtas === 53) {
+      //   loopingWeek[loopingWeek.length - 1] = 1
+      // }
 
       this.setState({
         optionMinggu: loopingWeek,
@@ -98,11 +98,25 @@ class panelSetting extends Component {
 
   getNumberOfWeek = (date) => {
     //yyyy-mm-dd (first date in week)
-    var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-    var dayNum = d.getUTCDay();
-    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+    if (new Date().getFullYear() === 2021) {
+      let theDay = date;
+      var target = new Date(theDay);
+      var dayNr = (new Date(theDay).getDay() + 6) % 7;
+
+      target.setDate(target.getDate() - dayNr + 3);
+
+      var reference = new Date(target.getFullYear(), 0, 4);
+      var dayDiff = (target - reference) / 86400000;
+      var weekNr = 1 + Math.ceil(dayDiff / 7);
+
+      return weekNr;
+    } else {
+      var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+      var dayNum = d.getUTCDay();
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+      var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+    }
   }
 
   fetchData = async (month, week) => {
@@ -130,9 +144,11 @@ class panelSetting extends Component {
 
     await tempForDisplay.forEach(async user => {
       let tempScoreKPIMBefore = 0, tempPembagi = 0
-      await user.kpim.forEach(async kpim => {
-        tempScoreKPIMBefore += +kpim.tbl_kpim_scores[0].score_kpim_monthly
-        tempPembagi += 1
+      await user.kpim.forEach(async (kpim, index) => {
+        if (kpim.tbl_kpim_scores[0]?.month === +month - 1) {
+          tempScoreKPIMBefore += +kpim.tbl_kpim_scores[0].score_kpim_monthly
+          tempPembagi += 1
+        }
       })
       if (tempPembagi !== 0) user.scoreKPIMBefore = tempScoreKPIMBefore / tempPembagi
       else user.scoreKPIMBefore = 0
@@ -142,9 +158,9 @@ class panelSetting extends Component {
   }
 
   fetchWeek = () => {
-    let i = 1, arr = []
+    let i = 1, arr = [], limit = this.getNumberOfWeek(new Date(new Date().getFullYear() + 1, 0, 0))
 
-    for (; i <= 52; i++) {
+    for (; i <= limit; i++) {
       arr.push(i)
     }
     this.setState({ optionMinggu: arr })
@@ -225,7 +241,7 @@ class panelSetting extends Component {
                 <FormControl >
                   <InputLabel>
                     Bulan
-                </InputLabel>
+                  </InputLabel>
                   <SelectOption
                     value={this.state.bulan}
                     onChange={this.handleChange('bulan')}
@@ -245,7 +261,7 @@ class panelSetting extends Component {
                 <FormControl >
                   <InputLabel>
                     Minggu
-                </InputLabel>
+                  </InputLabel>
                   <SelectOption
                     value={this.state.minggu}
                     onChange={this.handleChange('minggu')}
