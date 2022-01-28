@@ -277,10 +277,8 @@ function Navsidebar(props) {
                 let checkKPIM = admin.tbl_designation.tbl_user_roles.find(
                   (menu) => menu.menu_id === 7
                 );
-                if (checkKPIM) {
-                  isAdminKPIM = true;
-                  console.log("ADMIN KPIM");
-                }
+                if (checkKPIM) isAdminKPIM = true;
+
                 let checkHR = admin.tbl_designation.tbl_user_roles.find(
                   (menu) => menu.menu_id === 8
                 );
