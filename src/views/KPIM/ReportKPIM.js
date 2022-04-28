@@ -329,6 +329,7 @@ class ReportIjin extends Component {
 
   fetchData = async () => {
     let tempData = [], forDisplay = []
+    console.log(this.props.bawahan)
     await this.props.fetchDataAllKPIM({ 'for-report': true, year: this.state.yearSelected, month: this.state.monthSelected + 1, isAdminHR: this.props.isAdminHR, bawahan: this.props.bawahan, userId: this.props.userId, admin: this.props.admin })
 
     await this.props.dataAllKPIM.sort(this.sortingUser)

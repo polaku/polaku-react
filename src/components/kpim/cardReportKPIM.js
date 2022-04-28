@@ -229,7 +229,7 @@ export default class cardReport extends Component {
                         <TableRow >
                           <TableCell style={{ alignItems: 'center', width: '40%', fontSize: 14, fontWeight: 'bold' }}>
                             KPIM
-                      </TableCell>
+                          </TableCell>
                           <TableCell style={{ width: '15%', fontSize: 14, fontWeight: 'bold' }}>target</TableCell>
                           <TableCell style={{ width: '15%', fontSize: 14, fontWeight: 'bold' }}>actual</TableCell>
                           <TableCell style={{ width: '10%', fontSize: 14, fontWeight: 'bold' }}>%ach</TableCell>
@@ -245,7 +245,7 @@ export default class cardReport extends Component {
                             </TableCell>
                             <TableCell style={{ width: '15%' }}>{el.target_monthly}</TableCell>
                             <TableCell style={{ width: '15%' }}>{el.pencapaian_monthly}</TableCell>
-                            <TableCell style={{ width: '10%' }}>{isNaN((Number(el.pencapaian_monthly) / Number(el.target_monthly)) * 100) ? 0 : (Math.round((Number(el.pencapaian_monthly) / Number(el.target_monthly)) * 100))}%</TableCell>
+                            <TableCell style={{ width: '10%' }}>{el.indicator_kpim.toLowerCase() === 'kpim team' ? el.pencapaian_monthly : isNaN((Number(el.pencapaian_monthly) / Number(el.target_monthly)) * 100) ? 0 : (Math.round((Number(el.pencapaian_monthly) / Number(el.target_monthly)) * 100))}%</TableCell>
                             <TableCell style={{ width: '5%' }}>{el.bobot}%</TableCell>
                             <TableCell style={{ width: '5%' }}>{isNaN(Number(el.score_kpim_monthly) * (Number(el.bobot) / 100)) ? 0 : (Math.round(Number(el.score_kpim_monthly) * (Number(el.bobot) / 100)))}</TableCell>
                           </TableRow>)
@@ -288,7 +288,7 @@ export default class cardReport extends Component {
                           <TableRow >
                             <TableCell style={{ alignItems: 'center', width: '40%', fontSize: 14, fontWeight: 'bold' }}>
                               TAL
-                      </TableCell>
+                            </TableCell>
                             <TableCell style={{ width: '15%', fontSize: 14, fontWeight: 'bold' }}>when</TableCell>
                             <TableCell style={{ width: '15%', fontSize: 14, fontWeight: 'bold' }}>week</TableCell>
                             <TableCell style={{ width: '10%', fontSize: 14, fontWeight: 'bold' }}>%ach</TableCell>

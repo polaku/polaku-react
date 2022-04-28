@@ -33,7 +33,7 @@ import { API } from "../config/API";
 
 import swal from "sweetalert";
 
-import NavTugasku from "../components/navigation/navTugasku";
+import NavTugasku from "../components/kpim/navTugasku";
 import TableTaskWeek from "../components/kpim/tableTaskWeek";
 import TableBacklog from "../components/kpim/tableBacklog";
 
@@ -497,67 +497,73 @@ class DashboardKPIM extends Component {
   };
 
   saveNewTal = async () => {
-    this.setState({
-      proses: true,
-    });
-    let newData = {
-      indicator_tal: this.state.indicator_tal,
-      time: this.state.when,
-      load: this.state.load,
-      weight: this.state.weight,
-      kpim_score_id: this.state.kpimTAL.kpim_score_id,
-
-      isRepeat: 0,
-      forDay: 1,
-      week: this.state.weekSelected,
-      month: new Date().getMonth() + 1,
-      year: new Date().getFullYear(),
-      user_id: this.props.userId,
-    };
-
-    if (this.props.location.state) {
-      newData.user_id = this.props.location.state.userId;
+    if (this.state.totalWeight + +this.state.weight > 100) {
+      swal("Total bobot TAL lebih dari 100", "", "warning")
+    } else if (isNaN(+this.state.weight)) {
+      swal("Bobot hanya berisi angka", "", "warning")
     } else {
-      newData.user_id = this.props.userId;
-    }
-
-    let token = Cookies.get("POLAGROUP");
-    API.post("/tal", newData, {
-      headers: {
-        token,
-        ip: this.props.ip,
-      },
-    })
-      .then(async ({ data }) => {
-        await this.fetchData(
-          this.state.monthSelected,
-          this.state.weekSelected,
-          this.props.location.state
-            ? this.props.location.state.userId
-            : this.props.userId
-        );
-        this.setState({
-          indicator_tal: "",
-          when: "",
-          load: "",
-          achievement: "",
-          link: "",
-          statusAddNewTal: false,
-          lastUpdate: new Date(),
-          proses: false,
-        });
-      })
-      .catch((err) => {
-        this.setState({
-          proses: false,
-        });
-
-        if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
-          swal('Gagal', 'Koneksi tidak stabil', 'error')
-        } else {
-          swal("please try again");
-        }
+      this.setState({
+        proses: true,
       });
+      let newData = {
+        indicator_tal: this.state.indicator_tal,
+        time: this.state.when,
+        load: this.state.load,
+        weight: this.state.weight,
+        kpim_score_id: this.state.kpimTAL.kpim_score_id,
+
+        isRepeat: 0,
+        forDay: 1,
+        week: this.state.weekSelected,
+        month: new Date().getMonth() + 1,
+        year: new Date().getFullYear(),
+        user_id: this.props.userId,
+      };
+
+      if (this.props.location.state) {
+        newData.user_id = this.props.location.state.userId;
+      } else {
+        newData.user_id = this.props.userId;
+      }
+
+      let token = Cookies.get("POLAGROUP");
+      API.post("/tal", newData, {
+        headers: {
+          token,
+          ip: this.props.ip,
+        },
+      })
+        .then(async ({ data }) => {
+          await this.fetchData(
+            this.state.monthSelected,
+            this.state.weekSelected,
+            this.props.location.state
+              ? this.props.location.state.userId
+              : this.props.userId
+          );
+          this.setState({
+            indicator_tal: "",
+            when: "",
+            load: "",
+            achievement: "",
+            link: "",
+            statusAddNewTal: false,
+            lastUpdate: new Date(),
+            proses: false,
+          });
+        })
+        .catch((err) => {
+          this.setState({
+            proses: false,
+          });
+
+          if (err.message.match('timeout') || err.message.match('exceeded') || err.message.match('Network') || err.message.match('network')) {
+            swal('Gagal', 'Koneksi tidak stabil', 'error')
+          } else {
+            swal("please try again");
+          }
+        });
+    }
   };
 
   reset = () => {
@@ -829,7 +835,7 @@ class DashboardKPIM extends Component {
         </Grid>
 
         {/* TAL */}
-        {/* <Grid style={{ marginTop: 10, border: "1px solid black" }}>
+        <Grid style={{ marginTop: 10, border: "1px solid black" }}>
           <Grid
             style={{
               display: "flex",
@@ -866,8 +872,6 @@ class DashboardKPIM extends Component {
                 borderRight: "1px solid black",
               }}
             >
-              {/* <p style={{ margin: 0, marginBottom: 10, textAlign: 'center' }}>Bobot: {this.state.kpimTAL ? this.state.kpimTAL.bobot : 0}</p> */}
-        {/* 
               <CircularProgressbar
                 value={this.state.persenTAL}
                 text={`${this.state.persenTAL}%`}
@@ -1062,15 +1066,15 @@ class DashboardKPIM extends Component {
             </Grid>
           </Grid>
         </Grid>
-      */}
+
 
 
         {/* TUGASKU */}
-        <Grid style={{ marginTop: 20 }}>
+        {/* <Grid style={{ marginTop: 20 }}>
           <NavTugasku />
           <TableTaskWeek monthSelected={this.state.monthSelected} weekSelected={this.state.weekSelected} />
           <TableBacklog />
-        </Grid>
+        </Grid> */}
       </Grid>
     );
   }

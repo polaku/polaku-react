@@ -134,12 +134,12 @@ class cardSettingIndicator extends Component {
       } else {
         this.setState({
           target_monthly: `${+this.props.data.target_monthly} ${this.props.data.unit}`,
-          capaian_monthly: `${+this.props.data.pencapaian_monthly} ${this.props.data.unit}`
+          capaian_monthly: `${this.props.data.indicator_kpim.toLowerCase() === 'kpim team' ? this.props.data.score_kpim_monthly : this.props.data.pencapaian_monthly} ${this.props.data.unit}`
         })
       }
       this.setState({
         indicatorKPIM: this.props.data.indicator_kpim,
-        capaian: this.props.data.pencapaian_monthly,
+        capaian: this.props.data.indicator_kpim.toLowerCase() === 'kpim team' ? this.props.data.score_kpim_monthly : this.props.data.pencapaian_monthly,
         bobot: +this.props.data.bobot,
         persenTahun,
         persenBulan
@@ -754,18 +754,23 @@ class cardSettingIndicator extends Component {
                           </Button>
                         </form>
                       }
-                      <Grid style={{ display: 'flex', flexDirection: 'column', width: 50, marginRight: 10 }}>
-                        <CircularProgressbarWithChildren value={this.state.persenBulan}>
-                          <p style={{ margin: 0, fontSize: 10, color: '#3e98c7' }}>{this.state.persenBulan}%</p>
-                          <p style={{ margin: 0, fontSize: 10, color: '#3e98c7' }}>bulan</p>
-                        </CircularProgressbarWithChildren>
-                      </Grid>
-                      <Grid style={{ display: 'flex', flexDirection: 'column', width: 50, marginRight: 10 }}>
-                        <CircularProgressbarWithChildren value={this.state.persenTahun}>
-                          <p style={{ margin: 0, fontSize: 10, color: '#3e98c7' }}>{this.state.persenTahun}%</p>
-                          <p style={{ margin: 0, fontSize: 10, color: '#3e98c7' }}>tahun</p>
-                        </CircularProgressbarWithChildren>
-                      </Grid>
+                      {
+                        this.props.data.indicator_kpim.toLowerCase() !== 'kpim team' && <>
+                          <Grid style={{ display: 'flex', flexDirection: 'column', width: 50, marginRight: 10 }}>
+                            <CircularProgressbarWithChildren value={this.state.persenBulan}>
+                              <p style={{ margin: 0, fontSize: 10, color: '#3e98c7' }}>{this.state.persenBulan}%</p>
+                              <p style={{ margin: 0, fontSize: 10, color: '#3e98c7' }}>bulan</p>
+                            </CircularProgressbarWithChildren>
+                          </Grid>
+                          <Grid style={{ display: 'flex', flexDirection: 'column', width: 50, marginRight: 10 }}>
+                            <CircularProgressbarWithChildren value={this.state.persenTahun}>
+                              <p style={{ margin: 0, fontSize: 10, color: '#3e98c7' }}>{this.state.persenTahun}%</p>
+                              <p style={{ margin: 0, fontSize: 10, color: '#3e98c7' }}>tahun</p>
+                            </CircularProgressbarWithChildren>
+                          </Grid>
+                        </>
+                      }
+
                       <Grid style={{ display: 'flex', alignItems: 'flex-end' }}>
                         {
                           (+this.props.data.bobot !== 0 && this.props.data.bobot !== null)
@@ -861,7 +866,7 @@ class cardSettingIndicator extends Component {
             indicator={this.state.newIndicatorKPIM}
             submitForm={this.setNewDataKPIM}
             data={this.state.dataForEdit}
-            month={this.props.month}  />
+            month={this.props.month} />
         }
 
         {

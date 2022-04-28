@@ -42,7 +42,7 @@ import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
 import BarChartIcon from "@material-ui/icons/BarChart";
 import ImportContactsRoundedIcon from "@material-ui/icons/ImportContactsRounded";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
-import ModalPemberitahuan from './modal/modalPemberitahuan';
+// import ModalPemberitahuan from './modal/modalPemberitahuan';
 
 import { setUser, fetchDataNotification, userLogout } from "../store/action";
 import { API, BaseURL } from "../config/API";
@@ -166,7 +166,7 @@ function Navsidebar(props) {
   const [openChildHR, setOpenChildHR] = React.useState(false);
   const [openChildKPIM, setOpenChildKPIM] = React.useState(false);
   const [isAtasan, setIsAtasan] = React.useState(false);
-  const [openModalPemberitahuan, setOpenModalPemberitahuan] = React.useState(true);
+  // const [openModalPemberitahuan, setOpenModalPemberitahuan] = React.useState(true);
 
   const [selectedIndex, setSelectedIndex] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -1332,12 +1332,12 @@ function Navsidebar(props) {
                             style={{ textDecoration: "none", color: "black" }}
                           >
                             <ListItem
-                              aria-label="Pengaturan KPIM"
+                              aria-label="Timku"
                               button
                               className={classes.nested}
                               selected={selectedIndex === 4.3}
                             >
-                              <ListItemText primary="Pengaturan KPIM" />
+                              <ListItemText primary="Timku" />
                             </ListItem>
                           </Link>
                         )}
@@ -1483,9 +1483,9 @@ function Navsidebar(props) {
           </Drawer>
         </>
       )}
-      {
+      {/* {
         openModalPemberitahuan && <ModalPemberitahuan open={openModalPemberitahuan} close={() => setOpenModalPemberitahuan(false)} history={props.history} />
-      }
+      } */}
     </div>
   );
 }

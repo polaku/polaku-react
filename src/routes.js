@@ -31,6 +31,7 @@ const HR = lazy(() => import('./views/HR/HR'));
 const ReportIjin = lazy(() => import('./views/HR/ReportIjin'));
 // const KPIM = lazy(() => import('./views/KPIM/DashboardKPIM'));
 const KPIM = lazy(() => import('./backup/DashboardKPIM-backup'));
+// const KPIM = lazy(() => import('./backup/DashboardKPIM-backup (tal 2)'));
 // const TAL = lazy(() => import('./views/KPIM/TAL'));
 const TAL = lazy(() => import('./backup/TAL-backup'));
 const ReportKPIM = lazy(() => import('./views/KPIM/ReportKPIM'));
@@ -45,6 +46,7 @@ const Notifikasi = lazy(() => import('./views/Notifikasi/Notifikasi'));
 const DetailNotifikasi = lazy(() => import('./views/Notifikasi/DetailNotifikasi'));
 const AddNotifikasi = lazy(() => import('./views/Notifikasi/AddNotifikasi'));
 const SettingNotifikasi = lazy(() => import('./views/Notifikasi/SettingNotifikasi'));
+const Timku = lazy(() => import('./views/KPIM/Timku'));
 
 
 const useStyles = makeStyles(theme => ({
@@ -97,6 +99,7 @@ function Routes() {
           <AuthenticatedRoute path="/hr/report" component={ReportIjin} />
           <AuthenticatedRoute path="/hr" component={HR} />
           <AuthenticatedRoute path="/kpim/setting" component={SettingKPIM} />
+          {/* <AuthenticatedRoute path="/kpim/setting" component={Timku} /> */}
           <AuthenticatedRoute path="/kpim/report" component={ReportKPIM} />
           <AuthenticatedRoute path="/kpim/tal" component={TAL} />
           <AuthenticatedRoute path="/kpim" component={KPIM} />

@@ -27,10 +27,26 @@ class navTugasku extends Component {
       expanded: false,
       count: 1,
       weekNr: this.getNumberOfWeek(new Date()),
-      monDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - (new Date().getDay() - 1)),
-      sunDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + (7 - new Date().getDay())),
+      sunDate: null,
+      satDate: null,
+      startDateWeek: null,
+      endDateWeek: null,
       valueTab: 0,
     };
+  }
+
+  componentDidMount() {
+    let sunDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - (new Date().getDay()))
+    let satDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + (6 - new Date().getDay()))
+
+    if (sunDate.getMonth() !== satDate.getMonth()) {
+      if (new Date().getMonth() === sunDate.getMonth()) {
+        satDate = new Date(sunDate.getFullYear(), sunDate.getMonth() + 1, 0)
+      } else if (new Date().getMonth() === satDate.getMonth()) {
+        sunDate = new Date(satDate.getFullYear(), satDate.getMonth(), 1)
+      }
+    }
+    this.setState({ sunDate, satDate })
   }
 
   getNumberOfWeek = (date) => {
@@ -57,21 +73,46 @@ class navTugasku extends Component {
   }
 
   increment() {
-    let newMonDate = new Date(this.state.monDate.getFullYear(), this.state.monDate.getMonth(), this.state.monDate.getDate() + 7)
-    let newSunDate = new Date(this.state.sunDate.getFullYear(), this.state.sunDate.getMonth(), this.state.sunDate.getDate() + 7)
 
-    this.setState({
-      weekNr: this.state.weekNr + 1, monDate: newMonDate, sunDate: newSunDate
-    });
+    let newWeek = this.state.weekNr + 1
+    let newSunDate = new Date(this.state.sunDate.getFullYear(), this.state.sunDate.getMonth(), this.state.sunDate.getDate() + 7)
+    let newSatDate = new Date(this.state.satDate.getFullYear(), this.state.satDate.getMonth(), this.state.satDate.getDate() + 7)
+
+    if (newSunDate.getFullYear() === new Date().getFullYear()) {
+      if (this.state.satDate.getDay() !== 6) {
+        newSunDate = new Date(this.state.sunDate.getFullYear(), this.state.sunDate.getMonth() + 1, 1)
+        newSatDate = new Date(newSunDate.getFullYear(), newSunDate.getMonth(), newSunDate.getDate() + (6 - newSunDate.getDay()))
+        newWeek = this.state.weekNr
+      } else if (newSunDate.getMonth() !== newSatDate.getMonth()) {
+        newSatDate = new Date(newSunDate.getFullYear(), newSunDate.getMonth() + 1, 0)
+      } else if (newSunDate.getDay() !== 0) {
+        newSunDate = new Date(newSatDate.getFullYear(), newSatDate.getMonth(), newSatDate.getDate() - newSatDate.getDay())
+      }
+
+      this.setState({
+        weekNr: newWeek, sunDate: newSunDate, satDate: newSatDate
+      });
+    }
   }
 
   decrement() {
     if (this.state.weekNr > 1) {
-      // this.fetchDate('decrement')
-      let newMonDate = new Date(this.state.monDate.getFullYear(), this.state.monDate.getMonth(), this.state.monDate.getDate() - 7)
-      let newSunDate = new Date(this.state.sunDate.getFullYear(), this.state.sunDate.getMonth(), this.state.sunDate.getDate() - 7)
+      let newWeek = this.state.weekNr - 1
 
-      this.setState((prevState) => ({ weekNr: prevState.weekNr - 1, monDate: newMonDate, sunDate: newSunDate }));
+      let newSunDate = new Date(this.state.sunDate.getFullYear(), this.state.sunDate.getMonth(), this.state.sunDate.getDate() - 7)
+      let newSatDate = new Date(this.state.satDate.getFullYear(), this.state.satDate.getMonth(), this.state.satDate.getDate() - 7)
+
+      if (this.state.sunDate.getDay() !== 0) {
+        newSunDate = new Date(this.state.sunDate.getFullYear(), this.state.sunDate.getMonth(), this.state.sunDate.getDate() - this.state.sunDate.getDay())
+        newSatDate = new Date(this.state.satDate.getFullYear(), this.state.satDate.getMonth(), 0)
+        newWeek = this.state.weekNr
+      } else if (newSunDate.getMonth() !== newSatDate.getMonth()) {
+        newSunDate = new Date(this.state.satDate.getFullYear(), this.state.satDate.getMonth(), 1)
+      } else if (newSatDate.getDay() !== 6) {
+        newSatDate = new Date(newSunDate.getFullYear(), newSunDate.getMonth(), newSunDate.getDate() + 6)
+      }
+
+      this.setState((prevState) => ({ weekNr: newWeek, sunDate: newSunDate, satDate: newSatDate }));
     }
   }
 
@@ -120,7 +161,7 @@ class navTugasku extends Component {
                 <KeyboardArrowLeft />
               </Button>
               <p style={{ color: "gray", margin: 0 }}>
-                Minggu {this.state.weekNr}:  {getFormatDate(this.state.monDate)} - {getFormatDate(this.state.sunDate)}
+                Minggu {this.state.weekNr}:  {this.state.sunDate && getFormatDate(this.state.sunDate)} - {this.state.satDate && getFormatDate(this.state.satDate)}
               </p>
               <Button onClick={this.increment.bind(this)}>
                 <KeyboardArrowRight />
