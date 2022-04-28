@@ -44,7 +44,7 @@
     "redux": "^4.0.4",
     "source-map-explorer": "^2.5.2",
     "sweetalert": "^2.1.2",
-    "xlsx": "^0.15.4"
+    "xlsx": "^0.17.0"
   },
   "scripts": {
     "start": "react-scripts start",
