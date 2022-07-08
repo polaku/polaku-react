@@ -19,7 +19,7 @@
     "js-cookie": "^2.2.1",
     "json-loader": "^0.5.7",
     "lodash": "^4.17.20",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "moment-range": "^4.0.2",
     "node-sass": "^5.0.0",
     "public-ip": "^4.0.2",
