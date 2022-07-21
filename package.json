@@ -68,7 +68,7 @@
     ]
   },
   "devDependencies": {
-    "terser": "^4.8.0",
+    "terser": "^4.8.1",
     "terser-brunch": "^4.0.0"
   }
 }
