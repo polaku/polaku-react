@@ -22,7 +22,7 @@
     "moment": "^2.24.0",
     "moment-range": "^4.0.2",
     "node-sass": "^5.0.0",
-    "public-ip": "^4.0.2",
+    "public-ip": "^6.0.1",
     "react": "^16.8.0",
     "react-app-rewired": "^2.1.8",
     "react-big-calendar": "^0.22.1",
